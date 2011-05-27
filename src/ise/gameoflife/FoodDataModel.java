@@ -18,7 +18,7 @@ public class FoodDataModel
 	 * Nutritional value of the food
 	 */
 	@Element
-	private int nutrition;
+	private double nutrition;
 	/*
 	 * Number of agents required to obtain food
 	 * Extends later into probabilities
@@ -37,7 +37,7 @@ public class FoodDataModel
 	/**
 	 * @return the nutrition
 	 */
-	public int getNutrition()
+	public double getNutrition()
 	{
 		return nutrition;
 	}

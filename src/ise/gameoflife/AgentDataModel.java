@@ -12,16 +12,16 @@ public class AgentDataModel extends APlayerDataModel
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * stores amount of food owned by agent
+	 * Stores amount of food owned by agent
 	 */
 	@Element
-	private int foodInPossesion;
+	private double foodInPossesion;
 	/**
 	 * Stores the amount of the food that the Agent must consume in order to
 	 * survive each turn
 	 */
 	@Element
-	private int foodConsumption;
+	private double foodConsumption;
 
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
@@ -40,7 +40,7 @@ public class AgentDataModel extends APlayerDataModel
 	 * @param foodInPossesion Initial amount of food
 	 * @param foodConsumption Food consumed per turn
 	 */
-	public AgentDataModel(int foodInPossesion, int foodConsumption)
+	public AgentDataModel(double foodInPossesion, double foodConsumption)
 	{
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
@@ -54,7 +54,7 @@ public class AgentDataModel extends APlayerDataModel
 	/**
 	 * @return the foodInPossesion
 	 */
-	public int getFoodInPossesion()
+	public double getFoodInPossesion()
 	{
 		return foodInPossesion;
 	}
@@ -67,7 +67,7 @@ public class AgentDataModel extends APlayerDataModel
 		this.foodInPossesion = foodInPossesion;
 	}
 
-	public int getFoodConsumption()
+	public double getFoodConsumption()
 	{
 		return foodConsumption;
 	}
