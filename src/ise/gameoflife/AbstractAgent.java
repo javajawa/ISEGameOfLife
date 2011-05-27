@@ -1,6 +1,6 @@
 package ise.gameoflife;
 
-import ise.gameoflife.models.Group;
+import ise.gameoflife.enviroment.EnvConnector;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -69,8 +69,8 @@ abstract public class AbstractAgent implements Participant
 		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
 		beenInitalised = true;
 
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		final EnvConnector ec = (EnvConnector)environmentConnector;
+		dm.initialise(ec);
 	}
 
 	@Override

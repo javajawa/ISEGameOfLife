@@ -1,5 +1,6 @@
 package ise.gameoflife;
 
+import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.models.Group;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
@@ -58,6 +59,12 @@ public class AgentDataModel extends APlayerDataModel
 	{
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
+	}
+
+	public void initialise(EnvConnector environmentConnector)
+	{
+		super.initialise(environmentConnector);
+		this.group = environmentConnector.getGroupById(this.groupId);
 	}
 
 	@Override
