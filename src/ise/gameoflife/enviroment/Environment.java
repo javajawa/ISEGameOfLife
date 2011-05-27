@@ -1,5 +1,6 @@
 package ise.gameoflife.enviroment;
 
+import org.simpleframework.xml.Element;
 import presage.EnvDataModel;
 import presage.Simulation;
 import presage.environment.AbstractEnvironment;
@@ -14,6 +15,9 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
+
+	@Element
+	protected EnvironmentDataModel dm;
 
 	@Deprecated
 	public Environment()
@@ -36,7 +40,7 @@ public class Environment extends AbstractEnvironment
 	@Override
 	public EnvDataModel getDataModel()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return dm;
 	}
 
 	@Override
