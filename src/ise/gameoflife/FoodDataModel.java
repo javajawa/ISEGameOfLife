@@ -26,6 +26,21 @@ public class FoodDataModel
 	@Element
 	private int huntersRequired;
 
+	@Deprecated
+	public FoodDataModel()
+	{
+		super();
+	}
+	
+	
+
+	public FoodDataModel(String name, int nutrition, int huntersRequired)
+	{
+		this.name = name;
+		this.nutrition = nutrition;
+		this.huntersRequired = huntersRequired;
+	}
+
 	/**
 	 * @return the name
 	 */

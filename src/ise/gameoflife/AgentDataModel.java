@@ -40,6 +40,7 @@ public class AgentDataModel extends APlayerDataModel
 	 * @param foodInPossesion Initial amount of food
 	 * @param foodConsumption Food consumed per turn
 	 */
+	@SuppressWarnings("deprecation")
 	public AgentDataModel(double foodInPossesion, double foodConsumption)
 	{
 		this.foodInPossesion = foodInPossesion;
