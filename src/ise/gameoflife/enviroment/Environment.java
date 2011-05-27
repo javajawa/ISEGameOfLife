@@ -42,7 +42,7 @@ public class Environment extends AbstractEnvironment
 	public ENVRegistrationResponse onRegister(ENVRegisterRequest registrationObject)
 	{
 		final RegistrationRequest obj = (RegistrationRequest)registrationObject;
-		if (!dm.registerParticipant(obj) return null;
+		if (!dm.registerParticipant(obj)) return null;
 		return new RegistrationResponse(obj.getParticipantID(), UUID.randomUUID());
 	}
 
