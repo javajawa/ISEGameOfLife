@@ -18,6 +18,18 @@ import presage.PlayerDataModel;
 abstract public class AbstractAgent implements Participant
 {
 
+	/**
+	 * Serialisation requires a public no-argument constructor to be present
+	 * Using a explictly defined deprecated implementation should stop people
+	 * accidentally calling this function
+	 * @deprecated Not safe due to serialisation usages
+	 */
+	@Deprecated
+	AbstractAgent()
+	{
+		super();
+	}
+
 	@Override
 	public String getId()
 	{
