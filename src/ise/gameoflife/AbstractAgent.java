@@ -1,6 +1,7 @@
 package ise.gameoflife;
 
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.tokens.RegistrationRequest;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -30,6 +31,8 @@ abstract public class AbstractAgent implements Participant
 	 */
 	@Element
 	protected AgentDataModel dm;
+
+	protected EnvironmentConnector ec;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present
@@ -68,13 +71,14 @@ abstract public class AbstractAgent implements Participant
 		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
 		beenInitalised = true;
 
-		final EnvConnector ec = (EnvConnector)environmentConnector;
+		ec = (EnvConnector)environmentConnector;
 		dm.initialise(ec);
 	}
 
 	@Override
 	public void onActivation()
 	{
+		ec.register(new RegistrationRequest(dm.getId(), dm.getRoles(), dm.getPublicVersion()));
 		// FIXME: Implement this
 		throw new UnsupportedOperationException("Not supported yet.");
 	}

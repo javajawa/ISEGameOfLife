@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ise.gameoflife.tokens;
 
+import ise.gameoflife.PublicAgentDataModel;
 import java.util.ArrayList;
 import presage.environment.messages.ENVRegisterRequest;
 
@@ -11,13 +8,16 @@ import presage.environment.messages.ENVRegisterRequest;
  *
  * @author Benedict
  */
-public class RegistrationRequest extends ENVRegisterRequest
+public final class RegistrationRequest extends ENVRegisterRequest
 {
 	private static final long serialVersionUID = 1L;
 
-	public RegistrationRequest(String id, ArrayList<String> roles)
+	private final PublicAgentDataModel model;
+
+	public RegistrationRequest(String id, ArrayList<String> roles, PublicAgentDataModel state)
 	{
 		super(id, roles);
+		this.model = state;
 	}
 
 	@Override
@@ -32,4 +32,8 @@ public class RegistrationRequest extends ENVRegisterRequest
 		return super.getParticipantRoles();
 	}
 
+	public PublicAgentDataModel getModel()
+	{
+		return model;
+	}
 }

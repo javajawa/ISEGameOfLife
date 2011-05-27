@@ -1,5 +1,6 @@
 package ise.gameoflife.enviroment;
 
+import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -40,8 +41,9 @@ public class Environment extends AbstractEnvironment
 	@Override
 	public ENVRegistrationResponse onRegister(ENVRegisterRequest registrationObject)
 	{
-		if (!dm.registerParticipant(registrationObject.getParticipantID())) return null;
-		return new RegistrationResponse(registrationObject.getParticipantID(), UUID.randomUUID());
+		final RegistrationRequest obj = (RegistrationRequest)registrationObject;
+		if (!dm.registerParticipant(obj) return null;
+		return new RegistrationResponse(obj.getParticipantID(), UUID.randomUUID());
 	}
 
 	@Override
