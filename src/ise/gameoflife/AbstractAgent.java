@@ -1,6 +1,9 @@
 package ise.gameoflife;
 
+import ise.gameoflife.enviroment.EnvConnector;
 import java.util.ArrayList;
+import java.util.UUID;
+import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
@@ -17,6 +20,16 @@ import presage.PlayerDataModel;
  */
 abstract public class AbstractAgent implements Participant
 {
+	/**
+	 * Flag to show whether the initialise function has been called
+	 */
+	private boolean beenInitalised = false;
+
+	/**
+	 * The DataModel used by this agent.
+	 */
+	@Element
+	protected AgentDataModel dm;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present
@@ -25,16 +38,22 @@ abstract public class AbstractAgent implements Participant
 	 * @deprecated Not safe due to serialisation usages
 	 */
 	@Deprecated
-	AbstractAgent()
+	public AbstractAgent()
 	{
 		super();
 	}
 
+	/**
+	 * Returns the String representation of the Agent's UUID, which is used to
+	 * identify the agent in all interactions.
+	 * @see UUID
+	 * @see #id
+	 * @return The String representation of the Agent's unique identifier
+	 */
 	@Override
-	public String getId()
+	public final String getId()
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		return dm.getId();
 	}
 
 	@Override
@@ -47,8 +66,11 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public void initialise(EnvironmentConnector environmentConnector)
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
+		beenInitalised = true;
+
+		final EnvConnector ec = (EnvConnector)environmentConnector;
+		dm.initialise(ec);
 	}
 
 	@Override
@@ -79,11 +101,14 @@ abstract public class AbstractAgent implements Participant
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
+	/**
+	 * Returns the DataModel of this object
+	 * @return The DataModel of this object
+	 */
 	@Override
 	public PlayerDataModel getInternalDataModel()
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		return dm;
 	}
 
 	@Override

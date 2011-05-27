@@ -1,5 +1,7 @@
 package ise.gameoflife;
 
+import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.models.Group;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
 
@@ -22,6 +24,18 @@ public class AgentDataModel extends APlayerDataModel
 	 */
 	@Element
 	private double foodConsumption;
+
+	/**
+	 * The group that this agent currently belongs to.
+	 * It will be null if the agent does not belong to a group
+	 */
+	private Group group;
+	/**
+	 * Field that holds the id of {@link #group}
+	 * Will be null if {@link #group} is null
+	 */
+	@Element
+	private String groupId;
 
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
@@ -47,6 +61,12 @@ public class AgentDataModel extends APlayerDataModel
 		this.foodConsumption = foodConsumption;
 	}
 
+	public void initialise(EnvConnector environmentConnector)
+	{
+		super.initialise(environmentConnector);
+		this.group = environmentConnector.getGroupById(this.groupId);
+	}
+
 	@Override
 	public void onInitialise()
 	{
@@ -61,8 +81,11 @@ public class AgentDataModel extends APlayerDataModel
 	}
 
 	/**
+	 * Sets a new value for the foodInPossesion
 	 * @param foodInPossesion the foodInPossesion to set
+	 * @deprecated Use {@link #foodConsumed(int)} and {@link #foodAquired(int)}
 	 */
+	@Deprecated
 	public void setFoodInPossesion(int foodInPossesion)
 	{
 		this.foodInPossesion = foodInPossesion;

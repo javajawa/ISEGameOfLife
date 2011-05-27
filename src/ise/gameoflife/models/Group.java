@@ -1,4 +1,4 @@
-package ise.gameoflife;
+package ise.gameoflife.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;

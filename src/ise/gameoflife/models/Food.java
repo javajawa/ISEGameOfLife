@@ -1,14 +1,23 @@
-package ise.gameoflife;
+package ise.gameoflife.models;
 
+import java.io.Serializable;
+import java.util.UUID;
 import org.simpleframework.xml.Element;
 
 /**
  *
- * @author christopherfonseka
+ * @author Christopher Fonseka
  */
-public class FoodDataModel
+public class Food implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
+	/*
+	 * The ID for the food item
+	 */
+	@Element
+	private UUID id;
+	
 	/*
 	 * Name of food type
 	 */
@@ -27,15 +36,15 @@ public class FoodDataModel
 	private int huntersRequired;
 
 	@Deprecated
-	public FoodDataModel()
+	public Food()
 	{
 		super();
 	}
 	
 	
-
-	public FoodDataModel(String name, int nutrition, int huntersRequired)
+	public Food(String name, double nutrition, int huntersRequired)
 	{
+		this.id = UUID.randomUUID();
 		this.name = name;
 		this.nutrition = nutrition;
 		this.huntersRequired = huntersRequired;
@@ -65,5 +74,9 @@ public class FoodDataModel
 		return huntersRequired;
 	}
 	
-					
+	public UUID getId()
+	{
+		return id;
+	}
+						
 }

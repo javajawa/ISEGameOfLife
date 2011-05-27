@@ -1,9 +1,10 @@
 package ise.gameoflife.enviroment;
 
 import infection.AgentDataModel;
-import ise.gameoflife.FoodDataModel;
-import ise.gameoflife.Group;
+import ise.gameoflife.models.Food;
+import ise.gameoflife.models.Group;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
@@ -27,14 +28,14 @@ public class EnvironmentDataModel extends AEnvDataModel
 	/**
 	 * List of all the available food types in the environment
 	 */
-	@ElementList(type=FoodDataModel.class)
-	private ArrayList<FoodDataModel> availableFoodTypes;
+	@ElementMap
+	private HashMap<String,Food> availableFoodTypes;
 	
 	/**
 	 * List of all the groups in the environment
 	 */
-	@ElementList(type=Group.class)
-	private ArrayList<Group> agentGroups;
+	@ElementMap
+	private HashMap<String,Group> agentGroups;
 	
 	/**
 	 * Serialisable no-arg constructor, do not use
@@ -46,4 +47,13 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super();
 	}
 	
+	public Food getFoodById(String id)
+	{
+		return availableFoodTypes.get(id);
+	}
+
+	public Group getGroupById(String id)
+	{
+		return agentGroups.get(id);
+	}
 }
