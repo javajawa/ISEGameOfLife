@@ -1,5 +1,6 @@
 package ise.gameoflife.models;
 
+import ise.gameoflife.AbstractAgent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
