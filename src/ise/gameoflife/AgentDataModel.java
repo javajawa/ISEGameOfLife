@@ -1,5 +1,6 @@
 package ise.gameoflife;
 
+import ise.gameoflife.models.Group;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
 
@@ -22,6 +23,18 @@ public class AgentDataModel extends APlayerDataModel
 	 */
 	@Element
 	private double foodConsumption;
+
+	/**
+	 * The group that this agent currently belongs to.
+	 * It will be null if the agent does not belong to a group
+	 */
+	private Group group;
+	/**
+	 * Field that holds the id of {@link #group}
+	 * Will be null if {@link #group} is null
+	 */
+	@Element
+	private String groupId;
 
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
