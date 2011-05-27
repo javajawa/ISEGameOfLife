@@ -1,8 +1,8 @@
 package ise.gameoflife.enviroment;
 
 import infection.AgentDataModel;
-import ise.gameoflife.FoodDataModel;
-import ise.gameoflife.Group;
+import ise.gameoflife.models.Food;
+import ise.gameoflife.models.Group;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import org.simpleframework.xml.ElementList;
@@ -27,8 +27,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 	/**
 	 * List of all the available food types in the environment
 	 */
-	@ElementList(type=FoodDataModel.class)
-	private ArrayList<FoodDataModel> availableFoodTypes;
+	@ElementList(type=Food.class)
+	private ArrayList<Food> availableFoodTypes;
 	
 	/**
 	 * List of all the groups in the environment
