@@ -9,6 +9,7 @@ import presage.abstractparticipant.APlayerDataModel;
  */
 public class AgentDataModel extends APlayerDataModel
 {
+	private static final long serialVersionUID = 1L;
 
 	//stores amount of food owned by agent
 	@Element
