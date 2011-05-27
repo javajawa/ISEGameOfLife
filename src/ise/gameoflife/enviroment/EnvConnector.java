@@ -3,6 +3,7 @@ package ise.gameoflife.enviroment;
 import ise.gameoflife.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.Group;
+import java.util.UUID;
 import presage.EnvironmentConnector;
 
 /**
@@ -24,7 +25,7 @@ public class EnvConnector extends EnvironmentConnector
 	 * @param id The id to search for
 	 * @return The group object, or null if not found
 	 */
-	public Group getGroupById(String id)
+	public Group getGroupById(UUID id)
 	{
 		return dm.getGroupById(id);
 	}
@@ -34,7 +35,7 @@ public class EnvConnector extends EnvironmentConnector
 	 * @param id The id to search for
 	 * @return The food object, or null if not found
 	 */
-	public Food getFoodById(String id)
+	public Food getFoodById(UUID id)
 	{
 		return dm.getFoodById(id);
 	}

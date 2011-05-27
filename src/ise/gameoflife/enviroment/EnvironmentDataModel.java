@@ -6,6 +6,7 @@ import ise.gameoflife.models.Food;
 import ise.gameoflife.models.Group;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.UUID;
 import org.simpleframework.xml.ElementMap;
 import presage.environment.AEnvDataModel;
 
@@ -26,12 +27,12 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 * List of all the available food types in the environment
 	 */
 	@ElementMap
-	private HashMap<String, Food> availableFoodTypes;
+	private HashMap<UUID, Food> availableFoodTypes;
 	/**
 	 * List of all the groups in the environment
 	 */
 	@ElementMap
-	private HashMap<String, Group> agentGroups;
+	private HashMap<UUID, Group> agentGroups;
 
 	/**
 	 * Serialisable no-arg constructor, do not use
@@ -43,12 +44,12 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super();
 	}
 
-	public Food getFoodById(String id)
+	public Food getFoodById(UUID id)
 	{
 		return availableFoodTypes.get(id);
 	}
 
-	public Group getGroupById(String id)
+	public Group getGroupById(UUID id)
 	{
 		return agentGroups.get(id);
 	}

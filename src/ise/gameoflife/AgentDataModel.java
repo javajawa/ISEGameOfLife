@@ -2,6 +2,7 @@ package ise.gameoflife;
 
 import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.models.Group;
+import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
 
@@ -35,7 +36,7 @@ public class AgentDataModel extends APlayerDataModel
 	 * Will be null if {@link #group} is null
 	 */
 	@Element
-	private String groupId;
+	private UUID groupId;
 
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
@@ -124,6 +125,11 @@ public class AgentDataModel extends APlayerDataModel
 	public PublicAgentDataModel getPublicVersion()
 	{
 		return new PublicAgentDataModel(this);
+	}
+
+	public UUID getGroupId()
+	{
+		return groupId;
 	}
 
 	@Override
