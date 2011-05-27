@@ -1,12 +1,11 @@
 package ise.gameoflife.enviroment;
 
-import infection.AgentDataModel;
+import ise.gameoflife.AgentDataModel;
+import ise.gameoflife.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.Group;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
-import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
 import presage.environment.AEnvDataModel;
 
@@ -18,25 +17,22 @@ public class EnvironmentDataModel extends AEnvDataModel
 {
 
 	public final static long serialVersionUID = 1L;
-
 	/**
-	 * A sorted list/map of all the players in the game
+	 * A sorted list/map of all the state of all players in the game
 	 */
-	@ElementMap(keyType=String.class,valueType=AgentDataModel.class)
+	@ElementMap(keyType = String.class, valueType = AgentDataModel.class)
 	private TreeMap<String, AgentDataModel> agents;
-	
 	/**
 	 * List of all the available food types in the environment
 	 */
 	@ElementMap
-	private HashMap<String,Food> availableFoodTypes;
-	
+	private HashMap<String, Food> availableFoodTypes;
 	/**
 	 * List of all the groups in the environment
 	 */
 	@ElementMap
-	private HashMap<String,Group> agentGroups;
-	
+	private HashMap<String, Group> agentGroups;
+
 	/**
 	 * Serialisable no-arg constructor, do not use
 	 * @deprecated
@@ -46,7 +42,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	{
 		super();
 	}
-	
+
 	public Food getFoodById(String id)
 	{
 		return availableFoodTypes.get(id);
@@ -55,5 +51,21 @@ public class EnvironmentDataModel extends AEnvDataModel
 	public Group getGroupById(String id)
 	{
 		return agentGroups.get(id);
+	}
+
+	public PublicAgentDataModel getAgentById(String id)
+	{
+		return agents.get(id).getPublicVersion();
+	}
+
+	public boolean removeParticipant(String id)
+	{
+		return (agents.remove(id)!=null);
+	}
+
+	public boolean registerParticipant(String id)
+	{
+		agents.put(id, null);
+		return true;
 	}
 }

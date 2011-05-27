@@ -1,5 +1,7 @@
 package ise.gameoflife.enviroment;
 
+import ise.gameoflife.tokens.RegistrationResponse;
+import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.EnvDataModel;
 import presage.Simulation;
@@ -28,13 +30,18 @@ public class Environment extends AbstractEnvironment
 	@Override
 	public boolean deregister(ENVDeRegisterRequest deregistrationObject)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		if (!authenticator.get(deregistrationObject.getParticipantID()).equals(deregistrationObject.getParticipantAuthCode()))
+		{
+			return false;
+		}
+		return dm.removeParticipant(deregistrationObject.getParticipantID());
 	}
 
 	@Override
 	public ENVRegistrationResponse onRegister(ENVRegisterRequest registrationObject)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		if (!dm.registerParticipant(registrationObject.getParticipantID())) return null;
+		return new RegistrationResponse(registrationObject.getParticipantID(), UUID.randomUUID());
 	}
 
 	@Override

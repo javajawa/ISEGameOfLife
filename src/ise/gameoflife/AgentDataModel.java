@@ -61,15 +61,14 @@ public class AgentDataModel extends APlayerDataModel
 		this.foodConsumption = foodConsumption;
 	}
 
+	/**
+	 * Code being called after all XML-reading
+	 * @param environmentConnector The connector to the environment we are in
+	 */
 	public void initialise(EnvConnector environmentConnector)
 	{
 		super.initialise(environmentConnector);
 		this.group = environmentConnector.getGroupById(this.groupId);
-	}
-
-	@Override
-	public void onInitialise()
-	{
 	}
 
 	/**
@@ -91,6 +90,10 @@ public class AgentDataModel extends APlayerDataModel
 		this.foodInPossesion = foodInPossesion;
 	}
 
+	/**
+	 * Returns the amount of food consumed per turn by this Agent
+	 * @return The amount of food consumed per turn by this Agent
+	 */
 	public double getFoodConsumption()
 	{
 		return foodConsumption;
@@ -112,4 +115,20 @@ public class AgentDataModel extends APlayerDataModel
 		this.foodInPossesion += acquired;
 	}
 
+	/**
+	 * Get a re-distribution safe copy of this object. The returned object is
+	 * backed by this one, so their is no need to keep calling this to receive
+	 * updated data.
+	 * @return
+	 */
+	public PublicAgentDataModel getPublicVersion()
+	{
+		return new PublicAgentDataModel(this);
+	}
+
+	@Override
+	public void onInitialise()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

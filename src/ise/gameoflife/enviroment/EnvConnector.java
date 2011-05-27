@@ -1,6 +1,6 @@
 package ise.gameoflife.enviroment;
 
-import ise.gameoflife.AbstractAgent;
+import ise.gameoflife.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.Group;
 import presage.EnvironmentConnector;
@@ -11,27 +11,41 @@ import presage.EnvironmentConnector;
  */
 public class EnvConnector extends EnvironmentConnector
 {
-	private final Environment e;
 	private final EnvironmentDataModel dm;
 	
 	public EnvConnector(Environment e)
 	{
 		super(e);
-		this.e = e;
 		this.dm = (EnvironmentDataModel)e.getDataModel();
 	}
 
+	/**
+	 * Gets the group object associated with a particular id
+	 * @param id The id to search for
+	 * @return The group object, or null if not found
+	 */
 	public Group getGroupById(String id)
 	{
 		return dm.getGroupById(id);
 	}
 	
+	/**
+	 * Gets the food object associated with a particular id
+	 * @param id The id to search for
+	 * @return The food object, or null if not found
+	 */
 	public Food getFoodById(String id)
 	{
 		return dm.getFoodById(id);
 	}
 
-	public AbstractAgent getAgentById(String id)
+	/*
+	 * Gets the agent data object associated with a particular id, which is safe
+	 * for being passed to toher agents without giving them too much information
+	 * @param id The id to search for
+	 * @return The agent object, or null if not found
+	 */
+	public PublicAgentDataModel getAgentById(String id)
 	{
 		return dm.getAgentById(id);
 	}
