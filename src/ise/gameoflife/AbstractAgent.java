@@ -59,8 +59,7 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public ArrayList<String> getRoles()
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		return dm.getRoles();
 	}
 
 	@Override
