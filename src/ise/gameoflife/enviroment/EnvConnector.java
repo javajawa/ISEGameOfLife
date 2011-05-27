@@ -1,5 +1,6 @@
 package ise.gameoflife.enviroment;
 
+import ise.gameoflife.AbstractAgent;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.Group;
 import presage.EnvironmentConnector;
@@ -28,5 +29,10 @@ public class EnvConnector extends EnvironmentConnector
 	public Food getFoodById(String id)
 	{
 		return dm.getFoodById(id);
+	}
+
+	public AbstractAgent getAgentById(String id)
+	{
+		return dm.getAgentById(id);
 	}
 }
