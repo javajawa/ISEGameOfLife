@@ -1,6 +1,7 @@
 package ise.gameoflife.models;
 
 import java.io.Serializable;
+import java.util.UUID;
 import org.simpleframework.xml.Element;
 
 /**
@@ -11,6 +12,12 @@ public class Food implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
+	/*
+	 * The ID for the food item
+	 */
+	@Element
+	private UUID id;
+	
 	/*
 	 * Name of food type
 	 */
@@ -37,6 +44,7 @@ public class Food implements Serializable
 	
 	public Food(String name, double nutrition, int huntersRequired)
 	{
+		this.id = UUID.randomUUID();
 		this.name = name;
 		this.nutrition = nutrition;
 		this.huntersRequired = huntersRequired;
@@ -66,5 +74,9 @@ public class Food implements Serializable
 		return huntersRequired;
 	}
 	
-					
+	public UUID getId()
+	{
+		return id;
+	}
+						
 }
