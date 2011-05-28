@@ -1,6 +1,7 @@
 package ise.gameoflife.agents;
 
 import ise.gameoflife.AbstractAgent;
+import ise.gameoflife.models.Food;
 
 /**
  * Test agent of joy!
@@ -14,6 +15,18 @@ public class TestAgent extends AbstractAgent
 	public TestAgent()
 	{
 		super();
+	}
+
+	@Override
+	protected void init()
+	{
+		// Nothing to see here
+	}
+
+	@Override
+	protected Food chooseFood()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 	
 }
