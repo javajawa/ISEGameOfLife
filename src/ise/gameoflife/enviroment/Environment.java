@@ -10,7 +10,6 @@ import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.Action;
 import presage.EnvDataModel;
-import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
@@ -102,7 +101,9 @@ public class Environment extends AbstractEnvironment
 	{
 		final RegistrationRequest obj = (RegistrationRequest)registrationObject;
 		if (!dmodel.registerParticipant(obj)) return null;
-		return new RegistrationResponse(obj.getParticipantID(), UUID.randomUUID(), new EnvConnector(this));
+		UUID id = UUID.randomUUID();
+		authenticator.put(registrationObject.getParticipantID(), id);
+		return new RegistrationResponse(obj.getParticipantID(), id, new EnvConnector(this));
 	}
 
 	@Override
