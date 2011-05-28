@@ -45,6 +45,18 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super();
 	}
 
+	public EnvironmentDataModel(String environmentname, HashMap<UUID, Food> availableFoodTypes)
+	{
+		super(environmentname, "ISE Game of Life Enviroment Data Model", 0);
+		this.availableFoodTypes = availableFoodTypes;
+	}
+
+	public Set<Food> availableFoods()
+	{
+		// TODO: Implement this
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+
 	public Food getFoodById(UUID id)
 	{
 		return availableFoodTypes.get(id);

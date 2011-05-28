@@ -44,6 +44,16 @@ public class Environment extends AbstractEnvironment
 		super();
 	}
 	
+	@presage.annotations.EnvironmentConstructor( { "queueactions",
+			"randomseed", "dmodel" })
+	public Environment(boolean queueactions, long randomseed,
+			EnvironmentDataModel dmodel) {
+		super(queueactions, randomseed);
+
+		// Separation of data from code!
+		this.dmodel = dmodel;
+	}
+
 	@Override
 	public boolean deregister(ENVDeRegisterRequest deregistrationObject)
 	{

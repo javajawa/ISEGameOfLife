@@ -12,23 +12,28 @@ public class Food implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	/*
+	/**
 	 * The ID for the food item
 	 */
-	@Element
 	private UUID id;
 	
-	/*
+	/**
+	 * 
+	 */
+	@Element
+	private String id_string;
+	
+	/**
 	 * Name of food type
 	 */
 	@Element
 	private String name;
-	/*
+	/**
 	 * Nutritional value of the food
 	 */
 	@Element
 	private double nutrition;
-	/*
+	/**
 	 * Number of agents required to obtain food
 	 * Extends later into probabilities
 	 */
@@ -45,6 +50,7 @@ public class Food implements Serializable
 	public Food(String name, double nutrition, int huntersRequired)
 	{
 		this.id = UUID.randomUUID();
+		this.id_string = this.id.toString();
 		this.name = name;
 		this.nutrition = nutrition;
 		this.huntersRequired = huntersRequired;
@@ -76,6 +82,7 @@ public class Food implements Serializable
 	
 	public UUID getId()
 	{
+		if (id == null) id = UUID.fromString(this.id_string);
 		return id;
 	}
 						
