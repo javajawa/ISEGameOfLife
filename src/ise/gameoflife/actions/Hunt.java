@@ -9,7 +9,7 @@ import presage.Action;
  *
  * @author Benedict
  */
-public class Hunt implements Action, Serializable
+public final class Hunt implements Action, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
