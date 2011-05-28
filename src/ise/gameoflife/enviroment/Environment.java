@@ -1,5 +1,6 @@
 package ise.gameoflife.enviroment;
 
+import ise.gameoflife.AbstractAgent;
 import ise.gameoflife.enviroment.actionhandlers.HuntHandler;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -9,6 +10,7 @@ import presage.Action;
 import presage.EnvDataModel;
 import presage.EnvironmentConnector;
 import presage.Input;
+import presage.Participant;
 import presage.Simulation;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
@@ -96,6 +98,17 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePhysicalWorld()
 	{
+		for (Participant agent : sim.players.values())
+		{
+			if (sim.isParticipantActive(agent.getId()))
+			{
+				if (agent instanceof ise.gameoflife.AbstractAgent)
+				{
+					// TODO: Put a consume food result here when this is complete
+					agent.enqueueInput((Input)null);
+				}
+			}
+		}
 		// FIXME: Write this function
 		//throw new UnsupportedOperationException("Not supported yet.");
 	}
