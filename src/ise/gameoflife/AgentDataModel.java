@@ -1,7 +1,7 @@
 package ise.gameoflife;
 
 import ise.gameoflife.enviroment.EnvConnector;
-import ise.gameoflife.models.Group;
+import ise.gameoflife.participants.GroupDataModel;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
@@ -30,7 +30,7 @@ public class AgentDataModel extends APlayerDataModel
 	 * The group that this agent currently belongs to.
 	 * It will be null if the agent does not belong to a group
 	 */
-	private Group group;
+	private GroupDataModel group;
 	/**
 	 * Field that holds the id of {@link #group}
 	 * Will be null if {@link #group} is null
