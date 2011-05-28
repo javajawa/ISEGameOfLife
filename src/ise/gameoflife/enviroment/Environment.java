@@ -28,12 +28,11 @@ public class Environment extends AbstractEnvironment
 
 	public class HuntHandler implements AbstractEnvironment.ActionHandler
 	{
-		private Environment en;
 
 		@Override
 		public boolean canHandle(Action action)
 		{
-			return (Action.class.equals(Hunt.class));
+			return (action.getClass().equals(Hunt.class));
 		}
 
 		@Override
@@ -46,6 +45,7 @@ public class Environment extends AbstractEnvironment
 			if (food.getHuntersRequired() <= 1)
 			{
 				result = new HuntResult(food.getNutrition(), dmodel.getTime());
+				sim.getPlayer(actorID).enqueueInput(result);
 			}
 			else
 			{
@@ -55,9 +55,9 @@ public class Environment extends AbstractEnvironment
 			return result;
 		}
 
-		public HuntHandler(Environment en)
+		public HuntHandler()
 		{
-			this.en = en;
+			// Nothing to see here. Move along, citizen.
 		}
 	}
 	
@@ -123,7 +123,7 @@ public class Environment extends AbstractEnvironment
 	{
 		this.sim = sim;
 		// TODO: Add message handlers
-		this.actionhandlers.add(new HuntHandler(this));
+		this.actionhandlers.add(new HuntHandler());
 	}
 
 	@Override
