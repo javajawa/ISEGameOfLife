@@ -1,6 +1,8 @@
 package ise.gameoflife;
 
+import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.UnregisterRequest;
@@ -33,8 +35,11 @@ abstract public class AbstractAgent implements Participant
 	 * The DataModel used by this agent.
 	 */
 	@Element
-	protected AgentDataModel dm;
-
+	private AgentDataModel dm;
+	/**
+	 * The authorisation code for use with sexy things like the environment
+	 */
+	private UUID authCode;
 	protected EnvironmentConnector ec;
 
 	/**
@@ -63,7 +68,7 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	@Override
-	public ArrayList<String> getRoles()
+	public final ArrayList<String> getRoles()
 	{
 		return dm.getRoles();
 	}
@@ -76,30 +81,35 @@ abstract public class AbstractAgent implements Participant
 
 		ec = (EnvConnector)environmentConnector;
 		dm.initialise(ec);
+
+		init();
 	}
 
 	@Override
-	public void onActivation()
+	public final void onActivation()
 	{
 		ENVRegistrationResponse r = ec.register(new RegistrationRequest(dm.getId(), dm.getRoles(), dm.getPublicVersion()));
-		this.dm.environmentAuthCode = r.getAuthCode();
+		this.authCode = r.getAuthCode();
 	}
 
 	@Override
-	public void onDeActivation()
+	public final void onDeActivation()
 	{
 		ec.deregister(new UnregisterRequest(dm.getId(), dm.getGroupId()));
 	}
 
 	@Override
-	public void execute()
+	public final void execute()
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		// TODO: Handle any inputs
+		// TODO: Check for turn type
+		Food toHunt = chooseFood();
+
+		ec.act(new Hunt(toHunt), this.getId(), authCode);
 	}
 
 	@Override
-	public void setTime(long cycle)
+	public final void setTime(long cycle)
 	{
 		dm.setTime(cycle);
 	}
@@ -111,7 +121,7 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public PlayerDataModel getInternalDataModel()
 	{
-		return dm;
+		return dm.getPublicVersion();
 	}
 
 	@Override
@@ -133,4 +143,19 @@ abstract public class AbstractAgent implements Participant
 	{
 		// Nothing to see here. Move along, citizen!
 	}
+
+	/**
+	 * Called after the initialising the agent, allowing subclassses to initialise
+	 * any more data. The environment connector etc. will be available.
+	 */
+	abstract protected void init();
+	/**
+	 * Function called to get the Agent to select what king of food it would like
+	 * to hunt. It should use all the other information it has received to inform
+	 * this decision.
+	 * You can get the types of food from {@link #ec this.ec}, which has various
+	 * functions related to determining food properties
+	 * @return The type of food they have decided to hunt
+	 */
+	abstract protected Food chooseFood();
 }

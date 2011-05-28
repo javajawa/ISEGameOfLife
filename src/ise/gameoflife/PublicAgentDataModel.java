@@ -1,10 +1,13 @@
 package ise.gameoflife;
 
+import java.util.ArrayList;
+import presage.PlayerDataModel;
+
 /**
  * The amount of information an Agent can find out about another agent
  * @author Benedict Harcourt
  */
-public final class PublicAgentDataModel
+public final class PublicAgentDataModel implements PlayerDataModel
 {
 	private AgentDataModel source;
 
@@ -29,5 +32,35 @@ public final class PublicAgentDataModel
 	public double getFoodAmount()
 	{
 		return source.getFoodInPossesion();
+	}
+
+	@Override
+	public long getTime()
+	{
+		return source.getTime();
+	}
+
+	@Override
+	public void setTime(long time)
+	{
+		source.setTime(time);
+	}
+
+	@Override
+	public ArrayList<String> getRoles()
+	{
+		return source.getRoles();
+	}
+
+	@Override
+	public void setRoles(ArrayList<String> roles)
+	{
+		source.setRoles(roles);
+	}
+
+	@Override
+	public String getPlayerClass()
+	{
+		return source.getPlayerClass();
 	}
 }
