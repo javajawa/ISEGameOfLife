@@ -1,5 +1,6 @@
 package ise.gameoflife.enviroment;
 
+import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntResult;
@@ -17,6 +18,7 @@ import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
 import presage.environment.messages.ENVRegisterRequest;
 import presage.environment.messages.ENVRegistrationResponse;
+import presage.events.CoreEvents.DeactivateParticipant;
 
 /**
  * The primary environment code for the GameOfLife that we define. This will
@@ -25,7 +27,33 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
-
+/**
+	 * Kills (deActivates) Agents
+	 */
+	public class DeathHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(Death.class));
+		}
+		
+		@Override
+		public Input handle(Action action, String actorID)
+		{
+			sim.deActivateParticipant(actorID);
+			return null;
+		}
+		
+			public DeathHandler()
+		{
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+	
+	/**
+	 * Performs Hunt Action, returns new food total, depending on result of Hunt
+	 */
 	public class HuntHandler implements AbstractEnvironment.ActionHandler
 	{
 
