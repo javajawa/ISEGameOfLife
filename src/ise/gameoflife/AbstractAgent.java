@@ -177,6 +177,15 @@ abstract public class AbstractAgent implements Participant
 			i = msgQ.dequeue();
 		}
 
+		// Output how much food we have.
+		System.out.println("I, " + this.getId() + ", has " + this.dm.getFoodInPossesion() + " units of food remaining");
+
+		if (this.dm.getFoodInPossesion() <= 0)
+		{
+			System.out.println("I, " + this.getId() + ", am out of food");
+			onDeActivation();
+		}
+
 		// TODO: Check for turn type
 		Food toHunt = chooseFood();
 
