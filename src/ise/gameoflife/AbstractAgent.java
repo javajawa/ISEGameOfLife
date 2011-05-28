@@ -38,10 +38,9 @@ abstract public class AbstractAgent implements Participant
 		}
 
 		@Override
-		public boolean handle(Input input)
+		public void handle(Input input)
 		{
 			dm.foodConsumed(dm.getFoodConsumption());
-			return true;
 		}
 		
 		
@@ -57,11 +56,10 @@ abstract public class AbstractAgent implements Participant
 		}
 
 		@Override
-		public boolean handle(Input input)
+		public void handle(Input input)
 		{
 			final HuntResult in = (HuntResult)input;
 			dm.foodAquired(in.getNutritionValue());
-			return true;
 		}
 		
 	}

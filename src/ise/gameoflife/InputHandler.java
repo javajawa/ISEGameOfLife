@@ -9,5 +9,5 @@ import presage.Input;
 interface InputHandler
 {
 	public boolean canHandle(Input input);
-	public boolean handle(Input input);
+	public void handle(Input input);
 }
