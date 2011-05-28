@@ -182,6 +182,7 @@ abstract public class AbstractAgent implements Participant
 		{
 			System.out.println("I, " + this.getId() + ", am out of food");
 			onDeActivation();
+			return;
 		}
 
 		// TODO: Check for turn type
