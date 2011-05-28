@@ -89,25 +89,28 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePerceptions()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// FIXME: Write this function
+		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected void updatePhysicalWorld()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// FIXME: Write this function
+		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected void updateNetwork()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// FIXME: Write this function
+		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public void setTime(long cycle)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		this.dmodel.setTime(cycle);
 	}
 	
 }

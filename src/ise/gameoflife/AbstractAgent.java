@@ -60,6 +60,19 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	/**
+	 * Creates a new agent with the two primary properties
+	 * @param myroles The roles that this agent can perform
+	 * @param randomseed the random seed for this agent
+	 * @param initialFood The initial amount of food
+	 * @param consumption The amount consumed per turn
+	 */
+	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption)
+	{
+		UUID myid = UUID.randomUUID();
+		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass().getCanonicalName(), randomseed, initialFood, consumption);
+	}
+
+	/**
 	 * Returns the String representation of the Agent's UUID, which is used to
 	 * identify the agent in all interactions.
 	 * @see UUID
@@ -113,6 +126,7 @@ abstract public class AbstractAgent implements Participant
 		// TODO: Check for turn type
 		Food toHunt = chooseFood();
 
+		if (toHunt == null) return;
 		ec.act(new Hunt(toHunt), this.getId(), authCode);
 	}
 
