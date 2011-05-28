@@ -2,6 +2,8 @@ package ise.gameoflife;
 
 import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.tokens.RegistrationRequest;
+import ise.gameoflife.tokens.RegistrationResponse;
+import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -9,6 +11,7 @@ import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.PlayerDataModel;
+import presage.environment.messages.ENVRegistrationResponse;
 
 /**
  * Defines the methods that an Agent may use to interact with the modelling
@@ -78,16 +81,14 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public void onActivation()
 	{
-		ec.register(new RegistrationRequest(dm.getId(), dm.getRoles(), dm.getPublicVersion()));
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		ENVRegistrationResponse r = ec.register(new RegistrationRequest(dm.getId(), dm.getRoles(), dm.getPublicVersion()));
+		this.dm.environmentAuthCode = r.getAuthCode();
 	}
 
 	@Override
 	public void onDeActivation()
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		ec.deregister(new UnregisterRequest(dm.getId(), dm.getGroupId()));
 	}
 
 	@Override
@@ -100,8 +101,7 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public void setTime(long cycle)
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		dm.setTime(cycle);
 	}
 
 	/**
@@ -131,7 +131,6 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public void onSimulationComplete()
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		// Nothing to see here. Move along, citizen!
 	}
 }
