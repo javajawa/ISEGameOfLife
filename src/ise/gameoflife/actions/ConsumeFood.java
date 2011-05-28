@@ -8,7 +8,7 @@ import presage.Input;
  * specified by the environment controller
  * @author christopherfonseka
  */
-public class ConsumeFood implements Input
+public class ConsumeFood extends GenericInput
 {
 	
 	private UUID id;
@@ -16,10 +16,12 @@ public class ConsumeFood implements Input
 	/**
 	 * Creates a consume food action which indicates an agent is to consume a food
 	 * of type id, which is determined by the environment controller.
-	 * 
-	 * @param identification 
+	 * @param identification The authentication token of the target agent, to
+	 * verify the senders authenticity
+	 * @param time  
 	 */
-	public ConsumeFood(UUID identification) {
+	public ConsumeFood(UUID identification, long time) {
+		super(time, "consumefood");
 		this.id = identification;
 	}
 	
@@ -32,22 +34,4 @@ public class ConsumeFood implements Input
 		return id;
 	}
 
-	@Override
-	public String getPerformative()
-	{
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public long getTimestamp()
-	{
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	public void setTimestamp(long timestamp)
-	{
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-	
 }
