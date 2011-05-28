@@ -2,6 +2,8 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.AbstractAgent;
 import ise.gameoflife.models.Food;
+import java.util.ArrayList;
+import java.util.List;
 import presage.EnvironmentConnector;
 
 /**
@@ -31,8 +33,18 @@ public class TestAgent extends AbstractAgent
 	@Override
 	protected Food chooseFood()
 	{
-		System.out.println("I, " + this.getId() + ", was asked to choose food");
-		return null;
+		Food bestSoFar = null;
+
+		for (Food noms : ec.availableFoods())
+		{
+			if (noms.getHuntersRequired() <= 1)
+				if (bestSoFar == null) bestSoFar = noms;
+				if (noms.getNutrition() > bestSoFar.getNutrition())
+				{
+					bestSoFar = noms;
+				}
+		}
+		return bestSoFar;
 	}
 
 	@Override
