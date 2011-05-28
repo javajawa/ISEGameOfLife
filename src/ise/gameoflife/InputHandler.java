@@ -18,5 +18,5 @@ interface InputHandler
 	 * @param input
 	 * @return 
 	 */
-	public boolean handle(Input input);
+	public void handle(Input input);
 }
