@@ -1,0 +1,21 @@
+<participantWrapper>
+   <treemap>
+      <entry>
+         <string>190df5e0-c690-4b38-bc2d-012250228376</string>
+         <participant class="ise.gameoflife.agents.TestAgent">
+            <dm>
+               <myId>190df5e0-c690-4b38-bc2d-012250228376</myId>
+               <time>0</time>
+               <roles>
+                  <string>hunter</string>
+               </roles>
+               <playerClass>ise.gameoflife.agents.TestAgent</playerClass>
+               <myrolesString>&lt;hunter&gt;</myrolesString>
+               <randomseed>0</randomseed>
+               <foodInPossesion>20.0</foodInPossesion>
+               <foodConsumption>2.0</foodConsumption>
+            </dm>
+         </participant>
+      </entry>
+   </treemap>
+</participantWrapper>
