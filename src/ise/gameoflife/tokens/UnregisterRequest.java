@@ -9,6 +9,7 @@ import presage.environment.messages.ENVDeRegisterRequest;
  */
 public class UnregisterRequest extends ENVDeRegisterRequest
 {
+	private static final long serialVersionUID = 1L;
 
 	public UnregisterRequest(String id, UUID authCode)
 	{

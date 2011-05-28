@@ -17,6 +17,8 @@ import presage.PlayerDataModel;
  */
 public final class GroupAgent implements Participant
 {
+	private static final long serialVersionUID = 1L;
+
 	@Element
 	private UUID groupId;
 	private EnvConnector ec;
