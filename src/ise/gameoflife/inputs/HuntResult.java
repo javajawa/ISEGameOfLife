@@ -1,12 +1,10 @@
 package ise.gameoflife.inputs;
 
-import java.util.UUID;
-
 /**
  *
  * @author Olly
  */
-public class HuntResult extends GenericInput
+public final class HuntResult extends GenericInput
 {
 	
 	private double nutrition;

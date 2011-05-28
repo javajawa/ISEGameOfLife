@@ -1,15 +1,11 @@
 package ise.gameoflife.inputs;
 
-import ise.gameoflife.inputs.GenericInput;
-import java.util.UUID;
-import presage.Input;
-
 /**
  * Used to initiate an action telling the agent to consume an amount of food
  * specified by the environment controller
  * @author christopherfonseka
  */
-public class ConsumeFood extends GenericInput
+public final class ConsumeFood extends GenericInput
 {
 	
 	/**
