@@ -14,8 +14,6 @@ public class HuntResult extends GenericInput
 	/**
 	 * Creates a new instance of the HuntResult class, which gives the result of a 
 	 * Hunt action.
-	 * @param id THe AuthToken of the target, to autheticate that the sender has
-	 * the right to send this Input
 	 * @param nutrition The amount of food gained in this hunt
 	 * @param time The simulation time at which this result occurred 
 	 */
@@ -25,7 +23,7 @@ public class HuntResult extends GenericInput
 	}
 	/**
 	 * Returns nutrition value of food hunted
-	 * @return 
+	 * @return The nutrition value of food hunted
 	 */
 	public double getNutritionValue(){
 		return nutrition;

@@ -15,9 +15,7 @@ public class ConsumeFood extends GenericInput
 	/**
 	 * Creates a consume food action which indicates an agent is to consume a food
 	 * of type id, which is determined by the environment controller.
-	 * @param identification The authentication token of the target agent, to
-	 * verify the senders authenticity
-	 * @param time  
+	 * @param time The simulation time at which this input occurs
 	 */
 	public ConsumeFood(long time) {
 		super(time, "consumefood");
