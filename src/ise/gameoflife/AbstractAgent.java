@@ -2,6 +2,8 @@ package ise.gameoflife;
 
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -30,12 +32,43 @@ abstract public class AbstractAgent implements Participant
 
 	private class ConsumeFoodHandler implements InputHandler
 	{
-		// FIXME: Write this code
+		@Override
+		public boolean canHandle(Input input){
+			if (input instanceof ConsumeFood)
+				return true;
+			return false;
+		}
+
+		@Override
+		public boolean handle(Input input)
+		{
+			
+			//TODO: Write this code
+			throw new UnsupportedOperationException("Not supported yet.");
+			
+		}
+		
+		
 	}
 
 	private class HuntResultHandler implements InputHandler
 	{
-		// FIXME: Write this code
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			if(input instanceof HuntResult)
+				return true;
+			return false;
+		}
+
+		@Override
+		public boolean handle(Input input)
+		{
+			//TODO: Write this code
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+		
 	}
 
 	/**
