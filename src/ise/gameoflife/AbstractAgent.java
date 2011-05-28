@@ -40,7 +40,12 @@ abstract public class AbstractAgent implements Participant
 	 * The authorisation code for use with sexy things like the environment
 	 */
 	private UUID authCode;
-	protected EnvironmentConnector ec;
+	/**
+	 * Reference to the environment connector, that allows the agent to interact
+	 * with the environment
+	 */
+	protected EnvConnector ec;
+	private EnvironmentConnector tmp_ec;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present
@@ -79,17 +84,20 @@ abstract public class AbstractAgent implements Participant
 		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
 		beenInitalised = true;
 
-		ec = (EnvConnector)environmentConnector;
-		dm.initialise(ec);
-
-		init();
+		System.out.println(environmentConnector.getClass().getCanonicalName());
+		tmp_ec = environmentConnector;
+		dm.initialise(environmentConnector);
+		onInit(environmentConnector);
 	}
 
 	@Override
 	public final void onActivation()
 	{
-		ENVRegistrationResponse r = ec.register(new RegistrationRequest(dm.getId(), dm.getRoles(), dm.getPublicVersion()));
+		RegistrationRequest request = new RegistrationRequest(dm.getId(), dm.getRoles(), dm.getPublicVersion());
+		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
+		this.ec = ((RegistrationResponse)r).getEc();
+		onActivate();
 	}
 
 	@Override
@@ -146,9 +154,12 @@ abstract public class AbstractAgent implements Participant
 
 	/**
 	 * Called after the initialising the agent, allowing subclassses to initialise
-	 * any more data. The environment connector etc. will be available.
+	 * any more data. The primary environment connector will not be available at
+	 * this point, but rather when the agent is activated
+	 * @param ec The <strong>default</strong> environment connector
 	 */
-	abstract protected void init();
+	abstract protected void onInit(EnvironmentConnector ec);
+	abstract protected void onActivate();
 	/**
 	 * Function called to get the Agent to select what king of food it would like
 	 * to hunt. It should use all the other information it has received to inform

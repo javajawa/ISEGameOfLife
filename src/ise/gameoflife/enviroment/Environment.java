@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.Action;
 import presage.EnvDataModel;
+import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Simulation;
 import presage.environment.AbstractEnvironment;
@@ -29,7 +30,7 @@ public class Environment extends AbstractEnvironment
 	}
 	
 	@Element
-	protected EnvironmentDataModel dm;
+	protected EnvironmentDataModel dmodel;
 
 	/**
 	 * A reference to the simulation that we're part of, for the purpose of
@@ -50,21 +51,21 @@ public class Environment extends AbstractEnvironment
 		{
 			return false;
 		}
-		return dm.removeParticipant(deregistrationObject.getParticipantID());
+		return dmodel.removeParticipant(deregistrationObject.getParticipantID());
 	}
 
 	@Override
 	public ENVRegistrationResponse onRegister(ENVRegisterRequest registrationObject)
 	{
 		final RegistrationRequest obj = (RegistrationRequest)registrationObject;
-		if (!dm.registerParticipant(obj)) return null;
-		return new RegistrationResponse(obj.getParticipantID(), UUID.randomUUID());
+		if (!dmodel.registerParticipant(obj)) return null;
+		return new RegistrationResponse(obj.getParticipantID(), UUID.randomUUID(), new EnvConnector(this));
 	}
 
 	@Override
 	public EnvDataModel getDataModel()
 	{
-		return dm;
+		return dmodel;
 	}
 
 	@Override
