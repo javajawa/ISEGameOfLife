@@ -1,5 +1,6 @@
 package ise.gameoflife;
 
+import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.models.Food;
@@ -14,6 +15,7 @@ import presage.Input;
 import presage.Participant;
 import presage.PlayerDataModel;
 import presage.environment.messages.ENVRegistrationResponse;
+import presage.util.InputQueue;
 
 /**
  * Defines the methods that an Agent may use to interact with the modelling
@@ -46,6 +48,8 @@ abstract public class AbstractAgent implements Participant
 	 */
 	protected EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
+
+	private InputQueue msgQ = new InputQueue("inputs");
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present
@@ -123,6 +127,14 @@ abstract public class AbstractAgent implements Participant
 	public final void execute()
 	{
 		// TODO: Handle any inputs
+		Input i;
+		i = msgQ.dequeue();
+		while (i != null)
+		{
+			//TODO: Process message based off message handlers
+			i = msgQ.dequeue();
+		}
+
 		// TODO: Check for turn type
 		Food toHunt = chooseFood();
 
@@ -149,15 +161,16 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void enqueueInput(Input input)
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		this.msgQ.enqueue(input);
 	}
 
 	@Override
 	public final void enqueueInput(ArrayList<Input> input)
 	{
-		// FIXME: Implement this
-		throw new UnsupportedOperationException("Not supported yet.");
+		for (Input in : input)
+		{
+			this.msgQ.enqueue(in);
+		}
 	}
 
 	@Override
