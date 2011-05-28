@@ -127,20 +127,20 @@ abstract public class AbstractAgent implements Participant
 	 * @return The DataModel of this object
 	 */
 	@Override
-	public PlayerDataModel getInternalDataModel()
+	public final PlayerDataModel getInternalDataModel()
 	{
 		return dm.getPublicVersion();
 	}
 
 	@Override
-	public void enqueueInput(Input input)
+	public final void enqueueInput(Input input)
 	{
 		// FIXME: Implement this
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public void enqueueInput(ArrayList<Input> input)
+	public final void enqueueInput(ArrayList<Input> input)
 	{
 		// FIXME: Implement this
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -150,6 +150,16 @@ abstract public class AbstractAgent implements Participant
 	public void onSimulationComplete()
 	{
 		// Nothing to see here. Move along, citizen!
+	}
+
+	/**
+	 * Get the next random number in the sequence as a double uniformly
+	 * distributed between 0 and 1
+	 * @return NExt random number
+	 */
+	public final double uniformRand()
+	{
+		return this.dm.random.nextDouble();
 	}
 
 	/**
