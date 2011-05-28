@@ -1,5 +1,6 @@
 package ise.gameoflife;
 
+import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.inputs.ConsumeFood;
@@ -181,7 +182,7 @@ abstract public class AbstractAgent implements Participant
 		if (this.dm.getFoodInPossesion() <= 0)
 		{
 			System.out.println("I, " + this.getId() + ", am out of food");
-			onDeActivation();
+			ec.act(new Death(), this.getId(), authCode);
 			return;
 		}
 

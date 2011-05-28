@@ -117,12 +117,6 @@ public class Environment extends AbstractEnvironment
 	@Override
 	public boolean deregister(ENVDeRegisterRequest deregistrationObject)
 	{
-		if (sim.isParticipantActive(deregistrationObject.getParticipantID()))
-		{
-			sim.deActivateParticipant(deregistrationObject.getParticipantID());
-			return false;
-		}
-
 		if (!authenticator.get(deregistrationObject.getParticipantID()).equals(deregistrationObject.getParticipantAuthCode()))
 		{
 			return false;
@@ -152,6 +146,7 @@ public class Environment extends AbstractEnvironment
 		this.sim = sim;
 		// TODO: Add message handlers
 		this.actionhandlers.add(new HuntHandler());
+		this.actionhandlers.add(new DeathHandler());
 	}
 
 	@Override
