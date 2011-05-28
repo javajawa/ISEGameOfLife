@@ -58,6 +58,7 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final HuntResult in = (HuntResult)input;
+			System.out.println("I, " + getId() + ", received " + in.getNutritionValue() + " by hunting" + lastHunted.getName());
 			dm.foodAquired(in.getNutritionValue());
 		}
 		
@@ -86,6 +87,8 @@ abstract public class AbstractAgent implements Participant
 
 	private InputQueue msgQ = new InputQueue("inputs");
 	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
+
+	private Food lastHunted = null;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present
@@ -182,7 +185,8 @@ abstract public class AbstractAgent implements Participant
 
 		// TODO: Check for turn type
 		Food toHunt = chooseFood();
-		System.out.println("I, " + this.getId() + ", choose to hunt " + toHunt.getName());
+		System.out.println("I, " + this.getId() + ", choose to hunt " + toHunt.getName() + '(' + toHunt.getId().toString() + ')');
+		lastHunted = toHunt;
 
 		if (toHunt == null) return;
 		ec.act(new Hunt(toHunt), this.getId(), authCode);
