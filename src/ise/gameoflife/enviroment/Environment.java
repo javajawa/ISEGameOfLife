@@ -1,15 +1,15 @@
 package ise.gameoflife.enviroment;
 
-import ise.gameoflife.AbstractAgent;
-import ise.gameoflife.enviroment.actionhandlers.HuntHandler;
+import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.HuntResult;
+import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.Action;
 import presage.EnvDataModel;
-import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
@@ -26,10 +26,39 @@ import presage.environment.messages.ENVRegistrationResponse;
 public class Environment extends AbstractEnvironment
 {
 
-	static public abstract class ActionHandler implements AbstractEnvironment.ActionHandler
+	public class HuntHandler implements AbstractEnvironment.ActionHandler
 	{
-		@Override	abstract public boolean canHandle(Action action);
-		@Override	abstract public Input handle(Action action, String actorID);
+		private Environment en;
+
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (Action.class.equals(Hunt.class));
+		}
+
+		@Override
+		public Input handle(Action action, String actorID)
+		{
+			final Hunt act = (Hunt)action;
+			final Food food = dmodel.getFoodById(act.getFoodTypeId());
+
+			Input result;
+			if (food.getHuntersRequired() <= 1)
+			{
+				result = new HuntResult(food.getNutrition(), dmodel.getTime());
+			}
+			else
+			{
+				result = new HuntResult(0, dmodel.getTime());
+			}
+
+			return result;
+		}
+
+		public HuntHandler(Environment en)
+		{
+			this.en = en;
+		}
 	}
 	
 	@Element
@@ -72,7 +101,9 @@ public class Environment extends AbstractEnvironment
 	{
 		final RegistrationRequest obj = (RegistrationRequest)registrationObject;
 		if (!dmodel.registerParticipant(obj)) return null;
-		return new RegistrationResponse(obj.getParticipantID(), UUID.randomUUID(), new EnvConnector(this));
+		UUID id = UUID.randomUUID();
+		authenticator.put(registrationObject.getParticipantID(), id);
+		return new RegistrationResponse(obj.getParticipantID(), id, new EnvConnector(this));
 	}
 
 	@Override

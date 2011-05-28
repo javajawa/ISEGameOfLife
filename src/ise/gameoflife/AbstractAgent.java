@@ -1,6 +1,5 @@
 package ise.gameoflife;
 
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.models.Food;
