@@ -39,4 +39,22 @@ public class HuntResult implements Input
 	public UUID getHuntResultUUID(){
 		return HuntResult;
 	}
+
+	@Override
+	public String getPerformative()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public long getTimestamp()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void setTimestamp(long timestamp)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 }
