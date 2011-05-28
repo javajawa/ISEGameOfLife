@@ -43,7 +43,6 @@ abstract public class AbstractAgent implements Participant
 			dm.foodConsumed(dm.getFoodConsumption());
 		}
 		
-		
 	}
 
 	private class HuntResultHandler implements InputHandler
@@ -167,12 +166,9 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void execute()
 	{
-		Input i;
-		i = msgQ.dequeue();
-		while (i != null)
+		while (!msgQ.isEmpty())
 		{
-			handleInput(i);
-			i = msgQ.dequeue();
+			handleInput(msgQ.dequeue());
 		}
 
 		// Output how much food we have.
