@@ -98,7 +98,7 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePhysicalWorld()
 	{
-		for (Participant agent : sim.players)
+		for (Participant agent : sim.players.values())
 		{
 			if (sim.isParticipantActive(agent.getId()))
 			{
