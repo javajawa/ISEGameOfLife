@@ -28,6 +28,17 @@ import presage.util.InputQueue;
  */
 abstract public class AbstractAgent implements Participant
 {
+
+	private class ConsumeFoodHandler implements InputHandler
+	{
+		// FIXME: Write this code
+	}
+
+	private class HuntResultHandler implements InputHandler
+	{
+		// FIXME: Write this code
+	}
+
 	/**
 	 * Flag to show whether the initialise function has been called
 	 */
