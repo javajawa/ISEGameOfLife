@@ -104,7 +104,7 @@ public class AgentDataModel extends APlayerDataModel
 	/**
 	 * @param consumed reduces the foodInPossesion by a given amount
 	 */
-	public void foodConsumed(int consumed)
+	public void foodConsumed(double consumed)
 	{
 		this.foodInPossesion -= consumed;
 	}
@@ -112,7 +112,7 @@ public class AgentDataModel extends APlayerDataModel
 	/**
 	 * @param acquired increases food inventory by given amount
 	 */
-	public void foodAquired(int acquired)
+	public void foodAquired(double acquired)
 	{
 		this.foodInPossesion += acquired;
 	}

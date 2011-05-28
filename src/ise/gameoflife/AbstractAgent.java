@@ -34,18 +34,14 @@ abstract public class AbstractAgent implements Participant
 	{
 		@Override
 		public boolean canHandle(Input input){
-			if (input instanceof ConsumeFood)
-				return true;
-			return false;
+			return (input instanceof ConsumeFood);
 		}
 
 		@Override
 		public boolean handle(Input input)
 		{
-			
-			//TODO: Write this code
-			throw new UnsupportedOperationException("Not supported yet.");
-			
+			dm.foodConsumed(dm.getFoodConsumption());
+			return true;
 		}
 		
 		
@@ -57,16 +53,15 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public boolean canHandle(Input input)
 		{
-			if(input instanceof HuntResult)
-				return true;
-			return false;
+			return (input instanceof HuntResult);
 		}
 
 		@Override
 		public boolean handle(Input input)
 		{
-			//TODO: Write this code
-			throw new UnsupportedOperationException("Not supported yet.");
+			final HuntResult in = (HuntResult)input;
+			dm.foodAquired(in.getNutritionValue());
+			return true;
 		}
 		
 	}
