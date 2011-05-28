@@ -40,6 +40,7 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
+			System.out.println("I, " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
 			dm.foodConsumed(dm.getFoodConsumption());
 		}
 		
