@@ -2,6 +2,8 @@ package ise.gameoflife;
 
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -30,12 +32,36 @@ abstract public class AbstractAgent implements Participant
 
 	private class ConsumeFoodHandler implements InputHandler
 	{
-		// FIXME: Write this code
+		@Override
+		public boolean canHandle(Input input){
+			return (input instanceof ConsumeFood);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			dm.foodConsumed(dm.getFoodConsumption());
+		}
+		
+		
 	}
 
 	private class HuntResultHandler implements InputHandler
 	{
-		// FIXME: Write this code
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof HuntResult);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final HuntResult in = (HuntResult)input;
+			dm.foodAquired(in.getNutritionValue());
+		}
+		
 	}
 
 	/**
@@ -60,6 +86,7 @@ abstract public class AbstractAgent implements Participant
 	private EnvironmentConnector tmp_ec;
 
 	private InputQueue msgQ = new InputQueue("inputs");
+	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present
@@ -114,6 +141,10 @@ abstract public class AbstractAgent implements Participant
 		System.out.println(environmentConnector.getClass().getCanonicalName());
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
+
+		this.handlers.add(new ConsumeFoodHandler());
+		this.handlers.add(new HuntResultHandler());
+
 		onInit(environmentConnector);
 	}
 
@@ -136,13 +167,21 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void execute()
 	{
-		// TODO: Handle any inputs
 		Input i;
 		i = msgQ.dequeue();
 		while (i != null)
 		{
-			//TODO: Process message based off message handlers
+			handleInput(i);
 			i = msgQ.dequeue();
+		}
+
+		// Output how much food we have.
+		System.out.println("I, " + this.getId() + ", has " + this.dm.getFoodInPossesion() + " units of food remaining");
+
+		if (this.dm.getFoodInPossesion() <= 0)
+		{
+			System.out.println("I, " + this.getId() + ", am out of food");
+			onDeActivation();
 		}
 
 		// TODO: Check for turn type
@@ -150,6 +189,14 @@ abstract public class AbstractAgent implements Participant
 
 		if (toHunt == null) return;
 		ec.act(new Hunt(toHunt), this.getId(), authCode);
+	}
+
+	private void handleInput(Input i)
+	{
+		for (InputHandler inputHandler : handlers)
+		{
+			if (inputHandler.canHandle(i)) inputHandler.handle(i);
+		}
 	}
 
 	@Override
