@@ -3,6 +3,7 @@ package ise.gameoflife.enviroment;
 import ise.gameoflife.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.participants.GroupDataModel;
+import java.util.Set;
 import java.util.UUID;
 import presage.EnvironmentConnector;
 
@@ -49,5 +50,10 @@ public class EnvConnector extends EnvironmentConnector
 	public PublicAgentDataModel getAgentById(String id)
 	{
 		return dm.getAgentById(id);
+	}
+
+	public Set<Food> availableFoods()
+	{
+		return dm.availableFoods();
 	}
 }

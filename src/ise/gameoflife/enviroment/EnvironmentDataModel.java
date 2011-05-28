@@ -5,7 +5,9 @@ import ise.gameoflife.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.participants.GroupDataModel;
 import ise.gameoflife.tokens.RegistrationRequest;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -54,8 +56,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public Set<Food> availableFoods()
 	{
-		// TODO: Implement this
-		throw new UnsupportedOperationException("Not yet implemented");
+		return Collections.unmodifiableSet(new HashSet<Food>(availableFoodTypes.values()));
 	}
 
 	public Food getFoodById(UUID id)
