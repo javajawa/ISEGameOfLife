@@ -1,5 +1,6 @@
-package ise.gameoflife.actions;
+package ise.gameoflife.inputs;
 
+import java.util.UUID;
 import presage.Input;
 
 /**
@@ -8,7 +9,7 @@ import presage.Input;
  * FIXME: Document this
  * @author Benedict Harcourt
  */
-abstract public class GenericInput implements Input
+abstract class GenericInput implements Input
 {
 	protected long timestamp;
 	protected String performative;

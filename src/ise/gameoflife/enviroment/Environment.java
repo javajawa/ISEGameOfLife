@@ -2,6 +2,7 @@ package ise.gameoflife.enviroment;
 
 import ise.gameoflife.AbstractAgent;
 import ise.gameoflife.enviroment.actionhandlers.HuntHandler;
+import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import java.util.UUID;
@@ -104,8 +105,7 @@ public class Environment extends AbstractEnvironment
 			{
 				if (agent instanceof ise.gameoflife.AbstractAgent)
 				{
-					// TODO: Put a consume food result here when this is complete
-					agent.enqueueInput((Input)null);
+					agent.enqueueInput(new ConsumeFood(dmodel.getTime()));
 				}
 			}
 		}
