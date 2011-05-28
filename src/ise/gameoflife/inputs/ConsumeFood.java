@@ -1,5 +1,6 @@
-package ise.gameoflife.actions;
+package ise.gameoflife.inputs;
 
+import ise.gameoflife.inputs.GenericInput;
 import java.util.UUID;
 import presage.Input;
 
@@ -11,8 +12,6 @@ import presage.Input;
 public class ConsumeFood extends GenericInput
 {
 	
-	private UUID id;
-	
 	/**
 	 * Creates a consume food action which indicates an agent is to consume a food
 	 * of type id, which is determined by the environment controller.
@@ -21,17 +20,7 @@ public class ConsumeFood extends GenericInput
 	 * @param time  
 	 */
 	public ConsumeFood(UUID identification, long time) {
-		super(time, "consumefood");
-		this.id = identification;
-	}
-	
-	/**
-	 * Returns the UUID of of the food to be consumed
-	 * @return 
-	 */
-	public UUID getId()
-	{
-		return id;
+		super(identification, time, "consumefood");
 	}
 
 }

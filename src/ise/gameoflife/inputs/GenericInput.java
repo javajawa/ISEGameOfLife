@@ -1,5 +1,6 @@
-package ise.gameoflife.actions;
+package ise.gameoflife.inputs;
 
+import java.util.UUID;
 import presage.Input;
 
 /**
@@ -8,13 +9,15 @@ import presage.Input;
  * FIXME: Document this
  * @author Benedict Harcourt
  */
-abstract public class GenericInput implements Input
+abstract class GenericInput implements Input
 {
 	protected long timestamp;
 	protected String performative;
+	protected UUID token;
 
-	public GenericInput(long timestamp, String performative)
+	public GenericInput(UUID token, long timestamp, String performative)
 	{
+		this.token = token;
 		this.timestamp = timestamp;
 		this.performative = performative;
 	}
@@ -32,6 +35,16 @@ abstract public class GenericInput implements Input
 	public String getPerformative()
 	{
 		return performative;
+	}
+
+	/**
+	 * Returns UUID of the hunt result
+	 * used as token to enable message passing
+	 * @return
+	 */
+	public UUID getToken()
+	{
+		return token;
 	}
 	
 }
