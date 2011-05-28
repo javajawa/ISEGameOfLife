@@ -31,7 +31,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 * List of all the available food types in the environment
 	 */
 	@ElementMap
-	private HashMap<UUID, Food> availableFoodTypes;
+	private HashMap<String, Food> availableFoodTypes;
 	/**
 	 * List of all the groups in the environment
 	 */
@@ -48,7 +48,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super();
 	}
 
-	public EnvironmentDataModel(String environmentname, HashMap<UUID, Food> availableFoodTypes)
+	public EnvironmentDataModel(String environmentname, HashMap<String, Food> availableFoodTypes)
 	{
 		super(environmentname, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
@@ -61,7 +61,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public Food getFoodById(UUID id)
 	{
-		return availableFoodTypes.get(id);
+		return availableFoodTypes.get(id.toString());
 	}
 
 	public GroupDataModel getGroupById(UUID id)
