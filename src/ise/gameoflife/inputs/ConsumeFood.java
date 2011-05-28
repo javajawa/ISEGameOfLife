@@ -19,8 +19,8 @@ public class ConsumeFood extends GenericInput
 	 * verify the senders authenticity
 	 * @param time  
 	 */
-	public ConsumeFood(UUID identification, long time) {
-		super(identification, time, "consumefood");
+	public ConsumeFood(long time) {
+		super(time, "consumefood");
 	}
 
 }

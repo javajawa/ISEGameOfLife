@@ -19,8 +19,8 @@ public class HuntResult extends GenericInput
 	 * @param nutrition The amount of food gained in this hunt
 	 * @param time The simulation time at which this result occurred 
 	 */
-	public HuntResult(UUID id, double nutrition, long time){
-		super(id, time, "huntresult:" + nutrition);
+	public HuntResult(double nutrition, long time){
+		super(time, "huntresult:" + nutrition);
 		this.nutrition = nutrition;
 	}
 	/**

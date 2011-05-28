@@ -13,11 +13,9 @@ abstract class GenericInput implements Input
 {
 	protected long timestamp;
 	protected String performative;
-	protected UUID token;
 
-	public GenericInput(UUID token, long timestamp, String performative)
+	public GenericInput(long timestamp, String performative)
 	{
-		this.token = token;
 		this.timestamp = timestamp;
 		this.performative = performative;
 	}
@@ -35,16 +33,6 @@ abstract class GenericInput implements Input
 	public String getPerformative()
 	{
 		return performative;
-	}
-
-	/**
-	 * Returns UUID of the hunt result
-	 * used as token to enable message passing
-	 * @return
-	 */
-	public UUID getToken()
-	{
-		return token;
 	}
 	
 }
