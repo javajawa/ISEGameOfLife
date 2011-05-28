@@ -1,10 +1,13 @@
 package ise.gameoflife.enviroment;
 
+import ise.gameoflife.enviroment.actionhandlers.HuntHandler;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
+import presage.Action;
 import presage.EnvDataModel;
+import presage.Input;
 import presage.Simulation;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
@@ -19,9 +22,21 @@ import presage.environment.messages.ENVRegistrationResponse;
 public class Environment extends AbstractEnvironment
 {
 
+	static public abstract class ActionHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override	abstract public boolean canHandle(Action action);
+		@Override	abstract public Input handle(Action action, String actorID);
+	}
+	
 	@Element
 	protected EnvironmentDataModel dm;
 
+	/**
+	 * A reference to the simulation that we're part of, for the purpose of
+	 * adding participants etc.
+	 */
+	protected Simulation sim;
+	
 	@Deprecated
 	public Environment()
 	{
@@ -55,7 +70,9 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void onInitialise(Simulation sim)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		this.sim = sim;
+		// TODO: Add message handlers
+		this.actionhandlers.add(new HuntHandler(this));
 	}
 
 	@Override
