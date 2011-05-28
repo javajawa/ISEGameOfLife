@@ -1,5 +1,6 @@
 package ise.gameoflife.tokens;
 
+import ise.gameoflife.enviroment.EnvConnector;
 import java.util.UUID;
 import presage.environment.messages.ENVRegistrationResponse;
 
@@ -10,10 +11,13 @@ import presage.environment.messages.ENVRegistrationResponse;
 public class RegistrationResponse extends ENVRegistrationResponse
 {
 	private static final long serialVersionUID = 1L;
+	
+	protected EnvConnector ec;
 
-	public RegistrationResponse(String id, UUID authCode)
+	public RegistrationResponse(String id, UUID authCode, EnvConnector ec)
 	{
 		super(id, authCode);
+		this.ec = ec;
 	}
 
 	@Override
@@ -28,4 +32,8 @@ public class RegistrationResponse extends ENVRegistrationResponse
 		return super.getAuthCode();
 	}
 
+	public EnvConnector getEc()
+	{
+		return ec;
+	}
 }

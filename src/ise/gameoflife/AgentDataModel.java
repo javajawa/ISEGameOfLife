@@ -35,7 +35,7 @@ public class AgentDataModel extends APlayerDataModel
 	 * Field that holds the id of {@link #group}
 	 * Will be null if {@link #group} is null
 	 */
-	@Element
+	@Element(required=false)
 	private UUID groupId;
 
 	/**
@@ -56,8 +56,9 @@ public class AgentDataModel extends APlayerDataModel
 	 * @param foodConsumption Food consumed per turn
 	 */
 	@SuppressWarnings("deprecation")
-	public AgentDataModel(double foodInPossesion, double foodConsumption)
+	public AgentDataModel(String myId, String roles, String playerClass, long randomseed, double foodInPossesion, double foodConsumption)
 	{
+		super(myId, roles, playerClass, randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
 	}
@@ -135,6 +136,6 @@ public class AgentDataModel extends APlayerDataModel
 	@Override
 	public void onInitialise()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// TODO: Do things here :)
 	}
 }

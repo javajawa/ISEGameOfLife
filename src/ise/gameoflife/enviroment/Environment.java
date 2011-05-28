@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.Action;
 import presage.EnvDataModel;
+import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Simulation;
 import presage.environment.AbstractEnvironment;
@@ -29,7 +30,7 @@ public class Environment extends AbstractEnvironment
 	}
 	
 	@Element
-	protected EnvironmentDataModel dm;
+	protected EnvironmentDataModel dmodel;
 
 	/**
 	 * A reference to the simulation that we're part of, for the purpose of
@@ -43,6 +44,16 @@ public class Environment extends AbstractEnvironment
 		super();
 	}
 	
+	@presage.annotations.EnvironmentConstructor( { "queueactions",
+			"randomseed", "dmodel" })
+	public Environment(boolean queueactions, long randomseed,
+			EnvironmentDataModel dmodel) {
+		super(queueactions, randomseed);
+
+		// Separation of data from code!
+		this.dmodel = dmodel;
+	}
+
 	@Override
 	public boolean deregister(ENVDeRegisterRequest deregistrationObject)
 	{
@@ -50,21 +61,21 @@ public class Environment extends AbstractEnvironment
 		{
 			return false;
 		}
-		return dm.removeParticipant(deregistrationObject.getParticipantID());
+		return dmodel.removeParticipant(deregistrationObject.getParticipantID());
 	}
 
 	@Override
 	public ENVRegistrationResponse onRegister(ENVRegisterRequest registrationObject)
 	{
 		final RegistrationRequest obj = (RegistrationRequest)registrationObject;
-		if (!dm.registerParticipant(obj)) return null;
-		return new RegistrationResponse(obj.getParticipantID(), UUID.randomUUID());
+		if (!dmodel.registerParticipant(obj)) return null;
+		return new RegistrationResponse(obj.getParticipantID(), UUID.randomUUID(), new EnvConnector(this));
 	}
 
 	@Override
 	public EnvDataModel getDataModel()
 	{
-		return dm;
+		return dmodel;
 	}
 
 	@Override
@@ -78,25 +89,28 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePerceptions()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// FIXME: Write this function
+		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected void updatePhysicalWorld()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// FIXME: Write this function
+		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected void updateNetwork()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// FIXME: Write this function
+		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public void setTime(long cycle)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		this.dmodel.setTime(cycle);
 	}
 	
 }

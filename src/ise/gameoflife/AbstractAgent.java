@@ -40,7 +40,12 @@ abstract public class AbstractAgent implements Participant
 	 * The authorisation code for use with sexy things like the environment
 	 */
 	private UUID authCode;
-	protected EnvironmentConnector ec;
+	/**
+	 * Reference to the environment connector, that allows the agent to interact
+	 * with the environment
+	 */
+	protected EnvConnector ec;
+	private EnvironmentConnector tmp_ec;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present
@@ -52,6 +57,19 @@ abstract public class AbstractAgent implements Participant
 	public AbstractAgent()
 	{
 		super();
+	}
+
+	/**
+	 * Creates a new agent with the two primary properties
+	 * @param myroles The roles that this agent can perform
+	 * @param randomseed the random seed for this agent
+	 * @param initialFood The initial amount of food
+	 * @param consumption The amount consumed per turn
+	 */
+	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption)
+	{
+		UUID myid = UUID.randomUUID();
+		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass().getCanonicalName(), randomseed, initialFood, consumption);
 	}
 
 	/**
@@ -79,17 +97,20 @@ abstract public class AbstractAgent implements Participant
 		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
 		beenInitalised = true;
 
-		ec = (EnvConnector)environmentConnector;
-		dm.initialise(ec);
-
-		init();
+		System.out.println(environmentConnector.getClass().getCanonicalName());
+		tmp_ec = environmentConnector;
+		dm.initialise(environmentConnector);
+		onInit(environmentConnector);
 	}
 
 	@Override
 	public final void onActivation()
 	{
-		ENVRegistrationResponse r = ec.register(new RegistrationRequest(dm.getId(), dm.getRoles(), dm.getPublicVersion()));
+		RegistrationRequest request = new RegistrationRequest(dm.getId(), dm.getRoles(), dm.getPublicVersion());
+		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
+		this.ec = ((RegistrationResponse)r).getEc();
+		onActivate();
 	}
 
 	@Override
@@ -105,6 +126,7 @@ abstract public class AbstractAgent implements Participant
 		// TODO: Check for turn type
 		Food toHunt = chooseFood();
 
+		if (toHunt == null) return;
 		ec.act(new Hunt(toHunt), this.getId(), authCode);
 	}
 
@@ -119,20 +141,20 @@ abstract public class AbstractAgent implements Participant
 	 * @return The DataModel of this object
 	 */
 	@Override
-	public PlayerDataModel getInternalDataModel()
+	public final PlayerDataModel getInternalDataModel()
 	{
 		return dm.getPublicVersion();
 	}
 
 	@Override
-	public void enqueueInput(Input input)
+	public final void enqueueInput(Input input)
 	{
 		// FIXME: Implement this
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public void enqueueInput(ArrayList<Input> input)
+	public final void enqueueInput(ArrayList<Input> input)
 	{
 		// FIXME: Implement this
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -145,10 +167,23 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	/**
-	 * Called after the initialising the agent, allowing subclassses to initialise
-	 * any more data. The environment connector etc. will be available.
+	 * Get the next random number in the sequence as a double uniformly
+	 * distributed between 0 and 1
+	 * @return NExt random number
 	 */
-	abstract protected void init();
+	public final double uniformRand()
+	{
+		return this.dm.random.nextDouble();
+	}
+
+	/**
+	 * Called after the initialising the agent, allowing subclassses to initialise
+	 * any more data. The primary environment connector will not be available at
+	 * this point, but rather when the agent is activated
+	 * @param ec The <strong>default</strong> environment connector
+	 */
+	abstract protected void onInit(EnvironmentConnector ec);
+	abstract protected void onActivate();
 	/**
 	 * Function called to get the Agent to select what king of food it would like
 	 * to hunt. It should use all the other information it has received to inform

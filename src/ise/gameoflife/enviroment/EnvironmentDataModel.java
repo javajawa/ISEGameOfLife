@@ -6,6 +6,7 @@ import ise.gameoflife.models.Food;
 import ise.gameoflife.participants.GroupDataModel;
 import ise.gameoflife.tokens.RegistrationRequest;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import org.simpleframework.xml.ElementMap;
@@ -23,7 +24,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 * A sorted list/map of all the state of all players in the game
 	 */
 	@ElementMap(keyType = String.class, valueType = AgentDataModel.class)
-	private TreeMap<String, PublicAgentDataModel> agents;
+	private TreeMap<String, PublicAgentDataModel> agents = new TreeMap<String, PublicAgentDataModel>();
 	/**
 	 * List of all the available food types in the environment
 	 */
@@ -32,8 +33,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 	/**
 	 * List of all the groups in the environment
 	 */
-	@ElementMap
-	private HashMap<UUID, GroupDataModel> agentGroups;
+//	@ElementMap
+//	private HashMap<UUID, GroupDataModel> agentGroups;
 
 	/**
 	 * Serialisable no-arg constructor, do not use
@@ -45,6 +46,18 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super();
 	}
 
+	public EnvironmentDataModel(String environmentname, HashMap<UUID, Food> availableFoodTypes)
+	{
+		super(environmentname, "ISE Game of Life Enviroment Data Model", 0);
+		this.availableFoodTypes = availableFoodTypes;
+	}
+
+	public Set<Food> availableFoods()
+	{
+		// TODO: Implement this
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+
 	public Food getFoodById(UUID id)
 	{
 		return availableFoodTypes.get(id);
@@ -52,7 +65,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public GroupDataModel getGroupById(UUID id)
 	{
-		return agentGroups.get(id);
+		return null; // agentGroups.get(id);
 	}
 
 	public PublicAgentDataModel getAgentById(String id)

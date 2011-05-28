@@ -1,0 +1,21 @@
+<environment>
+   <queueactions>true</queueactions>
+   <randomseed>0</randomseed>
+   <dmodel>
+      <environmentname>Single Certain Death</environmentname>
+      <envClass>ISE Game of Life Enviroment Data Model</envClass>
+      <time>0</time>
+      <agents/>
+      <availableFoodTypes>
+         <entry>
+            <UUID/>
+            <food>
+               <id_string>59f5dd87-1889-45f0-8af9-838ccedb3ca9</id_string>
+               <name>rabbit</name>
+               <nutrition>1.0</nutrition>
+               <huntersRequired>1</huntersRequired>
+            </food>
+         </entry>
+      </availableFoodTypes>
+   </dmodel>
+</environment>
