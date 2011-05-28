@@ -3,7 +3,7 @@ package ise.gameoflife.enviroment;
 import ise.gameoflife.AgentDataModel;
 import ise.gameoflife.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.models.Group;
+import ise.gameoflife.participants.GroupDataModel;
 import ise.gameoflife.tokens.RegistrationRequest;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -33,7 +33,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 * List of all the groups in the environment
 	 */
 	@ElementMap
-	private HashMap<UUID, Group> agentGroups;
+	private HashMap<UUID, GroupDataModel> agentGroups;
 
 	/**
 	 * Serialisable no-arg constructor, do not use
@@ -50,7 +50,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		return availableFoodTypes.get(id);
 	}
 
-	public Group getGroupById(UUID id)
+	public GroupDataModel getGroupById(UUID id)
 	{
 		return agentGroups.get(id);
 	}

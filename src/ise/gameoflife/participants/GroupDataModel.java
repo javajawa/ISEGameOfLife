@@ -1,4 +1,4 @@
-package ise.gameoflife.models;
+package ise.gameoflife.participants;
 
 import ise.gameoflife.AbstractAgent;
 import java.io.Serializable;
@@ -11,7 +11,7 @@ import org.simpleframework.xml.ElementList;
  * Stub for groups
  * @author Olly
  */
-public class Group implements Serializable
+public class GroupDataModel implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -21,25 +21,25 @@ public class Group implements Serializable
 	@Element
 	protected UUID groupID;
 	/**
-	 * Identity of Group Leader
+	 * Identity of GroupDataModel Leader
 	 */
 	@Element
 	protected String leader;
 	/**
-	 * Array list of Group members
+	 * Array list of GroupDataModel members
 	 */
 	@ElementList
 	protected ArrayList<String>  memberList;
 
 	/**
-	 * Adds a specific Agent to a Group
+	 * Adds a specific Agent to a GroupDataModel
 	 * @param agent The agent to add to the group
 	 */
 	protected	void addAgentToGroup(AbstractAgent agent){
 		memberList.add(agent.getId());
 	}
 	/**
-	 * Removes specific Agent from a Group if Agent is member of that group
+	 * Removes specific Agent from a GroupDataModel if Agent is member of that group
 	 * Returns false if Agent was not member of the group.
 	 * @param agent The agent to remove from the group
 	 * @return Whether an agent was removed
