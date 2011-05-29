@@ -1,10 +1,10 @@
 <participantWrapper>
    <treemap>
       <entry>
-         <string>43fa3bfe-ec68-4322-9339-98748b3befd2</string>
+         <string>c599a24c-4b04-44f2-8bee-be23cca47ffd</string>
          <participant class="ise.gameoflife.agents.TestAgent">
             <dm>
-               <myId>43fa3bfe-ec68-4322-9339-98748b3befd2</myId>
+               <myId>c599a24c-4b04-44f2-8bee-be23cca47ffd</myId>
                <time>0</time>
                <roles>
                   <string>hunter</string>

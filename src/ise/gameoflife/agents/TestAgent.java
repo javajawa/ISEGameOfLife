@@ -30,7 +30,8 @@ public class TestAgent extends AbstractAgent
 		super("<hunter>", 0, initialFood, consumption);
 	}
 /**
-	 * TODO: Document me!
+	 * Uses the user's magically specified heuristics to determine which food type
+	 * the player wishes to hunt for. 
 	 * @return 
 	 */
 	@Override

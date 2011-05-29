@@ -3,9 +3,9 @@
       <scriptedEvent>
          <executiontime>-1</executiontime>
          <event class="presage.events.CoreEvents$ActivateParticipant">
-            <participantname>43fa3bfe-ec68-4322-9339-98748b3befd2</participantname>
+            <participantname>c599a24c-4b04-44f2-8bee-be23cca47ffd</participantname>
          </event>
-         <uuidstring>e210f635-267b-4ade-8f2c-44e214ac5dc4</uuidstring>
+         <uuidstring>ad0f0a9d-1fb2-457d-9565-967bb3c77f36</uuidstring>
       </scriptedEvent>
    </events>
    <preevents/>
