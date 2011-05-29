@@ -1,0 +1,13 @@
+<eventScriptManager>
+   <events>
+      <scriptedEvent>
+         <executiontime>-1</executiontime>
+         <event class="presage.events.CoreEvents$ActivateParticipant">
+            <participantname>faef1a14-09a5-4f57-9a59-ca7c2895feac</participantname>
+         </event>
+         <uuidstring>857b0ef2-416e-41b1-b2c6-0e223b43a354</uuidstring>
+      </scriptedEvent>
+   </events>
+   <preevents/>
+   <postevents/>
+</eventScriptManager>

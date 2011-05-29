@@ -1,0 +1,13 @@
+<presageConfig>
+   <comment>Simple Test of 1 agent consuming food until death</comment>
+   <outputfolder>tempoutput</outputfolder>
+   <iterations>25</iterations>
+   <randomseed>0</randomseed>
+   <threaddelay>1</threaddelay>
+   <autorun>false</autorun>
+   <participantsconfigpath>/Users/christopherfonseka/Dropbox/Coding/GIT Repos/ISEGameOfLife/simulations/singleagent/participants.xml</participantsconfigpath>
+   <pluginsconfigpath>/Users/christopherfonseka/Dropbox/Coding/GIT Repos/ISEGameOfLife/simulations/singleagent/plugins.xml</pluginsconfigpath>
+   <eventscriptconfigpath>/Users/christopherfonseka/Dropbox/Coding/GIT Repos/ISEGameOfLife/simulations/singleagent/methods.xml</eventscriptconfigpath>
+   <environmentclass>ise.gameoflife.enviroment.Environment</environmentclass>
+   <environmentconfigpath>/Users/christopherfonseka/Dropbox/Coding/GIT Repos/ISEGameOfLife/simulations/singleagent/environment.xml</environmentconfigpath>
+</presageConfig>

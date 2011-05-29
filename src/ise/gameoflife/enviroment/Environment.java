@@ -42,6 +42,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID)
 		{
 			sim.deActivateParticipant(actorID);
+			System.out.println("I, " + actorID + ", has died. Goodbye.");
 			return null;
 		}
 		
