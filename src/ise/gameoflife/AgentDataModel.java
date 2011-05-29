@@ -50,7 +50,7 @@ public class AgentDataModel extends APlayerDataModel
 	}
 	
 	/**
-	 * Creates a new agent, with a given amount of initial food, 
+	 * Creates a new agent with a given amount of initial food 
 	 * and the amount of food they consume per turn
 	 * @param foodInPossesion Initial amount of food
 	 * @param foodConsumption Food consumed per turn
@@ -94,7 +94,7 @@ public class AgentDataModel extends APlayerDataModel
 
 	/**
 	 * Returns the amount of food consumed per turn by this Agent
-	 * @return The amount of food consumed per turn by this Agent
+	 * @return
 	 */
 	public double getFoodConsumption()
 	{

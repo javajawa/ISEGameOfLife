@@ -13,7 +13,7 @@ import presage.PlayerDataModel;
 
 /**
  *
- * @author benedict
+ * @author Benedict
  */
 public final class GroupAgent implements Participant
 {

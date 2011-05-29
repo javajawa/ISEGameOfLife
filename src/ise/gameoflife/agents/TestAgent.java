@@ -29,7 +29,10 @@ public class TestAgent extends AbstractAgent
 	{
 		super("<hunter>", 0, initialFood, consumption);
 	}
-
+/**
+	 * TODO: Document me!
+	 * @return 
+	 */
 	@Override
 	protected Food chooseFood()
 	{

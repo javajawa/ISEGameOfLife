@@ -22,7 +22,7 @@ import presage.events.CoreEvents.DeactivateParticipant;
 
 /**
  * The primary environment code for the GameOfLife that we define. This will
- * contain a list of all the groups, food etc. etc. that exist in
+ * contain a list of all the groups, food etc. etc. that exist in the world.
  * @author Benedict Harcourt
  */
 public class Environment extends AbstractEnvironment
@@ -42,7 +42,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID)
 		{
 			sim.deActivateParticipant(actorID);
-			System.out.println("I, " + actorID + ", has died. Goodbye.");
+			System.out.println("I, agent " + actorID + ", have died. So long and thanks for all the fish.");
 			return null;
 		}
 		

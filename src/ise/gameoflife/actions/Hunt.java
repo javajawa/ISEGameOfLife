@@ -16,7 +16,7 @@ public final class Hunt implements Action, Serializable
 	private final UUID foodType;
 	
 	/**
-	 * Creates a new hunt action, which indicated that an agent if going to hunt
+	 * Creates a new hunt action, which indicates that an agent is going to hunt
 	 * a particular type of food
 	 * @param type 
 	 */

@@ -21,10 +21,10 @@ import presage.util.InputQueue;
 
 /**
  * Defines the methods that an Agent may use to interact with the modelling
- * system. Some of the interaction with the model are declared as final to
+ * system. Some of the interactions with the model are declared as final to
  * control the overall interface.
  *
- * All agents which extend this should be in the package
+ * All agents which extend this class should be in the package
  * {@link ise.gameoflife.agents}
  * @author Benedict Harcourt
  */
@@ -41,7 +41,7 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
-			System.out.println("I, " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
+			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
 			dm.foodConsumed(dm.getFoodConsumption());
 		}
 		
@@ -60,7 +60,7 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final HuntResult in = (HuntResult)input;
-			System.out.println("I, " + getId() + ", received " + in.getNutritionValue() + " by hunting" + lastHunted.getName());
+			System.out.println("I, agent " + getId() + ", received " + in.getNutritionValue() + " by hunting" + lastHunted.getName());
 			dm.foodAquired(in.getNutritionValue());
 		}
 		
@@ -93,7 +93,7 @@ abstract public class AbstractAgent implements Participant
 	private Food lastHunted = null;
 
 	/**
-	 * Serialisation requires a public no-argument constructor to be present
+	 * Serialisation requires a public no-argument constructor to be present.
 	 * Using a explictly defined deprecated implementation should stop people
 	 * accidentally calling this function
 	 * @deprecated Not safe due to serialisation usages
@@ -177,18 +177,18 @@ abstract public class AbstractAgent implements Participant
 		}
 
 		// Output how much food we have.
-		System.out.println("I, " + this.getId() + ", has " + this.dm.getFoodInPossesion() + " units of food remaining");
+		System.out.println("I, agent " + this.getId() + ", have " + this.dm.getFoodInPossesion() + " units of food remaining");
 
 		if (this.dm.getFoodInPossesion() <= 0)
 		{
-			System.out.println("I, " + this.getId() + ", am out of food");
+			System.out.println("I, agent " + this.getId() + ", am out of food");
 			ec.act(new Death(), this.getId(), authCode);
 			return;
 		}
 
 		// TODO: Check for turn type
 		Food toHunt = chooseFood();
-		System.out.println("I, " + this.getId() + ", choose to hunt " + toHunt.getName() + '(' + toHunt.getId().toString() + ')');
+		System.out.println("I, agent " + this.getId() + ", choose to hunt " + toHunt.getName() + '(' + toHunt.getId().toString() + ')');
 		lastHunted = toHunt;
 
 		if (toHunt == null) return;
@@ -259,7 +259,7 @@ abstract public class AbstractAgent implements Participant
 	abstract protected void onInit(EnvironmentConnector ec);
 	abstract protected void onActivate();
 	/**
-	 * Function called to get the Agent to select what king of food it would like
+	 * Function called to get the Agent to select what kind of food it would like
 	 * to hunt. It should use all the other information it has received to inform
 	 * this decision.
 	 * You can get the types of food from {@link #ec this.ec}, which has various

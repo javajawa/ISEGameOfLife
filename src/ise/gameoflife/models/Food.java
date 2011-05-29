@@ -18,7 +18,7 @@ public class Food implements Serializable
 	private UUID id;
 	
 	/**
-	 * 
+	 * TODO: Document Me!
 	 */
 	@Element
 	private String id_string;
@@ -34,7 +34,7 @@ public class Food implements Serializable
 	@Element
 	private double nutrition;
 	/**
-	 * Number of agents required to obtain food
+	 * Number of agents required to successfully hunt food
 	 * Extends later into probabilities
 	 */
 	@Element

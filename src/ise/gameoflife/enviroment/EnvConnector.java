@@ -43,7 +43,7 @@ public class EnvConnector extends EnvironmentConnector
 
 	/*
 	 * Gets the agent data object associated with a particular id, which is safe
-	 * for being passed to toher agents without giving them too much information
+	 * for being passed to other agents without giving them too much information
 	 * @param id The id to search for
 	 * @return The agent object, or null if not found
 	 */
