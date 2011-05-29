@@ -5,9 +5,9 @@
    <randomseed>0</randomseed>
    <threaddelay>1</threaddelay>
    <autorun>false</autorun>
-   <participantsconfigpath>/Users/christopherfonseka/Dropbox/Coding/GIT Repos/ISEGameOfLife/simulations/singleagent/participants.xml</participantsconfigpath>
-   <pluginsconfigpath>/Users/christopherfonseka/Dropbox/Coding/GIT Repos/ISEGameOfLife/simulations/singleagent/plugins.xml</pluginsconfigpath>
-   <eventscriptconfigpath>/Users/christopherfonseka/Dropbox/Coding/GIT Repos/ISEGameOfLife/simulations/singleagent/methods.xml</eventscriptconfigpath>
+   <participantsconfigpath>simulations/singleagent/participants.xml</participantsconfigpath>
+   <pluginsconfigpath>simulations/singleagent/plugins.xml</pluginsconfigpath>
+   <eventscriptconfigpath>simulations/singleagent/methods.xml</eventscriptconfigpath>
    <environmentclass>ise.gameoflife.enviroment.Environment</environmentclass>
-   <environmentconfigpath>/Users/christopherfonseka/Dropbox/Coding/GIT Repos/ISEGameOfLife/simulations/singleagent/environment.xml</environmentconfigpath>
+   <environmentconfigpath>simulations/singleagent/environment.xml</environmentconfigpath>
 </presageConfig>
