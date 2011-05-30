@@ -28,7 +28,7 @@ public class DoubleAgent {
 		PresageConfig presageConfig = new PresageConfig();
 
 		// Basic config
-		presageConfig.setComment("Simple Test of 1 agent consuming food until death");
+		presageConfig.setComment("Simple Test of 2 agents consuming food until death");
 		presageConfig.setIterations(25);
 		presageConfig.setRandomSeed(0);
 
@@ -37,7 +37,7 @@ public class DoubleAgent {
 		presageConfig.setAutorun(false);
 
 		// Path configuarations
-		String configPath = new File(System.getProperty("user.dir"), "simulations/singleagent").getAbsolutePath();
+		String configPath = new File(System.getProperty("user.dir"), "simulations/doubleagent").getAbsolutePath();
 		presageConfig.setPluginsConfigPath(configPath + "/plugins.xml");
 		presageConfig.setEventscriptConfigPath(configPath + "/methods.xml");
 		presageConfig.setParticipantsConfigPath(configPath + "/participants.xml");
@@ -46,7 +46,7 @@ public class DoubleAgent {
 		// All the big objects
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 		PluginManager pm = new PluginManager();
-                pm.addPlugin(new LineChartPlugin(presageConfig.getOutPutFolder() + "/percentinfected.png",1900, 1200, 100));
+                pm.addPlugin(new LineChartPlugin(presageConfig.getOutPutFolder() + "/population.png",1900, 1200, 100));
 
 		EventScriptManager ms = new EventScriptManager();
 
