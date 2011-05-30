@@ -27,6 +27,12 @@ public class GroupDataModel extends APlayerDataModel
 	@ElementList
 	protected ArrayList<String>  memberList;
 
+	@Deprecated
+	public GroupDataModel()
+	{
+		super();
+	}
+
 	/**
 	 * Adds a specific Agent to a GroupDataModel
 	 * @param agent The agent to add to the group
