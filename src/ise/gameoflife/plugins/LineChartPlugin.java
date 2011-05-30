@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import java.util.SortedSet;
 import java.util.Iterator;
 import java.io.File;
 
@@ -89,17 +90,9 @@ public class LineChartPlugin extends JPanel implements Plugin {
 		this.updaterate = updaterate;
 	}
 
-	private double getNumPeople(EnvironmentDataModel dm) {
-
-		int n = dm.agents.size();
-		int population = 0;
-		Iterator<String> iterator = dm.agents.keySet().iterator();
-		while (iterator.hasNext()) {
-			if (dm.agents.get(iterator.next()).alive())
-				population++;
-		}
-		System.out.println("population = " + population );
-		return population;
+	private double getNumHunters() {
+                SortedSet<String> participantIdSet = sim.getactiveParticipantIdSet("hunter");
+                return participantIdSet.size();
 	}
 
         @Override
@@ -109,7 +102,7 @@ public class LineChartPlugin extends JPanel implements Plugin {
 		// simply get the environment datamodel
 		dm = (EnvironmentDataModel) sim.getEnvDataModel();
 
-		double population = getNumPeople(dm);
+		double population = getNumHunters();
 
 		synchronized (this) {
 
