@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ise.gameoflife.plugins;
 
 import java.awt.BorderLayout;
@@ -16,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.util.SortedSet;
-import java.util.Iterator;
 import java.io.File;
 
 import org.jfree.chart.ChartFactory;
@@ -183,8 +177,8 @@ public class LineChartPlugin extends JPanel implements Plugin {
 
 		chartPanel = newChart(datatempcopy);
 
-		JLabel label = new JLabel("Graph will update every " + updaterate
-				+ " Simulation cycles, to update now click: ");
+		//JLabel label = new JLabel("Graph will update every " + updaterate
+		//		+ " Simulation cycles, to update now click: ");
 
 		JButton updateButton = new JButton("Update Graph");
 
@@ -194,7 +188,7 @@ public class LineChartPlugin extends JPanel implements Plugin {
 			}
 		});
 
-		control.add(label);
+		//control.add(label);
 		control.add(updateButton);
 
 		this.setLayout(new BorderLayout());
