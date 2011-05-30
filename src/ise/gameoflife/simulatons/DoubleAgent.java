@@ -46,7 +46,7 @@ public class DoubleAgent {
 		// All the big objects
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 		PluginManager pm = new PluginManager();
-                pm.addPlugin(new LineChartPlugin(presageConfig.getOutPutFolder() + "/population.png",1900, 1200, 100));
+                pm.addPlugin(new LineChartPlugin(configPath + "/population.png",1500, 1200));
 
 		EventScriptManager ms = new EventScriptManager();
 

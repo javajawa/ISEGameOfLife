@@ -47,7 +47,7 @@ public class SingleAgent
 		// All the big objects
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 		PluginManager pm = new PluginManager();
-                pm.addPlugin(new LineChartPlugin(presageConfig.getOutPutFolder() + "/percentinfected.png",1900, 1200, 100));
+                pm.addPlugin(new LineChartPlugin(configPath + "/percentinfected.png",1900, 1200));
 
 		EventScriptManager ms = new EventScriptManager();
 

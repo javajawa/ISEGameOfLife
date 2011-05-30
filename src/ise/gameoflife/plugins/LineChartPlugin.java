@@ -53,9 +53,6 @@ public class LineChartPlugin extends JPanel implements Plugin {
 	@Element
 	int outputheight;
 
-	@Element
-	int updaterate;
-
 	String title = "Population";
 
 	String xaxis = "Simulation cycle";
@@ -80,14 +77,13 @@ public class LineChartPlugin extends JPanel implements Plugin {
 		// TODO Auto-generated constructor stub
 	}
 
-	@PluginConstructor( { "outputpath", "outputwidth", "outputheight", "updaterate" })
+	@PluginConstructor( { "outputpath", "outputwidth", "outputheight"})
 	public LineChartPlugin(String outputpath, int outputwidth,
-			int outputheight, int updaterate) {
+			int outputheight) {
 		super();
 		this.outputpath = outputpath;
 		this.outputwidth = outputwidth;
 		this.outputheight = outputheight;
-		this.updaterate = updaterate;
 	}
 
 	private double getNumHunters() {
@@ -97,7 +93,6 @@ public class LineChartPlugin extends JPanel implements Plugin {
 
         @Override
 	public void execute() {
-		// TODO Auto-generated method stub
 
 		// simply get the environment datamodel
 		dm = (EnvironmentDataModel) sim.getEnvDataModel();
@@ -171,24 +166,16 @@ public class LineChartPlugin extends JPanel implements Plugin {
 
         @Override
 	public String getShortLabel() {
-		// TODO Auto-generated method stub
 		return label;
 	}
 
         @Override
 	public void initialise(Simulation sim) {
-		// TODO Auto-generated method stub
 		System.out.println(" -Initialising....");
 
 		this.sim = sim;
 
 		setBackground(Color.GRAY);
-
-		// dmodel = (StaticEnvDataModel) sim.getEnvDataModel();
-
-		// System.out.println("DataModel Obtained");
-
-		// series = new XYSeries("Agent0000");
 
 		data = new XYSeriesCollection();
 
@@ -223,7 +210,6 @@ public class LineChartPlugin extends JPanel implements Plugin {
 
         @Override
 	public void onSimulationComplete() {
-		// TODO Auto-generated method stub
 
 		this.removeAll();
 
@@ -247,10 +233,8 @@ public class LineChartPlugin extends JPanel implements Plugin {
 		}
 
 		try {
-			int width = 1920;
-			int height = 1200;
-			ChartUtilities.saveChartAsPNG(file, chartPanel.getChart(), width,
-					height);
+			ChartUtilities.saveChartAsPNG(file, chartPanel.getChart(), this.outputwidth,
+					this.outputheight);
 		} catch (Exception e) {
 			System.out.println("Problem occurred creating chart." + label);
 		}
