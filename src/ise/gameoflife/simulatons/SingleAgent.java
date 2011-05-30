@@ -56,8 +56,8 @@ public class SingleAgent
 		parts.put(a.getId(), a);
 		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
 
-                TestAgent b = new TestAgent(20, 2);
-                parts.put(b.getId(), b);
+        TestAgent b = new TestAgent(20, 2);
+        parts.put(b.getId(), b);
 		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(b.getId())));
 
 		HashMap<String, Food> foods = new HashMap<String, Food>();
@@ -65,6 +65,9 @@ public class SingleAgent
 		Food rabbit = new Food("rabbit", 1, 1);
 
 		foods.put(rabbit.getId().toString(), rabbit);
+                
+                Food chicken = new Food("chicken", 2, 1);
+                foods.put(chicken.getId().toString(),chicken);
 
 		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods);
 
