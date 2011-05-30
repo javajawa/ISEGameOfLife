@@ -14,6 +14,9 @@ public class AgentDataModel extends APlayerDataModel
 {
 	private static final long serialVersionUID = 1L;
 
+        @Element
+        private boolean alive;
+        
 	/**
 	 * Stores amount of food owned by agent
 	 */
@@ -61,6 +64,7 @@ public class AgentDataModel extends APlayerDataModel
 		super(myId, roles, playerClass, randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
+                this.alive = true;
 	}
 
 	/**
@@ -116,6 +120,20 @@ public class AgentDataModel extends APlayerDataModel
 	{
 		this.foodInPossesion += acquired;
 	}
+        
+        /**
+         * Query whether the agent is alive or not
+         * @return true if alive
+         */
+        public boolean alive()
+        {
+                return this.alive;
+        }
+
+        public void die()
+        {
+                this.alive = false;
+        }
 
 	/**
 	 * Get a re-distribution safe copy of this object. The returned object is

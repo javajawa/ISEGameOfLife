@@ -36,6 +36,14 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 		return source.getFoodInPossesion();
 	}
 
+        /**
+         * Query whether the agent is alive or not
+         * @return true if alive
+         */
+        public boolean alive(){
+            return source.alive();
+        }
+
 	@Override
 	public long getTime()
 	{

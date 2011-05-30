@@ -3,6 +3,7 @@ package ise.gameoflife.simulatons;
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.enviroment.EnvironmentDataModel;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.plugins.LineChartPlugin;
 import java.io.File;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -46,12 +47,18 @@ public class SingleAgent
 		// All the big objects
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 		PluginManager pm = new PluginManager();
+                pm.addPlugin(new LineChartPlugin(presageConfig.getOutPutFolder() + "/percentinfected.png",1900, 1200, 100));
+
 		EventScriptManager ms = new EventScriptManager();
 
-		TestAgent a = new TestAgent(20, 2);
+		TestAgent a = new TestAgent(20, 4);
 
 		parts.put(a.getId(), a);
 		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+
+                TestAgent b = new TestAgent(20, 2);
+                parts.put(b.getId(), b);
+		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(b.getId())));
 
 		HashMap<String, Food> foods = new HashMap<String, Food>();
 
