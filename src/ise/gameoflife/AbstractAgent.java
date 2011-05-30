@@ -45,7 +45,6 @@ abstract public class AbstractAgent implements Participant
                         {
                                 System.out.println("I, agent, " + getId() + ", am starving to death!");
                                 ec.act(new Death(), dm.getId(), authCode);
-                                dm.die();
                         }
                         else
                         {
