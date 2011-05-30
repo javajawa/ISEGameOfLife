@@ -53,11 +53,11 @@ public class DoubleAgent {
 		TestAgent a = new TestAgent(20, 5);
 
 		parts.put(a.getId(), a);
-		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+		ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
 
                 TestAgent b = new TestAgent(20, 3);
                 parts.put(b.getId(), b);
-		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(b.getId())));
+		ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(b.getId())));
 
 		HashMap<String, Food> foods = new HashMap<String, Food>();
 

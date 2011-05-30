@@ -54,7 +54,7 @@ public class SingleAgent
 		TestAgent a = new TestAgent(20, 5);
 
 		parts.put(a.getId(), a);
-		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+		ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
 
 		HashMap<String, Food> foods = new HashMap<String, Food>();
 
