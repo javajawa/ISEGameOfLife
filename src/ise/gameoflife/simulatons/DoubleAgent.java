@@ -19,10 +19,9 @@ import presage.configure.ConfigurationWriter;
 
 /**
  *
- * @author Benedict
+ * @author harry
  */
-public class SingleAgent
-{
+public class DoubleAgent {
 
 	public static void main(String args[])
 	{
@@ -56,12 +55,16 @@ public class SingleAgent
 		parts.put(a.getId(), a);
 		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
 
+                TestAgent b = new TestAgent(20, 3);
+                parts.put(b.getId(), b);
+		ms.addEvent(new ScriptedEvent(-1, new ActivateParticipant(b.getId())));
+
 		HashMap<String, Food> foods = new HashMap<String, Food>();
 
 		Food rabbit = new Food("rabbit", 1, 1);
 
 		foods.put(rabbit.getId().toString(), rabbit);
-                
+
                 Food chicken = new Food("chicken", 2, 1);
                 foods.put(chicken.getId().toString(),chicken);
 
@@ -74,7 +77,7 @@ public class SingleAgent
 		ConfigurationWriter.write(configPath + "/sim.xml", presageConfig, parts, environment, pm, ms);
 	}
 
-	private SingleAgent()
+	private DoubleAgent()
 	{
 		// Nothing to see here. Move along, citizen!
 	}
