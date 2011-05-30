@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import presage.abstractparticipant.APlayerDataModel;
 
 /**
  * Stub for groups
  * @author Olly
  */
-public class GroupDataModel implements Serializable
+public class GroupDataModel extends APlayerDataModel
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -19,12 +20,7 @@ public class GroupDataModel implements Serializable
 	 *Unique group identifier
 	 */
 	@Element
-	protected UUID groupID;
-	/**
-	 * Identity of GroupDataModel Leader
-	 */
-	@Element
-	protected String leader;
+	protected String groupID;
 	/**
 	 * Array list of GroupDataModel members
 	 */
@@ -52,8 +48,15 @@ public class GroupDataModel implements Serializable
 	 * Get the group id that this group has
 	 * @return The UUID of this group
 	 */
-	public UUID getId()
+	@Override
+	public String getId()
 	{
 		return groupID;
+	}
+
+	@Override
+	public void onInitialise()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }
