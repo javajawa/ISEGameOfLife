@@ -8,20 +8,20 @@
       <agents/>
       <availableFoodTypes>
          <entry>
-            <string>52882480-388d-4c3e-ae19-f9993869966a</string>
+            <string>9b77c471-3230-4960-ad1a-da321d20be3d</string>
             <food>
-               <id_string>52882480-388d-4c3e-ae19-f9993869966a</id_string>
-               <name>rabbit</name>
-               <nutrition>1.0</nutrition>
+               <id_string>9b77c471-3230-4960-ad1a-da321d20be3d</id_string>
+               <name>chicken</name>
+               <nutrition>2.0</nutrition>
                <huntersRequired>1</huntersRequired>
             </food>
          </entry>
          <entry>
-            <string>d0d86d05-74eb-4a73-a6c0-df98b58bceec</string>
+            <string>0fdf81b2-cd1a-44d0-bd95-20ce5b7f3bb9</string>
             <food>
-               <id_string>d0d86d05-74eb-4a73-a6c0-df98b58bceec</id_string>
-               <name>bear</name>
-               <nutrition>2.0</nutrition>
+               <id_string>0fdf81b2-cd1a-44d0-bd95-20ce5b7f3bb9</id_string>
+               <name>rabbit</name>
+               <nutrition>1.0</nutrition>
                <huntersRequired>1</huntersRequired>
             </food>
          </entry>

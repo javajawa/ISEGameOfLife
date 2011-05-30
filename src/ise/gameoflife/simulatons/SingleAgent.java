@@ -58,6 +58,9 @@ public class SingleAgent
 		Food rabbit = new Food("rabbit", 1, 1);
 
 		foods.put(rabbit.getId().toString(), rabbit);
+                
+                Food chicken = new Food("chicken", 2, 1);
+                foods.put(chicken.getId().toString(),chicken);
 
 		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods);
 
