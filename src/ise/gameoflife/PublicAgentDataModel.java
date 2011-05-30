@@ -3,11 +3,13 @@ package ise.gameoflife;
 import java.util.ArrayList;
 import presage.PlayerDataModel;
 
+import java.io.Serializable;
+
 /**
  * The amount of information an Agent can find out about another agent
  * @author Benedict Harcourt
  */
-public final class PublicAgentDataModel implements PlayerDataModel
+public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 {
 	private AgentDataModel source;
 
@@ -33,6 +35,14 @@ public final class PublicAgentDataModel implements PlayerDataModel
 	{
 		return source.getFoodInPossesion();
 	}
+
+        /**
+         * Query whether the agent is alive or not
+         * @return true if alive
+         */
+        public boolean alive(){
+            return source.alive();
+        }
 
 	@Override
 	public long getTime()

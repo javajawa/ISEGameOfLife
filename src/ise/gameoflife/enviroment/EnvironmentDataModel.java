@@ -26,7 +26,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 * A sorted list/map of all the state of all players in the game
 	 */
 	@ElementMap(keyType = String.class, valueType = AgentDataModel.class)
-	private TreeMap<String, PublicAgentDataModel> agents = new TreeMap<String, PublicAgentDataModel>();
+	public TreeMap<String, PublicAgentDataModel> agents = new TreeMap<String, PublicAgentDataModel>();
 	/**
 	 * List of all the available food types in the environment
 	 */

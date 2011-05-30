@@ -41,8 +41,18 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
-			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
-			dm.foodConsumed(dm.getFoodConsumption());
+                        if (dm.getFoodInPossesion() < dm.getFoodConsumption())
+                        {
+                                System.out.println("I, agent, " + getId() + ", am starving to death!");
+                                ec.act(new Death(), dm.getId(), authCode);
+                                dm.die();
+                        }
+                        else
+                        {
+                                System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
+                                dm.foodConsumed(dm.getFoodConsumption());
+                        }
+
 		}
 		
 	}
@@ -178,13 +188,6 @@ abstract public class AbstractAgent implements Participant
 
 		// Output how much food we have.
 		System.out.println("I, agent " + this.getId() + ", have " + this.dm.getFoodInPossesion() + " units of food remaining");
-
-		if (this.dm.getFoodInPossesion() <= 0)
-		{
-			System.out.println("I, agent " + this.getId() + ", am out of food");
-			ec.act(new Death(), this.getId(), authCode);
-			return;
-		}
 
 		// TODO: Check for turn type
 		Food toHunt = chooseFood();
