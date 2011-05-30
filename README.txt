@@ -18,7 +18,7 @@ Support: bh308@imperial.ac.uk
   - Compiling
   - Ensure compile on save is on if you plan to change things
  - Clean and Build GameOfLife
- - You should be set
+ - You should be set to build and run simulations (see below)
 
 == Building Simulations ==
 
