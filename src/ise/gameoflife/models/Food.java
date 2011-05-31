@@ -18,7 +18,8 @@ public class Food implements Serializable
 	private UUID id;
 	
 	/**
-	 * TODO: Document Me!
+	 * String that represent the UUID when in storage, as the UUID class is not
+	 * storable by the SimpleXML framework (lack of public no-arg constructor)
 	 */
 	@Element
 	private String id_string;
@@ -40,13 +41,24 @@ public class Food implements Serializable
 	@Element
 	private int huntersRequired;
 
+	/**
+	 * This is a public no-arg constructor used by SimpleXML's inflection
+	 * system to rebuild instances of this class from XML files. Do not use it
+	 * @deprecated SimpleXML rebuild constructor
+	 */
 	@Deprecated
 	public Food()
 	{
 		super();
 	}
 	
-	
+	/**
+	 * Generate a new food type
+	 * @param name The displayable name of the food
+	 * @param nutrition The amount of nutrition each unit of the food provides
+	 * @param huntersRequired The number of hunters required to hunt this type of
+	 * food
+	 */
 	public Food(String name, double nutrition, int huntersRequired)
 	{
 		this.id = UUID.randomUUID();
@@ -57,7 +69,8 @@ public class Food implements Serializable
 	}
 
 	/**
-	 * @return the name
+	 * Returns the name of the food
+	 * @return Human readable name
 	 */
 	public String getName()
 	{
@@ -65,7 +78,8 @@ public class Food implements Serializable
 	}
 
 	/**
-	 * @return the nutrition
+	 * Returns the nutritional value of the food
+	 * @return Nutritional value
 	 */
 	public double getNutrition()
 	{
@@ -73,13 +87,19 @@ public class Food implements Serializable
 	}
 
 	/**
-	 * @return the huntersRequired
+	 * Returns the number of hunters required to hunt this kind of food
+	 * @return Total hunters required
 	 */
 	public int getHuntersRequired()
 	{
 		return huntersRequired;
 	}
 	
+	/**
+	 * Returns the universally unique identifier for this food, which is used to
+	 * identify it internally
+	 * @return Internal identifier
+	 */
 	public UUID getId()
 	{
 		if (id == null) id = UUID.fromString(this.id_string);

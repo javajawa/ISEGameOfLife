@@ -130,7 +130,6 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	@Override
 	public String getLabel()
 	{
-		// TODO Auto-generated method stub
 		return label;
 	}
 
@@ -199,7 +198,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	@Override
 	public void onDelete()
 	{
-		// TODO Auto-generated method stub
+		// Nothing to see here. Move along, citizen!
 	}
 
 	/**

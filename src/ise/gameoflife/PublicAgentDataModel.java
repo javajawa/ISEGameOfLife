@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private AgentDataModel source;
 
 	PublicAgentDataModel(AgentDataModel source)
