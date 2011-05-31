@@ -7,53 +7,75 @@ import presage.Plugin;
 import presage.Simulation;
 
 /**
- *
- * @author Olly
+ * TODO: Documentation
+ * @author Olly Hill
+ * @author Benedict Harcourt
  */
 public class ErrorLog extends JPanel implements Plugin
 {
-	//private static final long serialVersionUID = 1L;
-	
-	Simulation sim;
-	//ExampleEnvDataModel dmodel;
-	
-	public ErrorLog(){
-		//Nothing to see here, move along citizen.
+
+	private static final long serialVersionUID = 1L;
+	private Simulation sim;
+
+	/**
+	 * TODO: Documentation
+	 */
+	public ErrorLog()
+	{
+		// Nothing to see here. Move along, citizen!
 	}
-	
-	public String getLabel() {
+
+	/**
+	 * TODO: Documentation
+	 * TODO: Move this to a private final static field
+	 * @return 
+	 */
+	public String getLabel()
+	{
 		return "ErrorLog";
 	}
 
-	public String getShortLabel() {
+	/**
+	 * TODO: Documentation
+	 * TODO: Move this to a private final static field
+	 * @return 
+	 */
+	public String getShortLabel()
+	{
 		return "ErrorLog";
-}
-	public void initialise(Simulation sim) {
+	}
+
+	public void initialise(Simulation sim)
+	{
 		System.out.println(" ErrorLog Initialising....");
-
-		this.sim = sim; 
-		
-		setBackground(Color.GRAY);
-		
-		//dmodel = (ExampleEnvDataModel)sim.getEnvDataModel();
+		this.sim = sim;
+		setBackground(Color.LIGHT_GRAY);
 	}
 
+	/**
+	 * TODO: Documentation
+	 */
 	@Override
 	public void execute()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// FIXME: Write execute code for ErrorLog Plugin
 	}
 
+	/**
+	 * TODO: Documentation
+	 * @deprecated
+	 */
+	@Deprecated
 	@Override
 	public void onDelete()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override
 	public void onSimulationComplete()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// FIXME: Write onSimulationComplete code for ErrorLog Plugin
 	}
-	
+
 }
