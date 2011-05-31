@@ -1,5 +1,7 @@
 package ise.gameoflife;
 
+import ise.gameoflife.plugins.ErrorLog;
+import presage.PluginManager;
 import presage.gui.ControlCenter;
 
 /**
