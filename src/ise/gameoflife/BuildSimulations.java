@@ -28,11 +28,13 @@ final class BuildSimulations
 	public static void main(String args[])
 	{
 
+		Object passedArgv[] = { args };
+
 		for (Class<?> c : simulationClasses)
 		{
 			try
 			{
-				c.getMethod("main", args.getClass()).invoke(null, (Object[])args);
+				c.getMethod("main", args.getClass()).invoke(null, passedArgv);
 			}
 			catch (IllegalAccessException ex)
 			{

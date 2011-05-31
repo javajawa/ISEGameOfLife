@@ -1,7 +1,5 @@
 package ise.gameoflife;
 
-import ise.gameoflife.plugins.ErrorLog;
-import presage.PluginManager;
 import presage.gui.ControlCenter;
 
 /**
@@ -15,8 +13,13 @@ public class RunSimulation
 	{
 	}
 
+	/**
+	 * TODO: Documentation
+	 * @param args
+	 */
 	public static void main(String args[])
 	{
+		BuildSimulations.main(args);
 		ControlCenter.main(args);
 	}
 }
