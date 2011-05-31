@@ -5,6 +5,7 @@ import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
@@ -79,7 +80,28 @@ public class Environment extends AbstractEnvironment
 			// Nothing to see here. Move along, citizen.
 		}
 	}
-	
+	/**
+	 * Issues instructions of what to hunt from group to environment which then
+	 * passes the order onto agents.
+	 */
+	public class GroupOrderHandler implements AbstractEnvironment.ActionHandler
+	{
+			@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(GroupOrder.class));
+		}
+			
+		@Override
+		public Input handle(Action action, String actorID){
+			sim.getPlayer(actorID).enqueueInput(new HuntOrder(sim.getTime(), ((GroupOrder)action).getToHunt()));
+			return null;
+		}
+			
+		public GroupOrderHandler(){
+			// Nothing to see here. Move along, citizen.
+		}
+	}
 	/**
 	 * Performs Hunt Action, returns new food total, depending on result of Hunt
 	 */
