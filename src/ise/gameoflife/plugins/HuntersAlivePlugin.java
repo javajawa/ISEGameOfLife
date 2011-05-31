@@ -39,7 +39,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 
 	private Simulation sim;
 
-	@Element
+	@Element(required=false)
 	private String outputpath;
 	@Element
 	private int outputwidth;
@@ -75,9 +75,13 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 					int outputheight)
 	{
 		super();
-		this.outputpath = outputpath;
-		this.outputwidth = outputwidth;
-		this.outputheight = outputheight;
+		if (outputpath != null)
+		{
+			if (outputwidth <= 0 || outputheight <= 0) throw new IllegalArgumentException("Height and Width must both be greater than 0");
+			this.outputpath = outputpath;
+			this.outputwidth = outputwidth;
+			this.outputheight = outputheight;
+		}
 	}
 
 	private double getNumHunters()
@@ -206,46 +210,24 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	public void onSimulationComplete()
 	{
 
-		this.removeAll();
+		// Firstly, remove the update button, and (forcibly) refresh the chart
+		this.remove(control);
+		this.updateChart();
 
-		synchronized (data)
-		{
-			JFreeChart chart = ChartFactory.createXYLineChart(title, xaxis, yaxis,
-						data, PlotOrientation.VERTICAL, true, true, false);
-
-			chartPanel = new ChartPanel(chart);
-			chartPanel.setPreferredSize(new Dimension(outputwidth, outputheight));
-
-			chartPanel.updateUI();
-		}
-
-		this.setLayout(new BorderLayout());
-		add(chartPanel, BorderLayout.CENTER);
-
-		File file;
-
+		// Output the final chart to file
+		if (outputpath == null) return;
 		try
 		{
-			file = new File(outputpath);
+			File file = new File(outputpath);
+			synchronized (data)
+			{
+				ChartUtilities.saveChartAsPNG(file, chartPanel.getChart(), outputwidth, outputheight);
+			}
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
-			System.err.println("Graph Plugin " + label
-							+ " : Invalid output path" + e);
-			return;
+			System.err.println("Erorr outputting '" + label + "' Graph: " + e);
 		}
-
-		try
-		{
-			ChartUtilities.saveChartAsPNG(file, chartPanel.getChart(),
-							this.outputwidth,
-							this.outputheight);
-		}
-		catch (Exception e)
-		{
-			System.out.println("Problem occurred creating chart " + label + ": " + e.getMessage());
-		}
-
 	}
 
 }
