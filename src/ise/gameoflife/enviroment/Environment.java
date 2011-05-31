@@ -4,6 +4,8 @@ import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.Hunt;
+import ise.gameoflife.actions.RespondToApplication;
+import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
@@ -86,7 +88,7 @@ public class Environment extends AbstractEnvironment
 	 */
 	public class GroupOrderHandler implements AbstractEnvironment.ActionHandler
 	{
-			@Override
+		@Override
 		public boolean canHandle(Action action)
 		{
 			return (action.getClass().equals(GroupOrder.class));
@@ -136,6 +138,27 @@ public class Environment extends AbstractEnvironment
 
 		public HuntHandler()
 		{
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+	/**
+	 * Responds to a group application, indicating success or failure
+	 */
+	public class RespondToApplicationHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(RespondToApplication.class));
+		}
+		
+		@Override
+		public Input handle(Action action, String actorID){
+			sim.getPlayer(actorID).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, ((RespondToApplication)action).wasAccepted()));
+			return null;
+		}
+		
+		public RespondToApplicationHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
