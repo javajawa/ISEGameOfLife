@@ -41,19 +41,17 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
-                        if (dm.getFoodInPossesion() < dm.getFoodConsumption())
-                        {
-                                System.out.println("I, agent, " + getId() + ", am starving to death!");
-                                ec.act(new Death(), dm.getId(), authCode);
-                        }
-                        else
-                        {
-                                System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
-                                dm.foodConsumed(dm.getFoodConsumption());
-                        }
-
+			if (dm.getFoodInPossesion() < dm.getFoodConsumption())
+			{
+				System.out.println("I, agent, " + getId() + ", am starving to death!");
+				ec.act(new Death(), dm.getId(), authCode);
+			}
+			else
+			{
+			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
+			dm.foodConsumed(dm.getFoodConsumption());
+			}
 		}
-		
 	}
 
 	private class HuntResultHandler implements InputHandler
