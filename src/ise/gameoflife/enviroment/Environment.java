@@ -202,6 +202,7 @@ public class Environment extends AbstractEnvironment
 
 	void logToErrorLog(String s)
 	{
+		// TODO: Do something better than just dropping the message when errorLog is not set
 		if (this.errorLog == null) return;
 
 		this.errorLog.add(s);
@@ -209,6 +210,7 @@ public class Environment extends AbstractEnvironment
 
 	void logToErrorLog(Throwable s)
 	{
+		// TODO: Do something better than just dropping the message when errorLog is not set
 		if (this.errorLog == null) return;
 
 		this.errorLog.add(s.getMessage());
