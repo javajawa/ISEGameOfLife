@@ -1,15 +1,14 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.models.GroupDataModel;
 import example.participants.ReconAgent.InputHandler;
 import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.GroupRegistration;
-import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,7 +16,6 @@ import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
-import presage.PlayerDataModel;
 import presage.environment.messages.ENVRegistrationResponse;
 import presage.util.InputQueue;
 
@@ -56,7 +54,7 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public String getId()
 	{
-		return dm.groupID;
+		return dm.getId();
 	}
 
 	@Override

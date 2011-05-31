@@ -1,5 +1,6 @@
-package ise.gameoflife;
+package ise.gameoflife.participants;
 
+import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;

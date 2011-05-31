@@ -1,4 +1,4 @@
-package ise.gameoflife;
+package ise.gameoflife.models;
 
 import java.util.ArrayList;
 import presage.PlayerDataModel;

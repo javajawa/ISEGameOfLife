@@ -18,7 +18,6 @@ import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
 import presage.environment.messages.ENVRegisterRequest;
 import presage.environment.messages.ENVRegistrationResponse;
-import presage.events.CoreEvents.DeactivateParticipant;
 
 /**
  * The primary environment code for the GameOfLife that we define. This will
@@ -165,7 +164,7 @@ public class Environment extends AbstractEnvironment
 		{
 			if (sim.isParticipantActive(agent.getId()))
 			{
-				if (agent instanceof ise.gameoflife.AbstractAgent)
+				if (agent instanceof ise.gameoflife.participants.AbstractAgent)
 				{
 					agent.enqueueInput(new ConsumeFood(dmodel.getTime()));
 				}

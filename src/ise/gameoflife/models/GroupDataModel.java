@@ -1,9 +1,7 @@
-package ise.gameoflife.participants;
+package ise.gameoflife.models;
 
-import ise.gameoflife.AbstractAgent;
-import java.io.Serializable;
+import ise.gameoflife.participants.AbstractAgent;
 import java.util.ArrayList;
-import java.util.UUID;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import presage.abstractparticipant.APlayerDataModel;
@@ -25,7 +23,7 @@ public class GroupDataModel extends APlayerDataModel
 	 * Array list of GroupDataModel members
 	 */
 	@ElementList
-	protected ArrayList<String>  memberList;
+	protected ArrayList<String> memberList;
 
 	@Deprecated
 	public GroupDataModel()

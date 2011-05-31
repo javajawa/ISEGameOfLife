@@ -1,9 +1,7 @@
 package ise.gameoflife.agents;
 
-import ise.gameoflife.AbstractAgent;
+import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
-import java.util.ArrayList;
-import java.util.List;
 import presage.EnvironmentConnector;
 
 /**

@@ -1,8 +1,8 @@
 package ise.gameoflife.enviroment;
 
-import ise.gameoflife.PublicAgentDataModel;
+import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.participants.GroupDataModel;
+import ise.gameoflife.models.GroupDataModel;
 import java.util.Set;
 import java.util.UUID;
 import presage.EnvironmentConnector;

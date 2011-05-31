@@ -1,9 +1,9 @@
 package ise.gameoflife.enviroment;
 
-import ise.gameoflife.AgentDataModel;
-import ise.gameoflife.PublicAgentDataModel;
+import ise.gameoflife.models.AgentDataModel;
+import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.participants.GroupDataModel;
+import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.tokens.RegistrationRequest;
 import java.util.Collections;
 import java.util.HashMap;

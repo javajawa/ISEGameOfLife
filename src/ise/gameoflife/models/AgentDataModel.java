@@ -1,7 +1,6 @@
-package ise.gameoflife;
+package ise.gameoflife.models;
 
 import ise.gameoflife.enviroment.EnvConnector;
-import ise.gameoflife.participants.GroupDataModel;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
