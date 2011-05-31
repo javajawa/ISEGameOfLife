@@ -59,12 +59,12 @@ public class EnvConnector extends EnvironmentConnector
 		return dm.availableFoods();
 	}
 
-	void logToErrorLog(String s)
+	public void logToErrorLog(String s)
 	{
 		e.logToErrorLog(s);
 	}
 
-	void logToErrorLog(Throwable s)
+	public void logToErrorLog(Throwable s)
 	{
 		e.logToErrorLog(s);
 	}
