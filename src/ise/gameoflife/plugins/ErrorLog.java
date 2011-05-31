@@ -38,7 +38,7 @@ public class ErrorLog extends JPanel implements Plugin
 
 		JListModel()
 		{
-			this(null);
+			this(new ArrayList<String>());
 		}
 
 		/**
@@ -93,13 +93,13 @@ public class ErrorLog extends JPanel implements Plugin
 		@Override
 		public int getSize()
 		{
-			throw new UnsupportedOperationException("Not supported yet.");
+			return data.size();
 		}
 
 		@Override
 		public Object getElementAt(int index)
 		{
-			throw new UnsupportedOperationException("Not supported yet.");
+			return data.get(index);
 		}
 
 		@Override
