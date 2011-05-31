@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 /**
  * TODO: Documentation
- * TODO: Make this thing work (it should do... :'( )
  * @author Benedict
  */
 final class BuildSimulations
