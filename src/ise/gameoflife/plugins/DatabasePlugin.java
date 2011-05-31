@@ -162,13 +162,6 @@ public class DatabasePlugin extends JPanel implements Plugin {
     {
 	this.removeAll();
 	try {
-	    Statement stat = conn.createStatement();
-	    ResultSet rs = stat.executeQuery("select * from population;");
-		while (rs.next()) {
-		System.out.println("name = " + rs.getString("name"));
-		System.out.println("job = " + rs.getString("occupation"));
-	    }
-	    rs.close();
 	    conn.close();
 	} catch (Exception e)
 	    {
