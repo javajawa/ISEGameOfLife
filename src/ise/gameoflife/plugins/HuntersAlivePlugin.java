@@ -32,8 +32,8 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 
 	private final static String title = "Population";
 	private final static String xaxis = "Simulation cycle";
-	private final static String yaxis = "Num People";
-	private final static String label = "Num People";
+	private final static String yaxis = "Population";
+	private final static String label = "Population";
 
 	private Simulation sim;
 
