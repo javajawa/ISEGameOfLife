@@ -51,6 +51,10 @@ public class AgentDataModel extends APlayerDataModel
 	/**
 	 * Creates a new agent with a given amount of initial food 
 	 * and the amount of food they consume per turn
+	 * @param myId 
+	 * @param roles 
+	 * @param playerClass
+	 * @param randomseed 
 	 * @param foodInPossesion Initial amount of food
 	 * @param foodConsumption Food consumed per turn
 	 */

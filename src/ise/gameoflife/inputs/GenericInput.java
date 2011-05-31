@@ -1,6 +1,5 @@
 package ise.gameoflife.inputs;
 
-import java.util.UUID;
 import presage.Input;
 
 /**
@@ -33,6 +32,7 @@ abstract class GenericInput implements Input
 	 * Returns the Timestamp of the input event
 	 * @return 
 	 */
+	@Override
 	public long getTimestamp()
 	{
 		return timestamp;
@@ -41,6 +41,7 @@ abstract class GenericInput implements Input
 	 * Set Timestamp
 	 * @param timestamp 
 	 */
+	@Override
 	public void setTimestamp(long timestamp)
 	{
 		this.timestamp = timestamp;
@@ -49,6 +50,7 @@ abstract class GenericInput implements Input
 	 * Returns the performative
 	 * @return 
 	 */
+	@Override
 	public String getPerformative()
 	{
 		return performative;
