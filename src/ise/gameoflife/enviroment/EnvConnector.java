@@ -41,7 +41,7 @@ public class EnvConnector extends EnvironmentConnector
 		return dm.getFoodById(id);
 	}
 
-	/*
+	/**
 	 * Gets the agent data object associated with a particular id, which is safe
 	 * for being passed to other agents without giving them too much information
 	 * @param id The id to search for
@@ -52,6 +52,10 @@ public class EnvConnector extends EnvironmentConnector
 		return dm.getAgentById(id);
 	}
 
+	/**
+	 * TODO: Documentation
+	 * @return
+	 */
 	public Set<Food> availableFoods()
 	{
 		return dm.availableFoods();
