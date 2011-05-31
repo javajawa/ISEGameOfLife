@@ -7,6 +7,7 @@ import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
+import java.util.List;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.Action;
@@ -98,6 +99,11 @@ public class Environment extends AbstractEnvironment
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
 	protected EnvironmentDataModel dmodel;
 	
+	/**
+	 * Reference to the list that backs the ErrorLog view plugin.
+	 */
+	private List<String> errorLog;
+
 	@Deprecated
 	public Environment()
 	{
@@ -189,4 +195,24 @@ public class Environment extends AbstractEnvironment
 		this.dmodel.setTime(cycle);
 	}
 	
+	public void setErrorLog(List<String> loginput)
+	{
+		if (this.errorLog == null) this.errorLog = loginput;
+	}
+
+	void logToErrorLog(String s)
+	{
+		// TODO: Do something better than just dropping the message when errorLog is not set
+		if (this.errorLog == null) return;
+
+		this.errorLog.add(s);
+	}
+
+	void logToErrorLog(Throwable s)
+	{
+		// TODO: Do something better than just dropping the message when errorLog is not set
+		if (this.errorLog == null) return;
+
+		this.errorLog.add(s.getMessage());
+	}
 }

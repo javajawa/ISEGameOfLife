@@ -193,11 +193,17 @@ abstract public class AbstractAgent implements Participant
 
 		// TODO: Check for turn type
 		Food toHunt = chooseFood();
-		System.out.println("I, agent " + this.getId() + ", choose to hunt " + toHunt.getName() + " (" + toHunt.getId().toString() + ')');
-		lastHunted = toHunt;
 
-		if (toHunt == null) return;
-		ec.act(new Hunt(toHunt), this.getId(), authCode);
+		if (toHunt == null)
+		{
+			ec.logToErrorLog("Agent " + this.getId() + " did not pick a food to gunt");
+		}
+		else
+		{
+			System.out.println("I, agent " + this.getId() + ", choose to hunt " + toHunt.getName() + " (" + toHunt.getId().toString() + ')');
+			ec.act(new Hunt(toHunt), this.getId(), authCode);
+		}
+		lastHunted = toHunt;
 	}
 
 	private void handleInput(Input i)
