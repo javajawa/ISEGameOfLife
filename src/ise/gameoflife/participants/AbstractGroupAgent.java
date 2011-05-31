@@ -1,8 +1,10 @@
 package ise.gameoflife.participants;
 
 import ise.gameoflife.models.GroupDataModel;
-import example.participants.ReconAgent.InputHandler;
+import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.inputs.JoinRequest;
+import ise.gameoflife.inputs.LeaveNotification;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -17,7 +19,6 @@ import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.environment.messages.ENVRegistrationResponse;
-import presage.util.InputQueue;
 
 /**
  *
@@ -47,9 +48,6 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	protected EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
-
-	private InputQueue msgQ = new InputQueue("inputs");
-	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
 	
 	@Override
 	public String getId()
@@ -100,14 +98,10 @@ public abstract class AbstractGroupAgent implements Participant
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	private void handleInput(Input i)
-	{
-		for (InputHandler inputHandler : handlers)
-		{
-			if (inputHandler.canHandle(i)) inputHandler.handle(i);
-		}
-	}
-
+	/**
+	 * 
+	 * @param cycle
+	 */
 	@Override
 	public final void setTime(long cycle)
 	{
@@ -127,15 +121,35 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public final void enqueueInput(Input input)
 	{
-		this.msgQ.enqueue(input);
+		if (input.getClass().equals(JoinRequest.class))
+		{
+			boolean response = this.respondToJoinRequest(((JoinRequest)input).getAgent());
+			ec.act(new RespondToApplication(this.getId(), response), this.getId(), authCode);
+			if (response)	this.dm.memberList.add(((JoinRequest)input).getAgent());
+			return;
+		}
+
+		if (input.getClass().equals(LeaveNotification.class))
+		{
+			final LeaveNotification in = (LeaveNotification)input;
+			onMemberLeave(null, LeaveNotification.Reasons.Death);
+			this.onMemberLeave(in.getAgent(), in.getReason());
+			return;
+		}
+
+		ec.logToErrorLog("Group Unable to handle Input of type " + input.getClass().getCanonicalName());
 	}
 
+	/**
+	 * 
+	 * @param input
+	 */
 	@Override
 	public final void enqueueInput(ArrayList<Input> input)
 	{
 		for (Input in : input)
 		{
-			this.msgQ.enqueue(in);
+			enqueueInput(in);
 		}
 	}
 
@@ -146,10 +160,37 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 	
 	
+	/**
+	 * TODO: Document
+	 * @param ec
+	 */
 	abstract protected void onInit(EnvironmentConnector ec);
+	/**
+	 * TODO: Document
+	 */
 	abstract protected void onActivate();
 	
+	/**
+	 * TODO: Document
+	 * @param playerID
+	 * @return
+	 */
 	abstract protected boolean respondToJoinRequest(String playerID);
+	/**
+	 * TODO: Document
+	 * @return
+	 */
 	abstract protected List<HuntingTeam> selectTeams();
+	/**
+	 * TODO: Document
+	 * @param gains
+	 * @return
+	 */
 	abstract protected Map<String, Double> distributeFood(Map<String, Double> gains);
+	/**
+	 * 
+	 * @param playerID
+	 * @param reason
+	 */
+	abstract protected void onMemberLeave(String playerID, LeaveNotification.Reasons reason);
 }

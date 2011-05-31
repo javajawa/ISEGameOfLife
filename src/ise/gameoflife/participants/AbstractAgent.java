@@ -270,6 +270,9 @@ abstract public class AbstractAgent implements Participant
 	 * @param ec The <strong>default</strong> environment connector
 	 */
 	abstract protected void onInit(EnvironmentConnector ec);
+	/**
+	 * TODO: Documentation
+	 */
 	abstract protected void onActivate();
 	/**
 	 * Function called to get the Agent to select what kind of food it would like
@@ -281,8 +284,19 @@ abstract public class AbstractAgent implements Participant
 	 */
 	abstract protected Food chooseFood();
 	
+	/**
+	 * TODO: Documentation
+	 * @return 
+	 */
 	protected Set<Food> availableFoods()
 	{
 		return ec.availableFoods();
 	}
+
+	// TODO: Offer interfaces to other members of the enviroment connector
+	// TODO: that sub-classes should be allowed to use
+	// - Group lookup
+	// - Food lookup?
+	// - Agent lookup
+	// - Group type list
 }
