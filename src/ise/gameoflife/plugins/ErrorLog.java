@@ -6,7 +6,7 @@ import presage.Plugin;
 import presage.Simulation;
 
 /**
- * TODO: Documentation
+ * Creates the JPanel Plugin which will be used to log errors
  * @author Olly Hill
  * @author Benedict Harcourt
  */
@@ -17,7 +17,7 @@ public class ErrorLog extends JPanel implements Plugin
 	private Simulation sim;
 
 	/**
-	 * TODO: Documentation
+	 * Default constructor - does nothing.
 	 */
 	public ErrorLog()
 	{
@@ -25,7 +25,7 @@ public class ErrorLog extends JPanel implements Plugin
 	}
 
 	/**
-	 * TODO: Documentation
+	 * Returns the Label
 	 * TODO: Move this to a private final static field
 	 * @return 
 	 */
@@ -35,8 +35,7 @@ public class ErrorLog extends JPanel implements Plugin
 		return "ErrorLog";
 	}
 
-	/**
-	 * TODO: Documentation
+	/**Returns the Short Label
 	 * TODO: Move this to a private final static field
 	 * @return 
 	 */
@@ -47,7 +46,7 @@ public class ErrorLog extends JPanel implements Plugin
 	}
 
 	/**
-	 * TODO: Documentation
+	 * Creates a new instance of ErrorLog - called during simulation
 	 * @param sim
 	 */
 	@Override
@@ -68,7 +67,7 @@ public class ErrorLog extends JPanel implements Plugin
 	}
 
 	/**
-	 * TODO: Documentation
+	 * Deals with plugin upon plugin deletion
 	 * @deprecated
 	 */
 	@Deprecated
@@ -79,7 +78,7 @@ public class ErrorLog extends JPanel implements Plugin
 	}
 
 	/**
-	 * TODO: Documentation
+	 * Deals with plugin upon simulation completion
 	 */
 	@Override
 	public void onSimulationComplete()
