@@ -3,6 +3,9 @@ package ise.gameoflife.inputs;
 import presage.Input;
 
 /**
+ * TODO: Fix the documentation - remember, each thing should have it's own
+ * TODO: block - I'm looking at you, timestamp and performative. Also, none of 
+ * TODO: the parameters are documented
  * Base class for dealing with inputs, which implements all the required 
  * functions
  * @author Benedict Harcourt
@@ -23,7 +26,7 @@ abstract class GenericInput implements Input
 	 * @param timestamp
 	 * @param performative 
 	 */
-	public GenericInput(long timestamp, String performative)
+	GenericInput(long timestamp, String performative)
 	{
 		this.timestamp = timestamp;
 		this.performative = performative;
