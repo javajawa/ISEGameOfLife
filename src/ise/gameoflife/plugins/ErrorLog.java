@@ -13,7 +13,10 @@ import presage.Simulation;
 public class ErrorLog extends JPanel implements Plugin
 {
 
-	private static final long serialVersionUID = 1L;
+	private final static long serialVersionUID = 1L;
+
+	private final static String label = "Error Log";
+
 	private Simulation sim;
 
 	/**
@@ -32,7 +35,7 @@ public class ErrorLog extends JPanel implements Plugin
 	@Override
 	public String getLabel()
 	{
-		return "ErrorLog";
+		return label;
 	}
 
 	/**Returns the Short Label
@@ -42,7 +45,7 @@ public class ErrorLog extends JPanel implements Plugin
 	@Override
 	public String getShortLabel()
 	{
-		return "ErrorLog";
+		return label;
 	}
 
 	/**
@@ -52,7 +55,6 @@ public class ErrorLog extends JPanel implements Plugin
 	@Override
 	public void initialise(Simulation sim)
 	{
-		System.out.println(" ErrorLog Initialising....");
 		this.sim = sim;
 		setBackground(Color.LIGHT_GRAY);
 	}
