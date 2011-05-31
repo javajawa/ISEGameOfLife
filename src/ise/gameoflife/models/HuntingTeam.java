@@ -14,7 +14,9 @@ public class HuntingTeam
 	private Food orderedTarget;
 
 	/**
-	 * TODO: Documentation
+	 * Creates a new Hunting team
+	 * Note that such teams are a subset of a group, and that agents cannot be in
+	 * more than one team at once.
 	 * @param ec
 	 * @param members
 	 * @param orderedTarget
@@ -28,7 +30,7 @@ public class HuntingTeam
 	}
 
 	/**
-	 * TODO: Documentation
+	 * Returns the target the hunter was told to hunt
 	 * @return
 	 */
 	public Food getOrderedTarget()
@@ -37,7 +39,7 @@ public class HuntingTeam
 	}
 
 	/**
-	 * TODO: Documentation
+	 * Returns list of members in a team
 	 * @return
 	 */
 	@SuppressWarnings("ReturnOfCollectionOrArrayField")
