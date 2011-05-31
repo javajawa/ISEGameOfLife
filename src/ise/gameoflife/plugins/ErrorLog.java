@@ -1,9 +1,9 @@
 package ise.gameoflife.plugins;
 
+import ise.gameoflife.enviroment.Environment;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -17,6 +17,8 @@ import presage.Simulation;
 
 /**
  * Creates the JPanel Plugin which will be used to log errors
+ * TODO: Finish documentation
+ * TODO: Add option to write the log to a file at end of simulation
  * @author Olly Hill
  * @author Benedict Harcourt
  */
@@ -24,17 +26,17 @@ public class ErrorLog extends JPanel implements Plugin
 {
 
 	/**
-	 * TODO: Make all of these functions syncronised
+	 * TODO: Make all of these functions synchronised
 	 * TODO: Document each of these functions
 	 * TODO: Call inform listeners whenever dataset changes
-	 * TODO: Less shite implementation of this
+	 * TODO: Less shite implementation of this class
 	 */
 	private final class JListModel implements ListModel, List<String>
 	{
 		private final ArrayList<String> data;
 		private final ArrayList<ListDataListener> listeners;
 
-		public JListModel()
+		JListModel()
 		{
 			this(null);
 		}
@@ -50,7 +52,7 @@ public class ErrorLog extends JPanel implements Plugin
 			}
 		}
 
-		public JListModel(Collection<String> data)
+		JListModel(Collection<String> data)
 		{
 			this.data = new ArrayList<String>(data);
 			this.listeners = new ArrayList<ListDataListener>();
@@ -59,6 +61,7 @@ public class ErrorLog extends JPanel implements Plugin
 		@Override
 		public boolean add(String e)
 		{
+			informListeners();
 			return data.add(e);
 		}
 
@@ -261,7 +264,11 @@ public class ErrorLog extends JPanel implements Plugin
 	public void initialise(Simulation sim)
 	{
 		this.sim = sim;
-		this.add(new JList(new JListModel()));
+
+		JListModel el = new JListModel();
+		this.add(new JList(el));
+
+		((Environment)sim.environment).setErrorLog(el);
 		setBackground(Color.LIGHT_GRAY);
 	}
 

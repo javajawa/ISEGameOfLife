@@ -14,10 +14,12 @@ import presage.EnvironmentConnector;
 public class EnvConnector extends EnvironmentConnector
 {
 	private final EnvironmentDataModel dm;
+	private final Environment e;
 	
 	public EnvConnector(Environment e)
 	{
 		super(e);
+		this.e = e;
 		this.dm = (EnvironmentDataModel)e.getDataModel();
 	}
 
@@ -55,5 +57,15 @@ public class EnvConnector extends EnvironmentConnector
 	public Set<Food> availableFoods()
 	{
 		return dm.availableFoods();
+	}
+
+	void logToErrorLog(String s)
+	{
+		e.logToErrorLog(s);
+	}
+
+	void logToErrorLog(Throwable s)
+	{
+		e.logToErrorLog(s);
 	}
 }
