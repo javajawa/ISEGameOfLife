@@ -47,17 +47,12 @@ public class DoubleAgent {
 
 		// All the big objects
 		PluginManager pm = new PluginManager();
-<<<<<<< HEAD
     pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png",1500, 1200));
 		pm.addPlugin(new ErrorLog());
+		pm.addPlugin(new databasePlugin(configPath + "/simulation.db"));
 
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 
-=======
-                pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png",1500, 1200));
-		pm.addPlugin(new databasePlugin(configPath + "/simulation.db"));
-		
->>>>>>> sql
 		EventScriptManager ms = new EventScriptManager();
 
 		TestAgent a = new TestAgent(20, 5);
