@@ -11,6 +11,7 @@ import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
@@ -93,7 +94,7 @@ abstract public class AbstractAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
-	protected EnvConnector ec;
+	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
 
 	private InputQueue msgQ = new InputQueue("inputs");
@@ -168,6 +169,7 @@ abstract public class AbstractAgent implements Participant
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
+		tmp_ec = null;
 		onActivate();
 	}
 
@@ -278,4 +280,9 @@ abstract public class AbstractAgent implements Participant
 	 * @return The type of food they have decided to hunt
 	 */
 	abstract protected Food chooseFood();
+	
+	protected Set<Food> availableFoods()
+	{
+		return ec.availableFoods();
+	}
 }

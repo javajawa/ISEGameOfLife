@@ -12,12 +12,12 @@ import presage.Input;
 abstract class GenericInput implements Input
 {
 	/**
-	 * Timestamp: the time at which the input event occurred, in terms of 
+	 * The time at which the input event occurred, in terms of 
 	 * simulation time
 	 */
 	protected long timestamp;
 	/**
-	 * Performative: A String describing the current state/action of the input
+	 * A String describing the current state/action of the input
 	 * eg: when an ActionError occurs, the performative is set to "ActionError"
 	 */
 	protected String performative;
