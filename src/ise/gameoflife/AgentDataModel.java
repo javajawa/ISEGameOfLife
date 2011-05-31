@@ -82,17 +82,6 @@ public class AgentDataModel extends APlayerDataModel
 	}
 
 	/**
-	 * Sets a new value for the foodInPossesion
-	 * @param foodInPossesion the foodInPossesion to set
-	 * @deprecated Use {@link #foodConsumed(int)} and {@link #foodAquired(int)}
-	 */
-	@Deprecated
-	public void setFoodInPossesion(int foodInPossesion)
-	{
-		this.foodInPossesion = foodInPossesion;
-	}
-
-	/**
 	 * Returns the amount of food consumed per turn by this Agent
 	 * @return
 	 */
