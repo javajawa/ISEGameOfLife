@@ -214,8 +214,13 @@ abstract public class AbstractAgent implements Participant
 		{
 			if (inputHandler.canHandle(i)) inputHandler.handle(i);
 		}
+		ec.logToErrorLog("AbstractAgent can not handle inputs of type " + i.getClass().getCanonicalName());
 	}
 
+	/**
+	 * 
+	 * @param cycle
+	 */
 	@Override
 	public final void setTime(long cycle)
 	{
@@ -238,6 +243,10 @@ abstract public class AbstractAgent implements Participant
 		this.msgQ.enqueue(input);
 	}
 
+	/**
+	 * 
+	 * @param input
+	 */
 	@Override
 	public final void enqueueInput(ArrayList<Input> input)
 	{
@@ -270,7 +279,15 @@ abstract public class AbstractAgent implements Participant
 	 * @param ec The <strong>default</strong> environment connector
 	 */
 	abstract protected void onInit(EnvironmentConnector ec);
+	/**
+	 * TODO: Documentation
+	 */
 	abstract protected void onActivate();
+	/**
+	 * TODO: Document
+	 * @return 
+	 */
+	abstract protected String chooseGroup();
 	/**
 	 * Function called to get the Agent to select what kind of food it would like
 	 * to hunt. It should use all the other information it has received to inform
@@ -281,8 +298,35 @@ abstract public class AbstractAgent implements Participant
 	 */
 	abstract protected Food chooseFood();
 	
+	/**
+	 * TODO: Documentation
+	 * @return 
+	 */
 	protected Set<Food> availableFoods()
 	{
 		return ec.availableFoods();
 	}
+
+	// TODO: Offer interfaces to other members of the enviroment connector
+	// TODO: that sub-classes should be allowed to use
+	// - Group lookup
+	// - Food lookup?
+	// - Agent lookup
+	// - Group type list
+
+	// TODO: Add function to get current group
+	// TODO: Add function to get last hunted food-stuff
+	// TODO: Add function to get latest order
+	// TODO: Add member to store the last order received (Type = Food)
+	// TODO: Add member to store the current group of the agent
+	// TODO: Add member to store current HuntingTeam
+	// TODO: Work out which of these members shoudl be stored in the datamodel
+	// TODO: MAke sure datamodel is private
+	// TODO: Maybe migrate some of the functions to the PublicDataModel
+	// TODO: Certinaly true of the Group 
+	// TODO: Add function to get current HuntingTeam
+	// TODO: Add hnadler for ApplicationResponse
+	// TODO: Add abstract callback for responses to group apllications
+	// TODO: Add handler for HuntOrder
+
 }

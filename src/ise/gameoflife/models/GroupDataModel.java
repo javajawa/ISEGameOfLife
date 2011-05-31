@@ -23,29 +23,12 @@ public class GroupDataModel extends APlayerDataModel
 	 * Array list of GroupDataModel members
 	 */
 	@ElementList
-	protected ArrayList<String> memberList;
+	public ArrayList<String> memberList;
 
 	@Deprecated
 	public GroupDataModel()
 	{
 		super();
-	}
-
-	/**
-	 * Adds a specific Agent to a GroupDataModel
-	 * @param agent The agent to add to the group
-	 */
-	protected	void addAgentToGroup(AbstractAgent agent){
-		memberList.add(agent.getId());
-	}
-	/**
-	 * Removes specific Agent from a GroupDataModel if Agent is member of that group
-	 * Returns false if Agent was not member of the group.
-	 * @param agent The agent to remove from the group
-	 * @return Whether an agent was removed
-	 */
-	protected boolean removeAgentFromGroup(AbstractAgent agent){
-		return memberList.remove(agent.getId());
 	}
 
 	/**
