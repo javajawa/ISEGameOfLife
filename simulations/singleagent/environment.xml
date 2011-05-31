@@ -8,9 +8,9 @@
       <agents/>
       <availableFoodTypes>
          <entry>
-            <string>59550aa5-24c9-4a6a-9cbd-b87663ac35cd</string>
+            <string>cdba7f55-7223-4ba5-9c54-d239269019c3</string>
             <food>
-               <id_string>59550aa5-24c9-4a6a-9cbd-b87663ac35cd</id_string>
+               <id_string>cdba7f55-7223-4ba5-9c54-d239269019c3</id_string>
                <name>rabbit</name>
                <nutrition>1.0</nutrition>
                <huntersRequired>1</huntersRequired>
