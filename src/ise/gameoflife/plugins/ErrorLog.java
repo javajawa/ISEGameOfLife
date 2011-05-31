@@ -1,6 +1,7 @@
 package ise.gameoflife.plugins;
 
 import ise.gameoflife.enviroment.Environment;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -224,17 +225,17 @@ public class ErrorLog extends JPanel implements Plugin
 	}
 
 	private final static long serialVersionUID = 1L;
-
 	private final static String label = "Error Log";
 
 	private Simulation sim;
+	private final JListModel data = new JListModel();
 
 	/**
 	 * Default constructor - does nothing.
 	 */
 	public ErrorLog()
 	{
-		// Nothing to see here. Move along, citizen!
+		super(new BorderLayout());
 	}
 
 	/**
@@ -264,11 +265,10 @@ public class ErrorLog extends JPanel implements Plugin
 	public void initialise(Simulation sim)
 	{
 		this.sim = sim;
+		this.add(new JList(data));
 
-		JListModel el = new JListModel();
-		this.add(new JList(el));
+		((Environment)sim.environment).setErrorLog(data);
 
-		((Environment)sim.environment).setErrorLog(el);
 		setBackground(Color.LIGHT_GRAY);
 	}
 
@@ -278,7 +278,7 @@ public class ErrorLog extends JPanel implements Plugin
 	@Override
 	public void execute()
 	{
-		// FIXME: Write execute code for ErrorLog Plugin
+		data.add(" ==== Cycle " + sim.getTime() + " Begins ==== ");
 	}
 
 	/**
@@ -298,7 +298,7 @@ public class ErrorLog extends JPanel implements Plugin
 	@Override
 	public void onSimulationComplete()
 	{
-		// FIXME: Write onSimulationComplete code for ErrorLog Plugin
+		data.add(" ==== Simulation Ended ==== ");
 	}
 
 }
