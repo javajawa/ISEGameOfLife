@@ -27,7 +27,7 @@ public class ErrorLog extends JPanel implements Plugin
 {
 
 	/**
-	 * TODO: Make all of these functions synchronised
+	 * 
 	 * TODO: Document each of these functions
 	 * TODO: Call inform listeners whenever dataset changes
 	 * TODO: Less shite implementation of this class
@@ -45,7 +45,7 @@ public class ErrorLog extends JPanel implements Plugin
 		/**
 		 * TODO: Spread this out to be better implementation
 		 */
-		private void informListeners()
+		synchronized private void informListeners()
 		{
 			for (ListDataListener l : listeners)
 			{
@@ -60,165 +60,165 @@ public class ErrorLog extends JPanel implements Plugin
 		}
 
 		@Override
-		public boolean add(String e)
+		synchronized public boolean add(String e)
 		{
 			informListeners();
 			return data.add(e);
 		}
 
 		@Override
-		public void add(int index, String element)
+		synchronized public void add(int index, String element)
 		{
 			data.add(index, element);
 		}
 
 		@Override
-		public boolean addAll(Collection<? extends String> c)
+		synchronized public boolean addAll(Collection<? extends String> c)
 		{
 			return data.addAll(c);
 		}
 
 		@Override
-		public boolean addAll(int index,
+		synchronized public boolean addAll(int index,
 						Collection<? extends String> c)
 		{
 			return data.addAll(index, c);
 		}
 
 		@Override
-		public void addListDataListener(ListDataListener l)
+		synchronized public void addListDataListener(ListDataListener l)
 		{
 			listeners.add(l);
 		}
 
 		@Override
-		public int getSize()
+		synchronized public int getSize()
 		{
 			return data.size();
 		}
 
 		@Override
-		public Object getElementAt(int index)
+		synchronized public Object getElementAt(int index)
 		{
 			return data.get(index);
 		}
 
 		@Override
-		public void removeListDataListener(ListDataListener l)
+		synchronized public void removeListDataListener(ListDataListener l)
 		{
 			listeners.remove(l);
 		}
 
 		@Override
-		public int size()
+		synchronized public int size()
 		{
 			return data.size();
 		}
 
 		@Override
-		public boolean isEmpty()
+		synchronized public boolean isEmpty()
 		{
 			return data.isEmpty();
 		}
 
 		@Override
-		public boolean contains(Object o)
+		synchronized public boolean contains(Object o)
 		{
 			return data.contains((String)o);
 		}
 
 		@Override
-		public Iterator<String> iterator()
+		synchronized public Iterator<String> iterator()
 		{
 			return data.iterator();
 		}
 
 		@Override
-		public Object[] toArray()
+		synchronized public Object[] toArray()
 		{
 			return data.toArray();
 		}
 
 		@Override
-		public <T> T[] toArray(T[] a)
+		synchronized public <T> T[] toArray(T[] a)
 		{
 			return data.toArray(a);
 		}
 
 		@Override
-		public boolean remove(Object o)
+		synchronized public boolean remove(Object o)
 		{
 			return data.remove((String)o);
 		}
 
 		@Override
-		public boolean containsAll(Collection<?> c)
+		synchronized public boolean containsAll(Collection<?> c)
 		{
 			return data.containsAll(c);
 		}
 
 		@Override
-		public boolean removeAll(Collection<?> c)
+		synchronized public boolean removeAll(Collection<?> c)
 		{
 			return data.removeAll(c);
 		}
 
 		@Override
-		public boolean retainAll(Collection<?> c)
+		synchronized public boolean retainAll(Collection<?> c)
 		{
 			return data.retainAll(c);
 		}
 
 		@Override
-		public void clear()
+		synchronized public void clear()
 		{
 			data.clear();
 		}
 
 		@Override
-		public String get(int index)
+		synchronized public String get(int index)
 		{
 			return data.get(index);
 		}
 
 		@Override
-		public String set(int index, String element)
+		synchronized public String set(int index, String element)
 		{
 			return data.set(index, element);
 		}
 
 		@Override
-		public String remove(int index)
+		synchronized public String remove(int index)
 		{
 			return data.remove(index);
 		}
 
 		@Override
-		public int indexOf(Object o)
+		synchronized public int indexOf(Object o)
 		{
 			return data.indexOf(o);
 		}
 
 		@Override
-		public int lastIndexOf(Object o)
+		synchronized public int lastIndexOf(Object o)
 		{
 			return data.lastIndexOf((String)o);
 		}
 
 		@Override
-		public ListIterator<String> listIterator()
+		synchronized public ListIterator<String> listIterator()
 		{
 			return data.listIterator();
 		}
 
 		@Override
-		public ListIterator<String> listIterator(int index)
+		synchronized public ListIterator<String> listIterator(int index)
 		{
 			return data.listIterator(index);
 		}
 
 		@Override
-		public List<String> subList(int fromIndex, int toIndex)
+		synchronized public List<String> subList(int fromIndex, int toIndex)
 		{
 			return data.subList(fromIndex, toIndex);
 		}
