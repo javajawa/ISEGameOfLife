@@ -2,37 +2,30 @@ package ise.gameoflife.plugins;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.File;
+import java.util.SortedSet;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
-import java.util.SortedSet;
-import java.io.File;
-
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.simpleframework.xml.Element;
-
 import presage.Plugin;
 import presage.Simulation;
 import presage.annotations.PluginConstructor;
-import presage.util.ObjectCloner;
-
-import ise.gameoflife.enviroment.EnvironmentDataModel;
 
 /**
  *
- * @author harry
+ * @author Harry Eakins
  */
-public class LineChartPlugin extends JPanel implements Plugin
+public final class LineChartPlugin extends JPanel implements Plugin
 {
 
 	private static final long serialVersionUID = 1L;
@@ -43,7 +36,6 @@ public class LineChartPlugin extends JPanel implements Plugin
 	private final static String label = "Num People";
 
 	private Simulation sim;
-	private EnvironmentDataModel dm;
 
 	@Element
 	private String outputpath;
@@ -52,8 +44,7 @@ public class LineChartPlugin extends JPanel implements Plugin
 	@Element
 	private int outputheight;
 
-	private XYSeriesCollection data;
-	private XYSeriesCollection datatempcopy;
+	private final XYSeriesCollection data = new XYSeriesCollection();;
 	private JPanel control = new JPanel();
 	private ChartPanel chartPanel;
 
@@ -96,80 +87,30 @@ public class LineChartPlugin extends JPanel implements Plugin
 	@Override
 	public void execute()
 	{
-
-		// simply get the environment datamodel
-		dm = (EnvironmentDataModel)sim.getEnvDataModel();
-
-		double population = getNumHunters();
-
-		synchronized (this)
+		// Make sure the chart isn't currently being updated
+		synchronized (data)
 		{
-
-			XYSeries series;
 			try
 			{
-				series = data.getSeries("population");
-				series.add(dm.time, population);
+				data.getSeries("population").add(sim.getTime(), getNumHunters());
 			}
 			catch (org.jfree.data.UnknownKeyException e)
 			{
-				series = new XYSeries("population");
+				XYSeries series = new XYSeries("population");
 				data.addSeries(series);
-				series.add(dm.time, population);
+				series.add(sim.getTime(), getNumHunters());
 			}
-
-			//if (dmodel.time % 100 == 0) {
-			// this will cause the gui to update?
 			updateChart();
-			//}
 		}
 	}
 
 	public void updateChart()
 	{
-
-		this.remove(chartPanel);
-
-		synchronized (this)
+		// Make sure the data set isn't currently being updated
+		synchronized (data)
 		{
-			datatempcopy = clonedata(data);
+			chartPanel.updateUI();
 		}
-
-		chartPanel = newChart(datatempcopy);
-
-		add(chartPanel, BorderLayout.CENTER);
-
-		chartPanel.updateUI();
-	}
-
-	public XYSeriesCollection clonedata(XYSeriesCollection data)
-	{
-
-		try
-		{
-			return (XYSeriesCollection)ObjectCloner.deepCopy(data);
-		}
-		catch (Exception e)
-		{
-			System.err.println("Exception in execute() - "
-							+ data.getClass().getCanonicalName()
-							+ " is not serializable" + e);
-			return null;
-		}
-	}
-
-	public ChartPanel newChart(XYSeriesCollection datatempcopy)
-	{
-
-		JFreeChart chart = ChartFactory.createXYLineChart(title, xaxis, yaxis,
-						datatempcopy, PlotOrientation.VERTICAL, true, true, false);
-
-		chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new java.awt.Dimension(this.getWidth(),
-						this.getHeight()));
-
-		return chartPanel;
-
 	}
 
 	@Override
@@ -194,11 +135,14 @@ public class LineChartPlugin extends JPanel implements Plugin
 
 		setBackground(Color.GRAY);
 
-		data = new XYSeriesCollection();
+		synchronized (data)
+		{
+			JFreeChart chart = ChartFactory.createXYLineChart(title, xaxis, yaxis,
+						data, PlotOrientation.VERTICAL, true, true, false);
 
-		datatempcopy = clonedata(data);
-
-		chartPanel = newChart(datatempcopy);
+			chartPanel = new ChartPanel(chart);
+			chartPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
+		}
 
 		//JLabel label = new JLabel("Graph will update every " + updaterate
 		//		+ " Simulation cycles, to update now click: ");
@@ -236,15 +180,19 @@ public class LineChartPlugin extends JPanel implements Plugin
 
 		this.removeAll();
 
-		synchronized (this)
+		synchronized (data)
 		{
-			chartPanel = newChart(data);
+			JFreeChart chart = ChartFactory.createXYLineChart(title, xaxis, yaxis,
+						data, PlotOrientation.VERTICAL, true, true, false);
+
+			chartPanel = new ChartPanel(chart);
+			chartPanel.setPreferredSize(new Dimension(outputwidth, outputheight));
+
+			chartPanel.updateUI();
 		}
 
 		this.setLayout(new BorderLayout());
 		add(chartPanel, BorderLayout.CENTER);
-
-		chartPanel.updateUI();
 
 		File file;
 
