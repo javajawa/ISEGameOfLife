@@ -25,7 +25,7 @@ import presage.annotations.PluginConstructor;
  *
  * @author Harry Eakins
  */
-public final class LineChartPlugin extends JPanel implements Plugin
+public final class HuntersAlivePlugin extends JPanel implements Plugin
 {
 
 	private static final long serialVersionUID = 1L;
@@ -54,13 +54,13 @@ public final class LineChartPlugin extends JPanel implements Plugin
 	 * @deprecated Serialisation constructor
 	 */
 	@Deprecated
-	public LineChartPlugin()
+	public HuntersAlivePlugin()
 	{
 		// Nothing to see here. Move along, citizen.
 	}
 
 	/**
-	 * Creates a new instance of the LineChartPlugin
+	 * Creates a new instance of the HuntersAlivePlugin
 	 * @param outputpath Path to write the final image to
 	 * @param outputwidth Width of the outputted image
 	 * @param outputheight Height of the outputted image
@@ -69,7 +69,7 @@ public final class LineChartPlugin extends JPanel implements Plugin
 	{
 		"outputpath", "outputwidth", "outputheight"
 	})
-	public LineChartPlugin(String outputpath, int outputwidth,
+	public HuntersAlivePlugin(String outputpath, int outputwidth,
 					int outputheight)
 	{
 		super();

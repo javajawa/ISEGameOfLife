@@ -3,7 +3,7 @@ package ise.gameoflife.simulatons;
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.enviroment.EnvironmentDataModel;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.plugins.LineChartPlugin;
+import ise.gameoflife.plugins.HuntersAlivePlugin;
 import java.io.File;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -47,7 +47,7 @@ public class SingleAgent
 		// All the big objects
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 		PluginManager pm = new PluginManager();
-                pm.addPlugin(new LineChartPlugin(configPath + "/percentinfected.png",1900, 1200));
+                pm.addPlugin(new HuntersAlivePlugin(configPath + "/percentinfected.png",1900, 1200));
 
 		EventScriptManager ms = new EventScriptManager();
 
