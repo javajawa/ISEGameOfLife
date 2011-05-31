@@ -214,8 +214,13 @@ abstract public class AbstractAgent implements Participant
 		{
 			if (inputHandler.canHandle(i)) inputHandler.handle(i);
 		}
+		ec.logToErrorLog("AbstractAgent can not handle inputs of type " + i.getClass().getCanonicalName());
 	}
 
+	/**
+	 * 
+	 * @param cycle
+	 */
 	@Override
 	public final void setTime(long cycle)
 	{
@@ -238,6 +243,10 @@ abstract public class AbstractAgent implements Participant
 		this.msgQ.enqueue(input);
 	}
 
+	/**
+	 * 
+	 * @param input
+	 */
 	@Override
 	public final void enqueueInput(ArrayList<Input> input)
 	{
