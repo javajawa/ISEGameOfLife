@@ -29,7 +29,6 @@ public class ErrorLog extends JPanel implements Plugin
 
 	/**
 	 * Returns the Label
-	 * TODO: Move this to a private final static field
 	 * @return 
 	 */
 	@Override
@@ -39,7 +38,6 @@ public class ErrorLog extends JPanel implements Plugin
 	}
 
 	/**Returns the Short Label
-	 * TODO: Move this to a private final static field
 	 * @return 
 	 */
 	@Override
