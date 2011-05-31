@@ -69,12 +69,14 @@ public class ErrorLog extends JPanel implements Plugin
 		@Override
 		synchronized public void add(int index, String element)
 		{
+			informListeners();
 			data.add(index, element);
 		}
 
 		@Override
 		synchronized public boolean addAll(Collection<? extends String> c)
 		{
+			informListeners();
 			return data.addAll(c);
 		}
 
@@ -82,6 +84,7 @@ public class ErrorLog extends JPanel implements Plugin
 		synchronized public boolean addAll(int index,
 						Collection<? extends String> c)
 		{
+			informListeners();
 			return data.addAll(index, c);
 		}
 
@@ -148,6 +151,7 @@ public class ErrorLog extends JPanel implements Plugin
 		@Override
 		synchronized public boolean remove(Object o)
 		{
+			informListeners();
 			return data.remove((String)o);
 		}
 
@@ -160,6 +164,7 @@ public class ErrorLog extends JPanel implements Plugin
 		@Override
 		synchronized public boolean removeAll(Collection<?> c)
 		{
+			informListeners();
 			return data.removeAll(c);
 		}
 
@@ -172,6 +177,7 @@ public class ErrorLog extends JPanel implements Plugin
 		@Override
 		synchronized public void clear()
 		{
+			informListeners();
 			data.clear();
 		}
 
@@ -190,6 +196,7 @@ public class ErrorLog extends JPanel implements Plugin
 		@Override
 		synchronized public String remove(int index)
 		{
+			informListeners();
 			return data.remove(index);
 		}
 
