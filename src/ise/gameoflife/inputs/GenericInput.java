@@ -4,8 +4,7 @@ import presage.Input;
 
 /**
  * TODO: Fix the documentation - remember, each thing should have it's own
- * TODO: block - I'm looking at you, timestamp and performative. Also, none of 
- * TODO: the parameters are documented
+ * TODO: block. Also, none of the parameters are documented
  * Base class for dealing with inputs, which implements all the required 
  * functions
  * @author Benedict Harcourt
@@ -15,10 +14,12 @@ abstract class GenericInput implements Input
 	/**
 	 * Timestamp: the time at which the input event occurred, in terms of 
 	 * simulation time
+	 */
+	protected long timestamp;
+	/**
 	 * Performative: A String describing the current state/action of the input
 	 * eg: when an ActionError occurs, the performative is set to "ActionError"
 	 */
-	protected long timestamp;
 	protected String performative;
 	
 /**

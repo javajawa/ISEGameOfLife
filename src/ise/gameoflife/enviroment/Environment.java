@@ -1,9 +1,12 @@
 package ise.gameoflife.enviroment;
 
+import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.actions.Death;
+import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntResult;
+import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -28,6 +31,30 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
+	/**
+	 * Passes on group applications
+	 */
+	public class ApplyToGroupHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(ApplyToGroup.class));
+		}
+		
+		@Override
+		public Input handle(Action action, String actorID)
+		{
+			sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
+			System.out.println("I, agent " + actorID + ", have attempted to join group " + ((ApplyToGroup)action).getGroup());
+			return null;
+		}
+		
+		public ApplyToGroupHandler(){
+			//Nothing to see here, move along citizen.
+		}
+	}
+	
 /**
 	 * Kills (deActivates) Agents
 	 */
