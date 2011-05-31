@@ -4,6 +4,7 @@ import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.enviroment.EnvironmentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
+import ise.gameoflife.plugins.databasePlugin;
 import java.io.File;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -47,7 +48,8 @@ public class DoubleAgent {
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 		PluginManager pm = new PluginManager();
                 pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png",1500, 1200));
-
+		pm.addPlugin(new databasePlugin(configPath + "/simulation.db"));
+		
 		EventScriptManager ms = new EventScriptManager();
 
 		TestAgent a = new TestAgent(20, 5);
