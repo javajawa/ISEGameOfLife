@@ -14,6 +14,7 @@ import presage.EnvDataModel;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
+import presage.environment.AEnvDataModel;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
 import presage.environment.messages.ENVRegisterRequest;
@@ -90,14 +91,13 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 	
-	@Element
-	protected EnvironmentDataModel dmodel;
-
 	/**
-	 * A reference to the simulation that we're part of, for the purpose of
-	 * adding participants etc.
+	 * Reference to the data model, of the class which it will actually be.
+	 * Hides the {@link AEnvDataModel} in the {@link AbstractEnvironment}
 	 */
-	protected Simulation sim;
+	@Element
+	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
+	protected EnvironmentDataModel dmodel;
 	
 	@Deprecated
 	public Environment()
