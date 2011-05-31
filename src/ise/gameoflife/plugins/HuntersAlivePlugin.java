@@ -22,7 +22,9 @@ import presage.Simulation;
 import presage.annotations.PluginConstructor;
 
 /**
- *
+ * Simple graph plugin, based on the org.jfree.chart libraries, that plots a
+ * line graph of population vs simulation time. The graph is save to a file on
+ * the completion of the simulation
  * @author Harry Eakins
  */
 public final class HuntersAlivePlugin extends JPanel implements Plugin
@@ -84,6 +86,10 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		return participantIdSet.size();
 	}
 
+	/**
+	 * Run per-step-in-simulation code that changes the plugin's state. In this
+	 * case, we add a new data point to our series, and then update the char view
+	 */
 	@Override
 	public void execute()
 	{
@@ -104,7 +110,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		}
 	}
 
-	public void updateChart()
+	private void updateChart()
 	{
 		// Make sure the data set isn't currently being updated
 		synchronized (data)
@@ -113,6 +119,10 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		}
 	}
 
+	/**
+	 * Returns the label of this plugin
+	 * @return The label of this plugin
+	 */
 	@Override
 	public String getLabel()
 	{
@@ -120,12 +130,21 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		return label;
 	}
 
+	/**
+	 * Returns the short label of this plugin
+	 * @return The short label of this plugin
+	 */
 	@Override
 	public String getShortLabel()
 	{
 		return label;
 	}
 
+	/**
+	 * Initialises a plugin that was stored using the SimpleXML framework, making
+	 * it ready to be used in the visualisation of a simulation
+	 * @param sim The simulation to which this plugin will belong
+	 */
 	@Override
 	public void initialise(Simulation sim)
 	{
@@ -168,12 +187,21 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		add(chartPanel, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Is not used by simulation
+	 * @deprecated Not used by any calling class
+	 */
+	@Deprecated
 	@Override
 	public void onDelete()
 	{
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * Preforms actions when a simulation has run to completion, such as
+	 * outputting the graph to a file for later viewing
+	 */
 	@Override
 	public void onSimulationComplete()
 	{
