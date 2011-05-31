@@ -29,7 +29,6 @@ public class ErrorLog extends JPanel implements Plugin
 	/**
 	 * 
 	 * TODO: Document each of these functions
-	 * TODO: Call inform listeners whenever dataset changes
 	 * TODO: Less shite implementation of this class
 	 */
 	private final class JListModel implements ListModel, List<String>
