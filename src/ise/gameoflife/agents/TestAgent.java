@@ -37,7 +37,7 @@ public class TestAgent extends AbstractAgent
 	{
 		Food bestSoFar = null;
 
-		for (Food noms : ec.availableFoods())
+		for (Food noms : availableFoods())
 		{
 			if (noms.getHuntersRequired() <= 1)
 			{
