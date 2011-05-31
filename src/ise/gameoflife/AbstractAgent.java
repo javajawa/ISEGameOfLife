@@ -45,6 +45,7 @@ abstract public class AbstractAgent implements Participant
 			{
 				System.out.println("I, agent, " + getId() + ", am starving to death!");
 				ec.act(new Death(), dm.getId(), authCode);
+				dm.foodConsumed(dm.getFoodConsumption() + 1);
 			}
 			else
 			{
@@ -182,6 +183,9 @@ abstract public class AbstractAgent implements Participant
 		{
 			handleInput(msgQ.dequeue());
 		}
+
+		// Check to see if we died due to a message in the queue
+		if (this.dm.getFoodInPossesion() < 0) return;
 
 		// Output how much food we have.
 		System.out.println("I, agent " + this.getId() + ", have " + this.dm.getFoodInPossesion() + " units of food remaining");
