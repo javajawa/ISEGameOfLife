@@ -18,10 +18,5 @@ public class RunSimulation
 	public static void main(String args[])
 	{
 		ControlCenter.main(args);
-		
-		PluginManager pm = new PluginManager();
-		pm.addPlugin(new ErrorLog());
-		
-
 	}
 }

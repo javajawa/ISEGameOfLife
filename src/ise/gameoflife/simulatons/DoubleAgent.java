@@ -3,6 +3,7 @@ package ise.gameoflife.simulatons;
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.enviroment.EnvironmentDataModel;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import java.io.File;
 import java.util.HashMap;
@@ -44,9 +45,11 @@ public class DoubleAgent {
 		presageConfig.setEnvironmentConfigPath(configPath + "/environment.xml");
 
 		// All the big objects
-		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 		PluginManager pm = new PluginManager();
-                pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png",1500, 1200));
+    pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png",1500, 1200));
+		pm.addPlugin(new ErrorLog());
+
+		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 
 		EventScriptManager ms = new EventScriptManager();
 
