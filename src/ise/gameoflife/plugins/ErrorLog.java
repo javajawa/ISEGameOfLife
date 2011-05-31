@@ -1,6 +1,5 @@
 package ise.gameoflife.plugins;
 
-import example.ExampleEnvDataModel;
 import java.awt.Color;
 import javax.swing.JPanel;
 import presage.Plugin;
@@ -30,6 +29,7 @@ public class ErrorLog extends JPanel implements Plugin
 	 * TODO: Move this to a private final static field
 	 * @return 
 	 */
+	@Override
 	public String getLabel()
 	{
 		return "ErrorLog";
@@ -40,11 +40,17 @@ public class ErrorLog extends JPanel implements Plugin
 	 * TODO: Move this to a private final static field
 	 * @return 
 	 */
+	@Override
 	public String getShortLabel()
 	{
 		return "ErrorLog";
 	}
 
+	/**
+	 * TODO: Documentation
+	 * @param sim
+	 */
+	@Override
 	public void initialise(Simulation sim)
 	{
 		System.out.println(" ErrorLog Initialising....");
@@ -72,6 +78,9 @@ public class ErrorLog extends JPanel implements Plugin
 		// Nothing to see here. Move along, citizen!
 	}
 
+	/**
+	 * TODO: Documentation
+	 */
 	@Override
 	public void onSimulationComplete()
 	{
