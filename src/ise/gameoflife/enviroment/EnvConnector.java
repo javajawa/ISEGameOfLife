@@ -108,4 +108,9 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		return e.isAgentId(id);
 	}
+	
+	public boolean isGroupId(String gid)
+	{
+		return e.isGroupId(gid);
+	}
 }

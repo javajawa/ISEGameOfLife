@@ -356,4 +356,15 @@ public class Environment extends AbstractEnvironment
 		return sim.isParticipantActive(id);
 	}
 
+	boolean isGroupId(String gid)
+	{
+		if (sim.isParticipantActive(gid)){
+			if (sim.getPlayer(gid) instanceof AbstractGroupAgent)
+			{
+				return true;
+			}
+		} 
+		return false;
+	}  
+		
 }

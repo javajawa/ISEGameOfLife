@@ -91,4 +91,8 @@ public class PublicEnvironmentConnection
 		return ec.isAgentId(id);
 	}
 
+	public boolean isGroupId(String gid)
+	{
+		return ec.isGroupId(gid);
+	}
 }
