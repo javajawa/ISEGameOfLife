@@ -8,6 +8,7 @@ import ise.gameoflife.enviroment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -98,6 +99,9 @@ abstract public class AbstractAgent implements Participant
 	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
 
 	private Food lastHunted = null;
+	
+	private HuntingTeam huntingTeam = null;
+	private Food lastOrderReceived = null;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present.
@@ -328,17 +332,23 @@ abstract public class AbstractAgent implements Participant
 	 */
 	abstract protected Food chooseFood();
 
-	// TODO: Add function to get current group
-	// TODO: Add function to get last hunted food-stuff
+	/**
+	 * @return The food the agent decided to hunt on the previous turn
+	 */
+	public final Food getLastHunted()
+	{
+		return lastHunted;
+	}
+	
+	public final HuntingTeam getHuntingTeam() {
+		return huntingTeam;
+	}
+	
 	// TODO: Add function to get latest order
-	// TODO: Add member to store the last order received (Type = Food)
-	// TODO: Add member to store the current group of the agent
-	// TODO: Add member to store current HuntingTeam
 	// TODO: Work out which of these members shoudl be stored in the datamodel
 	// TODO: MAke sure datamodel is private
 	// TODO: Maybe migrate some of the functions to the PublicDataModel
 	// TODO: Certinaly true of the Group 
-	// TODO: Add function to get current HuntingTeam
 	// TODO: Add hnadler for ApplicationResponse
 	// TODO: Add abstract callback for responses to group apllications
 	// TODO: Add handler for HuntOrder

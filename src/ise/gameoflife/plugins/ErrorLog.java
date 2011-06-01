@@ -29,7 +29,7 @@ public class ErrorLog extends JPanel implements Plugin
 	/**
 	 * 
 	 * TODO: Document each of these functions
-	 * TODO: Less shite implementation of this class
+	 * TODO: Less s****e implementation of this class
 	 */
 	private final class JListModel implements ListModel, List<String>
 	{
