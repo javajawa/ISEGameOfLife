@@ -3,6 +3,7 @@ package ise.gameoflife.participants;
 import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.enviroment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.inputs.LeaveNotification;
@@ -50,7 +51,8 @@ public abstract class AbstractGroupAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
-	protected EnvConnector ec;
+	protected PublicEnvironmentConnection conn;
+	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
 	
 	private Map<String, Double> huntResult;
@@ -79,7 +81,8 @@ public abstract class AbstractGroupAgent implements Participant
 
 		// TODO: Add input handlers here
 		
-		onInit(environmentConnector);
+		conn = PublicEnvironmentConnection.getInstance();
+		onInit();
 	}
 
 	@Override
@@ -203,10 +206,7 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public final void enqueueInput(ArrayList<Input> input)
 	{
-		for (Input in : input)
-		{
-			enqueueInput(in);
-		}
+		for (Input in : input) enqueueInput(in);
 	}
 
 	@Override
@@ -219,7 +219,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 * TODO: Document
 	 * @param ec
 	 */
-	abstract protected void onInit(EnvironmentConnector ec);
+	abstract protected void onInit();
 	/**
 	 * TODO: Document
 	 */
