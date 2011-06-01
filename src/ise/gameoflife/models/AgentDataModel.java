@@ -105,11 +105,19 @@ public class AgentDataModel extends APlayerDataModel
 		return new PublicAgentDataModel(this);
 	}
 
+	/**
+	 * Returns the group ID of the agent
+	 * @return 
+	 */
 	public String getGroupId()
 	{
 		return groupId;
 	}
 
+	/**
+	 * assigns the agent to a specified group
+	 * @param gid 
+	 */
 	public void setGroup(String gid)
 	{
 		this.groupId = gid;
@@ -118,6 +126,6 @@ public class AgentDataModel extends APlayerDataModel
 	@Override
 	public void onInitialise()
 	{
-		// TODO: Do things here :)
+		//Nothing to see here. Move along, citizen!
 	}
 }
