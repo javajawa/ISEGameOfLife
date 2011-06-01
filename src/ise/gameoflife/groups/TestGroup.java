@@ -15,6 +15,12 @@ public class TestGroup extends AbstractGroupAgent
 {
 	private static final long serialVersionUID = 1L;
 
+	@Deprecated
+	public TestGroup()
+	{
+		super();
+	}
+
 	@Override
 	protected void onInit()
 	{
