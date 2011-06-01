@@ -49,8 +49,8 @@ public class PublicEnvironmentConnection
 	}
 
 	/**
-	 * TODO: Documentation
-	 * @return
+	 * Finds what food types are available to hunt
+	 * @return set of available foods
 	 */
 	public Set<Food> availableFoods()
 	{
