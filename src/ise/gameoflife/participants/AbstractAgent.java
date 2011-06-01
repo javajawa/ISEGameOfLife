@@ -199,6 +199,8 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new HuntResultHandler());
 		this.handlers.add(new HuntOrderHandler());
 		this.handlers.add(new ApplicationResponseHandler());
+
+		conn = PublicEnvironmentConnection.getInstance();
 		onInit();
 	}
 
@@ -209,7 +211,6 @@ abstract public class AbstractAgent implements Participant
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
-		conn = PublicEnvironmentConnection.getInstance();
 		tmp_ec = null;
 		onActivate();
 	}
@@ -276,10 +277,7 @@ abstract public class AbstractAgent implements Participant
 	{
 		String gid = chooseGroup();
 		// TODO: Check string corrosponds to valid group
-		if (gid != null)
-		{
-			ec.act(new ApplyToGroup(gid), getId(), authCode);
-		}
+		ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
 	private void doHuntTurn()
@@ -345,7 +343,7 @@ abstract public class AbstractAgent implements Participant
 	/**
 	 * Get the next random number in the sequence as a double uniformly
 	 * distributed between 0 and 1
-	 * @return NExt random number
+	 * @return Next random number
 	 */
 	public final double uniformRand()
 	{
@@ -353,26 +351,32 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	/**
-	 * Called after the initialising the agent, allowing subclassses to initialise
+	 * Called after the initialising the agent, allowing subclasses to initialise
 	 * any more data.
 	 */
 	abstract protected void onInit();
 	/**
-	 * TODO: Documentation
+	 * Called when the agent has been activated, similar to init, but with access
+	 * to the environment connector
 	 */
 	abstract protected void onActivate();
 	/**
-	 * TODO: Documentation
+	 * Used to implement any code necessary before all properties of the current
+	 * round are deleted to make way for a newer, fresher, more flexible
+	 * round to begin.
 	 */
 	abstract protected void beforeNewRound();
 	/**
-	 * TODO: Document
-	 * @return 
+	 * Magic heuristic to select which Group the agent wishes to be a part of
+	 * for the next round.
+	 * @return string titling the desired group
 	 */
 	abstract protected String chooseGroup();
 	/**
-	 * TODO: Document
-	 * @param accepted 
+	 * Called once the environment has issued a response to the application
+	 * to join a group. Also states whether or not the application has been
+	 * successful. Does not say if the agent has a backup group, with lower
+	 * entry requirements.
 	 */
 	abstract protected void groupApplicationResponse(boolean accepted);
 	/**
@@ -400,7 +404,6 @@ abstract public class AbstractAgent implements Participant
 		return huntingTeam;
 	}
 	
-	// TODO: Add function to get latest order
 	// TODO: Work out which of these members shoudl be stored in the datamodel
 	// TODO: MAke sure datamodel is private
 	// TODO: Maybe migrate some of the functions to the PublicDataModel
