@@ -95,7 +95,7 @@ public class HunterListPlugin extends JPanel implements Plugin
 	@Override
 	public void onSimulationComplete()
 	{
-		// TODO: Anything here?
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override

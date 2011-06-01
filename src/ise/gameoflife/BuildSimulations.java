@@ -4,12 +4,12 @@ import ise.gameoflife.simulatons.AgentsAndGroup;
 import ise.gameoflife.simulatons.DoubleAgent;
 import ise.gameoflife.simulatons.SingleAgent;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * TODO: Documentation
+ * Magic simulation building class
+ * Add classes to the simulationClasses const to have them auto-compiled
  * @author Benedict
  */
 final class BuildSimulations

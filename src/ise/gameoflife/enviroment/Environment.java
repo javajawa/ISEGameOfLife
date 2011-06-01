@@ -261,7 +261,7 @@ public class Environment extends AbstractEnvironment
 	protected void onInitialise(Simulation sim)
 	{
 		this.sim = sim;
-		// TODO: Add message handlers
+
 		this.actionhandlers.add(new HuntHandler());
 		this.actionhandlers.add(new DeathHandler());
 		this.actionhandlers.add(new ApplyToGroupHandler());
@@ -314,16 +314,22 @@ public class Environment extends AbstractEnvironment
 
 	void logToErrorLog(String s)
 	{
-		// TODO: Do something better than just dropping the message when errorLog is not set
-		if (this.errorLog == null) return;
+		if (this.errorLog == null)
+		{
+			System.err.println(s);
+			return;
+		}
 
 		this.errorLog.add(s);
 	}
 
 	void logToErrorLog(Throwable s)
 	{
-		// TODO: Do something better than just dropping the message when errorLog is not set
-		if (this.errorLog == null) return;
+		if (this.errorLog == null)
+		{
+			System.err.println(s.getMessage());
+			return;
+		}
 
 		this.errorLog.add(s.getMessage());
 	}

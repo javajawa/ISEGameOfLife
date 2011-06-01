@@ -242,7 +242,7 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public void onSimulationComplete()
 	{
-		// TODO: Need anything here?
+		// Nothing to see here. Move along, citizen!
 	}
 
 	/**
