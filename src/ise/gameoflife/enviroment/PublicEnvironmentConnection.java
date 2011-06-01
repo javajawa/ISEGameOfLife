@@ -65,7 +65,7 @@ public class PublicEnvironmentConnection
 		return ec.availableFoods();
 	}
 
-	List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
+	public List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
 	{
 		return ec.getAllowedGroupTypes();
 	}
@@ -75,11 +75,20 @@ public class PublicEnvironmentConnection
 		return ec.getAvailableGroups();
 	}
 
-	// TODO: Offer interfaces to other members of the enviroment connector
-	// TODO: that sub-classes should be allowed to use
-	// - Group lookup
-	// - Food lookup?
-	// - Agent lookup
-	// - Group type list
+	public String createGroup(Class<? extends AbstractGroupAgent> type)
+	{
+		return ec.createGroup(type);
+	}
+
+	/**
+	 * Determines whether a string represents the id of an active agent in this
+	 * simulation
+	 * @param id The id to check
+	 * @return Whether this is the id of an active Agent in the system
+	 */
+	public boolean isAgentId(String id)
+	{
+		return ec.isAgentId(id);
+	}
 
 }

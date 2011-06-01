@@ -355,4 +355,10 @@ public class Environment extends AbstractEnvironment
 	{
 		return dmodel.getAllowedGroupTypes();
 	}
+
+	boolean isAgentId(String id)
+	{
+		return sim.isParticipantActive(id);
+	}
+
 }

@@ -98,4 +98,14 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		return e.getAvailableGroups();
 	}
+
+	public String createGroup(Class<? extends AbstractGroupAgent> type)
+	{
+		return e.createGroup(type);
+	}
+
+	public boolean isAgentId(String id)
+	{
+		return e.isAgentId(id);
+	}
 }
