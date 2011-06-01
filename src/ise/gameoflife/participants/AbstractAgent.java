@@ -200,16 +200,14 @@ abstract public class AbstractAgent implements Participant
 				// TODO: Write GroupSelect logic
 				break;
 			case TeamSelect:
-				// TODO: Write Team Select logic (if any?)
+				// This is the group's move
 				break;
 			case GoHunt:
 				doHuntTurn();
 				break;
 			case HuntResults:
-				// TODO: Write HuntResults logic (if any?)
+				// This is the group's move
 				break;
-			case DistributeFood:
-				// TODO: Write DistributeFood logic (if any?)
 		}
 	}
 
