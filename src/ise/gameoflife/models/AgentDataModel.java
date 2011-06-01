@@ -26,16 +26,11 @@ public class AgentDataModel extends APlayerDataModel
 	private double foodConsumption;
 
 	/**
-	 * The group that this agent currently belongs to.
-	 * It will be null if the agent does not belong to a group
-	 */
-	private GroupDataModel group;
-	/**
 	 * Field that holds the id of {@link #group}
 	 * Will be null if {@link #group} is null
 	 */
 	@Element(required=false)
-	private UUID groupId;
+	private String groupId;
 
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
@@ -64,16 +59,6 @@ public class AgentDataModel extends APlayerDataModel
 		super(myId, roles, playerClass, randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
-	}
-
-	/**
-	 * Code being called after all XML-reading
-	 * @param environmentConnector The connector to the environment we are in
-	 */
-	public void initialise(EnvConnector environmentConnector)
-	{
-		super.initialise(environmentConnector);
-		this.group = environmentConnector.getGroupById(this.groupId);
 	}
 
 	/**
@@ -120,9 +105,14 @@ public class AgentDataModel extends APlayerDataModel
 		return new PublicAgentDataModel(this);
 	}
 
-	public UUID getGroupId()
+	public String getGroupId()
 	{
 		return groupId;
+	}
+
+	public void setGroup(String gid)
+	{
+		this.groupId = gid;
 	}
 
 	@Override
