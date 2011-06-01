@@ -1,5 +1,6 @@
 package ise.gameoflife;
 
+import ise.gameoflife.simulatons.AgentsAndGroup;
 import ise.gameoflife.simulatons.DoubleAgent;
 import ise.gameoflife.simulatons.SingleAgent;
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +17,8 @@ final class BuildSimulations
 
 	private static final Class<?>[] simulationClasses = {
 		SingleAgent.class,
-		DoubleAgent.class
+		DoubleAgent.class,
+		AgentsAndGroup.class
 	};
 	
 	private BuildSimulations()

@@ -1,11 +1,14 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.enviroment.PublicEnvironmentConnection;
+import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -53,8 +56,8 @@ abstract public class AbstractAgent implements Participant
 			}
 			else
 			{
-			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
-			dm.foodConsumed(dm.getFoodConsumption());
+				System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
+				dm.foodConsumed(dm.getFoodConsumption());
 			}
 		}
 	}
@@ -75,7 +78,45 @@ abstract public class AbstractAgent implements Participant
 			System.out.println("I, agent " + getId() + ", received " + in.getNutritionValue() + " by hunting " + lastHunted.getName());
 			dm.foodAquired(in.getNutritionValue());
 		}
-		
+	}
+
+	private class HuntOrderHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof HuntOrder);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final HuntOrder in = (HuntOrder)input;
+			lastOrderReceived = in.getOrder();
+			huntingTeam = in.getTeam();
+		}
+	}
+
+	private class ApplicationResponseHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof ApplicationResponse);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final ApplicationResponse in = (ApplicationResponse)input;
+			if (in.wasAccepted())
+			{
+				dm.setGroup(in.getGroup());
+			}
+			groupApplicationResponse(true);
+		}
 	}
 
 	/**
@@ -148,7 +189,7 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	@Override
-	public void initialise(EnvironmentConnector environmentConnector)
+	public final void initialise(EnvironmentConnector environmentConnector)
 	{
 		System.out.println(environmentConnector.getClass().getCanonicalName());
 		tmp_ec = environmentConnector;
@@ -156,6 +197,8 @@ abstract public class AbstractAgent implements Participant
 
 		this.handlers.add(new ConsumeFoodHandler());
 		this.handlers.add(new HuntResultHandler());
+		this.handlers.add(new HuntOrderHandler());
+		this.handlers.add(new ApplicationResponseHandler());
 
 		conn = PublicEnvironmentConnection.getInstance();
 		onInit();
@@ -175,7 +218,7 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void onDeActivation()
 	{
-		ec.deregister(new UnregisterRequest(dm.getId(), dm.getGroupId()));
+		ec.deregister(new UnregisterRequest(dm.getId(), authCode));
 	}
 
 	@Override
@@ -197,7 +240,7 @@ abstract public class AbstractAgent implements Participant
 		switch (turn)
 		{
 			case GroupSelect:
-				// TODO: Write GroupSelect logic
+				doGroupSelect();
 				break;
 			case TeamSelect:
 				// This is the group's move
@@ -228,6 +271,13 @@ abstract public class AbstractAgent implements Participant
 	{
 		// TODO: Clear any data that is reound sepecific
 		// EG the last order, thing hunted, etc. etc.
+	}
+
+	private void doGroupSelect()
+	{
+		String gid = chooseGroup();
+		// TODO: Check string corrosponds to valid group
+		ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
 	private void doHuntTurn()
@@ -302,9 +352,7 @@ abstract public class AbstractAgent implements Participant
 
 	/**
 	 * Called after the initialising the agent, allowing subclassses to initialise
-	 * any more data. The primary environment connector will not be available at
-	 * this point, but rather when the agent is activated
-	 * @param ec The <strong>default</strong> environment connector
+	 * any more data.
 	 */
 	abstract protected void onInit();
 	/**
@@ -320,6 +368,10 @@ abstract public class AbstractAgent implements Participant
 	 * @return 
 	 */
 	abstract protected String chooseGroup();
+	/**
+	 * TODO: Document
+	 */
+	abstract protected void groupApplicationResponse(boolean accepted);
 	/**
 	 * Function called to get the Agent to select what kind of food it would like
 	 * to hunt. It should use all the other information it has received to inform

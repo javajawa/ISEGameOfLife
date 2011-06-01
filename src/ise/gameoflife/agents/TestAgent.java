@@ -1,10 +1,7 @@
 package ise.gameoflife.agents;
 
-import ise.gameoflife.enviroment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
-import java.security.spec.ECField;
-import presage.EnvironmentConnector;
 
 /**
  * Test agent of joy!
@@ -80,5 +77,12 @@ public class TestAgent extends AbstractAgent
 	{
 		return null;
 		//throw new UnsupportedOperationException("Not supported yet.");
-	}	
+	}
+
+	@Override
+	protected void groupApplicationResponse(boolean accepted)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
 }

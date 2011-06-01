@@ -11,6 +11,7 @@ import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.Action;
 import presage.EnvDataModel;
+import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
@@ -303,5 +305,19 @@ public class Environment extends AbstractEnvironment
 	public int getCyclesPassed()
 	{
 		return dmodel.getCyclesPassed();
+	}
+
+	String createGroup(Class<? extends AbstractGroupAgent> groupType)
+	{
+		AbstractGroupAgent g = dmodel.createGroup(groupType);
+		g.initialise(new EnvironmentConnector(this));
+		sim.addParticipant(g);
+		sim.activateParticipant(g.getId());
+		return g.getId();
+	}
+
+	List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
+	{
+		return dmodel.getAllowedGroupTypes();
 	}
 }

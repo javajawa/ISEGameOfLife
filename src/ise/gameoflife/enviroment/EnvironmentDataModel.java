@@ -7,6 +7,7 @@ import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.TurnType;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,13 +67,29 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super();
 	}
 
-	public EnvironmentDataModel(String environmentname, HashMap<String, Food> availableFoodTypes)
+	public EnvironmentDataModel(String environmentName, HashMap<String, Food> availableFoodTypes)
 	{
-		super(environmentname, "ISE Game of Life Enviroment Data Model", 0);
+		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
-		this.turn = TurnType.firstTurn;
+
 		this.agentGroups = new HashMap<String, GroupDataModel>();
 		this.allowedGroupTypes = new ArrayList<Class<? extends AbstractGroupAgent>>();
+
+		this.turn = TurnType.firstTurn;
+		this.cycles = 0;
+	}
+
+	public EnvironmentDataModel(String environmentName,
+					HashMap<String, Food> availableFoodTypes,
+					List<Class<? extends AbstractGroupAgent>> allowedGroupTypes)
+	{
+		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
+		this.availableFoodTypes = availableFoodTypes;
+
+		this.agentGroups = new HashMap<String, GroupDataModel>();
+		this.allowedGroupTypes = new ArrayList<Class<? extends AbstractGroupAgent>>(allowedGroupTypes);
+
+		this.turn = TurnType.firstTurn;
 		this.cycles = 0;
 	}
 
@@ -138,4 +155,25 @@ public class EnvironmentDataModel extends AEnvDataModel
 		return cycles;
 	}
 
+	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> groupType)
+	{
+		if (allowedGroupTypes.contains(groupType))
+		{
+			try
+			{
+				Constructor<? extends AbstractGroupAgent> cons = groupType.getConstructor(GroupDataModel.class);
+				GroupDataModel dm = GroupDataModel.createNew();
+
+				return cons.newInstance(dm);
+			}
+			catch (Throwable ex)
+			{
+				throw new IllegalArgumentException("Unable to create group - no public constructor with single GroupDataModel argument", ex);
+			}
+		}
+		else
+		{
+			throw new IllegalArgumentException(groupType.getCanonicalName() + " is not in the list of permissible groups");
+		}
+	}
 }
