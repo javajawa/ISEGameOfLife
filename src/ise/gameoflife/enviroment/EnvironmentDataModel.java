@@ -7,6 +7,7 @@ import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.TurnType;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -154,5 +155,25 @@ public class EnvironmentDataModel extends AEnvDataModel
 		return cycles;
 	}
 
-	// TODO: Add function to create a new group
+	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> groupType)
+	{
+		if (allowedGroupTypes.contains(groupType))
+		{
+			try
+			{
+				Constructor<? extends AbstractGroupAgent> cons = groupType.getConstructor(GroupDataModel.class);
+				GroupDataModel dm = GroupDataModel.createNew();
+
+				return cons.newInstance(dm);
+			}
+			catch (Throwable ex)
+			{
+				throw new IllegalArgumentException("Unable to create group - no public constructor with single GroupDataModel argument", ex);
+			}
+		}
+		else
+		{
+			throw new IllegalArgumentException(groupType.getCanonicalName() + " is not in the list of permissible groups");
+		}
+	}
 }
