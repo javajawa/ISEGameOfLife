@@ -1,5 +1,7 @@
 package ise.gameoflife.plugins;
 
+import ise.gameoflife.enviroment.Environment;
+import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -38,6 +40,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	private final static String label = "Population";
 
 	private Simulation sim;
+	private Environment en;
 
 	@Element(required=false)
 	private String outputpath;
@@ -97,18 +100,19 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	@Override
 	public void execute()
 	{
+		if (en.getCurrentTurnType() != TurnType.firstTurn) return;
 		// Make sure the chart isn't currently being updated
 		synchronized (data)
 		{
 			try
 			{
-				data.getSeries("population").add(sim.getTime(), getNumHunters());
+				data.getSeries("population").add(en.getCyclesPassed(), getNumHunters());
 			}
 			catch (org.jfree.data.UnknownKeyException e)
 			{
 				XYSeries series = new XYSeries("population");
 				data.addSeries(series);
-				series.add(sim.getTime(), getNumHunters());
+				series.add(en.getCyclesPassed(), getNumHunters());
 			}
 			updateChart();
 		}
@@ -154,6 +158,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		System.out.println(" -Initialising....");
 
 		this.sim = sim;
+		this.en = (Environment)sim.environment;
 
 		setBackground(Color.GRAY);
 

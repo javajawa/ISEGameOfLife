@@ -1,15 +1,16 @@
 package ise.gameoflife.tokens;
 
 /**
- *
+ * FIXME: Document these values
  * @author Benedict
  */
 public enum TurnType
 {
 	GroupSelect,
-	GroupUpdate,
-	GiveOrders,
+	TeamSelect,
 	GoHunt,
 	HuntResults,
-	DistributeFood
+	DistributeFood;
+
+	public final static TurnType firstTurn = values()[0];
 }

@@ -3,17 +3,11 @@ package ise.gameoflife.plugins;
 import ise.gameoflife.enviroment.Environment;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
@@ -25,6 +19,7 @@ import presage.Simulation;
 /**
  * Creates the JPanel Plugin which will be used to log errors
  * TODO: Finish documentation
+ * TODO: Add option to write the log to a specific file at end of simulation
  * @author Olly Hill
  * @author Benedict Harcourt
  */
@@ -34,7 +29,7 @@ public class ErrorLog extends JPanel implements Plugin
 	/**
 	 * 
 	 * TODO: Document each of these functions
-	 * TODO: Less s***e implementation of this class
+	 * TODO: Less shite implementation of this class
 	 */
 	private final class JListModel implements ListModel, List<String>
 	{
@@ -305,30 +300,11 @@ public class ErrorLog extends JPanel implements Plugin
 
 	/**
 	 * Deals with plugin upon simulation completion
-	 * by writing a completion banner and outputting
-	 * the log to a file called ErrorLog.txt
 	 */
 	@Override
 	public void onSimulationComplete()
 	{
 		data.add(" ==== Simulation Ended ==== ");
-		
-		try
-		{
-			String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
-			FileWriter fstream = new FileWriter(configPath + "/ErrorLog.txt");
-			BufferedWriter out = new BufferedWriter(fstream);
-			
-			for (String s : data)
-			{
-				out.write(s + "\n");
-			}
-			out.close();
-		}
-		catch (Exception e)
-		{
-			System.err.println("ErrorLog Making Error: " + e.getMessage());
-		}
 	}
 
 }

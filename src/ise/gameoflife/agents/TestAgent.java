@@ -1,5 +1,6 @@
 package ise.gameoflife.agents;
 
+import ise.gameoflife.enviroment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
 import java.security.spec.ECField;
@@ -38,7 +39,7 @@ public class TestAgent extends AbstractAgent
 	{
 		Food bestSoFar = null;
 
-		for (Food noms : availableFoods())
+		for (Food noms : conn.availableFoods())
 		{
 			if (noms.getHuntersRequired() <= 1)
 			{
@@ -56,7 +57,7 @@ public class TestAgent extends AbstractAgent
 	}
 
 	@Override
-	protected void onInit(EnvironmentConnector ec)
+	protected void onInit()
 	{
 		// Nothing to see here. Move along, citizen!
 	}
@@ -67,9 +68,17 @@ public class TestAgent extends AbstractAgent
 		// Nothing to see here. Move along, citizen!
 	}
 
-    @Override
-    protected String chooseGroup() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-	
+
+	@Override
+	protected void beforeNewRound()
+	{
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected String chooseGroup()
+	{
+		return null;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}	
 }

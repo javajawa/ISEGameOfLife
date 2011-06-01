@@ -13,6 +13,7 @@ import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
+import ise.gameoflife.tokens.TurnType;
 import java.util.List;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -228,6 +229,8 @@ public class Environment extends AbstractEnvironment
 		// TODO: Add message handlers
 		this.actionhandlers.add(new HuntHandler());
 		this.actionhandlers.add(new DeathHandler());
+
+		new PublicEnvironmentConnection(new EnvConnector(this));
 	}
 
 	@Override
@@ -240,18 +243,21 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePhysicalWorld()
 	{
-		for (Participant agent : sim.players.values())
+		// Energy used on hunting, so this is when food is consumed
+		if (dmodel.getTurnType() == TurnType.GoHunt)
 		{
-			if (sim.isParticipantActive(agent.getId()))
+			for (Participant agent : sim.players.values())
 			{
-				if (agent instanceof ise.gameoflife.participants.AbstractAgent)
+				if (sim.isParticipantActive(agent.getId()))
 				{
-					agent.enqueueInput(new ConsumeFood(dmodel.getTime()));
+					if (agent instanceof ise.gameoflife.participants.AbstractAgent)
+					{
+						agent.enqueueInput(new ConsumeFood(dmodel.getTime()));
+					}
 				}
 			}
 		}
 		// FIXME: Write this function
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
@@ -286,5 +292,15 @@ public class Environment extends AbstractEnvironment
 		if (this.errorLog == null) return;
 
 		this.errorLog.add(s.getMessage());
+	}
+
+	public TurnType getCurrentTurnType()
+	{
+		return dmodel.getTurnType();
+	}
+
+	public int getCyclesPassed()
+	{
+		return dmodel.getCyclesPassed();
 	}
 }

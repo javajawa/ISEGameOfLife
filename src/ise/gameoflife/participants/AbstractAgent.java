@@ -4,14 +4,15 @@ import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.enviroment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
+import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
@@ -77,11 +78,6 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	/**
-	 * Flag to show whether the initialise function has been called
-	 */
-	private boolean beenInitalised = false;
-
-	/**
 	 * The DataModel used by this agent.
 	 */
 	@Element
@@ -94,6 +90,7 @@ abstract public class AbstractAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
+	protected PublicEnvironmentConnection conn;
 	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
 
@@ -149,9 +146,6 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public void initialise(EnvironmentConnector environmentConnector)
 	{
-		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
-		beenInitalised = true;
-
 		System.out.println(environmentConnector.getClass().getCanonicalName());
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
@@ -159,7 +153,8 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new ConsumeFoodHandler());
 		this.handlers.add(new HuntResultHandler());
 
-		onInit(environmentConnector);
+		conn = PublicEnvironmentConnection.getInstance();
+		onInit();
 	}
 
 	@Override
@@ -182,39 +177,70 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void execute()
 	{
-		while (!msgQ.isEmpty())
-		{
-			handleInput(msgQ.dequeue());
-		}
-
+		// Handle Queued Messages
+		while (!msgQ.isEmpty())	handleInput(msgQ.dequeue());
 		// Check to see if we died due to a message in the queue
 		if (this.dm.getFoodInPossesion() < 0) return;
 
-		// Output how much food we have.
-		System.out.println("I, agent " + this.getId() + ", have " + this.dm.getFoodInPossesion() + " units of food remaining");
+		TurnType turn = ec.getCurrentTurnType();
 
-		// TODO: Check for turn type
-		Food toHunt = chooseFood();
+		if (TurnType.firstTurn.equals(turn))
+		{
+			beforeNewRound();
+			clearRoundData();
+		}
 
-		if (toHunt == null)
+		switch (turn)
 		{
-			ec.logToErrorLog("Agent " + this.getId() + " did not pick a food to gunt");
+			case GroupSelect:
+				// TODO: Write GroupSelect logic
+				break;
+			case TeamSelect:
+				// TODO: Write Team Select logic (if any?)
+				break;
+			case GoHunt:
+				doHuntTurn();
+				break;
+			case HuntResults:
+				// TODO: Write HuntResults logic (if any?)
+				break;
+			case DistributeFood:
+				// TODO: Write DistributeFood logic (if any?)
 		}
-		else
-		{
-			System.out.println("I, agent " + this.getId() + ", choose to hunt " + toHunt.getName() + " (" + toHunt.getId().toString() + ')');
-			ec.act(new Hunt(toHunt), this.getId(), authCode);
-		}
-		lastHunted = toHunt;
 	}
 
 	private void handleInput(Input i)
 	{
 		for (InputHandler inputHandler : handlers)
 		{
-			if (inputHandler.canHandle(i)) inputHandler.handle(i);
+			if (inputHandler.canHandle(i))
+			{
+				inputHandler.handle(i);
+				return;
+			}
 		}
 		ec.logToErrorLog("AbstractAgent can not handle inputs of type " + i.getClass().getCanonicalName());
+	}
+
+	private void clearRoundData()
+	{
+		// TODO: Clear any data that is reound sepecific
+		// EG the last order, thing hunted, etc. etc.
+	}
+
+	private void doHuntTurn()
+	{
+		Food toHunt = chooseFood();
+
+		if (toHunt == null)
+		{
+			ec.logToErrorLog("Agent " + this.getId() + " did not pick a food to hunt");
+		}
+		else
+		{
+			ec.act(new Hunt(toHunt), this.getId(), authCode);
+		}
+		lastHunted = toHunt;
 	}
 
 	/**
@@ -278,11 +304,15 @@ abstract public class AbstractAgent implements Participant
 	 * this point, but rather when the agent is activated
 	 * @param ec The <strong>default</strong> environment connector
 	 */
-	abstract protected void onInit(EnvironmentConnector ec);
+	abstract protected void onInit();
 	/**
 	 * TODO: Documentation
 	 */
 	abstract protected void onActivate();
+	/**
+	 * TODO: Documentation
+	 */
+	abstract protected void beforeNewRound();
 	/**
 	 * TODO: Document
 	 * @return 
@@ -297,22 +327,6 @@ abstract public class AbstractAgent implements Participant
 	 * @return The type of food they have decided to hunt
 	 */
 	abstract protected Food chooseFood();
-	
-	/**
-	 * TODO: Documentation
-	 * @return 
-	 */
-	protected Set<Food> availableFoods()
-	{
-		return ec.availableFoods();
-	}
-
-	// TODO: Offer interfaces to other members of the enviroment connector
-	// TODO: that sub-classes should be allowed to use
-	// - Group lookup
-	// - Food lookup?
-	// - Agent lookup
-	// - Group type list
 
 	// TODO: Add function to get current group
 	// TODO: Add function to get last hunted food-stuff
