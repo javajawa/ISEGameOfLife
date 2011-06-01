@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * TODO: Documentation
+ * Used to access any information available to objects about the environment
  * @author Benedict
  */
 public class PublicEnvironmentConnection
@@ -21,6 +21,12 @@ public class PublicEnvironmentConnection
 
 	private final EnvConnector ec;
 	
+	
+	/**
+	 * instantiates the instance of itself and the environment connector it
+	 * uses to access environmental information
+	 * @param ec 
+	 */
 	PublicEnvironmentConnection(EnvConnector ec)
 	{
 		this.ec = ec;
