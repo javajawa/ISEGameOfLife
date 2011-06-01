@@ -54,12 +54,6 @@ public class TestAgent extends AbstractAgent
 	}
 
 	@Override
-	protected void onInit()
-	{
-		// Nothing to see here. Move along, citizen!
-	}
-
-	@Override
 	protected void onActivate()
 	{
 		// Nothing to see here. Move along, citizen!

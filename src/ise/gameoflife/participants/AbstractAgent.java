@@ -196,8 +196,6 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new HuntResultHandler());
 		this.handlers.add(new HuntOrderHandler());
 		this.handlers.add(new ApplicationResponseHandler());
-
-		onInit();
 	}
 
 	@Override
@@ -353,11 +351,6 @@ abstract public class AbstractAgent implements Participant
 		return this.dm.random.nextDouble();
 	}
 
-	/**
-	 * Called after the initialising the agent, allowing subclasses to initialise
-	 * any more data.
-	 */
-	abstract protected void onInit();
 	/**
 	 * Called when the agent has been activated, similar to init, but with access
 	 * to the environment connector
