@@ -266,14 +266,16 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	abstract protected Map<HuntingTeam, Food> selectTeams();
 	/**
+	 * TODO: Add stuff to say whether they hunted as ordered / what they hunted
 	 * Function used to distribute the food around after the brave
-	 * hunters have returned with their winnings
-	 * @param gains
-	 * @return
+	 * hunters have returned with their winnings.
+	 * @param gains The map between each member of the group, and the amount of
+	 * food they have contributed to the group from hunting this term
+	 * @return A map of player to the amount of food the group allocated to them
 	 */
-	abstract protected Map<String, Double> distributeFood(Map<String, Double> gains);
+	abstract protected Map<String, Double> distributeFood(final Map<String, Double> gains);
 	/**
-	 * 
+	 * TODO: Document
 	 * @param playerID
 	 * @param reason
 	 */
