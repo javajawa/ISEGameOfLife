@@ -3,14 +3,18 @@ package ise.gameoflife.participants;
 import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.inputs.LeaveNotification;
+import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationResponse;
+import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -48,6 +52,8 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	protected EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
+	
+	private Map<String, Double> huntResult;
 	
 	@Override
 	public String getId()
@@ -95,9 +101,52 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public void execute()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		TurnType turn = ec.getCurrentTurnType();
+
+		if (TurnType.firstTurn.equals(turn))
+		{
+			beforeNewRound();
+			clearRoundData();
+		}
+
+		switch (turn)
+		{
+			case GroupSelect:
+				// Nothing to do here - this is handled in enQueueMessage
+				break;
+			case TeamSelect:
+				doTeamSelect();
+				break;
+			case GoHunt:
+				// Nothing to do here - agents are off hunting!
+				break;
+			case HuntResults:
+				doHandleHuntResults();
+				break;
+		}
 	}
 
+	private void clearRoundData()
+	{
+		// TODO: Clear any data that is per round that is stored
+		huntResult = new HashMap<String, Double>();
+	}
+	
+	private void doTeamSelect()
+	{
+		Map<HuntingTeam, Food> teams = selectTeams();
+		// TODO: Inform each member of each team of their team and order with a
+		// Group order action
+	}
+	
+	private void doHandleHuntResults()
+	{
+		huntResult = distributeFood(huntResult);
+		// TODO: Inform all agents of their share
+		// TODO: Check that all agents get a value
+		// TODO: Inform agents of 0 food if value was not set (for their records)
+	}
+	
 	/**
 	 * 
 	 * @param cycle
@@ -137,6 +186,13 @@ public abstract class AbstractGroupAgent implements Participant
 			return;
 		}
 
+		if (input.getClass().equals(HuntResult.class))
+		{
+			final HuntResult in = (HuntResult)input;
+			huntResult.put(in.getAgent(), in.getNutritionValue());
+			return;
+		}
+
 		ec.logToErrorLog("Group Unable to handle Input of type " + input.getClass().getCanonicalName());
 	}
 
@@ -158,8 +214,7 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		// TODO: Need anything here?
 	}
-	
-	
+
 	/**
 	 * TODO: Document
 	 * @param ec
@@ -180,7 +235,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 * TODO: Document
 	 * @return
 	 */
-	abstract protected List<HuntingTeam> selectTeams();
+	abstract protected Map<HuntingTeam, Food> selectTeams();
 	/**
 	 * TODO: Document
 	 * @param gains
@@ -193,4 +248,8 @@ public abstract class AbstractGroupAgent implements Participant
 	 * @param reason
 	 */
 	abstract protected void onMemberLeave(String playerID, LeaveNotification.Reasons reason);
+	/**
+	 * TODO: Documentation
+	 */
+	abstract protected void beforeNewRound();
 }

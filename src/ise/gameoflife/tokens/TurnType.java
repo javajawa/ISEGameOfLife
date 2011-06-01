@@ -9,8 +9,7 @@ public enum TurnType
 	GroupSelect,
 	TeamSelect,
 	GoHunt,
-	HuntResults,
-	DistributeFood;
+	HuntResults;
 
 	public final static TurnType firstTurn = values()[0];
 }
