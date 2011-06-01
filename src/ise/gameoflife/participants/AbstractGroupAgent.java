@@ -185,7 +185,7 @@ public abstract class AbstractGroupAgent implements Participant
 		if (input.getClass().equals(LeaveNotification.class))
 		{
 			final LeaveNotification in = (LeaveNotification)input;
-			onMemberLeave(null, LeaveNotification.Reasons.Death);
+			dm.memberList.remove(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
 			return;
 		}
