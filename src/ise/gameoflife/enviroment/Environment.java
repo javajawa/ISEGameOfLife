@@ -97,7 +97,8 @@ public class Environment extends AbstractEnvironment
 			
 		@Override
 		public Input handle(Action action, String actorID){
-			sim.getPlayer(actorID).enqueueInput(new HuntOrder(sim.getTime(), ((GroupOrder)action).getToHunt()));
+			final GroupOrder order = (GroupOrder)action;
+			sim.getPlayer(actorID).enqueueInput(new HuntOrder(sim.getTime(), order.getToHunt(), order.getTeam()));
 			return null;
 		}
 			
