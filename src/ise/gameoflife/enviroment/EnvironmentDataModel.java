@@ -138,6 +138,12 @@ public class EnvironmentDataModel extends AEnvDataModel
 	public void setTime(long time)
 	{
 		super.setTime(time);
+		if (time == 0)
+		{
+			turn = TurnType.firstTurn;
+			return;
+		}
+
 		TurnType[] t = TurnType.values();
 
 		int next = turn.ordinal() + 1;
