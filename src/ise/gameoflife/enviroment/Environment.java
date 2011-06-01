@@ -241,18 +241,21 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePhysicalWorld()
 	{
-		for (Participant agent : sim.players.values())
+		// Energy used on hunting, so this is when food is consumed
+		if (dmodel.getTurnType() == TurnType.GoHunt)
 		{
-			if (sim.isParticipantActive(agent.getId()))
+			for (Participant agent : sim.players.values())
 			{
-				if (agent instanceof ise.gameoflife.participants.AbstractAgent)
+				if (sim.isParticipantActive(agent.getId()))
 				{
-					agent.enqueueInput(new ConsumeFood(dmodel.getTime()));
+					if (agent instanceof ise.gameoflife.participants.AbstractAgent)
+					{
+						agent.enqueueInput(new ConsumeFood(dmodel.getTime()));
+					}
 				}
 			}
 		}
 		// FIXME: Write this function
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override

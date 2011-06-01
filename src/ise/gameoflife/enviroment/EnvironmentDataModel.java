@@ -113,4 +113,17 @@ public class EnvironmentDataModel extends AEnvDataModel
 	{
 		return Collections.unmodifiableList(allowedGroupTypes);
 	}
+
+	@Override
+	public void setTime(long time)
+	{
+		super.setTime(time);
+		TurnType[] t = TurnType.values();
+
+		int next = turn.ordinal() + 1;
+		if (next == t.length) next = 0;
+
+		turn = t[next];
+	}
+
 }
