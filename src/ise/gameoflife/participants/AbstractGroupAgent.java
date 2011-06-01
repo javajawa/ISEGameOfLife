@@ -250,42 +250,60 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 
 	/**
-	 * TODO: Document
+	 * Called when the group has been activated, and when both the {@link 
+	 * GroupDataModel data model} and the {@link PublicEnvironmentConnection
+	 * environment connection} have been initialised
+	 * @see #getDataModel() 
+	 * @see #conn
 	 */
 	abstract protected void onActivate();
 	
 	/**
-	 * TODO: Document
-	 * @param playerID
-	 * @return
+	 * Allows the group to process and respond to a join request
+	 * @param playerID The player wishing to join
+	 * @return Whether the group wishes to let them join
 	 */
 	abstract protected boolean respondToJoinRequest(String playerID);
 	/**
-	 * TODO: Document
-	 * @return
+	 * Procedure to assign members to different teams, and get them to hunt food.
+	 * The list of different foods can be found using the {@link #conn environment
+	 * connection}, and the list of current group members can be found in the
+	 * {@link GroupDataModel dataModel} which can be accessed with {@link
+	 * #getInternalDataModel() }
+	 * // TODO-Later: make a getDataModel() function that returns right type
+	 * @return A map of all hunting teams, and the food they should be ordered to
+	 * hunt
 	 */
 	abstract protected Map<HuntingTeam, Food> selectTeams();
 	/**
-	 * TODO: Add stuff to say whether they hunted as ordered / what they hunted
+	 * TODO-Later: Add stuff to say whether they hunted as ordered / what they hunted
+	 * TODO-Later: Add system for groups to store non-distributed food
 	 * Function used to distribute the food around after the brave
 	 * hunters have returned with their winnings.
+	 * Note that the total values of the distributedFood should be less than or 
+	 * equal to the total amount in gains. This is checked externally, and 
+	 * classes that do not behave in this way will not be acceptable for 
+	 * competition simulations.
 	 * @param gains The map between each member of the group, and the amount of
 	 * food they have contributed to the group from hunting this term
 	 * @return A map of player to the amount of food the group allocated to them
 	 */
 	abstract protected Map<String, Double> distributeFood(final Map<String, Double> gains);
 	/**
-	 * TODO: Document
-	 * @param playerID
-	 * @param reason
+	 * Function that is called after a member leaves the group.
+	 * The member will not appear in the member list
+	 * @param playerID The id of the leaving playing
+	 * @param reason The reason that the player left the group
 	 */
 	abstract protected void onMemberLeave(String playerID, LeaveNotification.Reasons reason);
 	/**
 	 * Here you implement any code concerning data storage about the events
 	 * of this round before it is all deleted for a new round to begin.
-	 * N.B: a "round" occurs after all turn types have been iterated through. This
-	 * is to avoid confusion between "cycles", "turn" and "time". Alternatively, use
-	 * of the unit "Harcourt" may also be used. 1 Round = 1 Harcourt
+	 * N.B: a "round" occurs after all {@link TurnType turn types} have been 
+	 * iterated through. This
+	 * is to avoid confusion between "cycles", "turn" and "time". 
+	 * Alternatively, use of the unit "Harcourt" may also be used. 
+	 * 1 Round = 1 Harcourt
 	 */
 	abstract protected void beforeNewRound();
 }
