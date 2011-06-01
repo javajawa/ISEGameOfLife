@@ -2,6 +2,7 @@ package ise.gameoflife.models;
 
 import ise.gameoflife.participants.AbstractAgent;
 import java.util.ArrayList;
+import java.util.UUID;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import presage.abstractparticipant.APlayerDataModel;
@@ -32,6 +33,19 @@ public class GroupDataModel extends APlayerDataModel
 	}
 
 	/**
+	 * Create a new instance of the GroupDataModel, automatically generating a new
+	 * UUID
+	 * @return The new GroupDataModel
+	 */
+	public static GroupDataModel createNew()
+	{
+		GroupDataModel ret = new GroupDataModel();
+		ret.groupID = UUID.randomUUID().toString();
+		ret.memberList = new ArrayList<String>();
+		return ret;
+	}
+
+	/**
 	 * Get the group id that this group has
 	 * @return The UUID of this group
 	 */
@@ -44,6 +58,6 @@ public class GroupDataModel extends APlayerDataModel
 	@Override
 	public void onInitialise()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// Nothing to see here. Move along, citizen!
 	}
 }
