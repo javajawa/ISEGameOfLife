@@ -360,6 +360,7 @@ public class Environment extends AbstractEnvironment
 
 	boolean isAgentId(String id)
 	{
+		if (id == null) return false;
 		if (sim.isParticipantActive(id))
 		{
 			return (sim.getPlayer(id)) instanceof AbstractAgent;
@@ -369,6 +370,7 @@ public class Environment extends AbstractEnvironment
 
 	boolean isGroupId(String gid)
 	{
+		if (gid == null) return false;
 		if (sim.isParticipantActive(gid)){
 			if (sim.getPlayer(gid) instanceof AbstractGroupAgent)
 			{

@@ -195,7 +195,6 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new HuntOrderHandler());
 		this.handlers.add(new ApplicationResponseHandler());
 
-		conn = PublicEnvironmentConnection.getInstance();
 		onInit();
 	}
 
@@ -206,6 +205,7 @@ abstract public class AbstractAgent implements Participant
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
+		conn = PublicEnvironmentConnection.getInstance();
 		tmp_ec = null;
 		onActivate();
 	}
@@ -272,8 +272,7 @@ abstract public class AbstractAgent implements Participant
 	private void doGroupSelect()
 	{
 		String gid = chooseGroup();
-		conn.isGroupId(gid);
-		ec.act(new ApplyToGroup(gid), getId(), authCode);
+		if (conn.isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
 	private void doHuntTurn()
