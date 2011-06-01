@@ -9,6 +9,7 @@ import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
+import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.Set;
@@ -182,39 +183,70 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void execute()
 	{
-		while (!msgQ.isEmpty())
-		{
-			handleInput(msgQ.dequeue());
-		}
-
+		// Handle Queued Messages
+		while (!msgQ.isEmpty())	handleInput(msgQ.dequeue());
 		// Check to see if we died due to a message in the queue
 		if (this.dm.getFoodInPossesion() < 0) return;
 
-		// Output how much food we have.
-		System.out.println("I, agent " + this.getId() + ", have " + this.dm.getFoodInPossesion() + " units of food remaining");
+		TurnType turn = ec.getCurrentTurnType();
 
-		// TODO: Check for turn type
-		Food toHunt = chooseFood();
+		if (TurnType.firstTurn.equals(turn))
+		{
+			beforeNewRound();
+			clearRoundData();
+		}
 
-		if (toHunt == null)
+		switch (turn)
 		{
-			ec.logToErrorLog("Agent " + this.getId() + " did not pick a food to gunt");
+			case GroupSelect:
+				// TODO: Write GroupSelect logic
+				break;
+			case TeamSelect:
+				// TODO: Write Team Select logic (if any?)
+				break;
+			case GoHunt:
+				doHuntTurn();
+				break;
+			case HuntResults:
+				// TODO: Write HuntResults logic (if any?)
+				break;
+			case DistributeFood:
+				// TODO: Write DistributeFood logic (if any?)
 		}
-		else
-		{
-			System.out.println("I, agent " + this.getId() + ", choose to hunt " + toHunt.getName() + " (" + toHunt.getId().toString() + ')');
-			ec.act(new Hunt(toHunt), this.getId(), authCode);
-		}
-		lastHunted = toHunt;
 	}
 
 	private void handleInput(Input i)
 	{
 		for (InputHandler inputHandler : handlers)
 		{
-			if (inputHandler.canHandle(i)) inputHandler.handle(i);
+			if (inputHandler.canHandle(i))
+			{
+				inputHandler.handle(i);
+				return;
+			}
 		}
 		ec.logToErrorLog("AbstractAgent can not handle inputs of type " + i.getClass().getCanonicalName());
+	}
+
+	private void clearRoundData()
+	{
+		// TODO: Clear any data that is reound sepecific
+		// EG the last order, thing hunted, etc. etc.
+	}
+
+	private void doHuntTurn()
+	{
+		Food toHunt = chooseFood();
+
+		if (toHunt == null)
+		{
+			ec.logToErrorLog("Agent " + this.getId() + " did not pick a food to hunt");
+		}
+		else
+		{
+			ec.act(new Hunt(toHunt), this.getId(), authCode);
+		}
+		lastHunted = toHunt;
 	}
 
 	/**
@@ -283,6 +315,10 @@ abstract public class AbstractAgent implements Participant
 	 * TODO: Documentation
 	 */
 	abstract protected void onActivate();
+	/**
+	 * TODO: Documentation
+	 */
+	abstract protected void beforeNewRound();
 	/**
 	 * TODO: Document
 	 * @return 
