@@ -352,35 +352,47 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	/**
-	 * Called when the agent has been activated, similar to init, but with access
-	 * to the environment connector
+	 * Called when the agent has been activated, and when both the {@link 
+	 * PublicAgentDataModel data model} and the {@link PublicEnvironmentConnection
+	 * environment connection} have been initialised
+	 * @see #getDataModel() 
+	 * @see #conn
 	 */
 	abstract protected void onActivate();
 	/**
 	 * Used to implement any code necessary before all properties of the current
 	 * round are deleted to make way for a newer, fresher, more flexible
 	 * round to begin.
+	 * The reset fields are the last thing we hunted, the last order we received,
+	 * and the last team we were in. All of these
 	 */
 	abstract protected void beforeNewRound();
 	/**
 	 * Magic heuristic to select which Group the agent wishes to be a part of
-	 * for the next round.
-	 * @return string titling the desired group
+	 * for the next round. The list of groups can be obtained through the 
+	 * connector {@link #conn this.conn}, as can functions to create a new group
+	 * @return The is of the group we should try to join
 	 */
 	abstract protected String chooseGroup();
 	/**
 	 * Called once the environment has issued a response to the application
 	 * to join a group. Also states whether or not the application has been
-	 * successful. Does not say if the agent has a backup group, with lower
-	 * entry requirements.
+	 * successful. The group will already be filled into the groupId field of the
+	 * {@link PublicAgentDataModel data model}, which can be obtained through
+	 * the {@link #getDataModel() getDataModel()} function
+	 * @param accepted Whether you were accepted into the group
 	 */
 	abstract protected void groupApplicationResponse(boolean accepted);
 	/**
 	 * Function called to get the Agent to select what kind of food it would like
 	 * to hunt. It should use all the other information it has received to inform
 	 * this decision.
-	 * You can get the types of food from {@link #ec this.ec}, which has various
-	 * functions related to determining food properties
+	 * You can get the types of food from {@link #conn this.conn}, which has 
+	 * various functions related to determining food properties.
+	 * If the agent is a member of a group, the food they have been ordered to
+	 * hunt and their current group can be found in the {@link 
+	 * PublicAgentDataModel data model}, which is accessed this {@link
+	 * #getDataModel() this.getDataModel()}
 	 * @return The type of food they have decided to hunt
 	 */
 	abstract protected Food chooseFood();
