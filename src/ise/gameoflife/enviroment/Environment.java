@@ -292,8 +292,13 @@ public class Environment extends AbstractEnvironment
 		this.errorLog.add(s.getMessage());
 	}
 
-	TurnType getCurrentTurnType()
+	public TurnType getCurrentTurnType()
 	{
 		return dmodel.getTurnType();
+	}
+
+	public int getCyclesPassed()
+	{
+		return dmodel.getCyclesPassed();
 	}
 }

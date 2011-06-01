@@ -53,6 +53,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 */
 	@Element
 	private TurnType turn;
+	@Element
+	private int cycles;
 
 	/**
 	 * Serialisable no-arg constructor, do not use
@@ -71,6 +73,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		this.turn = TurnType.firstTurn;
 		this.agentGroups = new HashMap<String, GroupDataModel>();
 		this.allowedGroupTypes = new ArrayList<Class<? extends AbstractGroupAgent>>();
+		this.cycles = 0;
 	}
 
 	public Set<Food> availableFoods()
@@ -121,9 +124,18 @@ public class EnvironmentDataModel extends AEnvDataModel
 		TurnType[] t = TurnType.values();
 
 		int next = turn.ordinal() + 1;
-		if (next == t.length) next = 0;
+		if (next == t.length)
+		{
+			next = 0;
+			cycles ++;
+		}
 
 		turn = t[next];
+	}
+
+	public int getCyclesPassed()
+	{
+		return cycles;
 	}
 
 }
