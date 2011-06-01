@@ -1,5 +1,6 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
@@ -239,7 +240,7 @@ abstract public class AbstractAgent implements Participant
 		switch (turn)
 		{
 			case GroupSelect:
-				// TODO: Write GroupSelect logic
+				doGroupSelect();
 				break;
 			case TeamSelect:
 				// This is the group's move
@@ -270,6 +271,13 @@ abstract public class AbstractAgent implements Participant
 	{
 		// TODO: Clear any data that is reound sepecific
 		// EG the last order, thing hunted, etc. etc.
+	}
+
+	private void doGroupSelect()
+	{
+		String gid = chooseGroup();
+		// TODO: Check string corrosponds to valid group
+		ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
 	private void doHuntTurn()
