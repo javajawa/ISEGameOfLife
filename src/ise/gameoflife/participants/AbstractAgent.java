@@ -5,7 +5,9 @@ import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
 import ise.gameoflife.enviroment.PublicEnvironmentConnection;
+import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -75,7 +77,45 @@ abstract public class AbstractAgent implements Participant
 			System.out.println("I, agent " + getId() + ", received " + in.getNutritionValue() + " by hunting " + lastHunted.getName());
 			dm.foodAquired(in.getNutritionValue());
 		}
-		
+	}
+
+	private class HuntOrderHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof HuntOrder);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final HuntOrder in = (HuntOrder)input;
+			lastOrderReceived = in.getOrder();
+			huntingTeam = in.getTeam();
+		}
+	}
+
+	private class ApplicationResponseHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof ApplicationResponse);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final ApplicationResponse in = (ApplicationResponse)input;
+			if (in.wasAccepted())
+			{
+				dm.setGroup(in.getGroup());
+			}
+			groupApplicationResponse(true);
+		}
 	}
 
 	/**
@@ -156,6 +196,8 @@ abstract public class AbstractAgent implements Participant
 
 		this.handlers.add(new ConsumeFoodHandler());
 		this.handlers.add(new HuntResultHandler());
+		this.handlers.add(new HuntOrderHandler());
+		this.handlers.add(new ApplicationResponseHandler());
 
 		conn = PublicEnvironmentConnection.getInstance();
 		onInit();
@@ -320,6 +362,10 @@ abstract public class AbstractAgent implements Participant
 	 * @return 
 	 */
 	abstract protected String chooseGroup();
+	/**
+	 * TODO: Document
+	 */
+	abstract protected void groupApplicationResponse(boolean accepted);
 	/**
 	 * Function called to get the Agent to select what kind of food it would like
 	 * to hunt. It should use all the other information it has received to inform
