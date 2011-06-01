@@ -2,6 +2,7 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
+import java.security.spec.ECField;
 import presage.EnvironmentConnector;
 
 /**
@@ -65,5 +66,10 @@ public class TestAgent extends AbstractAgent
 	{
 		// Nothing to see here. Move along, citizen!
 	}
+
+    @Override
+    protected String chooseGroup() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 	
 }
