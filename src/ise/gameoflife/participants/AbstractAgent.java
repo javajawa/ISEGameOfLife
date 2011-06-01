@@ -269,14 +269,16 @@ abstract public class AbstractAgent implements Participant
 
 	private void clearRoundData()
 	{
-		// TODO: Clear any data that is reound sepecific
-		// EG the last order, thing hunted, etc. etc.
+		lastHunted = null;
+		huntingTeam = null;
+		lastOrderReceived = null;
 	}
 
 	private void doGroupSelect()
 	{
 		String gid = chooseGroup();
 		// TODO: Check string corrosponds to valid group
+		// conn.isGroupId(gid);
 		ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 

@@ -142,7 +142,6 @@ public abstract class AbstractGroupAgent implements Participant
 
 	private void clearRoundData()
 	{
-		// TODO: Clear any data that is per round that is stored
 		huntResult = new HashMap<String, Double>();
 	}
 	

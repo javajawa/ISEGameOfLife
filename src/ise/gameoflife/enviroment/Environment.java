@@ -274,8 +274,6 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePerceptions()
 	{
-		// FIXME: Write this function
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
@@ -295,14 +293,11 @@ public class Environment extends AbstractEnvironment
 				}
 			}
 		}
-		// FIXME: Write this function
 	}
 
 	@Override
 	protected void updateNetwork()
 	{
-		// FIXME: Write this function
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
