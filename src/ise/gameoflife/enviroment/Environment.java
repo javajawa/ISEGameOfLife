@@ -17,6 +17,7 @@ import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.Action;
@@ -38,6 +39,11 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
+
+	Set<String> getAvailableGroups()
+	{
+		return dmodel.getAvailableGroups();
+	}
 	/**
 	 * Passes on group applications
 	 */
