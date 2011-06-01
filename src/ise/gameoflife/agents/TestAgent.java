@@ -44,11 +44,11 @@ public class TestAgent extends AbstractAgent
 				{
 					bestSoFar = noms;
 				}
-			}
-				if (noms.getNutrition() > bestSoFar.getNutrition())
+				else if (noms.getNutrition() > bestSoFar.getNutrition())
 				{
 					bestSoFar = noms;
 				}
+			}
 		}
 		return bestSoFar;
 	}
