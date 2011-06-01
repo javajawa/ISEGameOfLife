@@ -1,7 +1,6 @@
-package ise.gameoflife.participants;
+package ise.gameoflife.models;
 
-import ise.gameoflife.AbstractAgent;
-import java.io.Serializable;
+import ise.gameoflife.participants.AbstractAgent;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -25,7 +24,7 @@ public class GroupDataModel extends APlayerDataModel
 	 * Array list of GroupDataModel members
 	 */
 	@ElementList
-	protected ArrayList<String>  memberList;
+	public ArrayList<String> memberList;
 
 	@Deprecated
 	public GroupDataModel()
@@ -34,20 +33,16 @@ public class GroupDataModel extends APlayerDataModel
 	}
 
 	/**
-	 * Adds a specific Agent to a GroupDataModel
-	 * @param agent The agent to add to the group
+	 * Create a new instance of the GroupDataModel, automatically generating a new
+	 * UUID
+	 * @return The new GroupDataModel
 	 */
-	protected	void addAgentToGroup(AbstractAgent agent){
-		memberList.add(agent.getId());
-	}
-	/**
-	 * Removes specific Agent from a GroupDataModel if Agent is member of that group
-	 * Returns false if Agent was not member of the group.
-	 * @param agent The agent to remove from the group
-	 * @return Whether an agent was removed
-	 */
-	protected boolean removeAgentFromGroup(AbstractAgent agent){
-		return memberList.remove(agent.getId());
+	public static GroupDataModel createNew()
+	{
+		GroupDataModel ret = new GroupDataModel();
+		ret.groupID = UUID.randomUUID().toString();
+		ret.memberList = new ArrayList<String>();
+		return ret;
 	}
 
 	/**
@@ -63,6 +58,6 @@ public class GroupDataModel extends APlayerDataModel
 	@Override
 	public void onInitialise()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// Nothing to see here. Move along, citizen!
 	}
 }

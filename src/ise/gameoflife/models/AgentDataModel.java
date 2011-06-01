@@ -1,7 +1,6 @@
-package ise.gameoflife;
+package ise.gameoflife.models;
 
 import ise.gameoflife.enviroment.EnvConnector;
-import ise.gameoflife.participants.GroupDataModel;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
@@ -27,16 +26,11 @@ public class AgentDataModel extends APlayerDataModel
 	private double foodConsumption;
 
 	/**
-	 * The group that this agent currently belongs to.
-	 * It will be null if the agent does not belong to a group
-	 */
-	private GroupDataModel group;
-	/**
 	 * Field that holds the id of {@link #group}
 	 * Will be null if {@link #group} is null
 	 */
 	@Element(required=false)
-	private UUID groupId;
+	private String groupId;
 
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
@@ -52,6 +46,10 @@ public class AgentDataModel extends APlayerDataModel
 	/**
 	 * Creates a new agent with a given amount of initial food 
 	 * and the amount of food they consume per turn
+	 * @param myId 
+	 * @param roles 
+	 * @param playerClass
+	 * @param randomseed 
 	 * @param foodInPossesion Initial amount of food
 	 * @param foodConsumption Food consumed per turn
 	 */
@@ -61,16 +59,6 @@ public class AgentDataModel extends APlayerDataModel
 		super(myId, roles, playerClass, randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
-	}
-
-	/**
-	 * Code being called after all XML-reading
-	 * @param environmentConnector The connector to the environment we are in
-	 */
-	public void initialise(EnvConnector environmentConnector)
-	{
-		super.initialise(environmentConnector);
-		this.group = environmentConnector.getGroupById(this.groupId);
 	}
 
 	/**
@@ -117,14 +105,27 @@ public class AgentDataModel extends APlayerDataModel
 		return new PublicAgentDataModel(this);
 	}
 
-	public UUID getGroupId()
+	/**
+	 * Returns the group ID of the agent
+	 * @return 
+	 */
+	public String getGroupId()
 	{
 		return groupId;
+	}
+
+	/**
+	 * assigns the agent to a specified group
+	 * @param gid 
+	 */
+	public void setGroup(String gid)
+	{
+		this.groupId = gid;
 	}
 
 	@Override
 	public void onInitialise()
 	{
-		// TODO: Do things here :)
+		//Nothing to see here. Move along, citizen!
 	}
 }

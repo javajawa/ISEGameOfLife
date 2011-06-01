@@ -1,4 +1,4 @@
-package ise.gameoflife;
+package ise.gameoflife.models;
 
 import java.util.ArrayList;
 import presage.PlayerDataModel;
@@ -24,6 +24,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	 * Gets the id of the agent
 	 * @return the id of the agent
 	 */
+	@Override
 	public String getId()
 	{
 		return source.getId();

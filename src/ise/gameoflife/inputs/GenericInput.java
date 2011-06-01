@@ -1,54 +1,57 @@
 package ise.gameoflife.inputs;
 
-import java.util.UUID;
 import presage.Input;
 
 /**
- * Base class for dealing with inputs, which implements all the required 
- * functions
+ * Generic class for inputs
  * @author Benedict Harcourt
  */
 abstract class GenericInput implements Input
 {
 	/**
-	 * Timestamp: the time at which the input event occurred, in terms of 
+	 * The time at which the input event occurred, in terms of 
 	 * simulation time
-	 * Performative: A String describing the current state/action of the input
-	 * eg: when an ActionError occurs, the performative is set to "ActionError"
 	 */
 	protected long timestamp;
+	/**
+	 * A String describing the current state/action of the input
+	 * eg: when an ActionError occurs, the performative is set to "ActionError"
+	 */
 	protected String performative;
 	
-/**
+	/**
 	 * Creates a new instance of GenericInput
-	 * @param timestamp
-	 * @param performative 
+	 * @param timestamp what turn it is
+	 * @param performative the current state
 	 */
-	public GenericInput(long timestamp, String performative)
+	GenericInput(long timestamp, String performative)
 	{
 		this.timestamp = timestamp;
 		this.performative = performative;
 	}
-/**
+	/**
 	 * Returns the Timestamp of the input event
-	 * @return 
+	 * @return the timestamp
 	 */
+	@Override
 	public long getTimestamp()
 	{
 		return timestamp;
 	}
 /**
 	 * Set Timestamp
-	 * @param timestamp 
+	 * @param timestamp time at which event occurred.
 	 */
+	@Override
 	public void setTimestamp(long timestamp)
 	{
 		this.timestamp = timestamp;
 	}
 /**
 	 * Returns the performative
-	 * @return 
+	 * @return the current value of the Performative
 	 */
+	@Override
 	public String getPerformative()
 	{
 		return performative;

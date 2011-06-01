@@ -7,6 +7,7 @@ package ise.gameoflife.inputs;
 public final class HuntResult extends GenericInput
 {
 	
+	private String agent;
 	private double nutrition;
 	
 	/**
@@ -15,10 +16,12 @@ public final class HuntResult extends GenericInput
 	 * @param nutrition The amount of food gained in this hunt
 	 * @param time The simulation time at which this result occurred 
 	 */
-	public HuntResult(double nutrition, long time){
+	public HuntResult(String agent, double nutrition, long time){
 		super(time, "huntresult:" + nutrition);
 		this.nutrition = nutrition;
+		this.agent = agent;
 	}
+
 	/**
 	 * Returns nutrition value of food hunted
 	 * @return The nutrition value of food hunted
@@ -26,4 +29,13 @@ public final class HuntResult extends GenericInput
 	public double getNutritionValue(){
 		return nutrition;
 	}
+
+	/**
+	 * Gets the agent that returned this much food
+	 */
+	public String getAgent()
+	{
+		return agent;
+	}
+
 }

@@ -1,13 +1,20 @@
-package ise.gameoflife;
+package ise.gameoflife.participants;
 
+import ise.gameoflife.actions.ApplyToGroup;
+import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.enviroment.PublicEnvironmentConnection;
+import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
+import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -49,8 +56,8 @@ abstract public class AbstractAgent implements Participant
 			}
 			else
 			{
-			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
-			dm.foodConsumed(dm.getFoodConsumption());
+				System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
+				dm.foodConsumed(dm.getFoodConsumption());
 			}
 		}
 	}
@@ -71,13 +78,46 @@ abstract public class AbstractAgent implements Participant
 			System.out.println("I, agent " + getId() + ", received " + in.getNutritionValue() + " by hunting " + lastHunted.getName());
 			dm.foodAquired(in.getNutritionValue());
 		}
-		
 	}
 
-	/**
-	 * Flag to show whether the initialise function has been called
-	 */
-	private boolean beenInitalised = false;
+	private class HuntOrderHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof HuntOrder);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final HuntOrder in = (HuntOrder)input;
+			lastOrderReceived = in.getOrder();
+			huntingTeam = in.getTeam();
+		}
+	}
+
+	private class ApplicationResponseHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof ApplicationResponse);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final ApplicationResponse in = (ApplicationResponse)input;
+			if (in.wasAccepted())
+			{
+				dm.setGroup(in.getGroup());
+			}
+			groupApplicationResponse(true);
+		}
+	}
 
 	/**
 	 * The DataModel used by this agent.
@@ -92,13 +132,17 @@ abstract public class AbstractAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
-	protected EnvConnector ec;
+	protected PublicEnvironmentConnection conn;
+	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
 
 	private InputQueue msgQ = new InputQueue("inputs");
 	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
 
 	private Food lastHunted = null;
+	
+	private HuntingTeam huntingTeam = null;
+	private Food lastOrderReceived = null;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present.
@@ -145,19 +189,19 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	@Override
-	public void initialise(EnvironmentConnector environmentConnector)
+	public final void initialise(EnvironmentConnector environmentConnector)
 	{
-		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
-		beenInitalised = true;
-
 		System.out.println(environmentConnector.getClass().getCanonicalName());
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
 
 		this.handlers.add(new ConsumeFoodHandler());
 		this.handlers.add(new HuntResultHandler());
+		this.handlers.add(new HuntOrderHandler());
+		this.handlers.add(new ApplicationResponseHandler());
 
-		onInit(environmentConnector);
+		conn = PublicEnvironmentConnection.getInstance();
+		onInit();
 	}
 
 	@Override
@@ -167,46 +211,96 @@ abstract public class AbstractAgent implements Participant
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
+		tmp_ec = null;
 		onActivate();
 	}
 
 	@Override
 	public final void onDeActivation()
 	{
-		ec.deregister(new UnregisterRequest(dm.getId(), dm.getGroupId()));
+		ec.deregister(new UnregisterRequest(dm.getId(), authCode));
 	}
 
 	@Override
 	public final void execute()
 	{
-		while (!msgQ.isEmpty())
-		{
-			handleInput(msgQ.dequeue());
-		}
-
+		// Handle Queued Messages
+		while (!msgQ.isEmpty())	handleInput(msgQ.dequeue());
 		// Check to see if we died due to a message in the queue
 		if (this.dm.getFoodInPossesion() < 0) return;
 
-		// Output how much food we have.
-		System.out.println("I, agent " + this.getId() + ", have " + this.dm.getFoodInPossesion() + " units of food remaining");
+		TurnType turn = ec.getCurrentTurnType();
 
-		// TODO: Check for turn type
-		Food toHunt = chooseFood();
-		System.out.println("I, agent " + this.getId() + ", choose to hunt " + toHunt.getName() + " (" + toHunt.getId().toString() + ')');
-		lastHunted = toHunt;
+		if (TurnType.firstTurn.equals(turn))
+		{
+			beforeNewRound();
+			clearRoundData();
+		}
 
-		if (toHunt == null) return;
-		ec.act(new Hunt(toHunt), this.getId(), authCode);
+		switch (turn)
+		{
+			case GroupSelect:
+				doGroupSelect();
+				break;
+			case TeamSelect:
+				// This is the group's move
+				break;
+			case GoHunt:
+				doHuntTurn();
+				break;
+			case HuntResults:
+				// This is the group's move
+				break;
+		}
 	}
 
 	private void handleInput(Input i)
 	{
 		for (InputHandler inputHandler : handlers)
 		{
-			if (inputHandler.canHandle(i)) inputHandler.handle(i);
+			if (inputHandler.canHandle(i))
+			{
+				inputHandler.handle(i);
+				return;
+			}
 		}
+		ec.logToErrorLog("AbstractAgent can not handle inputs of type " + i.getClass().getCanonicalName());
 	}
 
+	private void clearRoundData()
+	{
+		lastHunted = null;
+		huntingTeam = null;
+		lastOrderReceived = null;
+	}
+
+	private void doGroupSelect()
+	{
+		String gid = chooseGroup();
+		// TODO: Check string corrosponds to valid group
+		// conn.isGroupId(gid);
+		ec.act(new ApplyToGroup(gid), getId(), authCode);
+	}
+
+	private void doHuntTurn()
+	{
+		Food toHunt = chooseFood();
+
+		if (toHunt == null)
+		{
+			ec.logToErrorLog("Agent " + this.getId() + " did not pick a food to hunt");
+		}
+		else
+		{
+			ec.act(new Hunt(toHunt), this.getId(), authCode);
+		}
+		lastHunted = toHunt;
+	}
+
+	/**
+	 * 
+	 * @param cycle
+	 */
 	@Override
 	public final void setTime(long cycle)
 	{
@@ -229,6 +323,10 @@ abstract public class AbstractAgent implements Participant
 		this.msgQ.enqueue(input);
 	}
 
+	/**
+	 * 
+	 * @param input
+	 */
 	@Override
 	public final void enqueueInput(ArrayList<Input> input)
 	{
@@ -247,7 +345,7 @@ abstract public class AbstractAgent implements Participant
 	/**
 	 * Get the next random number in the sequence as a double uniformly
 	 * distributed between 0 and 1
-	 * @return NExt random number
+	 * @return Next random number
 	 */
 	public final double uniformRand()
 	{
@@ -255,13 +353,34 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	/**
-	 * Called after the initialising the agent, allowing subclassses to initialise
-	 * any more data. The primary environment connector will not be available at
-	 * this point, but rather when the agent is activated
-	 * @param ec The <strong>default</strong> environment connector
+	 * Called after the initialising the agent, allowing subclasses to initialise
+	 * any more data.
 	 */
-	abstract protected void onInit(EnvironmentConnector ec);
+	abstract protected void onInit();
+	/**
+	 * Called when the agent has been activated, similar to init, but with access
+	 * to the environment connector
+	 */
 	abstract protected void onActivate();
+	/**
+	 * Used to implement any code necessary before all properties of the current
+	 * round are deleted to make way for a newer, fresher, more flexible
+	 * round to begin.
+	 */
+	abstract protected void beforeNewRound();
+	/**
+	 * Magic heuristic to select which Group the agent wishes to be a part of
+	 * for the next round.
+	 * @return string titling the desired group
+	 */
+	abstract protected String chooseGroup();
+	/**
+	 * Called once the environment has issued a response to the application
+	 * to join a group. Also states whether or not the application has been
+	 * successful. Does not say if the agent has a backup group, with lower
+	 * entry requirements.
+	 */
+	abstract protected void groupApplicationResponse(boolean accepted);
 	/**
 	 * Function called to get the Agent to select what kind of food it would like
 	 * to hunt. It should use all the other information it has received to inform
@@ -271,4 +390,29 @@ abstract public class AbstractAgent implements Participant
 	 * @return The type of food they have decided to hunt
 	 */
 	abstract protected Food chooseFood();
+
+	/**
+	 * @return The food the agent decided to hunt on the previous turn
+	 */
+	protected final Food getLastHunted()
+	{
+		return lastHunted;
+	}
+	
+	/**
+	 * @return which hunting pair this agent belongs to
+	 */
+	protected final HuntingTeam getHuntingTeam() {
+		return huntingTeam;
+	}
+
+	/**
+	 * The food that this agent has been ordered to hunt with it's team in this
+	 * round
+	 * @return Food that was ordered 
+	 */
+	protected final Food getOrder()
+	{
+		return lastOrderReceived;
+	}
 }

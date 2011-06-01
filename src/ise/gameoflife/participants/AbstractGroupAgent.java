@@ -1,15 +1,24 @@
 package ise.gameoflife.participants;
 
-import example.participants.ReconAgent.InputHandler;
+import ise.gameoflife.actions.DistributeFood;
+import ise.gameoflife.actions.GroupOrder;
+import ise.gameoflife.models.GroupDataModel;
+import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.enviroment.PublicEnvironmentConnection;
+import ise.gameoflife.inputs.HuntResult;
+import ise.gameoflife.inputs.JoinRequest;
+import ise.gameoflife.inputs.LeaveNotification;
+import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.GroupRegistration;
-import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
+import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,10 +26,8 @@ import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
-import presage.PlayerDataModel;
 import presage.environment.messages.ENVRegistrationResponse;
-import presage.util.InputQueue;
-
+// TODO: Make it clear that the contract calls for a public consturctor with one argument that takes in the datamodel.
 /**
  *
  * @author Benedict
@@ -28,11 +35,6 @@ import presage.util.InputQueue;
 public abstract class AbstractGroupAgent implements Participant
 {
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Flag to show whether the initialise function has been called
-	 */
-	private boolean beenInitalised = false;
 
 	/**
 	 * The DataModel used by this agent.
@@ -47,16 +49,35 @@ public abstract class AbstractGroupAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
-	protected EnvConnector ec;
+	protected PublicEnvironmentConnection conn;
+	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
-
-	private InputQueue msgQ = new InputQueue("inputs");
-	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
 	
+	private Map<String, Double> huntResult;
+
+	/**
+	 * 
+	 * @deprecated 
+	 */
+	@Deprecated
+	public AbstractGroupAgent()
+	{
+		super();
+	}
+
+	/**
+	 * 
+	 * @param dm
+	 */
+	public AbstractGroupAgent(GroupDataModel dm)
+	{
+		this.dm = dm;
+	}
+
 	@Override
 	public String getId()
 	{
-		return dm.groupID;
+		return dm.getId();
 	}
 
 	@Override
@@ -68,16 +89,9 @@ public abstract class AbstractGroupAgent implements Participant
 @Override
 	public void initialise(EnvironmentConnector environmentConnector)
 	{
-		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
-		beenInitalised = true;
-
-		System.out.println(environmentConnector.getClass().getCanonicalName());
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
-
-		// TODO: Add input handlers here
-		
-		onInit(environmentConnector);
+		onInit();
 	}
 
 	@Override
@@ -87,6 +101,8 @@ public abstract class AbstractGroupAgent implements Participant
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
+		conn = PublicEnvironmentConnection.getInstance();
+		tmp_ec = null;
 		onActivate();
 	}
 
@@ -99,17 +115,75 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public void execute()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+		TurnType turn = ec.getCurrentTurnType();
 
-	private void handleInput(Input i)
-	{
-		for (InputHandler inputHandler : handlers)
+		if (TurnType.firstTurn.equals(turn))
 		{
-			if (inputHandler.canHandle(i)) inputHandler.handle(i);
+			beforeNewRound();
+			clearRoundData();
+		}
+
+		switch (turn)
+		{
+			case GroupSelect:
+				// Nothing to do here - this is handled in enQueueMessage
+				break;
+			case TeamSelect:
+				doTeamSelect();
+				break;
+			case GoHunt:
+				// Nothing to do here - agents are off hunting!
+				break;
+			case HuntResults:
+				doHandleHuntResults();
+				break;
 		}
 	}
 
+	private void clearRoundData()
+	{
+		huntResult = new HashMap<String, Double>();
+	}
+	
+	private void doTeamSelect()
+	{
+		Map<HuntingTeam, Food> teams = selectTeams();
+
+		for (HuntingTeam team : teams.keySet())
+		{
+			Food toHunt = teams.get(team);
+			for (String agent : team.getMembers())
+			{
+				ec.act(new GroupOrder(toHunt, team, agent), getId(), authCode);
+			}
+		}
+	}
+	
+	private void doHandleHuntResults()
+	{
+		Map<String, Double> result = distributeFood(Collections.unmodifiableMap(huntResult));
+		List<String> informedAgents = new ArrayList<String>();
+
+		for (String agent : result.keySet())
+		{
+			informedAgents.add(agent);
+			ec.act(new DistributeFood(agent, result.get(agent)), getId(), authCode);
+		}
+
+		@SuppressWarnings("unchecked")
+		List<String> uninformedAgents = (List<String>)dm.memberList.clone();
+		uninformedAgents.removeAll(informedAgents);
+
+		for (String agent : uninformedAgents)
+		{
+			ec.act(new DistributeFood(agent, 0), getId(), authCode);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param cycle
+	 */
 	@Override
 	public final void setTime(long cycle)
 	{
@@ -129,16 +203,40 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public final void enqueueInput(Input input)
 	{
-		this.msgQ.enqueue(input);
+		if (input.getClass().equals(JoinRequest.class))
+		{
+			boolean response = this.respondToJoinRequest(((JoinRequest)input).getAgent());
+			ec.act(new RespondToApplication(this.getId(), response), this.getId(), authCode);
+			if (response)	this.dm.memberList.add(((JoinRequest)input).getAgent());
+			return;
+		}
+
+		if (input.getClass().equals(LeaveNotification.class))
+		{
+			final LeaveNotification in = (LeaveNotification)input;
+			dm.memberList.remove(in.getAgent());
+			this.onMemberLeave(in.getAgent(), in.getReason());
+			return;
+		}
+
+		if (input.getClass().equals(HuntResult.class))
+		{
+			final HuntResult in = (HuntResult)input;
+			huntResult.put(in.getAgent(), in.getNutritionValue());
+			return;
+		}
+
+		ec.logToErrorLog("Group Unable to handle Input of type " + input.getClass().getCanonicalName());
 	}
 
+	/**
+	 * 
+	 * @param input
+	 */
 	@Override
 	public final void enqueueInput(ArrayList<Input> input)
 	{
-		for (Input in : input)
-		{
-			this.msgQ.enqueue(in);
-		}
+		for (Input in : input) enqueueInput(in);
 	}
 
 	@Override
@@ -146,12 +244,46 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		// TODO: Need anything here?
 	}
-	
-	
-	abstract protected void onInit(EnvironmentConnector ec);
+
+	/**
+	 * TODO: Document
+	 */
+	abstract protected void onInit();
+	/**
+	 * TODO: Document
+	 */
 	abstract protected void onActivate();
 	
+	/**
+	 * TODO: Document
+	 * @param playerID
+	 * @return
+	 */
 	abstract protected boolean respondToJoinRequest(String playerID);
-	abstract protected List<HuntingTeam> selectTeams();
+	/**
+	 * TODO: Document
+	 * @return
+	 */
+	abstract protected Map<HuntingTeam, Food> selectTeams();
+	/**
+	 * Function used to distribute the food around after the brave
+	 * hunters have returned with their winnings
+	 * @param gains
+	 * @return
+	 */
 	abstract protected Map<String, Double> distributeFood(Map<String, Double> gains);
+	/**
+	 * 
+	 * @param playerID
+	 * @param reason
+	 */
+	abstract protected void onMemberLeave(String playerID, LeaveNotification.Reasons reason);
+	/**
+	 * Here you implement any code concerning data storage about the events
+	 * of this round before it is all deleted for a new round to begin.
+	 * N.B: a "round" occurs after all turn types have been iterated through. This
+	 * is to avoid confusion between "cycles", "turn" and "time". Alternatively, use
+	 * of the unit "Harcourt" may also be used. 1 Round = 1 Harcourt
+	 */
+	abstract protected void beforeNewRound();
 }

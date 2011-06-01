@@ -1,4 +1,4 @@
-package ise.gameoflife;
+package ise.gameoflife.participants;
 
 import presage.Input;
 

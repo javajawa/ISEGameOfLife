@@ -1,14 +1,18 @@
 package ise.gameoflife.actions;
 
 import presage.Action;
-import presage.events.CoreEvents.DeactivateParticipant;
 
 /**
+ * Represents a death action which, when sent, will cause the Environment to
+ * remove an agent from the Simulation's processing loop by deactivating it
  * @author Olly
- * Implements an instance of the Death message class
  */
-public class Death implements Action
+public final class Death implements Action
 {
+	/**
+	 * Creates a new death action which, when sent, will cause the Environment to
+	 * remove an agent from the Simulation's processing loop by deactivating it
+	 */
 	public Death(){
 		super();
 	}

@@ -2,17 +2,19 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.participants.AbstractGroupAgent;
+import java.util.Set;
 
 /**
  * Test agent of joy!
  * @author Benedict
  */
-public class TestAgent extends AbstractAgent
+public class TestGroupableAgent extends AbstractAgent
 {
 	private static final long serialVersionUID = 1L;
 
 	@Deprecated
-	public TestAgent()
+	public TestGroupableAgent()
 	{
 		super();
 	}
@@ -22,11 +24,12 @@ public class TestAgent extends AbstractAgent
 	 * @param initialFood The initial amount of food
 	 * @param consumption The amount consumed per turn
 	 */
-	public TestAgent(double initialFood, double consumption)
+	public TestGroupableAgent(double initialFood, double consumption)
 	{
 		super("<hunter>", 0, initialFood, consumption);
 	}
-/**
+
+	/**
 	 * Uses the user's magically specified heuristics to determine which food type
 	 * the player wishes to hunt for. 
 	 * @return 
@@ -34,6 +37,8 @@ public class TestAgent extends AbstractAgent
 	@Override
 	protected Food chooseFood()
 	{
+		if (this.getOrder() != null) return this.getOrder();
+
 		Food bestSoFar = null;
 
 		for (Food noms : conn.availableFoods())
@@ -75,8 +80,15 @@ public class TestAgent extends AbstractAgent
 	@Override
 	protected String chooseGroup()
 	{
-		return null;
-		//throw new UnsupportedOperationException("Not supported yet.");
+		Set<String> groups = conn.availableGroups();
+
+		if (groups.isEmpty())
+		{
+			Class<? extends AbstractGroupAgent> gtype = conn.getAllowedGroupTypes().get(0);
+			return conn.createGroup(gtype);
+		}
+
+		return groups.iterator().next();
 	}
 
 	@Override

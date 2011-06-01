@@ -31,3 +31,11 @@ Support: bh308@imperial.ac.uk
  - This is the default main class in netbeans
  - Run using F6 or the run button
  - Simulations will be in the simulation folder
+
+== Running with Default Simulations ==
+  - Right click on GameOfLife
+  - Properties
+  - Run
+  - Change Arguments field to: simulations\doubleagent\sim.xml (or similar)
+  - Run using F6 or the run button
+  - The select simulation step skipped and simulation in Argument field is launched.
