@@ -1,4 +1,4 @@
-package ise.gameoflife.enviroment;
+package ise.gameoflife.environment;
 
 import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.models.PublicAgentDataModel;

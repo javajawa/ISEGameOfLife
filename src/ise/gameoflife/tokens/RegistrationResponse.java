@@ -1,6 +1,6 @@
 package ise.gameoflife.tokens;
 
-import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.environment.EnvConnector;
 import java.util.UUID;
 import presage.environment.messages.ENVRegistrationResponse;
 

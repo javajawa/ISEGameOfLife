@@ -2,7 +2,7 @@ package ise.gameoflife.simulatons;
 
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.agents.TestGroupableAgent;
-import ise.gameoflife.enviroment.EnvironmentDataModel;
+import ise.gameoflife.environment.EnvironmentDataModel;
 import ise.gameoflife.groups.TestGroup;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.participants.AbstractAgent;
@@ -88,7 +88,7 @@ public class AgentsAndGroup
 		groups.add(TestGroup.class);
 		
 		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods, groups);
-		Environment environment = (Environment)new ise.gameoflife.enviroment.Environment(true, 0, dm);
+		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm);
 
 		presageConfig.setEnvironmentClass(environment.getClass());
 		ConfigurationWriter.write(configPath + "/sim.xml", presageConfig, parts, environment, pm, ms);

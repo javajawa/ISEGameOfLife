@@ -1,6 +1,6 @@
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.enviroment.Environment;
+import ise.gameoflife.environment.Environment;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.BufferedWriter;

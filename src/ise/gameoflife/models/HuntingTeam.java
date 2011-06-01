@@ -1,6 +1,6 @@
 package ise.gameoflife.models;
 
-import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.environment.EnvConnector;
 import java.util.Collections;
 import java.util.List;
 

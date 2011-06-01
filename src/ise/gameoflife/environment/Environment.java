@@ -1,4 +1,4 @@
-package ise.gameoflife.enviroment;
+package ise.gameoflife.environment;
 
 import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.actions.Death;
