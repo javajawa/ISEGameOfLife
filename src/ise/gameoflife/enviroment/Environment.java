@@ -16,6 +16,7 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -32,6 +33,7 @@ import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
+import presage.abstractparticipant.APlayerDataModel;
 import presage.environment.AEnvDataModel;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
@@ -65,7 +67,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID)
 		{
 			sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
-			System.out.println("I, agent " + actorID + ", have attempted to join group " + ((ApplyToGroup)action).getGroup());
+			System.out.println("Agent " + actorID + ", has attempted to join group " + ((ApplyToGroup)action).getGroup());
 			return null;
 		}
 		
@@ -89,7 +91,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID)
 		{
 			sim.deActivateParticipant(actorID);
-			System.out.println("I, agent " + actorID + ", have died. So long and thanks for all the fish.");
+			System.out.println("Agent " + actorID + ", has died. So long and thanks for all the fish.");
 			return null;
 		}
 		
@@ -114,7 +116,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final GroupOrder order = (GroupOrder)action;
 			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getToHunt(), order.getTeam()));
-			System.out.println("I, Group " + actorID + " have been told to hunt " + (GroupOrder)action);
+			System.out.println("Group " + actorID + " has told team " + order.getTeam() + " to hunt " + order.getToHunt().getName());
 			return null;
 		}
 			
@@ -164,7 +166,7 @@ public class Environment extends AbstractEnvironment
 				}
 				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act, actorID));
 			}
-			System.out.println("I, agent " + actorID + " have hunted" + (Hunt)action);
+			System.out.println("Agent " + actorID + " hunted " + food.getName() + " with team " + am.getHuntingTeam());
 			return null;
 		}
 
@@ -186,8 +188,10 @@ public class Environment extends AbstractEnvironment
 		
 		@Override
 		public Input handle(Action action, String actorID){
-			sim.getPlayer(actorID).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, ((RespondToApplication)action).wasAccepted()));
-			System.out.println("I, agent " + actorID + " have attmpted to join a group, and the result was: " + ((RespondToApplication)action).wasAccepted());
+			RespondToApplication application = (RespondToApplication)action;
+			
+			sim.getPlayer(application.getAgent()).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, application.wasAccepted()));
+			System.out.println("Agent " + application.getAgent() + " has attempted to join group " + actorID + ", and the result was: " + application.wasAccepted());
 			return null;
 		}
 		
@@ -211,7 +215,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final DistributeFood result = (DistributeFood)action;
 			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmount(), sim.getTime()));
-			System.out.println("I, agent " + actorID + " have received " + result.getAmount());
+			System.out.println("Agent " + actorID + " was allocated " + result.getAmount() + " units of food");
 			return null;
 		}
 
@@ -255,6 +259,7 @@ public class Environment extends AbstractEnvironment
 	 */
 	private List<String> errorLog;
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
+	private List<String> defeeredParticipantActivations;
 
 	@Deprecated
 	public Environment()
@@ -285,14 +290,25 @@ public class Environment extends AbstractEnvironment
 	@Override
 	public ENVRegistrationResponse onRegister(ENVRegisterRequest registrationObject)
 	{
-		final RegistrationRequest obj = (RegistrationRequest)registrationObject;
-		if (!dmodel.registerParticipant(obj))
+		if (registrationObject instanceof RegistrationRequest)
 		{
-			return null;
+			final RegistrationRequest obj = (RegistrationRequest)registrationObject;
+			if (!dmodel.registerParticipant(obj))
+			{
+				return null;
+			}
+		}
+		else if (registrationObject instanceof GroupRegistration)
+		{
+			final GroupRegistration obj = (GroupRegistration)registrationObject;
+			if (!dmodel.registerGroup(obj))
+			{
+				return null;
+			}
 		}
 		UUID id = UUID.randomUUID();
 		authenticator.put(registrationObject.getParticipantID(), id);
-		return new RegistrationResponse(obj.getParticipantID(), id, new EnvConnector(this));
+		return new RegistrationResponse(registrationObject.getParticipantID(), id, new EnvConnector(this));
 	}
 
 	@Override
@@ -316,6 +332,7 @@ public class Environment extends AbstractEnvironment
 		new PublicEnvironmentConnection(new EnvConnector(this));
 
 		storedHuntResults = new HashMap<HuntingTeam, List<TeamHuntEvent>>();
+		defeeredParticipantActivations = new LinkedList<String>();
 	}
 
 	@Override
@@ -326,6 +343,7 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePhysicalWorld()
 	{
+		doDefeeredActivations();
 		processTeamHunts();
 		// Energy used on hunting, so this is when food is consumed
 		if (dmodel.getTurnType() == TurnType.GoHunt)
@@ -341,6 +359,15 @@ public class Environment extends AbstractEnvironment
 				}
 			}
 		}
+	}
+
+	private void doDefeeredActivations()
+	{
+		for (String id : defeeredParticipantActivations)
+		{
+			sim.activateParticipant(id);
+		}
+		defeeredParticipantActivations.clear();
 	}
 
 	private void processTeamHunts()
@@ -384,7 +411,7 @@ public class Environment extends AbstractEnvironment
 			}
 		}
 
-		storedHuntResults = new HashMap<HuntingTeam, List<TeamHuntEvent>>();
+		storedHuntResults.clear();
 	}
 
 	@Override
@@ -439,8 +466,9 @@ public class Environment extends AbstractEnvironment
 	{
 		AbstractGroupAgent g = dmodel.createGroup(groupType);
 		g.initialise(new EnvironmentConnector(this));
-		sim.addParticipant(g);
+		sim.addParticipant(g.getId(), g);
 		sim.activateParticipant(g.getId());
+		//defeeredParticipantActivations.add(g.getId());
 		return g.getId();
 	}
 

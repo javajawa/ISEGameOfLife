@@ -5,6 +5,7 @@ import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.TurnType;
 import java.lang.reflect.Constructor;
@@ -20,6 +21,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
 import presage.environment.AEnvDataModel;
+import sun.java2d.pipe.SpanShapeRenderer.Simple;
 
 /**
  * TODO: Maybe some documentation here sometime
@@ -118,9 +120,15 @@ public class EnvironmentDataModel extends AEnvDataModel
 		return (agents.remove(id)!=null);
 	}
 
-	public boolean registerParticipant(RegistrationRequest id)
+	boolean registerParticipant(RegistrationRequest id)
 	{
 		agents.put(id.getParticipantID(), id.getModel());
+		return true;
+	}
+
+	boolean registerGroup(GroupRegistration ng)
+	{
+		agentGroups.put(ng.getParticipantID(), null);
 		return true;
 	}
 
@@ -168,7 +176,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 			try
 			{
 				Constructor<? extends AbstractGroupAgent> cons = groupType.getConstructor(GroupDataModel.class);
-				GroupDataModel dm = GroupDataModel.createNew();
+				// TODO: Generate rnadom seed...
+				GroupDataModel dm = GroupDataModel.createNew(0);
 
 				return cons.newInstance(dm);
 			}
@@ -183,9 +192,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	Set<String> getAvailableGroups()
 	{
-		return (Set<String>)agentGroups;
+		return Collections.unmodifiableSet(agentGroups.keySet());
 	}
 }

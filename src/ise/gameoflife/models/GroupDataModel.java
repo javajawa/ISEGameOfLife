@@ -18,11 +18,6 @@ public class GroupDataModel extends APlayerDataModel
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 *Unique group identifier
-	 */
-	@Element
-	protected String groupID;
-	/**
 	 * Array list of GroupDataModel members
 	 */
 	@ElementList
@@ -37,13 +32,16 @@ public class GroupDataModel extends APlayerDataModel
 	/**
 	 * Create a new instance of the GroupDataModel, automatically generating a new
 	 * UUID
+	 * @param randomseed The random number seed to use with this class
 	 * @return The new GroupDataModel
 	 */
-	public static GroupDataModel createNew()
+	public static GroupDataModel createNew(long randomseed)
 	{
 		GroupDataModel ret = new GroupDataModel();
-		ret.groupID = UUID.randomUUID().toString();
+		ret.myId = UUID.randomUUID().toString();
 		ret.memberList = new ArrayList<String>();
+		ret.myrolesString = "<group>";
+		ret.randomseed = randomseed;
 		return ret;
 	}
 
@@ -54,7 +52,7 @@ public class GroupDataModel extends APlayerDataModel
 	@Override
 	public String getId()
 	{
-		return groupID;
+		return myId;
 	}
 
 	public List<String> getMemberList()

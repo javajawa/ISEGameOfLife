@@ -94,7 +94,7 @@ abstract public class AbstractAgent implements Participant
 			final HuntOrder in = (HuntOrder)input;
 			dm.setOrder(in.getOrder());
 			dm.setHuntingTeam(in.getTeam());
-			System.out.println("We, Team " + in.getTeam() + " have been told to hunt " + in.getOrder());
+			System.out.println("I, Agent " + getId() + " have been told to hunt " + in.getOrder().getName() + " with Team " + in.getTeam().hashCode());
 		}
 	}
 
@@ -116,7 +116,7 @@ abstract public class AbstractAgent implements Participant
 				dm.setGroup(in.getGroup());
 			}
 			groupApplicationResponse(in.wasAccepted());	
-			System.out.println("Group join attempt success is: " + in.wasAccepted());
+			System.out.println("I, agent " + getId() + " was " + (in.wasAccepted() ? "" : "not ") + "accepted into group " + in.getGroup());
 		}
 		
 	}
@@ -273,6 +273,7 @@ abstract public class AbstractAgent implements Participant
 
 	private void doGroupSelect()
 	{
+		// TODO: chec that we're not joingin the group we're alreayd part of
 		String gid = chooseGroup();
 		if (conn.isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}

@@ -206,10 +206,12 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		if (input.getClass().equals(JoinRequest.class))
 		{
-			boolean response = this.respondToJoinRequest(((JoinRequest)input).getAgent());
-			ec.act(new RespondToApplication(this.getId(), response), this.getId(), authCode);
-			if (response)	this.dm.memberList.add(((JoinRequest)input).getAgent());
-			System.out.println("I, agent " + ((JoinRequest)input).getAgent() + "have made a request to join a group");
+			// FIXME: Notify any old group of us leaving
+			final JoinRequest req = (JoinRequest)input;
+			boolean response = this.respondToJoinRequest(req.getAgent());
+			if (response)	this.dm.memberList.add(req.getAgent());
+			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(), authCode);
+			System.out.println("I, group " + getId() + ", got a join request from" + ((JoinRequest)input).getAgent());
 			return;
 		}
 
@@ -218,7 +220,7 @@ public abstract class AbstractGroupAgent implements Participant
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.memberList.remove(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
-			System.out.println("I, agent " + in.getAgent() + " have left a group because " + in.getReason());
+			System.out.println("I, group " + getId() + ", lost memeber " + in.getAgent() + " because of " + in.getReason());
 			return;
 		}
 
@@ -226,7 +228,7 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			huntResult.put(in.getAgent(), in.getNutritionValue());
-			System.out.println("I, agent " + in.getAgent() + " have hunted food worth" + in.getNutritionValue());
+			System.out.println("Agent " + in.getAgent() + " has hunted food worth" + in.getNutritionValue() + " for I, group" + getId());
 			return;
 		}
 		ec.logToErrorLog("Group Unable to handle Input of type " + input.getClass().getCanonicalName());

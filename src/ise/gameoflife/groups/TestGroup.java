@@ -23,6 +23,11 @@ public class TestGroup extends AbstractGroupAgent
 		super();
 	}
 
+	public TestGroup(GroupDataModel dm)
+	{
+		super(dm);
+	}
+
 	@Override
 	protected void onInit()
 	{

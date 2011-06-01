@@ -80,6 +80,8 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected String chooseGroup()
 	{
+		if (this.getDataModel().getGroupId() != null) return null;
+
 		Set<String> groups = conn.availableGroups();
 
 		if (groups.isEmpty())
@@ -94,7 +96,8 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected void groupApplicationResponse(boolean accepted)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// TODO: Do something here?
+		// throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 }
