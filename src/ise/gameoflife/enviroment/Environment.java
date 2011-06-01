@@ -12,6 +12,7 @@ import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -353,7 +354,11 @@ public class Environment extends AbstractEnvironment
 
 	boolean isAgentId(String id)
 	{
-		return sim.isParticipantActive(id);
+		if (sim.isParticipantActive(id))
+		{
+			return (sim.getPlayer(id)) instanceof AbstractAgent;
+		}
+		return false;
 	}
 
 	boolean isGroupId(String gid)
