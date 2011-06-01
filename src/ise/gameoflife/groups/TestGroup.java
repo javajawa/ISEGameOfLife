@@ -29,12 +29,6 @@ public class TestGroup extends AbstractGroupAgent
 	}
 
 	@Override
-	protected void onInit()
-	{
-		// Do nothing
-	}
-
-	@Override
 	protected void onActivate()
 	{
 		// Do nothing.

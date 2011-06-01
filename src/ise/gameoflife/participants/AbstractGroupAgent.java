@@ -91,7 +91,6 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
-		onInit();
 	}
 
 	@Override
@@ -250,10 +249,6 @@ public abstract class AbstractGroupAgent implements Participant
 		// Nothing to see here. Move along, citizen!
 	}
 
-	/**
-	 * TODO: Document
-	 */
-	abstract protected void onInit();
 	/**
 	 * TODO: Document
 	 */
