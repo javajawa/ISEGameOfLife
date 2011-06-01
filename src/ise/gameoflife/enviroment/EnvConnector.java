@@ -3,7 +3,9 @@ package ise.gameoflife.enviroment;
 import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataModel;
+import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.TurnType;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import presage.EnvironmentConnector;
@@ -85,5 +87,10 @@ public class EnvConnector extends EnvironmentConnector
 	public TurnType getCurrentTurnType()
 	{
 		return e.getCurrentTurnType();
+	}
+
+	List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
+	{
+		return e.getAllowedGroupTypes();
 	}
 }

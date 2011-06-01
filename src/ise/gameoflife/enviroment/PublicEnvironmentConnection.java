@@ -3,6 +3,8 @@ package ise.gameoflife.enviroment;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.models.PublicAgentDataModel;
+import ise.gameoflife.participants.AbstractGroupAgent;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -56,7 +58,12 @@ public class PublicEnvironmentConnection
 	{
 		return ec.availableFoods();
 	}
-	
+
+	List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
+	{
+		return ec.getAllowedGroupTypes();
+	}
+
 	// TODO: Offer interfaces to other members of the enviroment connector
 	// TODO: that sub-classes should be allowed to use
 	// - Group lookup

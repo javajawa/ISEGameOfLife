@@ -11,6 +11,7 @@ import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -303,5 +304,10 @@ public class Environment extends AbstractEnvironment
 	public int getCyclesPassed()
 	{
 		return dmodel.getCyclesPassed();
+	}
+
+	List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
+	{
+		return dmodel.getAllowedGroupTypes();
 	}
 }
