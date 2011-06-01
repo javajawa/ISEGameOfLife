@@ -241,6 +241,7 @@ public class ErrorLog extends JPanel implements Plugin
 	private final static String label = "Error Log";
 
 	private Simulation sim;
+	private Environment en;
 	private final JListModel data = new JListModel();
 
 	/**
@@ -278,20 +279,21 @@ public class ErrorLog extends JPanel implements Plugin
 	public void initialise(Simulation sim)
 	{
 		this.sim = sim;
+		this.en = (Environment)sim.environment;
 		this.add(new JScrollPane(new JList(data)));
 
-		((Environment)sim.environment).setErrorLog(data);
+		en.setErrorLog(data);
 
 		setBackground(Color.LIGHT_GRAY);
 	}
 
 	/**
-	 * TODO: Documentation
+	 * Marks the beginning of a new cycle
 	 */
 	@Override
 	public void execute()
 	{
-		data.add(" ==== Cycle " + sim.getTime() + " Begins ==== ");
+		data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getCyclesPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
 	}
 
 	/**
