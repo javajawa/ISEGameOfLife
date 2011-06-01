@@ -17,7 +17,7 @@ import org.simpleframework.xml.ElementMap;
 import presage.environment.AEnvDataModel;
 
 /**
- *
+ * TODO: Maybe some documentation here sometime
  * @author Benedict Harcourt
  */
 public class EnvironmentDataModel extends AEnvDataModel
@@ -39,6 +39,9 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 */
 //	@ElementMap
 //	private HashMap<UUID, GroupDataModel> agentGroups;
+	/**
+	 * 
+	 */
 	@Element
 	private TurnType turn;
 
