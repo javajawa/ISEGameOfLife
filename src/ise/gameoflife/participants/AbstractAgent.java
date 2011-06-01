@@ -408,8 +408,5 @@ abstract public class AbstractAgent implements Participant
 	// TODO: MAke sure datamodel is private
 	// TODO: Maybe migrate some of the functions to the PublicDataModel
 	// TODO: Certinaly true of the Group 
-	// TODO: Add hnadler for ApplicationResponse
-	// TODO: Add abstract callback for responses to group apllications
-	// TODO: Add handler for HuntOrder
 
 }

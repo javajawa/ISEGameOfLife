@@ -26,7 +26,6 @@ import presage.Simulation;
 /**
  * Creates the JPanel Plugin which will be used to log errors
  * TODO: Finish documentation
- * TODO: Add option to write the log to a specific file at end of simulation
  * @author Christopher Fonseka
  * @author Olly Hill
  * @author Benedict Harcourt
