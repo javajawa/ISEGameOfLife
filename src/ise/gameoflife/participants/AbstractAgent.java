@@ -370,6 +370,7 @@ abstract public class AbstractAgent implements Participant
 	abstract protected String chooseGroup();
 	/**
 	 * TODO: Document
+	 * @param accepted 
 	 */
 	abstract protected void groupApplicationResponse(boolean accepted);
 	/**
