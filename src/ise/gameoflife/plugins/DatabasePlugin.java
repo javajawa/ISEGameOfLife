@@ -20,6 +20,8 @@ import java.sql.Statement;
 /**
  *
  * @author valdas
+ * Creates an SQLite database in appropriate simulation folder. Sends data to DB
+ * every 100 cycles and commits every 1000 and at the end, thus reducing writes to disk.
  */
 public class DatabasePlugin extends JPanel implements Plugin {
 
@@ -70,9 +72,18 @@ public class DatabasePlugin extends JPanel implements Plugin {
     public void execute()
     {
 	try {
-	    prep.setLong(1, sim.getTime());
-	    prep.setInt(2,getNumHunters());		
-	    prep.executeUpdate();
+
+		prep.setLong(1, sim.getTime());
+		prep.setInt(2,getNumHunters());
+		prep.addBatch();
+		//sends data to DB every 100 cycles
+		if (sim.getTime()%100 == 0) {
+		    prep.executeBatch();
+		    if (sim.getTime()%1000 == 0) {
+			conn.commit();
+		    }
+	        }
+
 	}
 	catch (Exception e)
 	{
@@ -117,6 +128,7 @@ public class DatabasePlugin extends JPanel implements Plugin {
 		    + "[pop]  NOT NULL,\n"
 		    + "CONSTRAINT [] PRIMARY KEY ([time]));\n"
 		    );
+	    conn.setAutoCommit(false);
 	    prep = conn.prepareStatement(
 		"insert into population values (?, ?);");
 
@@ -131,7 +143,7 @@ public class DatabasePlugin extends JPanel implements Plugin {
 	//JLabel label = new JLabel("Graph will update every " + updaterate
 	//		+ " Simulation cycles, to update now click: ");
 
-	JButton updateButton = new JButton("Look nice");
+	JButton updateButton = new JButton("Update database");
 
 	updateButton.addActionListener(new ActionListener()
 	{
@@ -139,7 +151,14 @@ public class DatabasePlugin extends JPanel implements Plugin {
 		@Override
 		public void actionPerformed(ActionEvent ae)
 		{
-			//action for button
+			
+		try {
+		    prep.executeBatch();
+		} catch (Exception e)
+		    {
+			    System.err.println("Database Exception:" + e);
+			    return;
+		    }
 		}
 
 	});
@@ -162,6 +181,11 @@ public class DatabasePlugin extends JPanel implements Plugin {
     {
 	this.removeAll();
 	try {
+	    //sends left over data to DB
+	    prep.executeBatch();
+	    //commits all transactions
+	    conn.commit();
+	    prep.close();
 	    conn.close();
 	} catch (Exception e)
 	    {
