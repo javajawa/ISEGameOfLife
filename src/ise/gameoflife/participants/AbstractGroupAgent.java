@@ -88,10 +88,6 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
-
-		// TODO: Add input handlers here
-		
-		conn = PublicEnvironmentConnection.getInstance();
 		onInit();
 	}
 
@@ -102,6 +98,8 @@ public abstract class AbstractGroupAgent implements Participant
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
+		conn = PublicEnvironmentConnection.getInstance();
+		tmp_ec = null;
 		onActivate();
 	}
 
