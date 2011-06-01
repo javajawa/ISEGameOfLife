@@ -20,8 +20,10 @@ import java.sql.Statement;
 /**
  *
  * @author valdas
+ * Creates an SQLite database in appropriate simulation folder. Sends data to DB
+ * every 100 cycles and commits every 1000 and at the end, thus reducing writes to disk.
  */
-public class DatabasePlugin extends JPanel implements Plugin {
+public class DatabasePlugin implements Plugin {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +38,7 @@ public class DatabasePlugin extends JPanel implements Plugin {
     @Element
     private String outputpath;
 
-    private JPanel control = new JPanel();
+   // private JPanel control = new JPanel();
 
 
  
@@ -70,9 +72,18 @@ public class DatabasePlugin extends JPanel implements Plugin {
     public void execute()
     {
 	try {
-	    prep.setLong(1, sim.getTime());
-	    prep.setInt(2,getNumHunters());		
-	    prep.executeUpdate();
+
+		prep.setLong(1, sim.getTime());
+		prep.setInt(2,getNumHunters());
+		prep.addBatch();
+		//sends data to DB every 100 cycles
+		if (sim.getTime()%100 == 0) {
+		    prep.executeBatch();
+		    if (sim.getTime()%1000 == 0) {
+			conn.commit();
+		    }
+	        }
+
 	}
 	catch (Exception e)
 	{
@@ -99,7 +110,7 @@ public class DatabasePlugin extends JPanel implements Plugin {
     public void initialise(Simulation sim)
     {
 	this.sim = sim;
-	setBackground(Color.GRAY);
+	//setBackground(Color.GRAY);
 	try {    
 	    Class.forName("org.sqlite.JDBC");
 	}
@@ -117,6 +128,7 @@ public class DatabasePlugin extends JPanel implements Plugin {
 		    + "[pop]  NOT NULL,\n"
 		    + "CONSTRAINT [] PRIMARY KEY ([time]));\n"
 		    );
+	    conn.setAutoCommit(false);
 	    prep = conn.prepareStatement(
 		"insert into population values (?, ?);");
 
@@ -131,22 +143,29 @@ public class DatabasePlugin extends JPanel implements Plugin {
 	//JLabel label = new JLabel("Graph will update every " + updaterate
 	//		+ " Simulation cycles, to update now click: ");
 
-	JButton updateButton = new JButton("Look nice");
-
+	//JButton updateButton = new JButton("Update database");
+/*
 	updateButton.addActionListener(new ActionListener()
 	{
 
 		@Override
 		public void actionPerformed(ActionEvent ae)
 		{
-			//action for button
+			
+		try {
+		    prep.executeBatch();
+		} catch (Exception e)
+		    {
+			    System.err.println("Database Exception:" + e);
+			    return;
+		    }
 		}
 
 	});
-
-	control.add(updateButton);
-	this.setLayout(new BorderLayout());
-	add(control, BorderLayout.NORTH);
+*/
+	//control.add(updateButton);
+	//this.setLayout(new BorderLayout());
+	//add(control, BorderLayout.NORTH);
 
     }
 
@@ -160,8 +179,13 @@ public class DatabasePlugin extends JPanel implements Plugin {
     @Override
     public void onSimulationComplete()
     {
-	this.removeAll();
+//	this.removeAll();
 	try {
+	    //sends left over data to DB
+	    prep.executeBatch();
+	    //commits all transactions
+	    conn.commit();
+	    prep.close();
 	    conn.close();
 	} catch (Exception e)
 	    {
