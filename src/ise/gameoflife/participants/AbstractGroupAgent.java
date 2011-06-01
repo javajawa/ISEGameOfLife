@@ -29,7 +29,7 @@ import presage.Participant;
 import presage.environment.messages.ENVRegistrationResponse;
 // TODO: Make it clear that the contract calls for a public consturctor with one argument that takes in the datamodel.
 /**
- *
+ * TODO: Document
  * @author Benedict
  */
 public abstract class AbstractGroupAgent implements Participant
@@ -148,7 +148,7 @@ public abstract class AbstractGroupAgent implements Participant
 	private void doTeamSelect()
 	{
 		Map<HuntingTeam, Food> teams = selectTeams();
-
+		// FIXME: Check that the teasm make sense (ie consist only of members of this group)
 		for (HuntingTeam team : teams.keySet())
 		{
 			Food toHunt = teams.get(team);
@@ -162,6 +162,7 @@ public abstract class AbstractGroupAgent implements Participant
 	private void doHandleHuntResults()
 	{
 		Map<String, Double> result = distributeFood(Collections.unmodifiableMap(huntResult));
+		// FIXME: Check that the total amoount food being distributed is the same as collected...
 		List<String> informedAgents = new ArrayList<String>();
 
 		for (String agent : result.keySet())
