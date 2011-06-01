@@ -95,6 +95,7 @@ abstract public class AbstractAgent implements Participant
 			final HuntOrder in = (HuntOrder)input;
 			lastOrderReceived = in.getOrder();
 			huntingTeam = in.getTeam();
+			System.out.println("We, Team " + huntingTeam + " have been told to hunt " + in.getOrder());
 		}
 	}
 
@@ -115,8 +116,10 @@ abstract public class AbstractAgent implements Participant
 			{
 				dm.setGroup(in.getGroup());
 			}
-			groupApplicationResponse(true);
+			groupApplicationResponse(in.wasAccepted());	
+			System.out.println("Group join attempt success is: " + in.wasAccepted());
 		}
+		
 	}
 
 	/**
