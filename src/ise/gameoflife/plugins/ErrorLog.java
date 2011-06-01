@@ -320,11 +320,10 @@ public class ErrorLog extends JPanel implements Plugin
 			String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
 			FileWriter fstream = new FileWriter(configPath + "/ErrorLog.txt");
 			BufferedWriter out = new BufferedWriter(fstream);
+			final String newline = System.getProperty("line.separator");
 			
-			for (String s : data)
-			{
-				out.write(s + "\n");
-			}
+			for (String s : data)	out.write(s + newline);
+
 			out.close();
 		}
 		catch (Exception e)
