@@ -1,6 +1,7 @@
 package ise.gameoflife.inputs;
 
 /**
+ * GenericInput class used to specify the desire to leave the system
  * @author Benedict
  */
 public class LeaveNotification extends GenericInput
