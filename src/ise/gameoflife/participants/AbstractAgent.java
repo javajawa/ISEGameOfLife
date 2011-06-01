@@ -392,7 +392,7 @@ abstract public class AbstractAgent implements Participant
 	/**
 	 * @return The food the agent decided to hunt on the previous turn
 	 */
-	public final Food getLastHunted()
+	protected final Food getLastHunted()
 	{
 		return lastHunted;
 	}
@@ -400,8 +400,17 @@ abstract public class AbstractAgent implements Participant
 	/**
 	 * @return which hunting pair this agent belongs to
 	 */
-	public final HuntingTeam getHuntingTeam() {
+	protected final HuntingTeam getHuntingTeam() {
 		return huntingTeam;
 	}
 
+	/**
+	 * The food that this agent has been ordered to hunt with it's team in this
+	 * round
+	 * @return Food that was ordered 
+	 */
+	protected final Food getOrder()
+	{
+		return lastOrderReceived;
+	}
 }
