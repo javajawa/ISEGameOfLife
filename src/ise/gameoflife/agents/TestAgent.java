@@ -65,5 +65,18 @@ public class TestAgent extends AbstractAgent
 	{
 		// Nothing to see here. Move along, citizen!
 	}
+
+	@Override
+	protected void beforeNewRound()
+	{
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected String chooseGroup()
+	{
+		return null;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
 	
 }
