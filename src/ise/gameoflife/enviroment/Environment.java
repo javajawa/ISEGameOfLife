@@ -229,6 +229,8 @@ public class Environment extends AbstractEnvironment
 		// TODO: Add message handlers
 		this.actionhandlers.add(new HuntHandler());
 		this.actionhandlers.add(new DeathHandler());
+
+		new PublicEnvironmentConnection(new EnvConnector(this));
 	}
 
 	@Override
