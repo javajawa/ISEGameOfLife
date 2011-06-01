@@ -209,6 +209,7 @@ public abstract class AbstractGroupAgent implements Participant
 			boolean response = this.respondToJoinRequest(((JoinRequest)input).getAgent());
 			ec.act(new RespondToApplication(this.getId(), response), this.getId(), authCode);
 			if (response)	this.dm.memberList.add(((JoinRequest)input).getAgent());
+			System.out.println("I, agent " + ((JoinRequest)input).getAgent() + "have made a request to join a group");
 			return;
 		}
 
@@ -217,6 +218,7 @@ public abstract class AbstractGroupAgent implements Participant
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.memberList.remove(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
+			System.out.println("I, agent " + in.getAgent() + " have left a group because " + in.getReason());
 			return;
 		}
 
@@ -224,9 +226,9 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			huntResult.put(in.getAgent(), in.getNutritionValue());
+			System.out.println("I, agent " + in.getAgent() + " have hunted food worth" + in.getNutritionValue());
 			return;
 		}
-
 		ec.logToErrorLog("Group Unable to handle Input of type " + input.getClass().getCanonicalName());
 	}
 

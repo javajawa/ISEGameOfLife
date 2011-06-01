@@ -114,6 +114,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final GroupOrder order = (GroupOrder)action;
 			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getToHunt(), order.getTeam()));
+			System.out.println("I, Group " + actorID + " have been told to hunt " + (GroupOrder)action);
 			return null;
 		}
 			
@@ -154,7 +155,6 @@ public class Environment extends AbstractEnvironment
 					result = new HuntResult(actorID, 0, dmodel.getTime());
 				}
 				sim.getPlayer(actorID).enqueueInput(result);
-				return null;
 			}
 			else
 			{
@@ -163,8 +163,9 @@ public class Environment extends AbstractEnvironment
 					storedHuntResults.put(am.getHuntingTeam(), new LinkedList<TeamHuntEvent>());
 				}
 				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act, actorID));
-				return null;
 			}
+			System.out.println("I, agent " + actorID + " have hunted" + (Hunt)action);
+			return null;
 		}
 
 		public HuntHandler()
@@ -186,6 +187,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID){
 			sim.getPlayer(actorID).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, ((RespondToApplication)action).wasAccepted()));
+			System.out.println("I, agent " + actorID + " have attmpted to join a group, and the result was: " + ((RespondToApplication)action).wasAccepted());
 			return null;
 		}
 		
@@ -209,6 +211,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final DistributeFood result = (DistributeFood)action;
 			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmount(), sim.getTime()));
+			System.out.println("I, agent " + actorID + " have received " + result.getAmount());
 			return null;
 		}
 
