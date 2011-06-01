@@ -56,8 +56,8 @@ abstract public class AbstractAgent implements Participant
 			}
 			else
 			{
-			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
-			dm.foodConsumed(dm.getFoodConsumption());
+				System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
+				dm.foodConsumed(dm.getFoodConsumption());
 			}
 		}
 	}
