@@ -189,7 +189,7 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	@Override
-	public void initialise(EnvironmentConnector environmentConnector)
+	public final void initialise(EnvironmentConnector environmentConnector)
 	{
 		System.out.println(environmentConnector.getClass().getCanonicalName());
 		tmp_ec = environmentConnector;
@@ -218,7 +218,7 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void onDeActivation()
 	{
-		ec.deregister(new UnregisterRequest(dm.getId(), dm.getGroupId()));
+		ec.deregister(new UnregisterRequest(dm.getId(), authCode));
 	}
 
 	@Override
@@ -352,9 +352,7 @@ abstract public class AbstractAgent implements Participant
 
 	/**
 	 * Called after the initialising the agent, allowing subclassses to initialise
-	 * any more data. The primary environment connector will not be available at
-	 * this point, but rather when the agent is activated
-	 * @param ec The <strong>default</strong> environment connector
+	 * any more data.
 	 */
 	abstract protected void onInit();
 	/**
