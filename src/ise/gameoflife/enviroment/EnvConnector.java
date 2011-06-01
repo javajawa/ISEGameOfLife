@@ -58,8 +58,8 @@ public class EnvConnector extends EnvironmentConnector
 	}
 
 	/**
-	 * TODO: Documentation
-	 * @return
+	 * Finds what food types are available to hunt
+	 * @return set of available food.
 	 */
 	public Set<Food> availableFoods()
 	{
@@ -67,8 +67,8 @@ public class EnvConnector extends EnvironmentConnector
 	}
 
 	/**
-	 * TODO: Document
-	 * @param s
+	 * Logs an error in the ErrorLog
+	 * @param s Error string to log
 	 */
 	public void logToErrorLog(String s)
 	{
@@ -76,8 +76,8 @@ public class EnvConnector extends EnvironmentConnector
 	}
 
 	/**
-	 * TODO: Document
-	 * @param s 
+	 * Logs an error in the ErrorLog
+	 * @param s Error to Log
 	 */
 	public void logToErrorLog(Throwable s)
 	{
