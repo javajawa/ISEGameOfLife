@@ -403,10 +403,5 @@ abstract public class AbstractAgent implements Participant
 	public final HuntingTeam getHuntingTeam() {
 		return huntingTeam;
 	}
-	
-	// TODO: Work out which of these members shoudl be stored in the datamodel
-	// TODO: MAke sure datamodel is private
-	// TODO: Maybe migrate some of the functions to the PublicDataModel
-	// TODO: Certinaly true of the Group 
 
 }
