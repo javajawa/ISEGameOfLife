@@ -338,6 +338,9 @@ abstract public class AbstractAgent implements Participant
 		return lastHunted;
 	}
 	
+	/**
+	 * @return which hunting pair this agent belongs to
+	 */
 	public final HuntingTeam getHuntingTeam() {
 		return huntingTeam;
 	}
