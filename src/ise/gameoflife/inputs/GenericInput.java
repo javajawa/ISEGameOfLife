@@ -3,10 +3,7 @@ package ise.gameoflife.inputs;
 import presage.Input;
 
 /**
- * TODO: Fix the documentation - remember, each thing should have it's own
- * TODO: block. Also, none of the parameters are documented
- * Base class for dealing with inputs, which implements all the required 
- * functions
+ * Generic class for inputs
  * @author Benedict Harcourt
  */
 abstract class GenericInput implements Input
@@ -22,19 +19,19 @@ abstract class GenericInput implements Input
 	 */
 	protected String performative;
 	
-/**
+	/**
 	 * Creates a new instance of GenericInput
-	 * @param timestamp
-	 * @param performative 
+	 * @param timestamp what turn it is
+	 * @param performative the current state
 	 */
 	GenericInput(long timestamp, String performative)
 	{
 		this.timestamp = timestamp;
 		this.performative = performative;
 	}
-/**
+	/**
 	 * Returns the Timestamp of the input event
-	 * @return 
+	 * @return the timestamp
 	 */
 	@Override
 	public long getTimestamp()
@@ -43,7 +40,7 @@ abstract class GenericInput implements Input
 	}
 /**
 	 * Set Timestamp
-	 * @param timestamp 
+	 * @param timestamp time at which event occurred.
 	 */
 	@Override
 	public void setTimestamp(long timestamp)
@@ -52,7 +49,7 @@ abstract class GenericInput implements Input
 	}
 /**
 	 * Returns the performative
-	 * @return 
+	 * @return the current value of the Performative
 	 */
 	@Override
 	public String getPerformative()
