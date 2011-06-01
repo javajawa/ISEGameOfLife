@@ -93,4 +93,13 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getOrder();
 	}
+
+	/**
+	 * Returns the group ID of the agent
+	 * @return 
+	 */
+	public String getGroupId()
+	{
+		return source.getGroupId();
+	}
 }

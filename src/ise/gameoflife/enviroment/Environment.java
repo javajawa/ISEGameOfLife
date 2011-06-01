@@ -12,12 +12,17 @@ import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -131,22 +136,35 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			// TODO: Make this deal with things like groups
 			final Hunt act = (Hunt)action;
 			final Food food = dmodel.getFoodById(act.getFoodTypeId());
 
-			Input result;
-			if (food.getHuntersRequired() <= 1)
+			// This line gets the agents datamodel
+			// Just trust me on that one :P
+			final PublicAgentDataModel am = ((AbstractAgent)sim.getPlayer(actorID)).getDataModel();
+			if (am.getHuntingTeam() == null)
 			{
-				result = new HuntResult(actorID, food.getNutrition(), dmodel.getTime());
+				Input result;
+				if (food.getHuntersRequired() <= 1)
+				{
+					result = new HuntResult(actorID, food.getNutrition(), dmodel.getTime());
+				}
+				else
+				{
+					result = new HuntResult(actorID, 0, dmodel.getTime());
+				}
 				sim.getPlayer(actorID).enqueueInput(result);
+				return null;
 			}
 			else
 			{
-				result = new HuntResult(actorID, 0, dmodel.getTime());
+				if (!storedHuntResults.containsKey(am.getHuntingTeam()))
+				{
+					storedHuntResults.put(am.getHuntingTeam(), new LinkedList<TeamHuntEvent>());
+				}
+				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act, actorID));
+				return null;
 			}
-
-			return result;
 		}
 
 		public HuntHandler()
@@ -199,6 +217,28 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 
+	private class TeamHuntEvent
+	{
+		private final Food food;
+		private final String agent;
+
+		public TeamHuntEvent(Hunt hunt, String actorID)
+		{
+			this.food = dmodel.getFoodById(hunt.getFoodTypeId());
+			this.agent = actorID;
+		}
+
+		public String getAgent()
+		{
+			return agent;
+		}
+
+		public Food getFood()
+		{
+			return food;
+		}
+	}
+
 	/**
 	 * Reference to the data model, of the class which it will actually be.
 	 * Hides the {@link AEnvDataModel} in the {@link AbstractEnvironment}
@@ -211,6 +251,7 @@ public class Environment extends AbstractEnvironment
 	 * Reference to the list that backs the ErrorLog view plugin.
 	 */
 	private List<String> errorLog;
+	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
 
 	@Deprecated
 	public Environment()
@@ -270,6 +311,8 @@ public class Environment extends AbstractEnvironment
 		this.actionhandlers.add(new DistributeFoodHandler());
 
 		new PublicEnvironmentConnection(new EnvConnector(this));
+
+		storedHuntResults = new HashMap<HuntingTeam, List<TeamHuntEvent>>();
 	}
 
 	@Override
@@ -280,6 +323,7 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePhysicalWorld()
 	{
+		processTeamHunts();
 		// Energy used on hunting, so this is when food is consumed
 		if (dmodel.getTurnType() == TurnType.GoHunt)
 		{
@@ -294,6 +338,50 @@ public class Environment extends AbstractEnvironment
 				}
 			}
 		}
+	}
+
+	private void processTeamHunts()
+	{
+		for (HuntingTeam team : storedHuntResults.keySet())
+		{
+			// Reorganise each team into what they hunted
+			// And who hunted it
+			Map<Food,List<String>> hunters = new HashMap<Food, List<String>>();
+			for (TeamHuntEvent h : storedHuntResults.get(team))
+			{
+				if (!hunters.containsKey(h.getFood()))
+				{
+					hunters.put(h.getFood(), new LinkedList<String>());
+				}
+				hunters.get(h.getFood()).add(h.getAgent());
+			}
+
+			// Now, for each food, see if they got a unit on it
+			// TODO: Do we get more than one unit if more people succeed?
+			for (Food f : hunters.keySet())
+			{
+				List<String> agents = hunters.get(f);
+				double foodGained;
+				if (agents.size() >= f.getHuntersRequired())
+				{
+					foodGained = f.getNutrition() / agents.size();
+				}
+				else
+				{
+					foodGained = 0;
+				}
+
+				// Then, for each agent, send the message
+				String groupID = dmodel.getAgentById(agents.get(0)).getGroupId();
+				Participant g = sim.getPlayer(groupID);
+				for (String agent : agents)
+				{
+					g.enqueueInput(new HuntResult(agent, foodGained, dmodel.time));
+				}
+			}
+		}
+
+		storedHuntResults = new HashMap<HuntingTeam, List<TeamHuntEvent>>();
 	}
 
 	@Override

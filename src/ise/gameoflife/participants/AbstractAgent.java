@@ -11,7 +11,6 @@ import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
