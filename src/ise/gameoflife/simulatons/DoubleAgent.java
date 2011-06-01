@@ -31,7 +31,7 @@ public class DoubleAgent {
 
 		// Basic config
 		presageConfig.setComment("Simple Test of 2 agents consuming food until death");
-		presageConfig.setIterations(25);
+		presageConfig.setIterations(100);
 		presageConfig.setRandomSeed(0);
 
 		presageConfig.setOutputFolder("tempoutput");

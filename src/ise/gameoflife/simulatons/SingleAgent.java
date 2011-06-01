@@ -3,6 +3,9 @@ package ise.gameoflife.simulatons;
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.enviroment.EnvironmentDataModel;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.plugins.DatabasePlugin;
+import ise.gameoflife.plugins.ErrorLog;
+import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import java.io.File;
 import java.util.HashMap;
@@ -30,7 +33,7 @@ public class SingleAgent
 
 		// Basic config
 		presageConfig.setComment("Simple Test of 1 agent consuming food until death");
-		presageConfig.setIterations(25);
+		presageConfig.setIterations(100);
 		presageConfig.setRandomSeed(0);
 
 		presageConfig.setOutputFolder("tempoutput");
@@ -45,9 +48,13 @@ public class SingleAgent
 		presageConfig.setEnvironmentConfigPath(configPath + "/environment.xml");
 
 		// All the big objects
-		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 		PluginManager pm = new PluginManager();
-                pm.addPlugin(new HuntersAlivePlugin(configPath + "/percentinfected.png",1900, 1200));
+    pm.addPlugin(new HuntersAlivePlugin(configPath + "/percentinfected.png",1900, 1200));
+		pm.addPlugin(new ErrorLog());
+		pm.addPlugin(new DatabasePlugin(configPath + "/single.db"));
+		pm.addPlugin(new HunterListPlugin());
+
+		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 
 		EventScriptManager ms = new EventScriptManager();
 
