@@ -276,7 +276,10 @@ abstract public class AbstractAgent implements Participant
 	{
 		String gid = chooseGroup();
 		// TODO: Check string corrosponds to valid group
-		ec.act(new ApplyToGroup(gid), getId(), authCode);
+		if (gid != null)
+		{
+			ec.act(new ApplyToGroup(gid), getId(), authCode);
+		}
 	}
 
 	private void doHuntTurn()
