@@ -14,7 +14,9 @@ public class RunSimulation
 	}
 
 	/**
-	 * TODO: Documentation
+	 * Sets up everything necessary to create the GUI,
+	 * decode the XML and make Multi-Agent magic
+	 * happen
 	 * @param args
 	 */
 	public static void main(String args[])
