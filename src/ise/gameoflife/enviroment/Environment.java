@@ -127,12 +127,12 @@ public class Environment extends AbstractEnvironment
 			Input result;
 			if (food.getHuntersRequired() <= 1)
 			{
-				result = new HuntResult(food.getNutrition(), dmodel.getTime());
+				result = new HuntResult(actorID, food.getNutrition(), dmodel.getTime());
 				sim.getPlayer(actorID).enqueueInput(result);
 			}
 			else
 			{
-				result = new HuntResult(0, dmodel.getTime());
+				result = new HuntResult(actorID, 0, dmodel.getTime());
 			}
 
 			return result;
