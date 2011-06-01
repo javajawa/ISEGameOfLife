@@ -6,14 +6,11 @@ import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -25,7 +22,6 @@ import presage.Simulation;
 
 /**
  * Creates the JPanel Plugin which will be used to log errors
- * TODO: Finish documentation
  * @author Christopher Fonseka
  * @author Olly Hill
  * @author Benedict Harcourt
@@ -34,9 +30,9 @@ public class ErrorLog extends JPanel implements Plugin
 {
 
 	/**
-	 * 
+	 * Class that creates a syncronised, type-safe list that can be used with
+	 * a JList, and allow the list to be updated after creation.
 	 * TODO: Document each of these functions
-	 * TODO: Less s****e implementation of this class
 	 */
 	private final class JListModel implements ListModel, List<String>
 	{
@@ -254,7 +250,7 @@ public class ErrorLog extends JPanel implements Plugin
 
 	/**
 	 * Returns the Label
-	 * @return 
+	 * @return The label
 	 */
 	@Override
 	public String getLabel()
@@ -262,8 +258,9 @@ public class ErrorLog extends JPanel implements Plugin
 		return label;
 	}
 
-	/**Returns the Short Label
-	 * @return 
+	/**
+	 * Returns the Short Label
+	 * @return The short label
 	 */
 	@Override
 	public String getShortLabel()
