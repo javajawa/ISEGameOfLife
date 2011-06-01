@@ -68,4 +68,29 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getPlayerClass();
 	}
+
+	/**
+	 * @return The food the agent decided to hunt on the previous turn
+	 */
+	public Food getLastHunted()
+	{
+		return source.getLastHunted();
+	}
+
+	/**
+	 * @return which hunting pair this agent belongs to
+	 */
+	public HuntingTeam getHuntingTeam() {
+		return source.getHuntingTeam();
+	}
+
+	/**
+	 * The food that this agent has been ordered to hunt with it's team in this
+	 * round
+	 * @return Food that was ordered 
+	 */
+	public Food getOrder()
+	{
+		return source.getOrder();
+	}
 }

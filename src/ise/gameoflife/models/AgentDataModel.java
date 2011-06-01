@@ -32,6 +32,10 @@ public class AgentDataModel extends APlayerDataModel
 	@Element(required=false)
 	private String groupId;
 
+	private Food lastHunted = null;
+	private HuntingTeam huntingTeam = null;
+	private Food lastOrderReceived = null;
+
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
 	 * stop warnings being shown
@@ -127,5 +131,55 @@ public class AgentDataModel extends APlayerDataModel
 	public void onInitialise()
 	{
 		//Nothing to see here. Move along, citizen!
+	}
+
+	/**
+	 * @return The food the agent decided to hunt on the previous turn
+	 */
+	public Food getLastHunted()
+	{
+		return lastHunted;
+	}
+
+	/**
+	 * @return which hunting pair this agent belongs to
+	 */
+	public HuntingTeam getHuntingTeam() {
+		return huntingTeam;
+	}
+
+	/**
+	 * The food that this agent has been ordered to hunt with it's team in this
+	 * round
+	 * @return Food that was ordered 
+	 */
+	public Food getOrder()
+	{
+		return lastOrderReceived;
+	}
+
+	/**
+	 * @return The food the agent decided to hunt on the previous turn
+	 */
+	public void setLastHunted(Food lastFood)
+	{
+		lastHunted = lastFood;
+	}
+
+	/**
+	 * @return which hunting pair this agent belongs to
+	 */
+	public void setHuntingTeam(HuntingTeam team) {
+		huntingTeam = team;
+	}
+
+	/**
+	 * The food that this agent has been ordered to hunt with it's team in this
+	 * round
+	 * @return Food that was ordered 
+	 */
+	public void setOrder(Food newFood)
+	{
+		lastOrderReceived = newFood;
 	}
 }

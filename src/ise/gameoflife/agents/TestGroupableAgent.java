@@ -37,7 +37,7 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected Food chooseFood()
 	{
-		if (this.getOrder() != null) return this.getOrder();
+		if (this.getDataModel().getOrder() != null) return this.getDataModel().getOrder();
 
 		Food bestSoFar = null;
 

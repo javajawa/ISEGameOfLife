@@ -12,6 +12,7 @@ import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -75,7 +76,6 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final HuntResult in = (HuntResult)input;
-			System.out.println("I, agent " + getId() + ", received " + in.getNutritionValue() + " by hunting " + lastHunted.getName());
 			dm.foodAquired(in.getNutritionValue());
 		}
 	}
@@ -93,8 +93,8 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final HuntOrder in = (HuntOrder)input;
-			lastOrderReceived = in.getOrder();
-			huntingTeam = in.getTeam();
+			dm.setOrder(in.getOrder());
+			dm.setHuntingTeam(in.getTeam());
 		}
 	}
 
@@ -138,11 +138,6 @@ abstract public class AbstractAgent implements Participant
 
 	private InputQueue msgQ = new InputQueue("inputs");
 	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
-
-	private Food lastHunted = null;
-	
-	private HuntingTeam huntingTeam = null;
-	private Food lastOrderReceived = null;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present.
@@ -269,9 +264,9 @@ abstract public class AbstractAgent implements Participant
 
 	private void clearRoundData()
 	{
-		lastHunted = null;
-		huntingTeam = null;
-		lastOrderReceived = null;
+		dm.setLastHunted(null);
+		dm.setHuntingTeam(null);
+		dm.setOrder(null);
 	}
 
 	private void doGroupSelect()
@@ -293,7 +288,7 @@ abstract public class AbstractAgent implements Participant
 		{
 			ec.act(new Hunt(toHunt), this.getId(), authCode);
 		}
-		lastHunted = toHunt;
+		dm.setLastHunted(toHunt);
 	}
 
 	/**
@@ -312,6 +307,11 @@ abstract public class AbstractAgent implements Participant
 	 */
 	@Override
 	public final PlayerDataModel getInternalDataModel()
+	{
+		return dm.getPublicVersion();
+	}
+
+	public final PublicAgentDataModel getDataModel()
 	{
 		return dm.getPublicVersion();
 	}
@@ -389,29 +389,4 @@ abstract public class AbstractAgent implements Participant
 	 * @return The type of food they have decided to hunt
 	 */
 	abstract protected Food chooseFood();
-
-	/**
-	 * @return The food the agent decided to hunt on the previous turn
-	 */
-	protected final Food getLastHunted()
-	{
-		return lastHunted;
-	}
-	
-	/**
-	 * @return which hunting pair this agent belongs to
-	 */
-	protected final HuntingTeam getHuntingTeam() {
-		return huntingTeam;
-	}
-
-	/**
-	 * The food that this agent has been ordered to hunt with it's team in this
-	 * round
-	 * @return Food that was ordered 
-	 */
-	protected final Food getOrder()
-	{
-		return lastOrderReceived;
-	}
 }
