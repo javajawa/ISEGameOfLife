@@ -5,12 +5,14 @@ import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.tokens.RegistrationRequest;
+import ise.gameoflife.tokens.TurnType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementMap;
 import presage.environment.AEnvDataModel;
 
@@ -37,6 +39,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 */
 //	@ElementMap
 //	private HashMap<UUID, GroupDataModel> agentGroups;
+	@Element
+	private TurnType turn;
 
 	/**
 	 * Serialisable no-arg constructor, do not use
@@ -52,6 +56,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	{
 		super(environmentname, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
+		this.turn = TurnType.firstTurn;
 	}
 
 	public Set<Food> availableFoods()
@@ -84,4 +89,10 @@ public class EnvironmentDataModel extends AEnvDataModel
 		agents.put(id.getParticipantID(), id.getModel());
 		return true;
 	}
+
+	public TurnType getTurnType()
+	{
+		return turn;
+	}
+
 }

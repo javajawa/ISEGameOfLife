@@ -13,6 +13,7 @@ import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
+import ise.gameoflife.tokens.TurnType;
 import java.util.List;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -286,5 +287,10 @@ public class Environment extends AbstractEnvironment
 		if (this.errorLog == null) return;
 
 		this.errorLog.add(s.getMessage());
+	}
+
+	TurnType getCurrentTurnType()
+	{
+		return dmodel.getTurnType();
 	}
 }

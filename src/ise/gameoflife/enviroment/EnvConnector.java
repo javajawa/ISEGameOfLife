@@ -3,6 +3,7 @@ package ise.gameoflife.enviroment;
 import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataModel;
+import ise.gameoflife.tokens.TurnType;
 import java.util.Set;
 import java.util.UUID;
 import presage.EnvironmentConnector;
@@ -71,5 +72,10 @@ public class EnvConnector extends EnvironmentConnector
 	public void logToErrorLog(Throwable s)
 	{
 		e.logToErrorLog(s);
+	}
+
+	public TurnType getCurrentTurnType()
+	{
+		return e.getCurrentTurnType();
 	}
 }
