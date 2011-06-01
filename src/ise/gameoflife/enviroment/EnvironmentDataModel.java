@@ -176,4 +176,10 @@ public class EnvironmentDataModel extends AEnvDataModel
 			throw new IllegalArgumentException(groupType.getCanonicalName() + " is not in the list of permissible groups");
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	Set<String> getAvailableGroups()
+	{
+		return (Set<String>)agentGroups;
+	}
 }

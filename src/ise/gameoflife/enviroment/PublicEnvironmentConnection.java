@@ -69,6 +69,11 @@ public class PublicEnvironmentConnection
 	{
 		return ec.getAllowedGroupTypes();
 	}
+	
+	public Set<String> availableGroups()
+	{
+		return ec.getAvailableGroups();
+	}
 
 	// TODO: Offer interfaces to other members of the enviroment connector
 	// TODO: that sub-classes should be allowed to use
