@@ -2,6 +2,7 @@ package ise.gameoflife.enviroment;
 
 import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.actions.Death;
+import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.actions.RespondToApplication;
@@ -100,7 +101,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID){
 			final GroupOrder order = (GroupOrder)action;
-			sim.getPlayer(actorID).enqueueInput(new HuntOrder(sim.getTime(), order.getToHunt(), order.getTeam()));
+			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getToHunt(), order.getTeam()));
 			return null;
 		}
 			
@@ -123,6 +124,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
+			// TODO: Make this deal with things like groups
 			final Hunt act = (Hunt)action;
 			final Food food = dmodel.getFoodById(act.getFoodTypeId());
 
@@ -166,7 +168,30 @@ public class Environment extends AbstractEnvironment
 			// Nothing to see here. Move along, citizen.
 		}
 	}
-	
+	/**
+	 * Issues instructions of what to hunt from group to environment which then
+	 * passes the order onto agents.
+	 */
+	public class DistributeFoodHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(DistributeFood.class));
+		}
+
+		@Override
+		public Input handle(Action action, String actorID){
+			final DistributeFood result = (DistributeFood)action;
+			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmount(), sim.getTime()));
+			return null;
+		}
+
+		public DistributeFoodHandler(){
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+
 	/**
 	 * Reference to the data model, of the class which it will actually be.
 	 * Hides the {@link AEnvDataModel} in the {@link AbstractEnvironment}
@@ -235,6 +260,7 @@ public class Environment extends AbstractEnvironment
 		this.actionhandlers.add(new ApplyToGroupHandler());
 		this.actionhandlers.add(new GroupOrderHandler());
 		this.actionhandlers.add(new RespondToApplicationHandler());
+		this.actionhandlers.add(new DistributeFoodHandler());
 
 		new PublicEnvironmentConnection(new EnvConnector(this));
 	}

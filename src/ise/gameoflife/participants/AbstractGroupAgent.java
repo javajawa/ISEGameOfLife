@@ -1,5 +1,7 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.actions.DistributeFood;
+import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.enviroment.EnvConnector;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
@@ -146,16 +149,36 @@ public abstract class AbstractGroupAgent implements Participant
 	private void doTeamSelect()
 	{
 		Map<HuntingTeam, Food> teams = selectTeams();
-		// TODO: Inform each member of each team of their team and order with a
-		// Group order action
+
+		for (HuntingTeam team : teams.keySet())
+		{
+			Food toHunt = teams.get(team);
+			for (String agent : team.getMembers())
+			{
+				ec.act(new GroupOrder(toHunt, team, agent), getId(), authCode);
+			}
+		}
 	}
 	
 	private void doHandleHuntResults()
 	{
-		huntResult = distributeFood(Collections.unmodifiableMap(huntResult));
-		// TODO: Inform all agents of their share
-		// TODO: Check that all agents get a value
-		// TODO: Inform agents of 0 food if value was not set (for their records)
+		Map<String, Double> result = distributeFood(Collections.unmodifiableMap(huntResult));
+		List<String> informedAgents = new ArrayList<String>();
+
+		for (String agent : result.keySet())
+		{
+			informedAgents.add(agent);
+			ec.act(new DistributeFood(agent, result.get(agent)), getId(), authCode);
+		}
+
+		@SuppressWarnings("unchecked")
+		List<String> uninformedAgents = (List<String>)dm.memberList.clone();
+		uninformedAgents.removeAll(informedAgents);
+
+		for (String agent : uninformedAgents)
+		{
+			ec.act(new DistributeFood(agent, 0), getId(), authCode);
+		}
 	}
 	
 	/**
