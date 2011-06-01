@@ -2,6 +2,8 @@ package ise.gameoflife.models;
 
 import ise.gameoflife.participants.AbstractAgent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
@@ -53,6 +55,11 @@ public class GroupDataModel extends APlayerDataModel
 	public String getId()
 	{
 		return groupID;
+	}
+
+	public List<String> getMemberList()
+	{
+		return Collections.unmodifiableList(memberList);
 	}
 
 	@Override
