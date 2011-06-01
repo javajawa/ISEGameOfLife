@@ -271,8 +271,8 @@ abstract public class AbstractAgent implements Participant
 
 	private void doGroupSelect()
 	{
-		// TODO: chec that we're not joingin the group we're alreayd part of
 		String gid = chooseGroup();
+		if (gid == dm.getGroupId()) return;
 		if (conn.isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
