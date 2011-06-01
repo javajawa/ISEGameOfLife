@@ -4,6 +4,7 @@ import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.enviroment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
@@ -12,7 +13,6 @@ import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
@@ -78,11 +78,6 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	/**
-	 * Flag to show whether the initialise function has been called
-	 */
-	private boolean beenInitalised = false;
-
-	/**
 	 * The DataModel used by this agent.
 	 */
 	@Element
@@ -95,6 +90,7 @@ abstract public class AbstractAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
+	protected PublicEnvironmentConnection conn;
 	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
 
@@ -150,9 +146,6 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public void initialise(EnvironmentConnector environmentConnector)
 	{
-		if (beenInitalised) throw new IllegalStateException("This object has already been initialised");
-		beenInitalised = true;
-
 		System.out.println(environmentConnector.getClass().getCanonicalName());
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
@@ -160,7 +153,8 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new ConsumeFoodHandler());
 		this.handlers.add(new HuntResultHandler());
 
-		onInit(environmentConnector);
+		conn = PublicEnvironmentConnection.getInstance();
+		onInit();
 	}
 
 	@Override
@@ -310,7 +304,7 @@ abstract public class AbstractAgent implements Participant
 	 * this point, but rather when the agent is activated
 	 * @param ec The <strong>default</strong> environment connector
 	 */
-	abstract protected void onInit(EnvironmentConnector ec);
+	abstract protected void onInit();
 	/**
 	 * TODO: Documentation
 	 */
@@ -333,22 +327,6 @@ abstract public class AbstractAgent implements Participant
 	 * @return The type of food they have decided to hunt
 	 */
 	abstract protected Food chooseFood();
-	
-	/**
-	 * TODO: Documentation
-	 * @return 
-	 */
-	protected Set<Food> availableFoods()
-	{
-		return ec.availableFoods();
-	}
-
-	// TODO: Offer interfaces to other members of the enviroment connector
-	// TODO: that sub-classes should be allowed to use
-	// - Group lookup
-	// - Food lookup?
-	// - Agent lookup
-	// - Group type list
 
 	// TODO: Add function to get current group
 	// TODO: Add function to get last hunted food-stuff

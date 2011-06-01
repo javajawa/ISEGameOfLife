@@ -1,5 +1,6 @@
 package ise.gameoflife.agents;
 
+import ise.gameoflife.enviroment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
 import presage.EnvironmentConnector;
@@ -37,7 +38,7 @@ public class TestAgent extends AbstractAgent
 	{
 		Food bestSoFar = null;
 
-		for (Food noms : availableFoods())
+		for (Food noms : conn.availableFoods())
 		{
 			if (noms.getHuntersRequired() <= 1)
 			{
@@ -55,7 +56,7 @@ public class TestAgent extends AbstractAgent
 	}
 
 	@Override
-	protected void onInit(EnvironmentConnector ec)
+	protected void onInit()
 	{
 		// Nothing to see here. Move along, citizen!
 	}
