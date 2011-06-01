@@ -15,7 +15,7 @@ public class JoinRequest extends GenericInput
 	
 	/**
 	 * Formalises the candidates request. A series of strange and
-	 * embarassing forms of "hazing" is sure to follow
+	 * embarrassing forms of "hazing" is sure to follow
 	 * @param time
 	 * @param agent 
 	 */
