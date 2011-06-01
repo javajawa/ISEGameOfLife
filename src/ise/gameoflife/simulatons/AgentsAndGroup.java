@@ -1,9 +1,11 @@
 package ise.gameoflife.simulatons;
 
 import ise.gameoflife.agents.TestAgent;
+import ise.gameoflife.agents.TestGroupableAgent;
 import ise.gameoflife.enviroment.EnvironmentDataModel;
 import ise.gameoflife.groups.TestGroup;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
@@ -61,11 +63,17 @@ public class AgentsAndGroup
 
 		EventScriptManager ms = new EventScriptManager();
 
-		TestAgent a;
+		AbstractAgent a;
 		
 		for (int i = 0; i < 10; i++)
 		{
 			a = new TestAgent(20, 2);
+			parts.put(a.getId(), a);
+			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+		}
+		for (int i = 0; i < 10; i++)
+		{
+			a = new TestGroupableAgent(20, 2);
 			parts.put(a.getId(), a);
 			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
 		}
