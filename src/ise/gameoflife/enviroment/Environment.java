@@ -1,9 +1,15 @@
 package ise.gameoflife.enviroment;
 
+import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.actions.Death;
+import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.Hunt;
+import ise.gameoflife.actions.RespondToApplication;
+import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
+import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -28,6 +34,30 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
+	/**
+	 * Passes on group applications
+	 */
+	public class ApplyToGroupHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(ApplyToGroup.class));
+		}
+		
+		@Override
+		public Input handle(Action action, String actorID)
+		{
+			sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
+			System.out.println("I, agent " + actorID + ", have attempted to join group " + ((ApplyToGroup)action).getGroup());
+			return null;
+		}
+		
+		public ApplyToGroupHandler(){
+			//Nothing to see here, move along citizen.
+		}
+	}
+	
 /**
 	 * Kills (deActivates) Agents
 	 */
@@ -52,7 +82,28 @@ public class Environment extends AbstractEnvironment
 			// Nothing to see here. Move along, citizen.
 		}
 	}
-	
+	/**
+	 * Issues instructions of what to hunt from group to environment which then
+	 * passes the order onto agents.
+	 */
+	public class GroupOrderHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(GroupOrder.class));
+		}
+			
+		@Override
+		public Input handle(Action action, String actorID){
+			sim.getPlayer(actorID).enqueueInput(new HuntOrder(sim.getTime(), ((GroupOrder)action).getToHunt()));
+			return null;
+		}
+			
+		public GroupOrderHandler(){
+			// Nothing to see here. Move along, citizen.
+		}
+	}
 	/**
 	 * Performs Hunt Action, returns new food total, depending on result of Hunt
 	 */
@@ -87,6 +138,27 @@ public class Environment extends AbstractEnvironment
 
 		public HuntHandler()
 		{
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+	/**
+	 * Responds to a group application, indicating success or failure
+	 */
+	public class RespondToApplicationHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(RespondToApplication.class));
+		}
+		
+		@Override
+		public Input handle(Action action, String actorID){
+			sim.getPlayer(actorID).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, ((RespondToApplication)action).wasAccepted()));
+			return null;
+		}
+		
+		public RespondToApplicationHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
