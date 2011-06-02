@@ -7,14 +7,24 @@ package ise.gameoflife.inputs;
  */
 public final class ConsumeFood extends GenericInput
 {
-	
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Creates a consume food action which indicates an agent is to consume a food
 	 * of type id, which is determined by the environment controller.
 	 * @param time The simulation time at which this input occurs
 	 */
-	public ConsumeFood(long time) {
+	public ConsumeFood(long time)
+	{
 		super(time, "consumefood");
+	}
+
+	// Stopes Netbeans thinking this is a ultility class
+	@Override
+	public String toString()
+	{
+		return super.toString();
 	}
 
 }

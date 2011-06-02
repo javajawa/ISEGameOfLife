@@ -9,17 +9,18 @@ import presage.Input;
  */
 abstract public class GenericInput implements Input, Serializable
 {
+
 	/**
 	 * The time at which the input event occurred, in terms of 
 	 * simulation time
 	 */
-	protected long timestamp;
+	private long timestamp;
 	/**
 	 * A String describing the current state/action of the input
 	 * eg: when an ActionError occurs, the performative is set to "ActionError"
 	 */
-	protected String performative;
-	
+	private String performative;
+
 	/**
 	 * Creates a new instance of GenericInput
 	 * @param timestamp what turn it is
@@ -30,6 +31,7 @@ abstract public class GenericInput implements Input, Serializable
 		this.timestamp = timestamp;
 		this.performative = performative;
 	}
+
 	/**
 	 * Returns the Timestamp of the input event
 	 * @return the timestamp
@@ -39,7 +41,8 @@ abstract public class GenericInput implements Input, Serializable
 	{
 		return timestamp;
 	}
-/**
+
+	/**
 	 * Set Timestamp
 	 * @param timestamp time at which event occurred.
 	 */
@@ -48,7 +51,8 @@ abstract public class GenericInput implements Input, Serializable
 	{
 		this.timestamp = timestamp;
 	}
-/**
+
+	/**
 	 * Returns the performative
 	 * @return the current value of the Performative
 	 */
@@ -57,5 +61,5 @@ abstract public class GenericInput implements Input, Serializable
 	{
 		return performative;
 	}
-	
+
 }
