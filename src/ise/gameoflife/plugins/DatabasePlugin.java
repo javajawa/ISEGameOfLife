@@ -28,10 +28,14 @@ public class DatabasePlugin implements Plugin {
 
     private Simulation sim;
     private Environment en;
+    private int simId; 
     
     private PreparedStatement prep;
+    private PreparedStatement prep2;
     //database connection
     private Connection conn;
+    //Remote MySQL server
+    private Connection rcon;
 
     @Element
     private String outputpath;
@@ -77,9 +81,14 @@ public class DatabasePlugin implements Plugin {
 		prep.setInt(2,en.getCyclesPassed());
 		prep.setInt(3,getNumHunters());
 		prep.addBatch();
+		prep2.setLong(1, sim.getTime());
+		prep2.setInt(2,en.getCyclesPassed());
+		prep2.setInt(3,getNumHunters());
+		prep2.addBatch();
 		//sends data to DB every 100 cycles
 		if (sim.getTime()%100 == 0) {
 		    prep.executeBatch();
+		    prep2.executeBatch();
 		    if (sim.getTime()%1000 == 0) {
 			conn.commit();
 		    }
@@ -122,6 +131,8 @@ public class DatabasePlugin implements Plugin {
 	
 	try {
 	    conn = DriverManager.getConnection("jdbc:sqlite:"+outputpath);
+	    rcon = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
+			"stratra1_isegol","ise4r3g00d");
 	    Statement stat = conn.createStatement();
 	    stat.executeUpdate("drop table if exists population;");
 	    stat.executeUpdate("CREATE TABLE [population] (\n"
@@ -130,9 +141,29 @@ public class DatabasePlugin implements Plugin {
 		    + "[pop]  NOT NULL,\n"
 		    + "CONSTRAINT [] PRIMARY KEY ([cycle]));\n"
 		    );
+	    stat.close();
+	    stat = rcon.createStatement();
+	    stat.executeUpdate("INSERT INTO simulations " +                             
+	       "VALUES (null,12345,'Comment1',null,0)",        // Insert a row
+	       Statement.RETURN_GENERATED_KEYS);   // Indicate you want automatically 
+	                                           // generated keys
+	    ResultSet rs = stat.getGeneratedKeys();         // Retrieve the automatically       
+	                                           // generated key value in a ResultSet.
+	                                           // Only one row is returned.
+                                     // Create ResultSet for query
+	    while (rs.next()) {
+	      simId  = rs.getInt(1);     // Get automatically generated key 
+	                                           // value
+	       System.out.println("automatically generated key value = " + simId);
+	    }
+	    rs.close();                           // Close ResultSet
+	    stat.close();                         // Close Statement 
+	    
 	    conn.setAutoCommit(false);
 	    prep = conn.prepareStatement(
 		"insert into population values (?, ?, ?);");
+	    prep2 = rcon.prepareStatement(
+		"insert into data values ("+simId+", ?, ?,?);");
 
 	}
 	catch (Exception e)
@@ -185,6 +216,7 @@ public class DatabasePlugin implements Plugin {
 	try {
 	    //sends left over data to DB
 	    prep.executeBatch();
+	    prep2.executeBatch();
 	    //commits all transactions
 	    conn.commit();
 	    prep.close();
