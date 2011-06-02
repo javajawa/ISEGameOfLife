@@ -6,6 +6,8 @@ package ise.gameoflife.inputs;
  */
 public class ApplicationResponse extends GenericInput
 {
+
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Group name
 	 */
@@ -29,7 +31,8 @@ public class ApplicationResponse extends GenericInput
 		this.group = group;
 		this.accepted = accepted;
 	}
-/**
+
+	/**
 	 * Gets the name of Group applied to
 	 * @return name of group applied to
 	 */
@@ -37,7 +40,8 @@ public class ApplicationResponse extends GenericInput
 	{
 		return group;
 	}
-/**
+
+	/**
 	 * Gives the status of the application - accepted or rejected
 	 * @return status of application as a boolean
 	 */

@@ -2,17 +2,26 @@ package ise.gameoflife.inputs;
 
 /**
  * GenericInput class used to specify the desire to leave the system
- * @author Benedict
+ * @author Benedict Harcourt
  */
 public class LeaveNotification extends GenericInput
 {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The only reasons to leave deemed acceptable to leave the system
 	 * That's right, missing Top Gear is not a valid excuse!
 	 */
 	public enum Reasons
 	{
+		/**
+		 * The agent has died
+		 */
 		Death,
+		/**
+		 * Non-specific reason
+		 */
 		Other
 	}
 
@@ -20,7 +29,6 @@ public class LeaveNotification extends GenericInput
 	 * Stores the reason given for the agent wishing to leave
 	 */
 	private Reasons reason;
-	
 	/**
 	 * Which agent wishes to go
 	 */
@@ -46,7 +54,7 @@ public class LeaveNotification extends GenericInput
 	{
 		return reason;
 	}
-	
+
 	/**
 	 * @return who are you?
 	 */
