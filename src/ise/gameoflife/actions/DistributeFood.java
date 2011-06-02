@@ -6,7 +6,7 @@ import presage.Action;
  * Distributes food amongst agents
  * @author Benedict
  */
-public class DistributeFood implements Action
+public class DistributeFood extends GenericAction
 {
 	/**
 	 * the Agent receiving food

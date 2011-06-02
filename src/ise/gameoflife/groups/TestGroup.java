@@ -51,7 +51,7 @@ public class TestGroup extends AbstractGroupAgent
 	{
 		//Find food with greatest nutrition / hunters required ratio
 		Food bestSoFar = null;
-		for (Food noms : conn.availableFoods())
+		for (Food noms : getConn().availableFoods())
 		{
 			if(bestSoFar == null)
 			{

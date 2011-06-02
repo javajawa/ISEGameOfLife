@@ -6,7 +6,7 @@ import presage.Action;
  * Action to be performed by a Hunter in order to join a group.
  * @author Benedict
  */
-public class ApplyToGroup implements Action
+public class ApplyToGroup extends GenericAction
 {
 	/**
 	 * The group that is being applied to

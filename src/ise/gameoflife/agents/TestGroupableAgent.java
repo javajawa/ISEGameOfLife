@@ -41,7 +41,7 @@ public class TestGroupableAgent extends AbstractAgent
 
 		Food bestSoFar = null;
 
-		for (Food noms : conn.availableFoods())
+		for (Food noms : getConn().availableFoods())
 		{
 			if (noms.getHuntersRequired() <= 1)
 			{
@@ -76,12 +76,12 @@ public class TestGroupableAgent extends AbstractAgent
 	{
 		if (this.getDataModel().getGroupId() != null) return null;
 
-		Set<String> groups = conn.availableGroups();
+		Set<String> groups = getConn().availableGroups();
 
 		if (groups.isEmpty())
 		{
-			Class<? extends AbstractGroupAgent> gtype = conn.getAllowedGroupTypes().get(0);
-			return conn.createGroup(gtype);
+			Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+			return getConn().createGroup(gtype);
 		}
 
 		return groups.iterator().next();

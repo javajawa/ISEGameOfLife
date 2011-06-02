@@ -5,10 +5,10 @@ import ise.gameoflife.models.HuntingTeam;
 import presage.Action;
 
 /**
- * TODO: Documentation for this class
+ * An Action performed by 
  * @author Benedict
  */
-public class GroupOrder implements Action
+public class GroupOrder extends GenericAction
 {
 	private final Food toHunt;
 	private final HuntingTeam withTeam;

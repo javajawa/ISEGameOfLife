@@ -7,7 +7,7 @@ import presage.Action;
  * remove an agent from the Simulation's processing loop by deactivating it
  * @author Olly
  */
-public final class Death implements Action
+public final class Death extends GenericAction
 {
 	/**
 	 * Creates a new death action which, when sent, will cause the Environment to

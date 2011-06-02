@@ -33,7 +33,6 @@ import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
-import presage.abstractparticipant.APlayerDataModel;
 import presage.environment.AEnvDataModel;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
@@ -55,7 +54,7 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Passes on group applications
 	 */
-	public class ApplyToGroupHandler implements AbstractEnvironment.ActionHandler
+	private class ApplyToGroupHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -79,7 +78,7 @@ public class Environment extends AbstractEnvironment
 /**
 	 * Kills (deActivates) Agents
 	 */
-	public class DeathHandler implements AbstractEnvironment.ActionHandler
+	private class DeathHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -104,7 +103,7 @@ public class Environment extends AbstractEnvironment
 	 * Issues instructions of what to hunt from group to environment which then
 	 * passes the order onto agents.
 	 */
-	public class GroupOrderHandler implements AbstractEnvironment.ActionHandler
+	private class GroupOrderHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -127,7 +126,7 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Performs Hunt Action, returns new food total, depending on result of Hunt
 	 */
-	public class HuntHandler implements AbstractEnvironment.ActionHandler
+	private class HuntHandler implements AbstractEnvironment.ActionHandler
 	{
 
 		@Override
@@ -178,7 +177,7 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Responds to a group application, indicating success or failure
 	 */
-	public class RespondToApplicationHandler implements AbstractEnvironment.ActionHandler
+	private class RespondToApplicationHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -203,7 +202,7 @@ public class Environment extends AbstractEnvironment
 	 * Issues instructions of what to hunt from group to environment which then
 	 * passes the order onto agents.
 	 */
-	public class DistributeFoodHandler implements AbstractEnvironment.ActionHandler
+	private class DistributeFoodHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -252,14 +251,13 @@ public class Environment extends AbstractEnvironment
 	 */
 	@Element
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
-	protected EnvironmentDataModel dmodel;
+	private EnvironmentDataModel dmodel;
 	
 	/**
 	 * Reference to the list that backs the ErrorLog view plugin.
 	 */
 	private List<String> errorLog;
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
-	private List<String> defeeredParticipantActivations;
 
 	@Deprecated
 	public Environment()
@@ -318,6 +316,7 @@ public class Environment extends AbstractEnvironment
 	}
 
 	@Override
+	@SuppressWarnings("ResultOfObjectAllocationIgnored")
 	protected void onInitialise(Simulation sim)
 	{
 		this.sim = sim;
@@ -332,7 +331,6 @@ public class Environment extends AbstractEnvironment
 		new PublicEnvironmentConnection(new EnvConnector(this));
 
 		storedHuntResults = new HashMap<HuntingTeam, List<TeamHuntEvent>>();
-		defeeredParticipantActivations = new LinkedList<String>();
 	}
 
 	@Override
@@ -343,7 +341,6 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePhysicalWorld()
 	{
-		doDefeeredActivations();
 		processTeamHunts();
 		// Energy used on hunting, so this is when food is consumed
 		if (dmodel.getTurnType() == TurnType.GoHunt)
@@ -359,15 +356,6 @@ public class Environment extends AbstractEnvironment
 				}
 			}
 		}
-	}
-
-	private void doDefeeredActivations()
-	{
-		for (String id : defeeredParticipantActivations)
-		{
-			sim.activateParticipant(id);
-		}
-		defeeredParticipantActivations.clear();
 	}
 
 	private void processTeamHunts()
@@ -425,6 +413,7 @@ public class Environment extends AbstractEnvironment
 		this.dmodel.setTime(cycle);
 	}
 	
+	@SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
 	public void setErrorLog(List<String> loginput)
 	{
 		if (this.errorLog == null) this.errorLog = loginput;
@@ -468,7 +457,6 @@ public class Environment extends AbstractEnvironment
 		g.initialise(new EnvironmentConnector(this));
 		sim.addParticipant(g.getId(), g);
 		sim.activateParticipant(g.getId());
-		//defeeredParticipantActivations.add(g.getId());
 		return g.getId();
 	}
 
