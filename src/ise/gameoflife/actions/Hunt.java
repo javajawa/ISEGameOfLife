@@ -1,20 +1,18 @@
 package ise.gameoflife.actions;
 
 import ise.gameoflife.models.Food;
-import java.io.Serializable;
 import java.util.UUID;
-import presage.Action;
 
 /**
- *
+ * Creates an action that represents an agent going off on a hunting trip
  * @author Benedict
  */
 public final class Hunt extends GenericAction
 {
-	private static final long serialVersionUID = 1L;
 
+	private static final long serialVersionUID = 1L;
 	private final UUID foodType;
-	
+
 	/**
 	 * Creates a new hunt action, which indicates that an agent is going to hunt
 	 * a particular type of food
@@ -34,4 +32,5 @@ public final class Hunt extends GenericAction
 	{
 		return foodType;
 	}
+
 }

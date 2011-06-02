@@ -1,17 +1,18 @@
 package ise.gameoflife.actions;
 
-import presage.Action;
-
 /**
  * Action to be performed by a Hunter in order to join a group.
  * @author Benedict
  */
 public class ApplyToGroup extends GenericAction
 {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The group that is being applied to
 	 */
-	protected String group;
+	private String group;
 
 	/**
 	 * Creates a new application, specifying the group that is being applied to
@@ -30,4 +31,5 @@ public class ApplyToGroup extends GenericAction
 	{
 		return group;
 	}
+
 }

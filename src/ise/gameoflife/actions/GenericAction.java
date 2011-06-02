@@ -4,13 +4,18 @@ import java.io.Serializable;
 import presage.Action;
 
 /**
- *
- * @author Benedict
+ * Marker Abstract class that makes sure that all Actions are Serializable,
+ * and helps JavaDoc draw the class tree
+ * @author Benedict Harcourt
  */
-public abstract  class GenericAction implements Action, Serializable
+public abstract class GenericAction implements Action, Serializable
 {
-	public GenericAction()
+
+	// To force this to be a class, not an interface
+	@Override
+	public String toString()
 	{
-		super();
+		return super.toString();
 	}
+
 }
