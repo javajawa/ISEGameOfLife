@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.SortedSet;
 import javax.swing.JButton;
-import javax.swing.JPanel;
+//import javax.swing.JPanel;
 import org.simpleframework.xml.Element;
 import presage.Plugin;
 import presage.Simulation;
