@@ -10,18 +10,18 @@ import ise.gameoflife.models.HuntingTeam;
  */
 public class HuntOrder extends GenericInput
 {
-	
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Food ordered to be hunted
 	 */
 	private Food toHunt;
-	
 	/**
 	 * Team ordered to hunt food specified
 	 */
 	private HuntingTeam team;
 
-	
 	/**
 	 * Lots of lovely instantiations
 	 * @param time

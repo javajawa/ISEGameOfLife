@@ -8,16 +8,19 @@ package ise.gameoflife.inputs;
  */
 public class JoinRequest extends GenericInput
 {
-	
-	//Candidate in question
+
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Candidate in question
+	 */
 	private String agent;
 
-	
 	/**
 	 * Formalises the candidates request. A series of strange and
 	 * embarrassing forms of "hazing" is sure to follow
-	 * @param time
-	 * @param agent 
+	 * @param time The simulation cycle that this request was made on
+	 * @param agent The agent applying to the group
 	 */
 	public JoinRequest(long time, String agent)
 	{
@@ -26,6 +29,7 @@ public class JoinRequest extends GenericInput
 	}
 
 	/**
+	 * The agent asking to join
 	 * @return agent wanting to join the group
 	 */
 	public String getAgent()
