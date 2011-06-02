@@ -65,17 +65,31 @@ public class PublicEnvironmentConnection
 	{
 		return ec.availableFoods();
 	}
-
+	
+	/**
+	 * All available groups as specified in a list because of limitations with java
+	 * {@link Class#forName(java.lang.String, boolean, java.lang.ClassLoader)} 
+	 * @return list of all group classes available in this simulation
+	 */
 	public List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
 	{
 		return ec.getAllowedGroupTypes();
 	}
 	
+	/**
+	 * @return set of all current groups in the simulation
+	 */
 	public Set<String> availableGroups()
 	{
 		return ec.getAvailableGroups();
 	}
 
+	/**
+	 * funtion used to create a new group
+	 * @param type
+	 * @param init
+	 * @return 
+	 */
 	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init)
 	{
 		return ec.createGroup(type, init);
@@ -92,6 +106,12 @@ public class PublicEnvironmentConnection
 		return ec.isAgentId(id);
 	}
 
+	/**
+	 * Determines whether a string represents the id of an active group in this
+	 * simulation
+	 * @param gid
+	 * @return 
+	 */
 	public boolean isGroupId(String gid)
 	{
 		return ec.isGroupId(gid);
