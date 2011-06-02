@@ -2,7 +2,6 @@ package ise.gameoflife.participants;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import presage.PlayerDataModel;
 
@@ -13,13 +12,16 @@ import presage.PlayerDataModel;
  */
 public class PublicGroupDataModel implements PlayerDataModel, Serializable
 {
+
+	private static final long serialVersionUID = 1L;
+
 	private GroupDataModel source;
 
 	PublicGroupDataModel(GroupDataModel source)
 	{
 		this.source = source;
 	}
-	
+
 	/**
 	 * Gets the id of the agent
 	 * @return the id of the agent
@@ -79,7 +81,7 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getPlayerClass();
 	}
-	
+
 	/**
 	 * Gets a list of all the members in the group
 	 * @return a list of all members in the group
