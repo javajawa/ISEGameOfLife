@@ -1,6 +1,5 @@
 package ise.gameoflife.models;
 
-import ise.gameoflife.environment.EnvConnector;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import java.util.List;
  */
 public class HuntingTeam
 {
+
 	private List<String> members;
 	private Food orderedTarget;
 
@@ -18,9 +18,7 @@ public class HuntingTeam
 	 * Creates a new Hunting team
 	 * Note that such teams are a subset of a group, and that agents cannot be in
 	 * more than one team at once.
-	 * @param ec
-	 * @param members
-	 * @param orderedTarget
+	 * @param members The members of the team
 	 */
 	public HuntingTeam(List<String> members)
 	{
@@ -28,15 +26,14 @@ public class HuntingTeam
 		this.orderedTarget = orderedTarget;
 	}
 
-
 	/**
-	 * Returns list of members in a team
-	 * @return
+	 * Returns a list of members in a team
+	 * @return List of members in a team
 	 */
 	@SuppressWarnings("ReturnOfCollectionOrArrayField")
 	public List<String> getMembers()
 	{
 		return members;
 	}
-	
+
 }

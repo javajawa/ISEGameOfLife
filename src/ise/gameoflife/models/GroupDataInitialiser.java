@@ -10,8 +10,8 @@ public class GroupDataInitialiser
 	private long randomSeed;
 	
 	/**
-	 * Initialises the random seed
-	 * @param randomSeed 
+	 * Creates an Initialiser for a group
+	 * @param randomSeed The random seed for the group
 	 */
 	public GroupDataInitialiser(long randomSeed)
 	{
@@ -19,8 +19,8 @@ public class GroupDataInitialiser
 	}
 
 	/**
-	 * Gets the random seed used to create groups
-	 * @return 
+	 * Gets the random seed used to by the group
+	 * @return The random seed used to by the groups
 	 */
 	public long getRandomSeed()
 	{

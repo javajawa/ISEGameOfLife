@@ -3,7 +3,7 @@ package ise.gameoflife;
 import presage.gui.ControlCenter;
 
 /**
- * Runs a Simulation, by calling the default {@link presage#ControlCentre}.
+ * Runs a Simulation, by calling the default {@code presage.ControlCentre}.
  * The Simulations that are listed in the {@link BuildSimulations} auto-build
  * class will be build before the control centre is launched.
  * @author Benedict Harcourt
