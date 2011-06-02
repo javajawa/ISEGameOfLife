@@ -77,7 +77,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	}
 	/**
 	 * Sets all of the agents roles
-	 * @param roles: the list of roles to assign to the agent
+	 * @param roles the list of roles to assign to the agent
 	 */
 	@Override
 	public void setRoles(ArrayList<String> roles)
@@ -86,7 +86,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	}
 	/**
 	 * Implemented in Presage and (currently) serves no purpose
-	 * @return: a null string, at the moment
+	 * @return a null string, at the moment
 	 */
 	@Override
 	public String getPlayerClass()
@@ -120,8 +120,8 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	}
 
 	/**
-	 * Returns the group ID of the agent
-	 * @return 
+	 * Gets the group ID of the agent
+	 * @return the group ID of the agent
 	 */
 	public String getGroupId()
 	{
