@@ -35,7 +35,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	private static final long serialVersionUID = 1L;
 
 	private final static String title = "Population";
-	private final static String xaxis = "Simulation cycle";
+	private final static String xaxis = "Simulation turn";
 	private final static String yaxis = "Population";
 	private final static String label = "Population";
 
@@ -106,14 +106,14 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		{
 			try
 			{
-				//data.getSeries("population").add(en.getCyclesPassed(), getNumHunters());
-				data.getSeries("population").add(sim.getTime(), getNumHunters());
+				data.getSeries("population").add(en.getCyclesPassed(), getNumHunters());
+				
 			}
 			catch (org.jfree.data.UnknownKeyException e)
 			{
 				XYSeries series = new XYSeries("population");
 				data.addSeries(series);
-				series.add(sim.getTime(), getNumHunters());
+				series.add(en.getCyclesPassed(), getNumHunters());
 			}
 			updateChart();
 		}
