@@ -85,7 +85,9 @@ public class PublicEnvironmentConnection
 	}
 
 	/**
-	 * funtion used to create a new group
+	 * Funtion used to create a new group. 
+	 * Group data intialiser is an object that contains all the information used
+	 * to create a new group.
 	 * @param type
 	 * @param init
 	 * @return 

@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO: Document this class
+ * Class describes a leader and states the roles of the leader.
+ * Leader may respond to requests to join their group, issue orders to 
+ * agents to hunt a specific type of food and distribute food once
+ * everyone is done hunting
+ * 
  * Note: contract must include adding "leader" to the default list of roles.
  * MUST MUST MUST!
  * @author Benedict
