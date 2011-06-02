@@ -15,17 +15,18 @@ import java.util.logging.Logger;
 final class BuildSimulations
 {
 
-	private static final Class<?>[] simulationClasses = {
+	private static final Class<?>[] simulationClasses =
+	{
 		SingleAgent.class,
 		DoubleAgent.class,
 		AgentsAndGroup.class
 	};
-	
+
 	private BuildSimulations()
 	{
 		// Nothing to see here. Move along, citizen!
 	}
-	
+
 	/**
 	 * Build the automatically built classes
 	 * @param args Command line arguments
@@ -33,7 +34,10 @@ final class BuildSimulations
 	public static void main(String args[])
 	{
 
-		Object passedArgv[] = { args };
+		Object passedArgv[] =
+		{
+			args
+		};
 
 		for (Class<?> c : simulationClasses)
 		{
@@ -43,24 +47,30 @@ final class BuildSimulations
 			}
 			catch (IllegalAccessException ex)
 			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
+								null, ex);
 			}
 			catch (IllegalArgumentException ex)
 			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
+								null, ex);
 			}
 			catch (InvocationTargetException ex)
 			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
+								null, ex);
 			}
 			catch (NoSuchMethodException ex)
 			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
+								null, ex);
 			}
 			catch (SecurityException ex)
 			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
+								null, ex);
 			}
 		}
 	}
+
 }
