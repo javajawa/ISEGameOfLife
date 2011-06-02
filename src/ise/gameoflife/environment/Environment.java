@@ -33,7 +33,6 @@ import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
-import presage.abstractparticipant.APlayerDataModel;
 import presage.environment.AEnvDataModel;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
@@ -252,7 +251,7 @@ public class Environment extends AbstractEnvironment
 	 */
 	@Element
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
-	protected EnvironmentDataModel dmodel;
+	private EnvironmentDataModel dmodel;
 	
 	/**
 	 * Reference to the list that backs the ErrorLog view plugin.
@@ -317,6 +316,7 @@ public class Environment extends AbstractEnvironment
 	}
 
 	@Override
+	@SuppressWarnings("ResultOfObjectAllocationIgnored")
 	protected void onInitialise(Simulation sim)
 	{
 		this.sim = sim;
@@ -413,6 +413,7 @@ public class Environment extends AbstractEnvironment
 		this.dmodel.setTime(cycle);
 	}
 	
+	@SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
 	public void setErrorLog(List<String> loginput)
 	{
 		if (this.errorLog == null) this.errorLog = loginput;
