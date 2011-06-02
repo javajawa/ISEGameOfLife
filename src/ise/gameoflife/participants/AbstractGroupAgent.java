@@ -2,7 +2,6 @@ package ise.gameoflife.participants;
 
 import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
-import ise.gameoflife.models.GroupDataModel;
 import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
@@ -10,6 +9,7 @@ import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.inputs.LeaveNotification;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -26,6 +26,7 @@ import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
+import presage.PlayerDataModel;
 import presage.environment.messages.ENVRegistrationResponse;
 // TODO: Make it clear that the contract calls for a public consturctor with one argument that takes in the datamodel.
 /**
@@ -66,12 +67,12 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 
 	/**
-	 * 
-	 * @param dm
+	 * TODO: Document
+	 * @param init 
 	 */
-	public AbstractGroupAgent(GroupDataModel dm)
+	public AbstractGroupAgent(GroupDataInitialiser init)
 	{
-		this.dm = dm;
+		this.dm = GroupDataModel.createNew(init);
 	}
 
 	@Override
@@ -187,7 +188,7 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 
 		@SuppressWarnings("unchecked")
-		List<String> uninformedAgents = (List<String>)dm.memberList.clone();
+		List<String> uninformedAgents = new ArrayList<String>(dm.getMemberList());
 		uninformedAgents.removeAll(informedAgents);
 
 		for (String agent : uninformedAgents)
@@ -211,9 +212,18 @@ public abstract class AbstractGroupAgent implements Participant
 	 * @return The DataModel of this object
 	 */
 	@Override
-	public final GroupDataModel getInternalDataModel()
+	public final PlayerDataModel getInternalDataModel()
 	{
-		return dm;
+		return dm.getPublicVersion();
+	}
+
+	/**
+	 * TODO: Document
+	 * @return
+	 */
+	public final PublicGroupDataModel getDataModel()
+	{
+		return dm.getPublicVersion();
 	}
 
 	@Override
@@ -224,7 +234,7 @@ public abstract class AbstractGroupAgent implements Participant
 			// FIXME: Notify any old group of us leaving
 			final JoinRequest req = (JoinRequest)input;
 			boolean response = this.respondToJoinRequest(req.getAgent());
-			if (response)	this.dm.memberList.add(req.getAgent());
+			if (response)	this.dm.addMember(req.getAgent());
 			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(), authCode);
 			System.out.println("I, group " + getId() + ", got a join request from" + ((JoinRequest)input).getAgent());
 			return;
@@ -235,7 +245,7 @@ public abstract class AbstractGroupAgent implements Participant
 			// FIXME: Destroy group if there are no more members
 			// FIXME: Add check that if a leader is removed to onMemberLeave
 			final LeaveNotification in = (LeaveNotification)input;
-			dm.memberList.remove(in.getAgent());
+			dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
 			System.out.println("I, group " + getId() + ", lost memeber " + in.getAgent() + " because of " + in.getReason());
 			return;
@@ -331,5 +341,27 @@ public abstract class AbstractGroupAgent implements Participant
 	protected PublicEnvironmentConnection getConn()
 	{
 		return conn;
+	}
+	
+
+	/**
+	 * Get the next random number in the sequence as a double uniformly
+	 * distributed between 0 and 1
+	 * @return Next random number
+	 */
+	protected final double uniformRand()
+	{
+		return this.dm.random.nextDouble();
+	}
+	
+
+	/**
+	 * Get the next random number in the sequence as a double uniformly
+	 * distributed between 0 and 1
+	 * @return Next random number
+	 */
+	protected final long uniformRandLong()
+	{
+		return this.dm.random.nextLong();
 	}
 }

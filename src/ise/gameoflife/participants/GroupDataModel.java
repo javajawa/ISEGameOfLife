@@ -1,5 +1,6 @@
-package ise.gameoflife.models;
+package ise.gameoflife.participants;
 
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractAgent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +14,7 @@ import presage.abstractparticipant.APlayerDataModel;
  * Stub for groups
  * @author Olly
  */
-public class GroupDataModel extends APlayerDataModel
+class GroupDataModel extends APlayerDataModel
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -21,7 +22,7 @@ public class GroupDataModel extends APlayerDataModel
 	 * Array list of GroupDataModel members
 	 */
 	@ElementList
-	public ArrayList<String> memberList;
+	private ArrayList<String> memberList;
 
 	@Deprecated
 	public GroupDataModel()
@@ -35,13 +36,14 @@ public class GroupDataModel extends APlayerDataModel
 	 * @param randomseed The random number seed to use with this class
 	 * @return The new GroupDataModel
 	 */
-	public static GroupDataModel createNew(long randomseed)
+	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+	public static GroupDataModel createNew(GroupDataInitialiser init)
 	{
 		GroupDataModel ret = new GroupDataModel();
 		ret.myId = UUID.randomUUID().toString();
 		ret.memberList = new ArrayList<String>();
 		ret.myrolesString = "<group>";
-		ret.randomseed = randomseed;
+		ret.randomseed = init.getRandomSeed();
 		return ret;
 	}
 
@@ -55,14 +57,35 @@ public class GroupDataModel extends APlayerDataModel
 		return myId;
 	}
 
-	public List<String> getMemberList()
+	List<String> getMemberList()
 	{
 		return Collections.unmodifiableList(memberList);
+	}
+
+	void addMember(String a)
+	{
+		memberList.add(a);
+	}
+
+	void removeMember(String a)
+	{
+		memberList.remove(a);
 	}
 
 	@Override
 	public void onInitialise()
 	{
 		// Nothing to see here. Move along, citizen!
+	}
+        
+	/**
+	 * Get a re-distribution safe copy of this object. The returned object is
+	 * backed by this one, so their is no need to keep calling this to receive
+	 * updated data.
+	 * @return
+	 */
+	public PublicGroupDataModel getPublicVersion()
+	{
+		return new PublicGroupDataModel(this);
 	}
 }

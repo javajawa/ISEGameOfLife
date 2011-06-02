@@ -2,7 +2,7 @@ package ise.gameoflife.groups;
 
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.models.GroupDataModel;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class TestGroup extends AbstractGroupAgent
 		super();
 	}
 
-	public TestGroup(GroupDataModel dm)
+	public TestGroup(GroupDataInitialiser dm)
 	{
 		super(dm);
 	}
@@ -65,7 +65,7 @@ public class TestGroup extends AbstractGroupAgent
 		//Distribute group into teams of this size
 		HashMap<HuntingTeam, Food> map = new HashMap<HuntingTeam, Food>(); 
 
-		List<String> memberList = this.getInternalDataModel().getMemberList();
+		List<String> memberList = this.getDataModel().getMemberList();
 		int agentsInGroup = memberList.size();
 		int huntersInTeam = bestSoFar.getHuntersRequired();
 

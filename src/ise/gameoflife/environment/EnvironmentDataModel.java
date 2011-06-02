@@ -1,10 +1,10 @@
 package ise.gameoflife.environment;
 
-import ise.gameoflife.models.AgentDataModel;
-import ise.gameoflife.models.PublicAgentDataModel;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.models.GroupDataModel;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.TurnType;
@@ -34,7 +34,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	/**
 	 * A sorted list/map of all the state of all players in the game
 	 */
-	@ElementMap(keyType = String.class, valueType = AgentDataModel.class)
+	@ElementMap(keyType = String.class, valueType = PublicAgentDataModel.class)
 	private TreeMap<String, PublicAgentDataModel> agents = new TreeMap<String, PublicAgentDataModel>();
 	/**
 	 * List of all the available food types in the environment
@@ -45,7 +45,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 * List of all the groups in the environment
 	 */
 	@ElementMap
-	private HashMap<String, GroupDataModel> agentGroups;
+	private HashMap<String, PublicGroupDataModel> agentGroups;
 	/**
 	 * 
 	 */
@@ -74,7 +74,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
 
-		this.agentGroups = new HashMap<String, GroupDataModel>();
+		this.agentGroups = new HashMap<String, PublicGroupDataModel>();
 		this.allowedGroupTypes = new ArrayList<Class<? extends AbstractGroupAgent>>();
 
 		this.turn = TurnType.firstTurn;
@@ -88,7 +88,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
 
-		this.agentGroups = new HashMap<String, GroupDataModel>();
+		this.agentGroups = new HashMap<String, PublicGroupDataModel>();
 		this.allowedGroupTypes = new ArrayList<Class<? extends AbstractGroupAgent>>(allowedGroupTypes);
 
 		this.turn = TurnType.firstTurn;
@@ -105,7 +105,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		return availableFoodTypes.get(id.toString());
 	}
 
-	public GroupDataModel getGroupById(UUID id)
+	public PublicGroupDataModel getGroupById(UUID id)
 	{
 		return agentGroups.get(id.toString());
 	}
@@ -169,17 +169,14 @@ public class EnvironmentDataModel extends AEnvDataModel
 		return cycles;
 	}
 
-	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> groupType)
+	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> groupType, GroupDataInitialiser init)
 	{
 		if (allowedGroupTypes.contains(groupType))
 		{
 			try
 			{
-				Constructor<? extends AbstractGroupAgent> cons = groupType.getConstructor(GroupDataModel.class);
-				// TODO: Generate rnadom seed...
-				GroupDataModel dm = GroupDataModel.createNew(0);
-
-				return cons.newInstance(dm);
+				Constructor<? extends AbstractGroupAgent> cons = groupType.getConstructor(GroupDataInitialiser.class);
+				return cons.newInstance(init);
 			}
 			catch (Throwable ex)
 			{

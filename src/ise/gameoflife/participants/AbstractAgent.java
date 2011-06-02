@@ -1,7 +1,6 @@
 package ise.gameoflife.participants;
 
 import ise.gameoflife.actions.ApplyToGroup;
-import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.environment.EnvConnector;
@@ -11,7 +10,6 @@ import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.models.PublicAgentDataModel;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -354,11 +352,21 @@ abstract public class AbstractAgent implements Participant
 	 * distributed between 0 and 1
 	 * @return Next random number
 	 */
-	public final double uniformRand()
+	protected final double uniformRand()
 	{
 		return this.dm.random.nextDouble();
 	}
 
+	/**
+	 * Get the next random number in the sequence as a double uniformly
+	 * distributed between 0 and 1
+	 * @return Next random number
+	 */
+	protected final double uniformRandLong()
+	{
+		return this.dm.random.nextLong();
+	}
+	
 	/**
 	 * Called when the agent has been activated, and when both the {@link 
 	 * PublicAgentDataModel data model} and the {@link PublicEnvironmentConnection

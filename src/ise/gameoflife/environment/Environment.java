@@ -12,8 +12,9 @@ import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
-import ise.gameoflife.models.PublicAgentDataModel;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.GroupRegistration;
@@ -451,9 +452,9 @@ public class Environment extends AbstractEnvironment
 		return dmodel.getCyclesPassed();
 	}
 
-	String createGroup(Class<? extends AbstractGroupAgent> groupType)
+	String createGroup(Class<? extends AbstractGroupAgent> groupType, GroupDataInitialiser init)
 	{
-		AbstractGroupAgent g = dmodel.createGroup(groupType);
+		AbstractGroupAgent g = dmodel.createGroup(groupType, init);
 		g.initialise(new EnvironmentConnector(this));
 		sim.addParticipant(g.getId(), g);
 		sim.activateParticipant(g.getId());

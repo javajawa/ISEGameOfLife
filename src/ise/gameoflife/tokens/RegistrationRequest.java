@@ -1,6 +1,6 @@
 package ise.gameoflife.tokens;
 
-import ise.gameoflife.models.PublicAgentDataModel;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.ArrayList;
 import presage.environment.messages.ENVRegisterRequest;
 

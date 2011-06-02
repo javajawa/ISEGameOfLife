@@ -1,9 +1,10 @@
 package ise.gameoflife.environment;
 
 import ise.gameoflife.models.Food;
-import ise.gameoflife.models.GroupDataModel;
-import ise.gameoflife.models.PublicAgentDataModel;
+import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class PublicEnvironmentConnection
 	 * @param id The id to search for
 	 * @return The group object, or null if not found
 	 */
-	public GroupDataModel getGroupById(UUID id)
+	public PublicGroupDataModel getGroupById(UUID id)
 	{
 		return ec.getGroupById(id);
 	}
@@ -75,9 +76,9 @@ public class PublicEnvironmentConnection
 		return ec.getAvailableGroups();
 	}
 
-	public String createGroup(Class<? extends AbstractGroupAgent> type)
+	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init)
 	{
-		return ec.createGroup(type);
+		return ec.createGroup(type, init);
 	}
 
 	/**

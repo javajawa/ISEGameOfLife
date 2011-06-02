@@ -1,6 +1,8 @@
-package ise.gameoflife.models;
+package ise.gameoflife.participants;
 
 import ise.gameoflife.environment.EnvConnector;
+import ise.gameoflife.models.Food;
+import ise.gameoflife.models.HuntingTeam;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
@@ -9,7 +11,7 @@ import presage.abstractparticipant.APlayerDataModel;
  *
  * @author Christopher Fonseka
  */
-public class AgentDataModel extends APlayerDataModel
+class AgentDataModel extends APlayerDataModel
 {
 	private static final long serialVersionUID = 1L;
 

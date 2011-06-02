@@ -1,6 +1,6 @@
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.models.PublicAgentDataModel;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.HashMap;

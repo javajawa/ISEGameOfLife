@@ -2,6 +2,7 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import java.util.Set;
 
@@ -81,7 +82,7 @@ public class TestGroupableAgent extends AbstractAgent
 		if (groups.isEmpty())
 		{
 			Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-			return getConn().createGroup(gtype);
+			return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong()));
 		}
 
 		return groups.iterator().next();

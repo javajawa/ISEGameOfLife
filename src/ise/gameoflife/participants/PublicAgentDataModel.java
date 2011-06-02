@@ -1,5 +1,8 @@
-package ise.gameoflife.models;
+package ise.gameoflife.participants;
 
+import ise.gameoflife.models.Food;
+import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.participants.AgentDataModel;
 import java.util.ArrayList;
 import presage.PlayerDataModel;
 
