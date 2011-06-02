@@ -54,17 +54,8 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
-			if (dm.getFoodInPossesion() < dm.getFoodConsumption())
-			{
-				System.out.println("I, agent, " + getId() + ", am starving to death!");
-				ec.act(new Death(), dm.getId(), authCode);
-				dm.foodConsumed(dm.getFoodConsumption() + 1);
-			}
-			else
-			{
-				System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
-				dm.foodConsumed(dm.getFoodConsumption());
-			}
+			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
+			dm.foodConsumed(dm.getFoodConsumption());
 		}
 	}
 
@@ -82,6 +73,7 @@ abstract public class AbstractAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			dm.foodAquired(in.getNutritionValue());
+			System.out.println("I, agent " + getId() + ", recieved " + in.getNutritionValue() + " units of food");
 		}
 	}
 
@@ -226,7 +218,11 @@ abstract public class AbstractAgent implements Participant
 		// Handle Queued Messages
 		while (!msgQ.isEmpty())	handleInput(msgQ.dequeue());
 		// Check to see if we died due to a message in the queue
-		if (this.dm.getFoodInPossesion() < 0) return;
+		if (this.dm.getFoodInPossesion() < 0)
+		{
+			System.out.println("I, agent, " + getId() + ", am starving to death!");
+			ec.act(new Death(), dm.getId(), authCode);
+		}
 
 		TurnType turn = ec.getCurrentTurnType();
 
@@ -276,7 +272,7 @@ abstract public class AbstractAgent implements Participant
 	private void doGroupSelect()
 	{
 		String gid = chooseGroup();
-		if (gid.equals(dm.getGroupId())) return;
+		if (gid == null ? false : gid.equals(dm.getGroupId())) return;
 		if (getConn().isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
