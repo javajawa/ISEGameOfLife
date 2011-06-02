@@ -2,6 +2,7 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import java.util.Set;
 
@@ -37,11 +38,11 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected Food chooseFood()
 	{
-		if (this.getOrder() != null) return this.getOrder();
+		if (this.getDataModel().getOrder() != null) return this.getDataModel().getOrder();
 
 		Food bestSoFar = null;
 
-		for (Food noms : conn.availableFoods())
+		for (Food noms : getConn().availableFoods())
 		{
 			if (noms.getHuntersRequired() <= 1)
 			{
@@ -56,12 +57,6 @@ public class TestGroupableAgent extends AbstractAgent
 				}
 		}
 		return bestSoFar;
-	}
-
-	@Override
-	protected void onInit()
-	{
-		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override
@@ -80,12 +75,14 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected String chooseGroup()
 	{
-		Set<String> groups = conn.availableGroups();
+		if (this.getDataModel().getGroupId() != null) return null;
+
+		Set<String> groups = getConn().availableGroups();
 
 		if (groups.isEmpty())
 		{
-			Class<? extends AbstractGroupAgent> gtype = conn.getAllowedGroupTypes().get(0);
-			return conn.createGroup(gtype);
+			Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+			return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong()));
 		}
 
 		return groups.iterator().next();
@@ -94,7 +91,8 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected void groupApplicationResponse(boolean accepted)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		// TODO: Do something here?
+		// throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 }

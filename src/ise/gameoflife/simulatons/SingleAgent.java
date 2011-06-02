@@ -1,7 +1,7 @@
 package ise.gameoflife.simulatons;
 
 import ise.gameoflife.agents.TestAgent;
-import ise.gameoflife.enviroment.EnvironmentDataModel;
+import ise.gameoflife.environment.EnvironmentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.ErrorLog;
@@ -74,7 +74,7 @@ public class SingleAgent
 
 		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods);
 
-		Environment environment = (Environment) new ise.gameoflife.enviroment.Environment(true, 0, dm);
+		Environment environment = (Environment) new ise.gameoflife.environment.Environment(true, 0, dm);
 
 		presageConfig.setEnvironmentClass(environment.getClass());
 

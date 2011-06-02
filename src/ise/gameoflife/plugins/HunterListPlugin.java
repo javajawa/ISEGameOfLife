@@ -1,6 +1,6 @@
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.models.PublicAgentDataModel;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.HashMap;
@@ -95,7 +95,7 @@ public class HunterListPlugin extends JPanel implements Plugin
 	@Override
 	public void onSimulationComplete()
 	{
-		// TODO: Anything here?
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override

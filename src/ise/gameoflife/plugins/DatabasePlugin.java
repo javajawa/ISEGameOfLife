@@ -1,13 +1,9 @@
 package ise.gameoflife.plugins;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.SortedSet;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import ise.gameoflife.environment.Environment;
+import ise.gameoflife.tokens.TurnType;
 import org.simpleframework.xml.Element;
+import java.util.SortedSet;
 import presage.Plugin;
 import presage.Simulation;
 import presage.annotations.PluginConstructor;
@@ -31,6 +27,8 @@ public class DatabasePlugin implements Plugin {
     private final static String label = "DatabasePlugin";
 
     private Simulation sim;
+    private Environment en;
+    
     private PreparedStatement prep;
     //database connection
     private Connection conn;
@@ -71,10 +69,13 @@ public class DatabasePlugin implements Plugin {
     @Override
     public void execute()
     {
+	//people only updated at the beginning of turn
+	if (en.getCurrentTurnType() != TurnType.firstTurn) return;
 	try {
 
 		prep.setLong(1, sim.getTime());
-		prep.setInt(2,getNumHunters());
+		prep.setInt(2,en.getCyclesPassed());
+		prep.setInt(3,getNumHunters());
 		prep.addBatch();
 		//sends data to DB every 100 cycles
 		if (sim.getTime()%100 == 0) {
@@ -110,7 +111,7 @@ public class DatabasePlugin implements Plugin {
     public void initialise(Simulation sim)
     {
 	this.sim = sim;
-	//setBackground(Color.GRAY);
+	this.en = (Environment)sim.environment;
 	try {    
 	    Class.forName("org.sqlite.JDBC");
 	}
@@ -124,13 +125,14 @@ public class DatabasePlugin implements Plugin {
 	    Statement stat = conn.createStatement();
 	    stat.executeUpdate("drop table if exists population;");
 	    stat.executeUpdate("CREATE TABLE [population] (\n"
-		    + "[time]  NOT NULL,\n"
+		    + "[cycle]  NOT NULL,\n"
+		    + "[turn]  NOT NULL,\n"
 		    + "[pop]  NOT NULL,\n"
-		    + "CONSTRAINT [] PRIMARY KEY ([time]));\n"
+		    + "CONSTRAINT [] PRIMARY KEY ([cycle]));\n"
 		    );
 	    conn.setAutoCommit(false);
 	    prep = conn.prepareStatement(
-		"insert into population values (?, ?);");
+		"insert into population values (?, ?, ?);");
 
 	}
 	catch (Exception e)

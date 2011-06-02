@@ -1,9 +1,10 @@
-package ise.gameoflife.enviroment;
+package ise.gameoflife.environment;
 
 import ise.gameoflife.models.Food;
-import ise.gameoflife.models.GroupDataModel;
-import ise.gameoflife.models.PublicAgentDataModel;
+import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class PublicEnvironmentConnection
 	 * @param id The id to search for
 	 * @return The group object, or null if not found
 	 */
-	public GroupDataModel getGroupById(UUID id)
+	public PublicGroupDataModel getGroupById(UUID id)
 	{
 		return ec.getGroupById(id);
 	}
@@ -64,20 +65,34 @@ public class PublicEnvironmentConnection
 	{
 		return ec.availableFoods();
 	}
-
+	
+	/**
+	 * All available groups as specified in a list because of limitations with java
+	 * {@link Class#forName(java.lang.String, boolean, java.lang.ClassLoader)} 
+	 * @return list of all group classes available in this simulation
+	 */
 	public List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
 	{
 		return ec.getAllowedGroupTypes();
 	}
 	
+	/**
+	 * @return set of all current groups in the simulation
+	 */
 	public Set<String> availableGroups()
 	{
 		return ec.getAvailableGroups();
 	}
 
-	public String createGroup(Class<? extends AbstractGroupAgent> type)
+	/**
+	 * funtion used to create a new group
+	 * @param type
+	 * @param init
+	 * @return 
+	 */
+	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init)
 	{
-		return ec.createGroup(type);
+		return ec.createGroup(type, init);
 	}
 
 	/**
@@ -91,4 +106,14 @@ public class PublicEnvironmentConnection
 		return ec.isAgentId(id);
 	}
 
+	/**
+	 * Determines whether a string represents the id of an active group in this
+	 * simulation
+	 * @param gid
+	 * @return 
+	 */
+	public boolean isGroupId(String gid)
+	{
+		return ec.isGroupId(gid);
+	}
 }

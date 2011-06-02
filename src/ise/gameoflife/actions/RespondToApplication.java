@@ -6,7 +6,7 @@ import presage.Action;
  * Allows the Environment to respond to Application request inputs
  * @author Benedict
  */
-public class RespondToApplication implements Action
+public class RespondToApplication extends GenericAction
 {
 	/**
 	 * Which agent dares send me an application?

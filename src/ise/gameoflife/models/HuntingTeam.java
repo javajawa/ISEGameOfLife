@@ -1,6 +1,6 @@
 package ise.gameoflife.models;
 
-import ise.gameoflife.enviroment.EnvConnector;
+import ise.gameoflife.environment.EnvConnector;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,22 +22,12 @@ public class HuntingTeam
 	 * @param members
 	 * @param orderedTarget
 	 */
-	public HuntingTeam(EnvConnector ec, List<String> members, Food orderedTarget)
+	public HuntingTeam(List<String> members)
 	{
-		// TODO: Using the EnvConnector, check that all members of memebers are 
-		// hunters before committing it to the object
 		this.members = Collections.unmodifiableList(members);
 		this.orderedTarget = orderedTarget;
 	}
 
-	/**
-	 * Returns the target the hunter was told to hunt
-	 * @return
-	 */
-	public Food getOrderedTarget()
-	{
-		return orderedTarget;
-	}
 
 	/**
 	 * Returns list of members in a team

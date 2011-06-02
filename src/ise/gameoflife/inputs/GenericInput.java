@@ -1,12 +1,13 @@
 package ise.gameoflife.inputs;
 
+import java.io.Serializable;
 import presage.Input;
 
 /**
  * Generic class for inputs
  * @author Benedict Harcourt
  */
-abstract class GenericInput implements Input
+abstract public class GenericInput implements Input, Serializable
 {
 	/**
 	 * The time at which the input event occurred, in terms of 

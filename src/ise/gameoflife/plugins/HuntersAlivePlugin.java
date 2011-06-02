@@ -1,6 +1,6 @@
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.enviroment.Environment;
+import ise.gameoflife.environment.Environment;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -35,7 +35,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	private static final long serialVersionUID = 1L;
 
 	private final static String title = "Population";
-	private final static String xaxis = "Simulation cycle";
+	private final static String xaxis = "Simulation turn";
 	private final static String yaxis = "Population";
 	private final static String label = "Population";
 
@@ -107,6 +107,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 			try
 			{
 				data.getSeries("population").add(en.getCyclesPassed(), getNumHunters());
+				
 			}
 			catch (org.jfree.data.UnknownKeyException e)
 			{

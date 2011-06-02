@@ -1,17 +1,15 @@
 package ise.gameoflife.participants;
 
 import ise.gameoflife.actions.ApplyToGroup;
-import ise.gameoflife.models.AgentDataModel;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
-import ise.gameoflife.enviroment.EnvConnector;
-import ise.gameoflife.enviroment.PublicEnvironmentConnection;
+import ise.gameoflife.environment.EnvConnector;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -37,6 +35,14 @@ import presage.util.InputQueue;
  */
 abstract public class AbstractAgent implements Participant
 {
+
+	/**
+	 * @return the conn
+	 */
+	protected PublicEnvironmentConnection getConn()
+	{
+		return conn;
+	}
 
 	private class ConsumeFoodHandler implements InputHandler
 	{
@@ -75,7 +81,6 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final HuntResult in = (HuntResult)input;
-			System.out.println("I, agent " + getId() + ", received " + in.getNutritionValue() + " by hunting " + lastHunted.getName());
 			dm.foodAquired(in.getNutritionValue());
 		}
 	}
@@ -93,8 +98,9 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final HuntOrder in = (HuntOrder)input;
-			lastOrderReceived = in.getOrder();
-			huntingTeam = in.getTeam();
+			dm.setOrder(in.getOrder());
+			dm.setHuntingTeam(in.getTeam());
+			System.out.println("I, Agent " + getId() + " have been told to hunt " + in.getOrder().getName() + " with Team " + in.getTeam().hashCode());
 		}
 	}
 
@@ -115,8 +121,10 @@ abstract public class AbstractAgent implements Participant
 			{
 				dm.setGroup(in.getGroup());
 			}
-			groupApplicationResponse(true);
+			groupApplicationResponse(in.wasAccepted());	
+			System.out.println("I, agent " + getId() + " was " + (in.wasAccepted() ? "" : "not ") + "accepted into group " + in.getGroup());
 		}
+		
 	}
 
 	/**
@@ -132,17 +140,12 @@ abstract public class AbstractAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
-	protected PublicEnvironmentConnection conn;
+	private PublicEnvironmentConnection conn;
 	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
 
 	private InputQueue msgQ = new InputQueue("inputs");
 	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
-
-	private Food lastHunted = null;
-	
-	private HuntingTeam huntingTeam = null;
-	private Food lastOrderReceived = null;
 
 	/**
 	 * Serialisation requires a public no-argument constructor to be present.
@@ -199,9 +202,6 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new HuntResultHandler());
 		this.handlers.add(new HuntOrderHandler());
 		this.handlers.add(new ApplicationResponseHandler());
-
-		conn = PublicEnvironmentConnection.getInstance();
-		onInit();
 	}
 
 	@Override
@@ -211,6 +211,7 @@ abstract public class AbstractAgent implements Participant
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
+		conn = PublicEnvironmentConnection.getInstance();
 		tmp_ec = null;
 		onActivate();
 	}
@@ -269,17 +270,16 @@ abstract public class AbstractAgent implements Participant
 
 	private void clearRoundData()
 	{
-		lastHunted = null;
-		huntingTeam = null;
-		lastOrderReceived = null;
+		dm.setLastHunted(null);
+		dm.setHuntingTeam(null);
+		dm.setOrder(null);
 	}
 
 	private void doGroupSelect()
 	{
 		String gid = chooseGroup();
-		// TODO: Check string corrosponds to valid group
-		// conn.isGroupId(gid);
-		ec.act(new ApplyToGroup(gid), getId(), authCode);
+		if (gid.equals(dm.getGroupId())) return;
+		if (getConn().isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
 	private void doHuntTurn()
@@ -294,7 +294,7 @@ abstract public class AbstractAgent implements Participant
 		{
 			ec.act(new Hunt(toHunt), this.getId(), authCode);
 		}
-		lastHunted = toHunt;
+		dm.setLastHunted(toHunt);
 	}
 
 	/**
@@ -313,6 +313,11 @@ abstract public class AbstractAgent implements Participant
 	 */
 	@Override
 	public final PlayerDataModel getInternalDataModel()
+	{
+		return dm.getPublicVersion();
+	}
+
+	public final PublicAgentDataModel getDataModel()
 	{
 		return dm.getPublicVersion();
 	}
@@ -347,72 +352,64 @@ abstract public class AbstractAgent implements Participant
 	 * distributed between 0 and 1
 	 * @return Next random number
 	 */
-	public final double uniformRand()
+	protected final double uniformRand()
 	{
 		return this.dm.random.nextDouble();
 	}
 
 	/**
-	 * Called after the initialising the agent, allowing subclasses to initialise
-	 * any more data.
+	 * Get the next random number in the sequence as a double uniformly
+	 * distributed between 0 and 1
+	 * @return Next random number
 	 */
-	abstract protected void onInit();
+	protected final long uniformRandLong()
+	{
+		return this.dm.random.nextLong();
+	}
+	
 	/**
-	 * Called when the agent has been activated, similar to init, but with access
-	 * to the environment connector
+	 * Called when the agent has been activated, and when both the {@link 
+	 * PublicAgentDataModel data model} and the {@link PublicEnvironmentConnection
+	 * environment connection} have been initialised
+	 * @see #getDataModel() 
+	 * @see #getConn()
 	 */
 	abstract protected void onActivate();
 	/**
 	 * Used to implement any code necessary before all properties of the current
 	 * round are deleted to make way for a newer, fresher, more flexible
 	 * round to begin.
+	 * The reset fields are the last thing we hunted, the last order we received,
+	 * and the last team we were in. All of these
 	 */
 	abstract protected void beforeNewRound();
 	/**
 	 * Magic heuristic to select which Group the agent wishes to be a part of
-	 * for the next round.
-	 * @return string titling the desired group
+	 * for the next round. The list of groups can be obtained through the 
+	 * connector {@link #conn this.conn}, as can functions to create a new group
+	 * @return The is of the group we should try to join
 	 */
 	abstract protected String chooseGroup();
 	/**
 	 * Called once the environment has issued a response to the application
 	 * to join a group. Also states whether or not the application has been
-	 * successful. Does not say if the agent has a backup group, with lower
-	 * entry requirements.
+	 * successful. The group will already be filled into the groupId field of the
+	 * {@link PublicAgentDataModel data model}, which can be obtained through
+	 * the {@link #getDataModel() getDataModel()} function
+	 * @param accepted Whether you were accepted into the group
 	 */
 	abstract protected void groupApplicationResponse(boolean accepted);
 	/**
 	 * Function called to get the Agent to select what kind of food it would like
 	 * to hunt. It should use all the other information it has received to inform
 	 * this decision.
-	 * You can get the types of food from {@link #ec this.ec}, which has various
-	 * functions related to determining food properties
+	 * You can get the types of food from {@link #getConn() this.getConn()}, 
+	 * which has various functions related to determining food properties.
+	 * If the agent is a member of a group, the food they have been ordered to
+	 * hunt and their current group can be found in the {@link 
+	 * PublicAgentDataModel data model}, which is accessed this {@link
+	 * #getDataModel() this.getDataModel()}
 	 * @return The type of food they have decided to hunt
 	 */
 	abstract protected Food chooseFood();
-
-	/**
-	 * @return The food the agent decided to hunt on the previous turn
-	 */
-	protected final Food getLastHunted()
-	{
-		return lastHunted;
-	}
-	
-	/**
-	 * @return which hunting pair this agent belongs to
-	 */
-	protected final HuntingTeam getHuntingTeam() {
-		return huntingTeam;
-	}
-
-	/**
-	 * The food that this agent has been ordered to hunt with it's team in this
-	 * round
-	 * @return Food that was ordered 
-	 */
-	protected final Food getOrder()
-	{
-		return lastOrderReceived;
-	}
 }

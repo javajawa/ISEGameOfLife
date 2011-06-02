@@ -2,9 +2,11 @@ package ise.gameoflife.groups;
 
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,10 +23,9 @@ public class TestGroup extends AbstractGroupAgent
 		super();
 	}
 
-	@Override
-	protected void onInit()
+	public TestGroup(GroupDataInitialiser dm)
 	{
-		// Do nothing
+		super(dm);
 	}
 
 	@Override
@@ -38,14 +39,43 @@ public class TestGroup extends AbstractGroupAgent
 	{
 		return true;
 	}
-
+	/**
+	 * Determines the optimum hunting choice in terms of the food gained/hunters needed ratio
+	 * divides the group up into teams of this size, then passes them the order to hunt that food.
+	 * If the group number doesn't divide easily, the excess will be put into a smaller team.
+	 * This team will still be given the same order.
+	 * @return the assignment of teams and which food they are to hunt.
+	 */
 	@Override
 	protected Map<HuntingTeam, Food> selectTeams()
 	{
-		// TODO: Find food with greatest nitrition / people ratio
-		// TODO: Distribute in teams of this size
-		// TODO: Order them to hunt that food
-		return new HashMap<HuntingTeam, Food>();
+		//Find food with greatest nutrition / hunters required ratio
+		Food bestSoFar = null;
+		for (Food noms : getConn().availableFoods())
+		{
+			if(bestSoFar == null)
+			{
+				bestSoFar = noms;
+			}			
+			if((noms.getNutrition()/noms.getHuntersRequired()) > (bestSoFar.getNutrition()/bestSoFar.getHuntersRequired()))
+			{
+				bestSoFar = noms;
+			}
+		}
+		//Distribute group into teams of this size
+		HashMap<HuntingTeam, Food> map = new HashMap<HuntingTeam, Food>(); 
+
+		List<String> memberList = this.getDataModel().getMemberList();
+		int agentsInGroup = memberList.size();
+		int huntersInTeam = bestSoFar.getHuntersRequired();
+
+		for(int i=0; i < agentsInGroup; i += huntersInTeam){
+			int ubound = (i + huntersInTeam >= agentsInGroup) ? agentsInGroup : i + huntersInTeam;
+			HuntingTeam team = new HuntingTeam (memberList.subList(i, ubound));
+			map.put(team, bestSoFar);
+		}
+		//Order them to hunt that food
+		return map;
 	}
 
 	@Override

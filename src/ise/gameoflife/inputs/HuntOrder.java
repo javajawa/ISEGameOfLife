@@ -32,6 +32,7 @@ public class HuntOrder extends GenericInput
 	{
 		super(time, "hunt_order");
 		this.toHunt = toHunt;
+		this.team = team;
 	}
 
 	/**

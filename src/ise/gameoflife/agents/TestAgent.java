@@ -36,7 +36,7 @@ public class TestAgent extends AbstractAgent
 	{
 		Food bestSoFar = null;
 
-		for (Food noms : conn.availableFoods())
+		for (Food noms : getConn().availableFoods())
 		{
 			if (noms.getHuntersRequired() <= 1)
 			{
@@ -44,19 +44,13 @@ public class TestAgent extends AbstractAgent
 				{
 					bestSoFar = noms;
 				}
-			}
-				if (noms.getNutrition() > bestSoFar.getNutrition())
+				else if (noms.getNutrition() > bestSoFar.getNutrition())
 				{
 					bestSoFar = noms;
 				}
+			}
 		}
 		return bestSoFar;
-	}
-
-	@Override
-	protected void onInit()
-	{
-		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override
