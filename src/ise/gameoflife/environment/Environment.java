@@ -259,7 +259,6 @@ public class Environment extends AbstractEnvironment
 	 */
 	private List<String> errorLog;
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
-	private List<String> defeeredParticipantActivations;
 
 	@Deprecated
 	public Environment()
@@ -332,7 +331,6 @@ public class Environment extends AbstractEnvironment
 		new PublicEnvironmentConnection(new EnvConnector(this));
 
 		storedHuntResults = new HashMap<HuntingTeam, List<TeamHuntEvent>>();
-		defeeredParticipantActivations = new LinkedList<String>();
 	}
 
 	@Override
@@ -343,7 +341,6 @@ public class Environment extends AbstractEnvironment
 	@Override
 	protected void updatePhysicalWorld()
 	{
-		doDefeeredActivations();
 		processTeamHunts();
 		// Energy used on hunting, so this is when food is consumed
 		if (dmodel.getTurnType() == TurnType.GoHunt)
@@ -359,15 +356,6 @@ public class Environment extends AbstractEnvironment
 				}
 			}
 		}
-	}
-
-	private void doDefeeredActivations()
-	{
-		for (String id : defeeredParticipantActivations)
-		{
-			sim.activateParticipant(id);
-		}
-		defeeredParticipantActivations.clear();
 	}
 
 	private void processTeamHunts()
@@ -468,7 +456,6 @@ public class Environment extends AbstractEnvironment
 		g.initialise(new EnvironmentConnector(this));
 		sim.addParticipant(g.getId(), g);
 		sim.activateParticipant(g.getId());
-		//defeeredParticipantActivations.add(g.getId());
 		return g.getId();
 	}
 
