@@ -447,7 +447,7 @@ public class Environment extends AbstractEnvironment
 		return dmodel.getTurnType();
 	}
 
-	public int getCyclesPassed()
+	public int getRoundsPassed()
 	{
 		return dmodel.getCyclesPassed();
 	}
@@ -487,5 +487,4 @@ public class Environment extends AbstractEnvironment
 		} 
 		return false;
 	}  
-		
 }

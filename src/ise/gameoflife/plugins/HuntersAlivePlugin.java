@@ -106,14 +106,14 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		{
 			try
 			{
-				data.getSeries("population").add(en.getCyclesPassed(), getNumHunters());
+				data.getSeries("population").add(en.getRoundsPassed(), getNumHunters());
 				
 			}
 			catch (org.jfree.data.UnknownKeyException e)
 			{
 				XYSeries series = new XYSeries("population");
 				data.addSeries(series);
-				series.add(en.getCyclesPassed(), getNumHunters());
+				series.add(en.getRoundsPassed(), getNumHunters());
 			}
 			updateChart();
 		}

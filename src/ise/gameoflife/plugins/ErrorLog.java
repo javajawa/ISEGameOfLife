@@ -290,7 +290,7 @@ public class ErrorLog extends JPanel implements Plugin
 	@Override
 	public void execute()
 	{
-		data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getCyclesPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
+		data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getRoundsPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
 	}
 
 	/**

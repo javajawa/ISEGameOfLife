@@ -1,10 +1,18 @@
 package ise.gameoflife.plugins;
 
+import com.sun.xml.internal.bind.v2.runtime.JAXBContextImpl;
+import ise.gameoflife.environment.Environment;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicAgentDataModel;
+import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.jfree.chart.ChartFactory;
@@ -17,11 +25,9 @@ import presage.Plugin;
 import presage.Simulation;
 
 /**
- * TODO: Make this plugin work
  * TODO: Document this plugin
  * TODO: Convert each Agents section to a Panel
- * TODO: Make the left hand side of the panel display name, group, food, etc.
- * TODO: Make the right hand side of the panel show the little graph
+ * Make the left hand side of the panel display name, group, food, etc.
  * @author Benedict
  */
 public class HunterListPlugin extends JPanel implements Plugin
@@ -30,8 +36,11 @@ public class HunterListPlugin extends JPanel implements Plugin
 	private final static String label = "Hunter Logs";
 	
 	private Simulation sim;
-	private final HashMap<PublicAgentDataModel, XYSeries> datas = new HashMap<PublicAgentDataModel, XYSeries>();
-	private final JScrollPane window = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	private Environment en;
+	private final HashMap<String, XYSeries> series = new HashMap<String, XYSeries>();
+	private final JPanel window = new JPanel();
+	private final JScrollPane pane = new JScrollPane(window, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	private int barWidth;
 
 	public HunterListPlugin()
 	{
@@ -41,48 +50,57 @@ public class HunterListPlugin extends JPanel implements Plugin
 	@Override
 	public void execute()
 	{
-		for (String aId : sim.getactiveParticipantIdSet("hunter"))
+		if (en.getCurrentTurnType() != TurnType.firstTurn) return;
+
+		barWidth = this.pane.getVerticalScrollBar().getWidth();
+
+		for (String aid : sim.getactiveParticipantIdSet("hunter"))
 		{
-			final PublicAgentDataModel dm = (PublicAgentDataModel)sim.getPlayerDataModel(aId);
-			if (!datas.containsKey(dm))
+			if (!series.containsKey(aid))
 			{
-				createChart(dm);
+				series.put(aid, createChart(aid));
+			}
+
+		}
+
+		for (String aid : series.keySet())
+		{
+			PublicAgentDataModel dm = PublicEnvironmentConnection.getInstance().getAgentById(aid);
+			if (dm != null)
+			{
+				series.get(aid).add(en.getRoundsPassed(), dm.getFoodAmount());
+			}
+			else
+			{
+				series.get(aid).add(en.getRoundsPassed(), 0);
 			}
 		}
-		window.validate();
-		
-		synchronized(datas)
-		{
-			for (Entry<PublicAgentDataModel,XYSeries> e : datas.entrySet())
-			{
-				e.getValue().add(sim.getTime(), e.getKey().getFoodAmount());
-			}
-		}
+
+		validate();
 	}
 
-	private void createChart(PublicAgentDataModel dm)
+	private XYSeries createChart(String id)
 	{
-		XYSeries g = new XYSeries(dm.getId());
+		XYSeries g = new XYSeries(id);
 		
 		JFreeChart chart = ChartFactory.createXYLineChart(null, null, null,	new XYSeriesCollection(g), PlotOrientation.VERTICAL, false, false, false);
 		ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new Dimension(getWidth(), 80));
-		
+		chartPanel.setPreferredSize(new Dimension(getWidth() - barWidth, 125));
+
 		chartPanel.setVisible(true);
 		window.add(chartPanel);
-		synchronized(datas)
-		{
-			datas.put(dm, g);
-		}
+
+		return g;
 	}
 	
 	@Override
 	public void initialise(Simulation sim)
 	{
+		setLayout(new BorderLayout());
 		this.sim = sim;
-		this.setLayout(new BorderLayout());
-		window.setVisible(true);
-		this.add(window);
+		this.en = (Environment)sim.environment;
+		window.setLayout(new BoxLayout(window, BoxLayout.PAGE_AXIS));
+		this.add(pane);
 	}
 
 	@Deprecated

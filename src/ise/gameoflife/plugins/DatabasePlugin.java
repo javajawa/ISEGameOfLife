@@ -74,7 +74,7 @@ public class DatabasePlugin implements Plugin {
 	try {
 
 		prep.setLong(1, sim.getTime());
-		prep.setInt(2,en.getCyclesPassed());
+		prep.setInt(2,en.getRoundsPassed());
 		prep.setInt(3,getNumHunters());
 		prep.addBatch();
 		//sends data to DB every 100 cycles
