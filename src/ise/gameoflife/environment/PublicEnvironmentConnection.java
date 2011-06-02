@@ -85,12 +85,12 @@ public class PublicEnvironmentConnection
 	}
 
 	/**
-	 * Funtion used to create a new group. 
-	 * Group data intialiser is an object that contains all the information used
+	 * Function used to create a new group. 
+	 * Group data initialiser is an object that contains all the information used
 	 * to create a new group.
-	 * @param type
-	 * @param init
-	 * @return 
+	 * @param type The class of group to create
+	 * @param init The initialisation parameters for the group
+	 * @return The ID of the created grom
 	 */
 	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init)
 	{
@@ -111,8 +111,8 @@ public class PublicEnvironmentConnection
 	/**
 	 * Determines whether a string represents the id of an active group in this
 	 * simulation
-	 * @param gid
-	 * @return 
+	 * @param gid The id to check
+	 * @return Whether this id represents an active group
 	 */
 	public boolean isGroupId(String gid)
 	{

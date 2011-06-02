@@ -9,6 +9,7 @@ import ise.gameoflife.models.Food;
  */
 public class TestAgent extends AbstractAgent
 {
+
 	private static final long serialVersionUID = 1L;
 
 	@Deprecated
@@ -26,10 +27,11 @@ public class TestAgent extends AbstractAgent
 	{
 		super("<hunter>", 0, initialFood, consumption);
 	}
-/**
+
+	/**
 	 * Uses the user's magically specified heuristics to determine which food type
 	 * the player wishes to hunt for. 
-	 * @return 
+	 * @return The food they choose to hunt
 	 */
 	@Override
 	protected Food chooseFood()
@@ -58,7 +60,6 @@ public class TestAgent extends AbstractAgent
 	{
 		// Nothing to see here. Move along, citizen!
 	}
-
 
 	@Override
 	protected void beforeNewRound()

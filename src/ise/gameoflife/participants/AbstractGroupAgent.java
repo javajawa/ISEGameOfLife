@@ -255,7 +255,7 @@ public abstract class AbstractGroupAgent implements Participant
 
 	/**
 	 * Returns the externally visible elements of the group agent
-	 * @return
+	 * @return The externally visible elements of the group agent
 	 */
 	public final PublicGroupDataModel getDataModel()
 	{

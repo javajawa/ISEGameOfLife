@@ -21,7 +21,6 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
 import presage.environment.AEnvDataModel;
-import sun.java2d.pipe.SpanShapeRenderer.Simple;
 
 /**
  * TODO: Maybe some documentation here sometime

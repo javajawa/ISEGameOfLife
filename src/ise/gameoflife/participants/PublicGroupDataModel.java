@@ -74,7 +74,7 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable
 
 	/**
 	 * Defined in presage, has no purpose
-	 * @return 
+	 * @return Unused value
 	 */
 	@Override
 	public String getPlayerClass()

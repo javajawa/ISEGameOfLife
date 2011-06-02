@@ -29,9 +29,9 @@ import presage.util.InputQueue;
  * system. Some of the interactions with the model are declared as final to
  * control the overall interface.
  *
- * All agents which extend this class should be in the package
- * {@link ise.gameoflife.agents}
+ * All agents which extend this class should be in the agents package
  * @author Benedict Harcourt
+ * @see ise.gameoflife.agents 
  */
 abstract public class AbstractAgent implements Participant
 {
@@ -175,8 +175,6 @@ abstract public class AbstractAgent implements Participant
 	/**
 	 * Returns the String representation of the Agent's UUID, which is used to
 	 * identify the agent in all interactions.
-	 * @see UUID
-	 * @see #id
 	 * @return The String representation of the Agent's unique identifier
 	 */
 	@Override

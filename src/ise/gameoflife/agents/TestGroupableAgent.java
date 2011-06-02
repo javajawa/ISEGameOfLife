@@ -30,11 +30,6 @@ public class TestGroupableAgent extends AbstractAgent
 		super("<hunter>", 0, initialFood, consumption);
 	}
 
-	/**
-	 * Uses the user's magically specified heuristics to determine which food type
-	 * the player wishes to hunt for. 
-	 * @return 
-	 */
 	@Override
 	protected Food chooseFood()
 	{
@@ -69,7 +64,7 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected void beforeNewRound()
 	{
-		//throw new UnsupportedOperationException("Not supported yet.");
+		// Nothing to see here. Move along, citizen!
 	}
 
 	@Override
