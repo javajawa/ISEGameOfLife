@@ -3,8 +3,10 @@ package ise.gameoflife;
 import presage.gui.ControlCenter;
 
 /**
- *Runs a Simulation
- * @author Benedict
+ * Runs a Simulation, by calling the default {@link presage#ControlCentre}.
+ * The Simulations that are listed in the {@link BuildSimulations} auto-build
+ * class will be build before the control centre is launched.
+ * @author Benedict Harcourt
  */
 public class RunSimulation
 {
@@ -15,9 +17,8 @@ public class RunSimulation
 
 	/**
 	 * Sets up everything necessary to create the GUI,
-	 * decode the XML and make Multi-Agent magic
-	 * happen
-	 * @param args
+	 * decode the XML and make Multi-Agent magic happen
+	 * @param args Command line arguments
 	 */
 	public static void main(String args[])
 	{

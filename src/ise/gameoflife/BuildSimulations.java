@@ -26,6 +26,10 @@ final class BuildSimulations
 		// Nothing to see here. Move along, citizen!
 	}
 	
+	/**
+	 * Build the automatically built classes
+	 * @param args Command line arguments
+	 */
 	public static void main(String args[])
 	{
 
