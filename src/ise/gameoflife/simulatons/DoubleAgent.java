@@ -21,7 +21,7 @@ import presage.configure.ConfigurationWriter;
 
 /**
  *
- * @author harry
+ * @author Harry Eakins
  */
 public class DoubleAgent {
 

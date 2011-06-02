@@ -1,13 +1,14 @@
 package ise.gameoflife.actions;
 
-import presage.Action;
-
 /**
- * Distributes food amongst agents
+ * Send the food that an agent is allocated by a group to the agent
  * @author Benedict
  */
 public class DistributeFood extends GenericAction
 {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * the Agent receiving food
 	 */
@@ -27,6 +28,7 @@ public class DistributeFood extends GenericAction
 		this.agent = agent;
 		this.amount = amount;
 	}
+
 	/**
 	 * Gets the Agent receiving food
 	 * @return agent receiving food
@@ -35,6 +37,7 @@ public class DistributeFood extends GenericAction
 	{
 		return agent;
 	}
+
 	/**
 	 * Gets amount of food agent will receive
 	 * @return amount of food agent will receive
