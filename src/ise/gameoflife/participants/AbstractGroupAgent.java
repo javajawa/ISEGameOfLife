@@ -1,5 +1,6 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.RespondToApplication;
@@ -283,12 +284,13 @@ public abstract class AbstractGroupAgent implements Participant
 
 		if (input.getClass().equals(LeaveNotification.class))
 		{
-			// FIXME: Destroy group if there are no more members
-			// FIXME: Add check that if a leader is removed to onMemberLeave
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
 			System.out.println("I, group " + getId() + ", lost memeber " + in.getAgent() + " because of " + in.getReason());
+			
+			if (dm.getMemberList().size() == 0) ec.act(new Death(), dm.getId(), authCode);
+			
 			return;
 		}
 
@@ -364,6 +366,7 @@ public abstract class AbstractGroupAgent implements Participant
 	/**
 	 * Function that is called after a member leaves the group.
 	 * The member will not appear in the member list
+	 * Remember to check if the leader has left and the implications of that
 	 * @param playerID The id of the leaving playing
 	 * @param reason The reason that the player left the group
 	 */
