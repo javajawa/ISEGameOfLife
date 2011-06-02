@@ -362,7 +362,7 @@ abstract public class AbstractAgent implements Participant
 	 * distributed between 0 and 1
 	 * @return Next random number
 	 */
-	protected final double uniformRandLong()
+	protected final long uniformRandLong()
 	{
 		return this.dm.random.nextLong();
 	}
