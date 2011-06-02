@@ -90,7 +90,7 @@ public class PublicEnvironmentConnection
 	 * to create a new group.
 	 * @param type The class of group to create
 	 * @param init The initialisation parameters for the group
-	 * @return The ID of the created grom
+	 * @return The ID of the created group
 	 */
 	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init)
 	{
