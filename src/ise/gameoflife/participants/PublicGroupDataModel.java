@@ -82,7 +82,7 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable
 	
 	/**
 	 * Gets a list of all the members in the group
-	 * @return a list of all memebers in the group
+	 * @return a list of all members in the group
 	 */
 	public List<String> getMemberList()
 	{

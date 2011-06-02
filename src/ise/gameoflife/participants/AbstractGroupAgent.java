@@ -30,7 +30,8 @@ import presage.PlayerDataModel;
 import presage.environment.messages.ENVRegistrationResponse;
 // TODO: Make it clear that the contract calls for a public consturctor with one argument that takes in the datamodel.
 /**
- * TODO: Document
+ * Abstract Group agent describes form of a group. Implemented as an agent for
+ * ease of compatibility with presage, since their functionalities overlap a lot
  * @author Benedict
  */
 public abstract class AbstractGroupAgent implements Participant
@@ -67,7 +68,8 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 
 	/**
-	 * TODO: Document
+	 * Initialises itself with teh group data initialiser, which contains all
+	 * the necessary information to get a group started
 	 * @param init 
 	 */
 	public AbstractGroupAgent(GroupDataInitialiser init)
@@ -75,18 +77,30 @@ public abstract class AbstractGroupAgent implements Participant
 		this.dm = GroupDataModel.createNew(init);
 	}
 
+	/**
+	 * Gets the ID of the group
+	 * @return the ID of the group
+	 */
 	@Override
 	public String getId()
 	{
 		return dm.getId();
 	}
 
+	/**
+	 * Gets a list of agent roles within this group
+	 * @return a list of the agent roles in this group
+	 */
 	@Override
 	public ArrayList<String> getRoles()
 	{
 		return new ArrayList<String>(Arrays.asList(new String[]{"group"}));
 	}
 
+	/**
+	 * Initialises the group
+	 * @param environmentConnector 
+	 */
 @Override
 	public void initialise(EnvironmentConnector environmentConnector)
 	{
@@ -94,6 +108,10 @@ public abstract class AbstractGroupAgent implements Participant
 		dm.initialise(environmentConnector);
 	}
 
+/**
+ * Function called when the group is activated, but has yet to be added to the 
+ * environment
+ */
 	@Override
 	public final void onActivation()
 	{
@@ -106,12 +124,20 @@ public abstract class AbstractGroupAgent implements Participant
 		onActivate();
 	}
 
+	/**
+	 * function called to say any relevant goodbyes before the group is removed
+	 * from the simulation
+	 */
 	@Override
 	public final void onDeActivation()
 	{
 		ec.deregister(new UnregisterRequest(dm.getId(), authCode));
 	}
 
+	/**
+	 * Function called upon group execution, where it has access to data concerning
+	 * other objects in the simulation
+	 */
 	@Override
 	public void execute()
 	{
@@ -140,11 +166,17 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 	}
 
+	/**
+	 * Data cleaned up to make way for a new round
+	 */
 	private void clearRoundData()
 	{
 		huntResult = new HashMap<String, Double>();
 	}
 	
+	/**
+	 * Separates agents in the group into hunting teams
+	 */
 	private void doTeamSelect()
 	{
 		Map<HuntingTeam, Food> teams = selectTeams();
@@ -162,6 +194,10 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 	}
 	
+	/**
+	 * Once the hunters have gathered their winnings, it is processed and
+	 * distributed here
+	 */
 	private void doHandleHuntResults()
 	{
 		Map<String, Double> result = distributeFood(Collections.unmodifiableMap(huntResult));
@@ -198,7 +234,7 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 	
 	/**
-	 * 
+	 * Sets the number of cycles passed
 	 * @param cycle
 	 */
 	@Override
@@ -218,7 +254,7 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 
 	/**
-	 * TODO: Document
+	 * Returns the externally visible elements of the group agent
 	 * @return
 	 */
 	public final PublicGroupDataModel getDataModel()
@@ -226,6 +262,11 @@ public abstract class AbstractGroupAgent implements Participant
 		return dm.getPublicVersion();
 	}
 
+	/**
+	 * This function puts the inputs into a queue to be processed at the end of
+	 * the cycle
+	 * @param input 
+	 */
 	@Override
 	public final void enqueueInput(Input input)
 	{
@@ -262,7 +303,7 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 
 	/**
-	 * 
+	 * Same as above, but used to handle ArrayLists
 	 * @param input
 	 */
 	@Override
@@ -271,6 +312,9 @@ public abstract class AbstractGroupAgent implements Participant
 		for (Input in : input) enqueueInput(in);
 	}
 
+	/**
+	 * Function called at the very end of the simulation
+	 */
 	@Override
 	public void onSimulationComplete()
 	{
