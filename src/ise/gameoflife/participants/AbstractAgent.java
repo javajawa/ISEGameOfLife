@@ -38,6 +38,14 @@ import presage.util.InputQueue;
 abstract public class AbstractAgent implements Participant
 {
 
+	/**
+	 * @return the conn
+	 */
+	protected PublicEnvironmentConnection getConn()
+	{
+		return conn;
+	}
+
 	private class ConsumeFoodHandler implements InputHandler
 	{
 		@Override
@@ -134,7 +142,7 @@ abstract public class AbstractAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
-	protected PublicEnvironmentConnection conn;
+	private PublicEnvironmentConnection conn;
 	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
 
@@ -272,8 +280,8 @@ abstract public class AbstractAgent implements Participant
 	private void doGroupSelect()
 	{
 		String gid = chooseGroup();
-		if (gid == dm.getGroupId()) return;
-		if (conn.isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
+		if (gid.equals(dm.getGroupId())) return;
+		if (getConn().isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
 	private void doHuntTurn()
@@ -356,7 +364,7 @@ abstract public class AbstractAgent implements Participant
 	 * PublicAgentDataModel data model} and the {@link PublicEnvironmentConnection
 	 * environment connection} have been initialised
 	 * @see #getDataModel() 
-	 * @see #conn
+	 * @see #getConn()
 	 */
 	abstract protected void onActivate();
 	/**
@@ -387,8 +395,8 @@ abstract public class AbstractAgent implements Participant
 	 * Function called to get the Agent to select what kind of food it would like
 	 * to hunt. It should use all the other information it has received to inform
 	 * this decision.
-	 * You can get the types of food from {@link #conn this.conn}, which has 
-	 * various functions related to determining food properties.
+	 * You can get the types of food from {@link #getConn() this.getConn()}, 
+	 * which has various functions related to determining food properties.
 	 * If the agent is a member of a group, the food they have been ordered to
 	 * hunt and their current group can be found in the {@link 
 	 * PublicAgentDataModel data model}, which is accessed this {@link

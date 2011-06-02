@@ -49,7 +49,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 * Reference to the environment connector, that allows the agent to interact
 	 * with the environment
 	 */
-	protected PublicEnvironmentConnection conn;
+	private PublicEnvironmentConnection conn;
 	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
 	
@@ -232,6 +232,8 @@ public abstract class AbstractGroupAgent implements Participant
 
 		if (input.getClass().equals(LeaveNotification.class))
 		{
+			// FIXME: Destroy group if there are no more members
+			// FIXME: Add check that if a leader is removed to onMemberLeave
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.memberList.remove(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
@@ -270,7 +272,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 * GroupDataModel data model} and the {@link PublicEnvironmentConnection
 	 * environment connection} have been initialised
 	 * @see #getDataModel() 
-	 * @see #conn
+	 * @see #getConn() 
 	 */
 	abstract protected void onActivate();
 	
@@ -282,10 +284,10 @@ public abstract class AbstractGroupAgent implements Participant
 	abstract protected boolean respondToJoinRequest(String playerID);
 	/**
 	 * Procedure to assign members to different teams, and get them to hunt food.
-	 * The list of different foods can be found using the {@link #conn environment
-	 * connection}, and the list of current group members can be found in the
-	 * {@link GroupDataModel dataModel} which can be accessed with {@link
-	 * #getInternalDataModel() }
+	 * The list of different foods can be found using the {@link #getConn() 
+	 * environment connection}, and the list of current group members can be 
+	 * found in the {@link GroupDataModel dataModel} which can be accessed with 
+	 * {@link #getInternalDataModel() }
 	 * // TODO-Later: make a getDataModel() function that returns right type
 	 * @return A map of all hunting teams, and the food they should be ordered to
 	 * hunt
@@ -322,4 +324,12 @@ public abstract class AbstractGroupAgent implements Participant
 	 * 1 Round = 1 Harcourt
 	 */
 	abstract protected void beforeNewRound();
+
+	/**
+	 * @return the conn
+	 */
+	protected PublicEnvironmentConnection getConn()
+	{
+		return conn;
+	}
 }
