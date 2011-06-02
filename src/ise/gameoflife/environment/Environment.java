@@ -33,7 +33,6 @@ import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
-import presage.abstractparticipant.APlayerDataModel;
 import presage.environment.AEnvDataModel;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
@@ -55,7 +54,7 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Passes on group applications
 	 */
-	public class ApplyToGroupHandler implements AbstractEnvironment.ActionHandler
+	private class ApplyToGroupHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -79,7 +78,7 @@ public class Environment extends AbstractEnvironment
 /**
 	 * Kills (deActivates) Agents
 	 */
-	public class DeathHandler implements AbstractEnvironment.ActionHandler
+	private class DeathHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -104,7 +103,7 @@ public class Environment extends AbstractEnvironment
 	 * Issues instructions of what to hunt from group to environment which then
 	 * passes the order onto agents.
 	 */
-	public class GroupOrderHandler implements AbstractEnvironment.ActionHandler
+	private class GroupOrderHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -127,7 +126,7 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Performs Hunt Action, returns new food total, depending on result of Hunt
 	 */
-	public class HuntHandler implements AbstractEnvironment.ActionHandler
+	private class HuntHandler implements AbstractEnvironment.ActionHandler
 	{
 
 		@Override
@@ -178,7 +177,7 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Responds to a group application, indicating success or failure
 	 */
-	public class RespondToApplicationHandler implements AbstractEnvironment.ActionHandler
+	private class RespondToApplicationHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -203,7 +202,7 @@ public class Environment extends AbstractEnvironment
 	 * Issues instructions of what to hunt from group to environment which then
 	 * passes the order onto agents.
 	 */
-	public class DistributeFoodHandler implements AbstractEnvironment.ActionHandler
+	private class DistributeFoodHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
