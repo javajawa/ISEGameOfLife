@@ -41,7 +41,7 @@ public class History<T> implements Serializable
 	 */
 	History(LinkedList<T> data, int maxsize)
 	{
-		this.data =  data;
+		this.data = data;
 		this.maxSize = maxsize;
 	}
 

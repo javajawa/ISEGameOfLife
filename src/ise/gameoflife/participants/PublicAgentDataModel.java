@@ -1,5 +1,6 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.UnmodifableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AgentDataModel;
@@ -126,5 +127,15 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	public String getGroupId()
 	{
 		return source.getGroupId();
+	}
+
+	public double getCurrentHappiness()
+	{
+		return source.getCurrentHappiness();
+	}
+
+	UnmodifableHistory<Double> getHappinessHistory()
+	{
+		return source.getHappinessHistory();
 	}
 }

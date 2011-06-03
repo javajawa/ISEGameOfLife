@@ -1,5 +1,7 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.History;
+import ise.gameoflife.UnmodifableHistory;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -33,6 +35,9 @@ class AgentDataModel extends APlayerDataModel
 	 */
 	@Element(required=false)
 	private String groupId;
+
+	@Element
+	History<Double> happinessHistory;
 
 	private Food lastHunted = null;
 	private HuntingTeam huntingTeam = null;
@@ -132,7 +137,7 @@ class AgentDataModel extends APlayerDataModel
 	@Override
 	public void onInitialise()
 	{
-		//Nothing to see here. Move along, citizen!
+		happinessHistory = new History<Double>(50);
 	}
 
 	/**
@@ -183,5 +188,20 @@ class AgentDataModel extends APlayerDataModel
 	public void setOrder(Food newFood)
 	{
 		lastOrderReceived = newFood;
+	}
+
+	public double getCurrentHappiness()
+	{
+		return happinessHistory.getValue();
+	}
+
+	public double setCurrentHappiness(double newHappiness)
+	{
+		return happinessHistory.setValue(newHappiness);
+	}
+
+	UnmodifableHistory<Double> getHappinessHistory()
+	{
+		return happinessHistory.getUnmodifableHistory();
 	}
 }
