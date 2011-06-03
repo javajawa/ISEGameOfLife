@@ -33,7 +33,7 @@ class AgentDataModel extends APlayerDataModel
 	 * Stores the amount of food an agent has consumed this turn
 	 */
 	@Element
-	private double foodConsumedThisTurn;
+	private History<Double> foodConsumedPerTurnHistory;
 
 	/**
 	 * Field that holds the id of {@link #group}
@@ -99,21 +99,29 @@ class AgentDataModel extends APlayerDataModel
 		return foodConsumption;
 	}
 	/**
-	 * Returns the amount of total food consumed this turn
-	 * @return 
+	 * Returns the history of food consumed per turn
+	 * @return The history of food consumption per turn
+	 */
+	UnmodifableHistory<Double> getFoodConsumedPerTurnHistory()
+	{
+		return foodConsumedPerTurnHistory.getUnmodifableHistory();
+	}
+	/**
+	 * Gets the amount food consumed so far this turn
+	 * @return The amount of food consumed so far this turn
 	 */
 	public double getFoodConsumedThisTurn()
 	{
-		return foodConsumedThisTurn;
+		return foodConsumedPerTurnHistory.getValue();
 	}
 	/**
 	 * Updates the food consumed so far this turn
 	 * @param food The amount to be consumed
 	 */
-	public void setFoodConsumedThisTurn(double food)
-	{
-		this.foodConsumedThisTurn += food;
-	}
+	public double setFoodConsumedThisTurn(double food)
+		{
+			return foodConsumedPerTurnHistory.setValue(food);
+		}
 	/**
 	 * @param consumed reduces the foodInPossesion by a given amount
 	 */
@@ -235,7 +243,7 @@ class AgentDataModel extends APlayerDataModel
 		return loyaltyHistory.getValue();
 	}
 
-	public double setLoyaltyHappiness(double newLoyalty)
+	public double setCurrentLoyalty(double newLoyalty)
 	{
 		return loyaltyHistory.setValue(newLoyalty);
 	}
@@ -253,5 +261,13 @@ class AgentDataModel extends APlayerDataModel
 	public void setTrust(String s, Double t)
 	{
 		this.trust.getValue().put(s, t);
+	}
+	
+	public void newHistoryEntry()
+	{
+		happinessHistory.newEntry();
+		loyaltyHistory.newEntry();
+		trust.newEntry();
+		foodConsumedPerTurnHistory.newEntry();
 	}
 }
