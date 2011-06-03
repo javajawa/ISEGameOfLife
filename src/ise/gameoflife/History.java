@@ -13,8 +13,31 @@ public class History<T> implements Serializable
 {
 
 	private static final long serialVersionUID = 1L;
-	private LinkedList<T> data = new LinkedList<T>();
-	private int maxSize = 10;
+	private LinkedList<T> data;
+	private int maxSize;
+	private UnmodifableHistory<T> u;
+
+	public History()
+	{
+		this(new LinkedList<T>(), 10);
+	}
+
+	public History(int maxsize)
+	{
+		this(new LinkedList<T>(), maxsize);
+	}
+
+	History(LinkedList<T> data, int maxsize)
+	{
+		this.data =  data;
+		this.maxSize = maxsize;
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException
+	{
+		return super.clone();
+	}
 
 	public T getValue()
 	{
@@ -61,4 +84,9 @@ public class History<T> implements Serializable
 		return data.size();
 	}
 
+	public UnmodifableHistory<T> getUnmodifableHistory()
+	{
+		if (u == null) u = new UnmodifableHistory<T>(data, maxSize);
+		return u;
+	}
 }
