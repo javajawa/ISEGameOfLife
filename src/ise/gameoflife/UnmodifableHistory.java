@@ -4,7 +4,6 @@ import java.util.LinkedList;
 
 /**
  * Allows classes to easily store historical values in a type safe, controlled way
- * TODO: Document
  * @param <T> The type of things being recorded historically
  * @author Benedict
  */
