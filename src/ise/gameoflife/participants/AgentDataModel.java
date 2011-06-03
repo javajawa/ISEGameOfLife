@@ -1,8 +1,11 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.History;
+import ise.gameoflife.UnmodifableHistory;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
+import java.util.HashMap;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
@@ -38,6 +41,13 @@ class AgentDataModel extends APlayerDataModel
 	 */
 	@Element(required=false)
 	private String groupId;
+	
+	@Element
+	private History<HashMap<String, Double>> trust;
+
+	private History<Double> happinessHistory;
+	@Element
+	private History<Double> loyaltyHistory;
 
 	private Food lastHunted = null;
 	private HuntingTeam huntingTeam = null;
@@ -152,7 +162,7 @@ class AgentDataModel extends APlayerDataModel
 	@Override
 	public void onInitialise()
 	{
-		//Nothing to see here. Move along, citizen!
+		happinessHistory = new History<Double>(50);
 	}
 
 	/**
@@ -203,5 +213,45 @@ class AgentDataModel extends APlayerDataModel
 	public void setOrder(Food newFood)
 	{
 		lastOrderReceived = newFood;
+	}
+
+	public double getCurrentHappiness()
+	{
+		return happinessHistory.getValue();
+	}
+
+	public double setCurrentHappiness(double newHappiness)
+	{
+		return happinessHistory.setValue(newHappiness);
+	}
+
+	UnmodifableHistory<Double> getHappinessHistory()
+	{
+		return happinessHistory.getUnmodifableHistory();
+	}
+
+	public double getCurrentLoyalty()
+	{
+		return loyaltyHistory.getValue();
+	}
+
+	public double setLoyaltyHappiness(double newLoyalty)
+	{
+		return loyaltyHistory.setValue(newLoyalty);
+	}
+
+	UnmodifableHistory<Double> getLoyaltyHistory()
+	{
+		return loyaltyHistory.getUnmodifableHistory();
+	}
+	
+	public History<HashMap<String, Double>> getTrust()
+	{
+		return trust;
+	}
+
+	public void setTrust(String s, Double t)
+	{
+		this.trust.getValue().put(s, t);
 	}
 }
