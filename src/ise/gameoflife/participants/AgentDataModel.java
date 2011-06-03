@@ -2,11 +2,9 @@ package ise.gameoflife.participants;
 
 import ise.gameoflife.History;
 import ise.gameoflife.UnmodifableHistory;
-import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import java.util.HashMap;
-import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
 
@@ -45,12 +43,17 @@ class AgentDataModel extends APlayerDataModel
 	@Element
 	private History<HashMap<String, Double>> trust;
 
+	@Element
 	private History<Double> happinessHistory;
+	
 	@Element
 	private History<Double> loyaltyHistory;
 
-	private Food lastHunted = null;
-	private HuntingTeam huntingTeam = null;
+	@Element
+	private double econimicBelief;
+	
+	private History<Food> lastHunted = null;
+	private History<HuntingTeam> huntingTeam = null;
 	private Food lastOrderReceived = null;
 
 	/**
@@ -59,7 +62,7 @@ class AgentDataModel extends APlayerDataModel
 	 * @deprecated Due to serialisation conflicts
 	 */
 	@Deprecated
-	public AgentDataModel()
+	 AgentDataModel()
 	{
 		super();
 	}
@@ -75,7 +78,7 @@ class AgentDataModel extends APlayerDataModel
 	 * @param foodConsumption Food consumed per turn
 	 */
 	@SuppressWarnings("deprecation")
-	public AgentDataModel(String myId, String roles, String playerClass, long randomseed, double foodInPossesion, double foodConsumption)
+	 AgentDataModel(String myId, String roles, String playerClass, long randomseed, double foodInPossesion, double foodConsumption)
 	{
 		super(myId, roles, playerClass, randomseed);
 		this.foodInPossesion = foodInPossesion;
@@ -171,6 +174,9 @@ class AgentDataModel extends APlayerDataModel
 	public void onInitialise()
 	{
 		happinessHistory = new History<Double>(50);
+		loyaltyHistory = new History<Double>(50);
+		trust = new History<HashMap<String, Double>>(50);
+		lastHunted = new History<Food>(50);
 	}
 
 	/**
@@ -178,14 +184,39 @@ class AgentDataModel extends APlayerDataModel
 	 */
 	public Food getLastHunted()
 	{
-		return lastHunted;
+		return lastHunted.getValue();
+	}
+
+	/**
+	 * @return The food the agent decided to hunt on the previous turn
+	 */
+	public void setLastHunted(Food lastFood)
+	{
+		lastHunted.setValue(lastFood);
+	}
+
+	public UnmodifableHistory<Food> getHuntingHistory()
+	{
+		return lastHunted.getUnmodifableHistory();
 	}
 
 	/**
 	 * @return which hunting pair this agent belongs to
 	 */
 	public HuntingTeam getHuntingTeam() {
-		return huntingTeam;
+		return huntingTeam.getValue();
+	}
+
+	/**
+	 * @return which hunting pair this agent belongs to
+	 */
+	public void setHuntingTeam(HuntingTeam team) {
+		huntingTeam.setValue(team);
+	}
+
+	public UnmodifableHistory<HuntingTeam> getTeamHistory()
+	{
+		return huntingTeam.getUnmodifableHistory();
 	}
 
 	/**
@@ -196,21 +227,6 @@ class AgentDataModel extends APlayerDataModel
 	public Food getOrder()
 	{
 		return lastOrderReceived;
-	}
-
-	/**
-	 * @return The food the agent decided to hunt on the previous turn
-	 */
-	public void setLastHunted(Food lastFood)
-	{
-		lastHunted = lastFood;
-	}
-
-	/**
-	 * @return which hunting pair this agent belongs to
-	 */
-	public void setHuntingTeam(HuntingTeam team) {
-		huntingTeam = team;
 	}
 
 	/**
@@ -228,12 +244,12 @@ class AgentDataModel extends APlayerDataModel
 		return happinessHistory.getValue();
 	}
 
-	public double setCurrentHappiness(double newHappiness)
+	public Double setCurrentHappiness(Double newHappiness)
 	{
 		return happinessHistory.setValue(newHappiness);
 	}
 
-	UnmodifableHistory<Double> getHappinessHistory()
+	public UnmodifableHistory<Double> getHappinessHistory()
 	{
 		return happinessHistory.getUnmodifableHistory();
 	}
@@ -248,7 +264,7 @@ class AgentDataModel extends APlayerDataModel
 		return loyaltyHistory.setValue(newLoyalty);
 	}
 
-	UnmodifableHistory<Double> getLoyaltyHistory()
+	public UnmodifableHistory<Double> getLoyaltyHistory()
 	{
 		return loyaltyHistory.getUnmodifableHistory();
 	}
@@ -258,11 +274,16 @@ class AgentDataModel extends APlayerDataModel
 		return trust;
 	}
 
-	public void setTrust(String s, Double t)
+	public double setTrust(String s, double t)
 	{
-		this.trust.getValue().put(s, t);
+		return this.trust.getValue().put(s, t);
 	}
-	
+
+	public double getEconimicBelief()
+	{
+		return econimicBelief;
+	}
+
 	public void newHistoryEntry()
 	{
 		happinessHistory.newEntry();
@@ -270,4 +291,10 @@ class AgentDataModel extends APlayerDataModel
 		trust.newEntry();
 		foodConsumedPerTurnHistory.newEntry();
 	}
+	
+	public void setEconimicBelief(double econimicBelief)
+	{
+		this.econimicBelief = econimicBelief;
+	}
+
 }
