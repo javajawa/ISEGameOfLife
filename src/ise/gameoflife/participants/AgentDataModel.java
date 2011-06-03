@@ -166,6 +166,9 @@ class AgentDataModel extends APlayerDataModel
 	public void onInitialise()
 	{
 		happinessHistory = new History<Double>(50);
+		loyaltyHistory = new History<Double>(50);
+		trust = new History<HashMap<String, Double>>(50);
+		lastHunted = new History<Food>(50);
 	}
 
 	/**
