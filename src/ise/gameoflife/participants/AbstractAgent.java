@@ -54,8 +54,8 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
-			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumption() + " units of food");
-			dm.foodConsumed(dm.getFoodConsumption());
+			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumedThisTurn() + " units of food");
+			dm.foodConsumed(dm.getFoodConsumedThisTurn());
 		}
 	}
 
@@ -267,6 +267,7 @@ abstract public class AbstractAgent implements Participant
 		dm.setLastHunted(null);
 		dm.setHuntingTeam(null);
 		dm.setOrder(null);
+		dm.setFoodConsumedThisTurn(0.0);
 	}
 
 	private void doGroupSelect()

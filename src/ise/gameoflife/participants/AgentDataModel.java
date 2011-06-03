@@ -26,6 +26,11 @@ class AgentDataModel extends APlayerDataModel
 	 */
 	@Element
 	private double foodConsumption;
+	/**
+	 * Stores the amount of food an agent has consumed this turn
+	 */
+	@Element
+	private double foodConsumedThisTurn;
 
 	/**
 	 * Field that holds the id of {@link #group}
@@ -83,7 +88,22 @@ class AgentDataModel extends APlayerDataModel
 	{
 		return foodConsumption;
 	}
-
+	/**
+	 * Returns the amount of total food consumed this turn
+	 * @return 
+	 */
+	public double getFoodConsumedThisTurn()
+	{
+		return foodConsumedThisTurn;
+	}
+	/**
+	 * Updates the food consumed so far this turn
+	 * @param food The amount to be consumed
+	 */
+	public void setFoodConsumedThisTurn(double food)
+	{
+		this.foodConsumedThisTurn += food;
+	}
 	/**
 	 * @param consumed reduces the foodInPossesion by a given amount
 	 */
