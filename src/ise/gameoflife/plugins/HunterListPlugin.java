@@ -1,18 +1,13 @@
 package ise.gameoflife.plugins;
 
-import com.sun.xml.internal.bind.v2.runtime.JAXBContextImpl;
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.jfree.chart.ChartFactory;
