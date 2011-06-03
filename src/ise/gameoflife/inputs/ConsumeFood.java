@@ -20,7 +20,7 @@ public final class ConsumeFood extends GenericInput
 		super(time, "consumefood");
 	}
 
-	// Stopes Netbeans thinking this is a ultility class
+	// Stops Netbeans thinking this is a ultility class
 	@Override
 	public String toString()
 	{
