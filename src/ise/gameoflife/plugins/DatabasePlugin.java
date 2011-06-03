@@ -92,7 +92,7 @@ public class DatabasePlugin implements Plugin {
 		if (saveToRemote) {
 		    //prep2.setInt(1,remote_simId);
 		    prep2.setLong(1, sim.getTime());
-		    prep2.setInt(2,en.getCyclesPassed());
+		    prep2.setInt(2,en.getRoundsPassed());
 		    prep2.setInt(3,getNumHunters());
 		    prep2.addBatch();
 		}
