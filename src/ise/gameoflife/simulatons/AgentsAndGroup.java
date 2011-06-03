@@ -57,7 +57,8 @@ public class AgentsAndGroup
 		PluginManager pm = new PluginManager();
 		pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png", 1500, 1200));
 		pm.addPlugin(new ErrorLog());
-		pm.addPlugin(new DatabasePlugin(configPath + "/simulation.db"));
+		//DatabasePlugin inputs:(int simId,String comment,BOOL saveToRemoteDatabase)
+		pm.addPlugin(new DatabasePlugin(1,"Simulation comment",false));
 		pm.addPlugin(new HunterListPlugin());
                 //pm.addPlugin(new PoliticalCompassPlugin(configPath + "/output/")); // Use this for outputting pngs at each step
                 pm.addPlugin(new PoliticalCompassPlugin()); // Use this for just a display of the political compass

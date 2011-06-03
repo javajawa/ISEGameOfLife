@@ -1,14 +1,14 @@
 package ise.gameoflife;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
  * Allows classes to easily store historical values in a type safe, controlled way
- * TODO: Document
  * @param <T> The type of things being recorded historically
  * @author Benedict
  */
-public class UnmodifableHistory<T> extends History<T>
+public class UnmodifableHistory<T extends Serializable> extends History<T>
 {
 	private static final long serialVersionUID = 1L;
 

@@ -1,8 +1,8 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.UnmodifableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
-import ise.gameoflife.participants.AgentDataModel;
 import java.util.ArrayList;
 import presage.PlayerDataModel;
 
@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 {
+
 	private static final long serialVersionUID = 1L;
 	/**
 	 * Data Model which backs this public data model
@@ -47,6 +48,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getFoodInPossesion();
 	}
+
 	/**
 	 * Gets time: the number of cycles (which are the subdivision of rounds) which have passed
 	 * @return the time (number of cycles which have passed)
@@ -56,6 +58,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getTime();
 	}
+
 	/**
 	 * Sets the time
 	 * setTime should not used since the simulation deals with setting the time - calling this will have no effect.
@@ -66,6 +69,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		source.setTime(time);
 	}
+
 	/**
 	 * Returns the list of roles which the agent has
 	 * @return a list of roles
@@ -75,6 +79,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getRoles();
 	}
+
 	/**
 	 * Sets all of the agents roles
 	 * @param roles the list of roles to assign to the agent
@@ -84,6 +89,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		source.setRoles(roles);
 	}
+
 	/**
 	 * Implemented in Presage and (currently) serves no purpose
 	 * @return a null string, at the moment
@@ -103,10 +109,27 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	}
 
 	/**
+	 * @return The hunting history of this agent
+	 */
+	public UnmodifableHistory<Food> huntingHistory()
+	{
+		return source.getHuntingHistory();
+	}
+
+	/**
 	 * @return which hunting pair this agent belongs to
 	 */
-	public HuntingTeam getHuntingTeam() {
+	public HuntingTeam getHuntingTeam()
+	{
 		return source.getHuntingTeam();
+	}
+
+	/**
+	 * @return The Team history of this agent
+	 */
+	public UnmodifableHistory<HuntingTeam> getTeamHistory()
+	{
+		return source.getTeamHistory();
 	}
 
 	/**
@@ -127,4 +150,49 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getGroupId();
 	}
+
+	/**
+	 * Gets the current happiness of this agent
+	 * @return The current happiness of this agent
+	 */
+	public double getCurrentHappiness()
+	{
+		return source.getCurrentHappiness();
+	}
+
+	/**
+	 * Gets the history of this agent's happiness
+	 * @return The history of this agent's happiness
+	 */
+	public UnmodifableHistory<Double> getHappinessHistory()
+	{
+		return source.getHappinessHistory();
+	}
+
+	/**
+	 * Gets the current loyalty of this agent
+	 * @return The current loyalty of this agent
+	 */
+	public double getCurrentLoyalty()
+	{
+		return source.getCurrentLoyalty();
+	}
+
+	/**
+	 * Gets the history of this agent's loyalty
+	 * @return The history of this agent's loyalty
+	 */
+	public UnmodifableHistory<Double> getLoyaltyHistory()
+	{
+		return source.getLoyaltyHistory();
+	}
+	/**
+	 * Gets the current Economic Belief of the agent
+	 * @return The agent's current Economic belief
+	 */
+	public double getEconomicBelief()
+	{
+		return source.getEconomicBelief();
+	}
+
 }
