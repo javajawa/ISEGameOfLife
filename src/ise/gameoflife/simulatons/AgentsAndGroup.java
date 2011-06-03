@@ -11,6 +11,7 @@ import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
+import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +59,7 @@ public class AgentsAndGroup
 		pm.addPlugin(new ErrorLog());
 		pm.addPlugin(new DatabasePlugin(configPath + "/simulation.db"));
 		pm.addPlugin(new HunterListPlugin());
+                pm.addPlugin(new PoliticalCompassPlugin("/video.mp4"));
 
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 
