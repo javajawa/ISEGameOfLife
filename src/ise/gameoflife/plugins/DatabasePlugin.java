@@ -15,9 +15,15 @@ import java.sql.*;
 /**
  *
  * @author valdas
- * Creates an SQLite database in appropriate simulation folder. Sends data to DB
+ * Creates an SQLite database in main simulation folder. Sends data to DB
  * every 100 cycles and commits every 1000 and at the end, thus reducing writes to disk.
+ * 
+ * Also, allows sending to remote DB if given correct input parameters.
+ * 
  */
+//TODO Make additional data available to DB.
+//TODO Expand DBMS schema to store additional data types.
+
 public class DatabasePlugin implements Plugin {
 
     private static final long serialVersionUID = 1L;
@@ -27,13 +33,14 @@ public class DatabasePlugin implements Plugin {
 
     private Simulation sim;
     private Environment en;
+    //given by remote server
     private int remote_simId;
     private Statement stat;
 
     
     private PreparedStatement prep;
     private PreparedStatement prep2;
-    //database connection
+    //database local connection
     private Connection conn;
     //Remote MySQL server
     private Connection rcon;
@@ -56,7 +63,9 @@ public class DatabasePlugin implements Plugin {
 
     /**
      * Creates a new instance of the DatabasePlugin
-     * @param userId - UID on remote database
+     * @param simId - Simulation ID inside local DB
+     * @param sim_comment - Comment inside DB
+     * @param saveToRemote - enables remote DB connection
      */
     @PluginConstructor(
     {
@@ -125,7 +134,9 @@ public class DatabasePlugin implements Plugin {
     {
 	    return label;
     }
-
+    
+    //Creates connections and local DB if not exists.Otherwise, adds to existing
+    //DB.
     @Override
     public void initialise(Simulation sim)
     {
@@ -245,7 +256,7 @@ public class DatabasePlugin implements Plugin {
     @Override
     public void onSimulationComplete()
     {
-//	this.removeAll();
+	//commits remaining data and updates done flag in DB
 	try {
 	    //sends left over data to DB
 	    prep.executeBatch();
