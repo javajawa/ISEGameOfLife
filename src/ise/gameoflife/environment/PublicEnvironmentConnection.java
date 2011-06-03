@@ -118,4 +118,13 @@ public class PublicEnvironmentConnection
 	{
 		return ec.isGroupId(gid);
 	}
+
+	/**
+	 * Returns the unique id of this simulation
+	 * @return The unique id of this simulation
+	 */
+	public String getId()
+	{
+		return ec.getId();
+	}
 }

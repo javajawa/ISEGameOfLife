@@ -57,6 +57,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 	private TurnType turn;
 	@Element
 	private int cycles;
+	@Element
+	private String id;
 
 	/**
 	 * Serialisable no-arg constructor, do not use
@@ -78,6 +80,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 		this.turn = TurnType.firstTurn;
 		this.cycles = 0;
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public EnvironmentDataModel(String environmentName,
@@ -92,6 +95,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 		this.turn = TurnType.firstTurn;
 		this.cycles = 0;
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public Set<Food> availableFoods()
@@ -191,5 +195,10 @@ public class EnvironmentDataModel extends AEnvDataModel
 	Set<String> getAvailableGroups()
 	{
 		return Collections.unmodifiableSet(agentGroups.keySet());
+	}
+
+	public String getId()
+	{
+		return id;
 	}
 }
