@@ -5,6 +5,7 @@ import ise.gameoflife.UnmodifableHistory;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
+import java.util.HashMap;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
@@ -38,6 +39,9 @@ class AgentDataModel extends APlayerDataModel
 
 	@Element
 	History<Double> happinessHistory;
+	
+	@Element
+	History<HashMap<String, Double>> trust;
 
 	private Food lastHunted = null;
 	private HuntingTeam huntingTeam = null;
@@ -204,4 +208,16 @@ class AgentDataModel extends APlayerDataModel
 	{
 		return happinessHistory.getUnmodifableHistory();
 	}
+
+	public History<HashMap<String, Double>> getTrust()
+	{
+		return trust;
+	}
+
+	public void setTrust(String s, Double t)
+	{
+		this.trust.getValue().put(s, t);
+	}
+	
+	
 }
