@@ -264,11 +264,11 @@ abstract public class AbstractAgent implements Participant
 
 	private void clearRoundData()
 	{
-		dm.setLastHunted(null);
-		dm.setHuntingTeam(null);
-		dm.setOrder(null);
+		//dm.setLastHunted(null);
+		//dm.setHuntingTeam(null);
+		//dm.setOrder(null);
 		dm.newHistoryEntry();
-		dm.setFoodConsumedThisTurn(0.0);
+		dm.setFoodConsumedThisTurn(dm.getFoodConsumption());
 	}
 
 	private void doGroupSelect()

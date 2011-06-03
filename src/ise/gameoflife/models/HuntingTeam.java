@@ -1,17 +1,23 @@
 package ise.gameoflife.models;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 /**
  * Class dealing with Hunting Teams - ie, sub-groups of Agents who play the 
  * Stag Hunt game
  * @author Benedict Harcourt
  */
-public class HuntingTeam
+public class HuntingTeam implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
+	@ElementList
 	private List<String> members;
+	@Element
 	private Food orderedTarget;
 
 	/**

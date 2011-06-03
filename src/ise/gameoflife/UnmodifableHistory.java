@@ -1,5 +1,6 @@
 package ise.gameoflife;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
@@ -7,7 +8,7 @@ import java.util.LinkedList;
  * @param <T> The type of things being recorded historically
  * @author Benedict
  */
-public class UnmodifableHistory<T> extends History<T>
+public class UnmodifableHistory<T extends Serializable> extends History<T>
 {
 	private static final long serialVersionUID = 1L;
 

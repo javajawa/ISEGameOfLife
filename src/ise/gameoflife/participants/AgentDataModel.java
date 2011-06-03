@@ -83,6 +83,7 @@ class AgentDataModel extends APlayerDataModel
 		super(myId, roles, playerClass, randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
+		onInitialise();
 	}
 
 	/**
@@ -121,10 +122,10 @@ class AgentDataModel extends APlayerDataModel
 	 * Updates the food consumed so far this turn
 	 * @param food The amount to be consumed
 	 */
-	public double setFoodConsumedThisTurn(double food)
-		{
-			return foodConsumedPerTurnHistory.setValue(food);
-		}
+	public Double setFoodConsumedThisTurn(double food)
+	{
+		return foodConsumedPerTurnHistory.setValue(food);
+	}
 	/**
 	 * @param consumed reduces the foodInPossesion by a given amount
 	 */
@@ -171,12 +172,16 @@ class AgentDataModel extends APlayerDataModel
 	}
 
 	@Override
-	public void onInitialise()
+	public final void onInitialise()
 	{
+		foodConsumedPerTurnHistory = new History<Double>(50);
 		happinessHistory = new History<Double>(50);
+		huntingTeam = new History<HuntingTeam>(50);
 		loyaltyHistory = new History<Double>(50);
-		trust = new History<HashMap<String, Double>>(50);
 		lastHunted = new History<Food>(50);
+		trust = new History<HashMap<String, Double>>(50);
+
+		newHistoryEntry();
 	}
 
 	/**
@@ -259,7 +264,7 @@ class AgentDataModel extends APlayerDataModel
 		return loyaltyHistory.getValue();
 	}
 
-	public double setCurrentLoyalty(double newLoyalty)
+	public Double setCurrentLoyalty(double newLoyalty)
 	{
 		return loyaltyHistory.setValue(newLoyalty);
 	}
@@ -294,6 +299,8 @@ class AgentDataModel extends APlayerDataModel
 		happinessHistory.newEntry();
 		loyaltyHistory.newEntry();
 		trust.newEntry();
+		huntingTeam.newEntry();
 		foodConsumedPerTurnHistory.newEntry();
+		lastHunted.newEntry();
 	}
 }

@@ -2,17 +2,21 @@ package ise.gameoflife;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 /**
  * Allows classes to easily store historical values in a type safe, controlled way
  * @param <T> The type of things being recorded historically
  * @author Benedict
  */
-public class History<T> implements Serializable
+public class History<T extends Serializable> implements Serializable
 {
 
 	private static final long serialVersionUID = 1L;
+	@ElementList(type=Object.class)
 	private LinkedList<T> data;
+	@Element
 	private int maxSize;
 	private UnmodifableHistory<T> u;
 
