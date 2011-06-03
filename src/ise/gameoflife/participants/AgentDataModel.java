@@ -45,10 +45,15 @@ class AgentDataModel extends APlayerDataModel
 	@Element
 	private History<HashMap<String, Double>> trust;
 
+	@Element
 	private History<Double> happinessHistory;
+	
 	@Element
 	private History<Double> loyaltyHistory;
 
+	@Element
+	private Double econimicBelief;
+	
 	private Food lastHunted = null;
 	private HuntingTeam huntingTeam = null;
 	private Food lastOrderReceived = null;
@@ -220,7 +225,7 @@ class AgentDataModel extends APlayerDataModel
 		return happinessHistory.getValue();
 	}
 
-	public double setCurrentHappiness(double newHappiness)
+	public Double setCurrentHappiness(Double newHappiness)
 	{
 		return happinessHistory.setValue(newHappiness);
 	}
@@ -254,4 +259,16 @@ class AgentDataModel extends APlayerDataModel
 	{
 		this.trust.getValue().put(s, t);
 	}
+
+	public Double getEconimicBelief()
+	{
+		return econimicBelief;
+	}
+
+	public void setEconimicBelief(Double econimicBelief)
+	{
+		this.econimicBelief = econimicBelief;
+	}
+	
+	
 }
