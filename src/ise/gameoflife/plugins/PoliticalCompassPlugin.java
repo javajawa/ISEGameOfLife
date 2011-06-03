@@ -59,7 +59,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
 	}
 
 	/**
-	 * Creates a new instance of the HuntersAlivePlugin
+	 * Creates a new instance of the PoliticalCompassPlugin
 	 * @param outputpath Path to write the final video to
 	 */
 	@PluginConstructor(
@@ -97,6 +97,9 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
                 repaint();
 	}
 
+        /**
+         * Adds new players and removes dead players since the last cycle.
+         */
         private void updatePoliticalPlayers()
         {
 
@@ -130,6 +133,10 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
                 }
         }
 
+        /**
+         * Draw everything to the screen
+         * @param g Graphics object
+         */
         @Override
         public void paint(Graphics g)
         {
@@ -150,6 +157,11 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
                 }
         }
 
+        /**
+         * Draws a circle representing an agent's political views
+         * @param g Graphics objects
+         * @param p_player SimplifiedPoliticalPlayer object to draw
+         */
         private void drawAgent(Graphics g, SimplePoliticalParticipant p_player)
         {
                 Rectangle rect = g.getClipBounds();
