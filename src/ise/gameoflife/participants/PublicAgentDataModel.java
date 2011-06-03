@@ -186,5 +186,13 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getLoyaltyHistory();
 	}
+	/**
+	 * Gets the current Economic Belief of the agent
+	 * @return The agent's current Economic belief
+	 */
+	public double getEconomicBelief()
+	{
+		return source.getEconomicBelief();
+	}
 
 }

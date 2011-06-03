@@ -50,7 +50,7 @@ class AgentDataModel extends APlayerDataModel
 	private History<Double> loyaltyHistory;
 
 	@Element
-	private double econimicBelief;
+	private double economicBelief;
 	
 	private History<Food> lastHunted = null;
 	private History<HuntingTeam> huntingTeam = null;
@@ -279,9 +279,14 @@ class AgentDataModel extends APlayerDataModel
 		return this.trust.getValue().put(s, t);
 	}
 
-	public double getEconimicBelief()
+	public double getEconomicBelief()
 	{
-		return econimicBelief;
+		return economicBelief;
+	}
+	
+		public void setEconomicBelief(double economicBelief)
+	{
+		this.economicBelief = economicBelief;
 	}
 
 	public void newHistoryEntry()
@@ -291,10 +296,4 @@ class AgentDataModel extends APlayerDataModel
 		trust.newEntry();
 		foodConsumedPerTurnHistory.newEntry();
 	}
-	
-	public void setEconimicBelief(double econimicBelief)
-	{
-		this.econimicBelief = econimicBelief;
-	}
-
 }
