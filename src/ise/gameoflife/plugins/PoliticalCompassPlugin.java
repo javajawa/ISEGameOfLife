@@ -9,6 +9,8 @@ import ise.gameoflife.participants.SimplePoliticalParticipant;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.SortedSet;
 import java.util.TreeMap;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.simpleframework.xml.Element;
 import presage.EnvDataModel;
@@ -44,18 +47,15 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
         private TreeMap<String, SimplePoliticalParticipant> p_players = new TreeMap<String, SimplePoliticalParticipant>();
 
 	@Element(required=false)
-	private String outputpath;
+	private String outputdirectory;
 
+        private int framecount = 0;
 
 	/**
-	 * SimpleXML no-arg Constructor. Do not use this constructor, it is only for
-	 * the purpose of SimpleXML being able to create the object through inflection
-	 * @deprecated Serialisation constructor
 	 */
-	@Deprecated
 	public PoliticalCompassPlugin()
 	{
-		// Nothing to see here. Move along, citizen.
+		this.outputdirectory = null;
 	}
 
 	/**
@@ -64,12 +64,12 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
 	 */
 	@PluginConstructor(
 	{
-		"outputpath"
+		"outputdirectory"
 	})
-	public PoliticalCompassPlugin(String outputpath)
+	public PoliticalCompassPlugin(String outputdirectory)
 	{
 		super();
-		this.outputpath = outputpath;
+		this.outputdirectory = outputdirectory;
 	}
 
 	/**
@@ -95,7 +95,30 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
                 }
 
                 repaint();
+
+                if(this.outputdirectory != null)
+                {
+                        writeToPNG();
+                }
 	}
+
+        private void writeToPNG() {
+                BufferedImage bi = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_ARGB);
+                Graphics big = bi.getGraphics();
+                big.setClip(0, 0, 500, 500);
+                this.paint(big);
+                try
+                {
+                        File f =  new File(this.outputdirectory + "test"+this.framecount+".png");
+                        f.mkdirs();
+                        ImageIO.write(bi, "png",f);
+                        this.framecount++;
+                }
+                catch (Exception e)
+                {
+                        System.out.println("Error writing political compass image: " + this.framecount);
+                }
+        }
 
         /**
          * Adds new players and removes dead players since the last cycle.
@@ -155,6 +178,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
                 {
                         drawAgent(g, entry.getValue());
                 }
+
         }
 
         /**

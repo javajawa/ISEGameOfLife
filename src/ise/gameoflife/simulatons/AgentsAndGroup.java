@@ -59,7 +59,8 @@ public class AgentsAndGroup
 		pm.addPlugin(new ErrorLog());
 		pm.addPlugin(new DatabasePlugin(configPath + "/simulation.db"));
 		pm.addPlugin(new HunterListPlugin());
-                pm.addPlugin(new PoliticalCompassPlugin("/video.mp4"));
+                //pm.addPlugin(new PoliticalCompassPlugin(configPath + "/output/")); // Use this for outputting pngs at each step
+                pm.addPlugin(new PoliticalCompassPlugin()); // Use this for just a display of the political compass
 
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 
