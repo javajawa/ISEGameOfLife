@@ -37,7 +37,9 @@ class AgentDataModel extends APlayerDataModel
 	private String groupId;
 
 	@Element
-	History<Double> happinessHistory;
+	private History<Double> happinessHistory;
+	@Element
+	private History<Double> loyaltyHistory;
 
 	private Food lastHunted = null;
 	private HuntingTeam huntingTeam = null;
@@ -203,5 +205,20 @@ class AgentDataModel extends APlayerDataModel
 	UnmodifableHistory<Double> getHappinessHistory()
 	{
 		return happinessHistory.getUnmodifableHistory();
+	}
+
+	public double getCurrentLoyalty()
+	{
+		return loyaltyHistory.getValue();
+	}
+
+	public double setLoyaltyHappiness(double newLoyalty)
+	{
+		return loyaltyHistory.setValue(newLoyalty);
+	}
+
+	UnmodifableHistory<Double> getLoyaltyHistory()
+	{
+		return loyaltyHistory.getUnmodifableHistory();
 	}
 }

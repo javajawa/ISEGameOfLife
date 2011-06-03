@@ -129,13 +129,39 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 		return source.getGroupId();
 	}
 
+	/**
+	 * Gets the current happiness of this agent
+	 * @return The current happiness of this agent
+	 */
 	public double getCurrentHappiness()
 	{
 		return source.getCurrentHappiness();
 	}
 
-	UnmodifableHistory<Double> getHappinessHistory()
+	/**
+	 * Gets the history of this agent's happiness
+	 * @return The history of this agent's happiness
+	 */
+	public UnmodifableHistory<Double> getHappinessHistory()
 	{
 		return source.getHappinessHistory();
+	}
+
+	/**
+	 * Gets the current loyalty of this agent
+	 * @return The current loyalty of this agent
+	 */
+	public double getCurrentLoyalty()
+	{
+		return source.getCurrentLoyalty();
+	}
+
+	/**
+	 * Gets the history of this agent's loyalty
+	 * @return The history of this agent's loyalty
+	 */
+	public UnmodifableHistory<Double> getLoyaltyHistory()
+	{
+		return source.getLoyaltyHistory();
 	}
 }
