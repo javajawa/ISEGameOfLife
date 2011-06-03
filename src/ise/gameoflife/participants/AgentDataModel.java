@@ -180,8 +180,6 @@ class AgentDataModel extends APlayerDataModel
 		loyaltyHistory = new History<Double>(50);
 		lastHunted = new History<Food>(50);
 		trust = new History<HashMap<String, Double>>(50);
-
-		newHistoryEntry();
 	}
 
 	/**
