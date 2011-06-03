@@ -114,4 +114,9 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		return e.isGroupId(gid);
 	}
+
+	public String getId()
+	{
+		return e.getId();
+	}
 }

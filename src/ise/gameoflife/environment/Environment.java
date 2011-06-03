@@ -486,5 +486,10 @@ public class Environment extends AbstractEnvironment
 			}
 		} 
 		return false;
-	}  
+	}
+
+	public String getId()
+	{
+		return dmodel.getId();
+	}
 }
