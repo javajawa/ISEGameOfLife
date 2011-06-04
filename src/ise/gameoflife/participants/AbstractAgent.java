@@ -20,6 +20,7 @@ import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
@@ -79,7 +80,14 @@ abstract public class AbstractAgent implements Participant
 			final HuntResult in = (HuntResult)input;
 			dm.foodAquired(in.getFoodReceived());
 			System.out.println("I, agent " + dm.getName() + ", recieved " + in.getFoodReceived() + " units of food");
-			// FIXME: Callback to adjust happiness based on food received / hunted
+
+			dm.setCurrentHappiness(updateHappinessAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
+			dm.setCurrentLoyalty(updateLoyaltyAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
+			Map<String,Double> t = updateTrustAfterHunt(in.getFoodHunted(), in.getFoodReceived());
+			for (String agent : t.keySet())
+			{
+				dm.setTrust(agent, t.get(agent));
+			}
 		}
 	}
 
@@ -482,4 +490,7 @@ abstract public class AbstractAgent implements Participant
 	 * @return 
 	 */
 	abstract protected Food giveAdvice(String agent, HuntingTeam agentsTeam);
+	abstract protected double updateHappinessAfterHunt(double foodHunted, double foodReceived);
+	abstract protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived);
+	abstract protected Map<String,Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
 }

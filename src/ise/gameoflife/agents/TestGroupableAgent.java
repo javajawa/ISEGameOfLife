@@ -8,6 +8,7 @@ import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -115,6 +116,26 @@ public class TestGroupableAgent extends AbstractAgent
 	{
 		// TODO Implement
 		return null;
+	}
+
+	@Override
+	protected double updateHappinessAfterHunt(double foodHunted,
+					double foodReceived)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
+					double foodReceived)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 }
