@@ -29,7 +29,7 @@ class GroupDataModel extends APlayerDataModel
 	private ArrayList<String> memberList;
 
 	@Element
-	private History<Double> econmoicPosition;
+	private History<Double> economicPosition;
 
 	@Deprecated
 	GroupDataModel()
@@ -52,8 +52,8 @@ class GroupDataModel extends APlayerDataModel
 		ret.myrolesString = "<group>";
 		ret.randomseed = init.getRandomSeed();
 		ret.name = init.getName();
-		ret.econmoicPosition = new History<Double>(50);
-		ret.econmoicPosition.newEntry(init.getInitialEconomicBelief());
+		ret.economicPosition = new History<Double>(50);
+		ret.economicPosition.newEntry(init.getInitialEconomicBelief());
 		return ret;
 	}
 
@@ -74,23 +74,23 @@ class GroupDataModel extends APlayerDataModel
 
 	double getCurrentEconomicPoisition()
 	{
-		return econmoicPosition.getValue();
+		return economicPosition.getValue();
 	}
 
 	void shiftEconomicPosition(double amount)
 	{
-		double old = econmoicPosition.getValue();
-		econmoicPosition.setValue(old + amount);
+		double old = economicPosition.getValue();
+		economicPosition.setValue(old + amount);
 	}
 
 	UnmodifiableHistory<Double> getEconomicPoisition()
 	{
-		return econmoicPosition.getUnmodifableHistory();
+		return economicPosition.getUnmodifableHistory();
 	}
 
 	void clearRoundData()
 	{
-		econmoicPosition.newEntry(true);
+		economicPosition.newEntry(true);
 	}
 
 	void addMember(String a)
