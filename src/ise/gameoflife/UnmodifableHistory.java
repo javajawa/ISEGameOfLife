@@ -24,7 +24,19 @@ public class UnmodifableHistory<T extends Serializable> extends History<T>
 	}
 
 	@Override
+	public void newEntry(boolean cloneOld)
+	{
+		throw new UnsupportedOperationException("The Histroy is not modifyable");
+	}
+
+	@Override
 	public void newEntry()
+	{
+		throw new UnsupportedOperationException("The Histroy is not modifyable");
+	}
+
+	@Override
+	public void newEntry(T value)
 	{
 		throw new UnsupportedOperationException("The Histroy is not modifyable");
 	}

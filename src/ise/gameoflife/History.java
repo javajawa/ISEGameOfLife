@@ -2,8 +2,11 @@ package ise.gameoflife;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import presage.util.ObjectCloner;
 
 /**
  * Allows classes to easily store historical values in a type safe, controlled way
@@ -50,17 +53,6 @@ public class History<T extends Serializable> implements Serializable
 	}
 
 	/**
-	 * If possible, clones the History
-	 * @return
-	 * @throws CloneNotSupportedException 
-	 */
-	@Override
-	protected Object clone() throws CloneNotSupportedException
-	{
-		return super.clone();
-	}
-
-	/**
 	 * Gets the most recent element in our linked list history
 	 * @return the present history
 	 */
@@ -90,11 +82,49 @@ public class History<T extends Serializable> implements Serializable
 	}
 
 	/**
-	 * Adds new entry into History
+	 * Adds new entry into History, using either the current value, or null to
+	 * populate it
+	 * @param cloneOld Use (a deep copy of) the previous value
+	 */
+	@SuppressWarnings("unchecked")
+	public void newEntry(boolean cloneOld)
+	{
+		if (cloneOld)
+		{
+			T clone;
+			try
+			{
+				clone = (T)ObjectCloner.deepCopy(data.element());
+			}
+			catch (Exception ex)
+			{
+				Logger.getLogger(History.class.getName()).log(Level.SEVERE, null, ex);
+				clone = null;
+			}
+			data.push(clone);
+		}
+		else
+		{
+			data.push(null);
+		}
+		truncate();
+	}
+
+	/**
+	 * Creates a new entry, initialised as null
 	 */
 	public void newEntry()
 	{
-		data.push(null);
+		newEntry(false);
+	}
+	
+	/**
+	 * Creates a new entry with a specific value
+	 * @param value The value to use
+	 */
+	public void newEntry(T value)
+	{
+		data.push(value);
 		truncate();
 	}
 
