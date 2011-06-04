@@ -14,6 +14,7 @@ import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -344,6 +345,17 @@ abstract public class AbstractAgent implements Participant
 		dm.setTime(cycle);
 	}
 
+	protected final Food seekAvice(String agent)
+	{
+		dm.increaseFoodConsumedThisTurn(ec.getFoodConsumedPerAdvice());
+		return ec.seekAdvice(getId(), authCode, agent, dm.getHuntingTeam());
+	}
+
+	public Food advise(String agent, HuntingTeam agentsTeam)
+	{
+		return giveAdvice(agent, agentsTeam);
+	}
+
 	/**
 	 * Returns the DataModel of this object
 	 * @return The DataModel of this object
@@ -456,6 +468,8 @@ abstract public class AbstractAgent implements Participant
 	abstract protected Food chooseFood();
 	/**
 	 * TODO: Document this
+	 * 
+	 * @return 
 	 */
 	abstract protected ProposalType makeProposal();
 	/**
@@ -464,4 +478,11 @@ abstract public class AbstractAgent implements Participant
 	 * @return 
 	 */
 	abstract protected Vote.VoteType castVote(Proposition p);
+	/**
+	 * TODO: Documentation
+	 * @param agent
+	 * @param agentsTeam
+	 * @return 
+	 */
+	abstract protected Food giveAdvice(String agent, HuntingTeam agentsTeam);
 }

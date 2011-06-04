@@ -3,6 +3,7 @@ package ise.gameoflife.environment;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
@@ -118,5 +119,10 @@ public class EnvConnector extends EnvironmentConnector
 	public String getId()
 	{
 		return e.getId();
+	}
+
+	public Food seekAdvice(String agent, UUID authToken, String fromAgent, HuntingTeam agentsTeam)
+	{
+		return e.seekAdvice(agent, authToken, fromAgent, agentsTeam);
 	}
 }
