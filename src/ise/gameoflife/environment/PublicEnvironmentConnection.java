@@ -127,4 +127,13 @@ public class PublicEnvironmentConnection
 	{
 		return ec.getId();
 	}
+
+	/**
+	 * Write a string to the standard output, if debug mode is enabled.
+	 * @param s The string to log
+	 */
+	public void log(String s)
+	{
+		ec.log(s);
+	}
 }

@@ -7,7 +7,9 @@ import ise.gameoflife.models.NameGenerator;
 import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
+import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
+import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Random;
@@ -50,11 +52,12 @@ public class DoubleAgent {
 		NameGenerator.setRandomiser(new Random(700));
 		// All the big objects
 		PluginManager pm = new PluginManager();
-		pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png",1500, 1200));
+		pm.addPlugin(new DebugSwitchPlugin());		
+		pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png", 1500, 1200));
 		pm.addPlugin(new ErrorLog());
-		//DatabasePlugin inputs:(int simId,String comment,BOOL saveToRemoteDatabase)
 		pm.addPlugin(new DatabasePlugin(1,"Simulation comment",false));
 		pm.addPlugin(new HunterListPlugin());
+		pm.addPlugin(new PoliticalCompassPlugin()); // Use this for just a display of the political compass
 
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 

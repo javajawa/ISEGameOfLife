@@ -65,7 +65,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID)
 		{
 			sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
-			System.out.println("Agent " + nameOf(actorID) + " has attempted to join group " + nameOf(((ApplyToGroup)action).getGroup()));
+			log("Agent " + nameOf(actorID) + " has attempted to join group " + nameOf(((ApplyToGroup)action).getGroup()));
 			return null;
 		}
 		
@@ -89,7 +89,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID)
 		{
 			sim.deActivateParticipant(actorID);
-			System.out.println("Agent " + nameOf(actorID) + " has died. So long and thanks for all the fish.");
+			log("Agent " + nameOf(actorID) + " has died. So long and thanks for all the fish.");
 			return null;
 		}
 		
@@ -114,7 +114,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final GroupOrder order = (GroupOrder)action;
 			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getToHunt(), order.getTeam()));
-			System.out.println("Group " + nameOf(actorID) + " has told team " + order.getTeam() + " to hunt " + order.getToHunt().getName());
+			log("Group " + nameOf(actorID) + " has told team " + order.getTeam() + " to hunt " + order.getToHunt().getName());
 			return null;
 		}
 			
@@ -164,7 +164,7 @@ public class Environment extends AbstractEnvironment
 				}
 				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act, actorID));
 			}
-			System.out.println("Agent " + nameOf(actorID) + " hunted " + food.getName() + " with team " + am.getHuntingTeam());
+			log("Agent " + nameOf(actorID) + " hunted " + food.getName() + " with team " + am.getHuntingTeam());
 			return null;
 		}
 
@@ -189,7 +189,7 @@ public class Environment extends AbstractEnvironment
 			RespondToApplication application = (RespondToApplication)action;
 			
 			sim.getPlayer(application.getAgent()).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, application.wasAccepted()));
-			System.out.println("Agent " + nameOf(application.getAgent()) + " has attempted to join group " + nameOf(actorID) + ", and the result was: " + application.wasAccepted());
+			log("Agent " + nameOf(application.getAgent()) + " has attempted to join group " + nameOf(actorID) + ", and the result was: " + application.wasAccepted());
 			return null;
 		}
 		
@@ -213,7 +213,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final DistributeFood result = (DistributeFood)action;
 			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmountHunted(), result.getAmountRecieved(), sim.getTime()));
-			System.out.println("Agent " + nameOf(result.getAgent()) + " was allocated " + result.getAmountRecieved() + " units of food");
+			log("Agent " + nameOf(result.getAgent()) + " was allocated " + result.getAmountRecieved() + " units of food");
 			return null;
 		}
 
@@ -235,7 +235,7 @@ public class Environment extends AbstractEnvironment
 			final Proposal prop = (Proposal)action;
 			final Proposition p = new Proposition(prop.getType(), actorID, prop.getForGroup(), dmodel.time);
 
-			System.out.println("Agent " + nameOf(actorID) + " proposed a motion of  " + prop.getType() + " to group " + nameOf(prop.getForGroup()));
+			log("Agent " + nameOf(actorID) + " proposed a motion of  " + prop.getType() + " to group " + nameOf(prop.getForGroup()));
 
 			for (String member : dmodel.getGroupById(prop.getForGroup()).getMemberList())
 			{
@@ -263,7 +263,7 @@ public class Environment extends AbstractEnvironment
 			final Vote vote = (Vote)action;
 			final ise.gameoflife.inputs.Vote v = new ise.gameoflife.inputs.Vote(vote, dmodel.time, actorID);
 
-			System.out.println("Agent " + nameOf(actorID) + " voted " + vote.getVote() + " on a motion of  " + vote.getProposition().getType() + " to group " + nameOf(vote.getProposition().getOwnerGroup()));
+			log("Agent " + nameOf(actorID) + " voted " + vote.getVote() + " on a motion of  " + vote.getProposition().getType() + " to group " + nameOf(vote.getProposition().getOwnerGroup()));
 			sim.getPlayer(vote.getProposition().getOwnerGroup()).enqueueInput(v);
 			return null;
 		}
@@ -302,7 +302,10 @@ public class Environment extends AbstractEnvironment
 	@Element
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
 	private EnvironmentDataModel dmodel;
-	
+
+	@Element
+	private boolean debug;
+
 	/**
 	 * Reference to the list that backs the ErrorLog view plugin.
 	 */
@@ -574,5 +577,20 @@ public class Environment extends AbstractEnvironment
 			return dmodel.getGroupById(id).getName();
 		}
 		return null;
+	}
+
+	public void log(String s)
+	{
+		if (debug) System.out.println(s);
+	}
+
+	public boolean getDebug()
+	{
+		return debug;
+	}
+
+	public void setDebug(boolean debug)
+	{
+		this.debug = debug;
 	}
 }

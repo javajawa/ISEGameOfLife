@@ -79,7 +79,7 @@ abstract public class AbstractAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			dm.foodAquired(in.getFoodReceived());
-			System.out.println("I, agent " + dm.getName() + ", recieved " + in.getFoodReceived() + " units of food");
+			ec.log("I, agent " + dm.getName() + ", recieved " + in.getFoodReceived() + " units of food");
 
 			dm.setCurrentHappiness(updateHappinessAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
 			dm.setCurrentLoyalty(updateLoyaltyAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
@@ -107,7 +107,7 @@ abstract public class AbstractAgent implements Participant
 			final HuntOrder in = (HuntOrder)input;
 			dm.setOrder(in.getOrder());
 			dm.setHuntingTeam(in.getTeam());
-			System.out.println("I, Agent " + dm.getName() + " have been told to hunt " + in.getOrder().getName() + " with Team " + in.getTeam().hashCode());
+			ec.log("I, Agent " + dm.getName() + " have been told to hunt " + in.getOrder().getName() + " with Team " + in.getTeam().hashCode());
 		}
 	}
 
@@ -129,7 +129,7 @@ abstract public class AbstractAgent implements Participant
 				dm.setGroup(in.getGroup());
 			}
 			groupApplicationResponse(in.wasAccepted());	
-			System.out.println("I, agent " + dm.getName() + " was " + (in.wasAccepted() ? "" : "not ") + "accepted into group " + ec.nameof(in.getGroup()));
+			ec.log("I, agent " + dm.getName() + " was " + (in.wasAccepted() ? "" : "not ") + "accepted into group " + ec.nameof(in.getGroup()));
 		}
 		
 	}
@@ -151,7 +151,7 @@ abstract public class AbstractAgent implements Participant
 			Vote.VoteType v = castVote(in);
 			ec.act(new Vote(in, v), getId(), authCode);
 			
-			System.out.println("I, agent " + dm.getName() + " voted " + v + " in " + ec.nameof(in.getProposer()) + "'s vote of " + in.getType());
+			ec.log("I, agent " + dm.getName() + " voted " + v + " in " + ec.nameof(in.getProposer()) + "'s vote of " + in.getType());
 		}
 		
 	}
@@ -221,7 +221,6 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void initialise(EnvironmentConnector environmentConnector)
 	{
-		System.out.println(environmentConnector.getClass().getCanonicalName());
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
 

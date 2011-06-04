@@ -135,4 +135,9 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		return e.nameOf(id);
 	}
+
+	public void log(String s)
+	{
+		e.log(s);
+	}
 }
