@@ -5,29 +5,22 @@
 
 package ise.gameoflife.simulatons;
 
-import ise.gameoflife.agents.TestAgent;
-import ise.gameoflife.agents.TestGroupableAgent;
 import ise.gameoflife.environment.EnvironmentDataModel;
-import ise.gameoflife.groups.TestGroup;
 import ise.gameoflife.models.Food;
-import ise.gameoflife.participants.AbstractAgent;
-import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.models.NameGenerator;
 import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Random;
 import java.util.TreeMap;
 import presage.EventScriptManager;
 import presage.Participant;
 import presage.PluginManager;
 import presage.PresageConfig;
-import presage.ScriptedEvent;
-import presage.events.CoreEvents.ActivateParticipant;
 import presage.Environment;
 import presage.configure.ConfigurationWriter;
 
@@ -57,6 +50,7 @@ public class Politics {
 		presageConfig.setParticipantsConfigPath(configPath + "/participants.xml");
 		presageConfig.setEnvironmentConfigPath(configPath + "/environment.xml");
 
+		NameGenerator.setRandomiser(new Random(700));
 		// All the big objects
 		PluginManager pm = new PluginManager();
 		pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png", 1500, 1200));

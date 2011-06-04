@@ -5,6 +5,7 @@ import ise.gameoflife.agents.TestGroupableAgent;
 import ise.gameoflife.environment.EnvironmentDataModel;
 import ise.gameoflife.groups.TestGroup;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.NameGenerator;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.plugins.ErrorLog;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.TreeMap;
 import presage.EventScriptManager;
 import presage.Participant;
@@ -53,6 +55,7 @@ public class AgentsAndGroup
 		presageConfig.setParticipantsConfigPath(configPath + "/participants.xml");
 		presageConfig.setEnvironmentConfigPath(configPath + "/environment.xml");
 
+		NameGenerator.setRandomiser(new Random(700));
 		// All the big objects
 		PluginManager pm = new PluginManager();
 		pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png", 1500, 1200));

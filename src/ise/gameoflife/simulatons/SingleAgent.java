@@ -3,12 +3,14 @@ package ise.gameoflife.simulatons;
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.environment.EnvironmentDataModel;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.NameGenerator;
 import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.UUID;
 import presage.EventScriptManager;
@@ -47,6 +49,7 @@ public class SingleAgent
 		presageConfig.setParticipantsConfigPath(configPath + "/participants.xml");
 		presageConfig.setEnvironmentConfigPath(configPath + "/environment.xml");
 
+		NameGenerator.setRandomiser(new Random(700));
 		// All the big objects
 		PluginManager pm = new PluginManager();
 		pm.addPlugin(new HuntersAlivePlugin(configPath + "/percentinfected.png",1900, 1200));

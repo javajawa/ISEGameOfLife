@@ -15,15 +15,13 @@ public class NameGenerator
 		static void sort(String[] values)
 		{
 			int i;
-			int rand;
 			String temp;
-			Random random = new Random(System.currentTimeMillis());
 			for (i = 0; i < values.length; i++)
 			{
-				rand = (random.nextInt() & 0x7FFFFFFF) % values.length;
+				int r = (rand.nextInt() & 0x7FFFFFFF) % values.length;
 				temp = values[i];
-				values[i] = values[rand];
-				values[rand] = temp;
+				values[i] = values[r];
+				values[r] = temp;
 			}
 		}
 
@@ -211,8 +209,12 @@ public class NameGenerator
 	private static int foreNameIndex = 0;
 	private static int lastNameIndex = 0;
 	private static boolean hasRandomised = false;
-	private static final Random rand = new Random(System.currentTimeMillis());
+	private static Random rand = new Random(System.currentTimeMillis());
 	
+	public synchronized static void setRandomiser(Random r)
+	{
+		rand = r;
+	}
 	
 	/**
 	 * Generates a (possibly non-unique) player name
