@@ -478,19 +478,43 @@ abstract public class AbstractAgent implements Participant
 	 */
 	abstract protected ProposalType makeProposal();
 	/**
-	 * TOOD: Document this
-	 * @param p
-	 * @return 
+	 * Allows the agent to vote on a proposition that has been put before the
+	 * group
+	 * @param p The proposition to vote on
+	 * @return The agent's decision
 	 */
 	abstract protected Vote.VoteType castVote(Proposition p);
 	/**
-	 * TODO: Documentation
-	 * @param agent
-	 * @param agentsTeam
-	 * @return 
+	 * Allows other agents to ask this agent what to hunt given their team
+	 * @param agent The agent who is asking for advice
+	 * @param agentsTeam The team are part of
+	 * @return What food you want to tell them to hunt
 	 */
 	abstract protected Food giveAdvice(String agent, HuntingTeam agentsTeam);
-	abstract protected double updateHappinessAfterHunt(double foodHunted, double foodReceived);
+	/**
+	 * Allows the happiness value of the agent to be updated after the completion 
+	 * of the hunt
+	 * @param foodHunted The amount of food the agent brought back to the group
+	 * @param foodReceived THe amount of food that the agent was allowed to keep
+	 * @return The new happiness value of the agent, scaled between 0 and 1
+	 */
+	abstract protected double updateHappinessAfterHunt(double foodHunted,	double foodReceived);
+	/**
+	 * Allows the loyalty value of the agent to be updated after the completion of
+	 * the hunt
+	 * @param foodHunted The amount of food the agent brought back to the group
+	 * @param foodReceived THe amount of food that the agent was allowed to keep
+	 * @return The new loyalty value of the agent, scaled between 0 and 1
+	 */
 	abstract protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived);
-	abstract protected Map<String,Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
+	/**
+	 * Allows the trust values of the agent to be updated after the completion of
+	 * the hunt
+	 * @param foodHunted The amount of food the agent brought back to the group
+	 * @param foodReceived THe amount of food that the agent was allowed to keep
+	 * @return A mapping between agent ids, and the new value for their trust
+	 * rating. Agent ids which are to in the map will not be updated. The trust 
+	 * values should be scaled between 0 and 1.
+	 */
+	abstract protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
 }

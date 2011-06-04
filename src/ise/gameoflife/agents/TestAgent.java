@@ -6,6 +6,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
+import java.util.Map;
 
 /**
  * Test agent of joy!
@@ -104,6 +105,26 @@ public class TestAgent extends AbstractAgent
 	protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
 	{
 		return null;
+	}
+
+	@Override
+	protected double updateHappinessAfterHunt(double foodHunted,
+					double foodReceived)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
+					double foodReceived)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 }
