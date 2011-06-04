@@ -15,7 +15,7 @@ public abstract class Genome implements Serializable
 
 	/**
 	 * Returns if this genome is compatible with the Evolvable class
-	 * @param An Evolvable instance
+	 * @param evolvable An Evolvable instance
 	 * @return A boolean value
 	 */
 	public boolean compatibleEvolvable(Evolvable evolvable)
@@ -27,7 +27,7 @@ public abstract class Genome implements Serializable
 	 * Returns if this genome is compatible with another genome for
 	 * reproduction
 	 * Especially used to deal with crossing over
-	 * @param A Genome instance
+	 * @param genome A Genome instance
 	 * @return A boolean value
 	 */
 	public boolean compatibleGenome(Genome genome)

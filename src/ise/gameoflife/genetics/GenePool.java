@@ -23,7 +23,7 @@ public class GenePool<SpecieGenome extends Genome>
 
 	/**
 	 * Add a new genome to the pool
-	 * @param a genome matching generic type
+	 * @param genome a genome matching generic type
 	 */
 	public void addGenome(SpecieGenome genome)
 	{
@@ -32,6 +32,10 @@ public class GenePool<SpecieGenome extends Genome>
 		pool().add(genome);
 	}
 
+	/**
+	 * Add a list of genomes to the pool
+	 * @param genomes a list of genomes matching generic type
+	 */
 	public void addGenomes(ArrayList<SpecieGenome> genomes)
 	{
 		// need custom add to check for duplicates
