@@ -1,7 +1,8 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.History;
+import ise.gameoflife.UnmodifableHistory;
 import ise.gameoflife.models.GroupDataInitialiser;
-import ise.gameoflife.participants.AbstractAgent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +25,11 @@ class GroupDataModel extends APlayerDataModel
 	@ElementList
 	private ArrayList<String> memberList;
 
+	@Element
+	private History<Double> econmoicPosition;
+
 	@Deprecated
-	public GroupDataModel()
+	GroupDataModel()
 	{
 		super();
 	}
@@ -60,6 +64,16 @@ class GroupDataModel extends APlayerDataModel
 	List<String> getMemberList()
 	{
 		return Collections.unmodifiableList(memberList);
+	}
+
+	double getCurrentEconomicPoisition()
+	{
+		return econmoicPosition.getValue();
+	}
+
+	UnmodifableHistory<Double> getEconomicPoisition()
+	{
+		return econmoicPosition.getUnmodifableHistory();
 	}
 
 	void addMember(String a)
