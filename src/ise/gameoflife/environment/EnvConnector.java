@@ -21,7 +21,7 @@ public class EnvConnector extends EnvironmentConnector
 	private final EnvironmentDataModel dm;
 	private final Environment e;
 	
-	public EnvConnector(Environment e)
+	EnvConnector(Environment e)
 	{
 		super(e);
 		this.e = e;

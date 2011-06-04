@@ -50,11 +50,6 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
-
-	Set<String> getAvailableGroups()
-	{
-		return dmodel.getAvailableGroups();
-	}
 	/**
 	 * Passes on group applications
 	 */
@@ -548,6 +543,12 @@ public class Environment extends AbstractEnvironment
 	{
 		return dmodel.getId();
 	}
+
+	Set<String> getAvailableGroups()
+	{
+		return dmodel.getAvailableGroups();
+	}
+
 	Food seekAdvice(String agent, UUID authToken, String fromAgent,	HuntingTeam agentsTeam)
 	{
 		if (authenticator.get(agent) != authToken) throw new IllegalAccessError("Incorrect access credentials");
