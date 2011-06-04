@@ -84,6 +84,7 @@ abstract public class AbstractAgent implements Participant
 			dm.setCurrentHappiness(updateHappinessAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
 			dm.setCurrentLoyalty(updateLoyaltyAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
 			Map<String,Double> t = updateTrustAfterHunt(in.getFoodHunted(), in.getFoodReceived());
+			if (t==null) return;
 			for (String agent : t.keySet())
 			{
 				dm.setTrust(agent, t.get(agent));
@@ -350,12 +351,23 @@ abstract public class AbstractAgent implements Participant
 		dm.setTime(cycle);
 	}
 
+	/**
+	 * Makes this agent seek advice from another agent
+	 * @param agent The agent to seek advice from
+	 * @return The food they advice you hunt, based on your team etc.
+	 */
 	protected final Food seekAvice(String agent)
 	{
 		dm.increaseFoodConsumedThisTurn(ec.getFoodConsumedPerAdvice());
 		return ec.seekAdvice(getId(), authCode, agent, dm.getHuntingTeam());
 	}
 
+	/**
+	 * Wrapper function for advice giving
+	 * @param agent The agent who is asking for advice
+	 * @param agentsTeam The team are part of
+	 * @return What food you want to tell them to hunt
+	 */
 	public Food advise(String agent, HuntingTeam agentsTeam)
 	{
 		return giveAdvice(agent, agentsTeam);
@@ -371,6 +383,10 @@ abstract public class AbstractAgent implements Participant
 		return dm.getPublicVersion();
 	}
 
+	/**
+	 * Gets the public data model of this agent
+	 * @return The public data model of this agent
+	 */
 	public final PublicAgentDataModel getDataModel()
 	{
 		return dm.getPublicVersion();

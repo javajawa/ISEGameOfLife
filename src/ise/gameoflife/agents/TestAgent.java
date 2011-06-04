@@ -111,20 +111,20 @@ public class TestAgent extends AbstractAgent
 	protected double updateHappinessAfterHunt(double foodHunted,
 					double foodReceived)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return 0;//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return 0;//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
 					double foodReceived)
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		return null; //throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 }
