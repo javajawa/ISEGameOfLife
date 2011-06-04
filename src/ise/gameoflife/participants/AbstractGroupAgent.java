@@ -253,6 +253,11 @@ public abstract class AbstractGroupAgent implements Participant
 				// TODO: Enact this proposal
 				// Well, add it to an enacted list
 				// Then average that list
+				System.out.println(p.getProposer() + "'s " + p.getType() + " proposal was voted in (Vote=" + voteResult.get(p) + ')');
+			}
+			else
+			{
+				System.out.println(p.getProposer() + "'s " + p.getType() + " proposal was not voted in (Vote=" + voteResult.get(p) + ')');
 			}
 			// TODO: Store each proposition and result in history?
 		}
