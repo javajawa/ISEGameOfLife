@@ -289,7 +289,7 @@ public abstract class AbstractGroupAgent implements Participant
 			this.onMemberLeave(in.getAgent(), in.getReason());
 			System.out.println("I, group " + getId() + ", lost memeber " + in.getAgent() + " because of " + in.getReason());
 			
-			if (dm.getMemberList().size() == 0) ec.act(new Death(), dm.getId(), authCode);
+			if (dm.getMemberList().isEmpty()) ec.act(new Death(), dm.getId(), authCode);
 			
 			return;
 		}
