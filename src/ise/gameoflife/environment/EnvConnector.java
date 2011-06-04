@@ -3,6 +3,7 @@ package ise.gameoflife.environment;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
@@ -20,7 +21,7 @@ public class EnvConnector extends EnvironmentConnector
 	private final EnvironmentDataModel dm;
 	private final Environment e;
 	
-	public EnvConnector(Environment e)
+	EnvConnector(Environment e)
 	{
 		super(e);
 		this.e = e;
@@ -32,7 +33,7 @@ public class EnvConnector extends EnvironmentConnector
 	 * @param id The id to search for
 	 * @return The group object, or null if not found
 	 */
-	public PublicGroupDataModel getGroupById(UUID id)
+	public PublicGroupDataModel getGroupById(String id)
 	{
 		return dm.getGroupById(id);
 	}
@@ -118,5 +119,15 @@ public class EnvConnector extends EnvironmentConnector
 	public String getId()
 	{
 		return e.getId();
+	}
+
+	public Food seekAdvice(String agent, UUID authToken, String fromAgent, HuntingTeam agentsTeam)
+	{
+		return e.seekAdvice(agent, authToken, fromAgent, agentsTeam);
+	}
+
+	public double getFoodConsumedPerAdvice()
+	{
+		return e.getFoodConsumedPerAdvice();
 	}
 }

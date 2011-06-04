@@ -39,7 +39,7 @@ public class AgentsAndGroup
 
 		// Basic config
 		presageConfig.setComment("Simple Test of 10 agents consuming food until death");
-		presageConfig.setIterations(100);
+		presageConfig.setIterations(200);
 		presageConfig.setRandomSeed(0);
 
 		presageConfig.setOutputFolder(new File(System.getProperty("user.dir"), "output").getAbsolutePath());
@@ -91,7 +91,7 @@ public class AgentsAndGroup
 		List<Class<? extends AbstractGroupAgent>> groups = new ArrayList<Class<? extends AbstractGroupAgent>>();
 		groups.add(TestGroup.class);
 		
-		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods, groups);
+		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods, groups, 0.1);
 		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm);
 
 		presageConfig.setEnvironmentClass(environment.getClass());

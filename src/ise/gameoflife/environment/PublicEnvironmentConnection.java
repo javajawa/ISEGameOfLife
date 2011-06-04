@@ -41,7 +41,7 @@ public class PublicEnvironmentConnection
 	 * @param id The id to search for
 	 * @return The group object, or null if not found
 	 */
-	public PublicGroupDataModel getGroupById(UUID id)
+	public PublicGroupDataModel getGroupById(String id)
 	{
 		return ec.getGroupById(id);
 	}

@@ -122,9 +122,11 @@ class AgentDataModel extends APlayerDataModel
 	 * Updates the food consumed so far this turn
 	 * @param food The amount to be consumed
 	 */
-	public Double setFoodConsumedThisTurn(double food)
+	@SuppressWarnings("AssignmentToMethodParameter")
+	public void increaseFoodConsumedThisTurn(double food)
 	{
-		return foodConsumedPerTurnHistory.setValue(food);
+		food += foodConsumedPerTurnHistory.getValue();
+		foodConsumedPerTurnHistory.setValue(food);
 	}
 	/**
 	 * @param consumed reduces the foodInPossesion by a given amount
@@ -294,11 +296,11 @@ class AgentDataModel extends APlayerDataModel
 
 	public void newHistoryEntry()
 	{
-		happinessHistory.newEntry();
-		loyaltyHistory.newEntry();
-		trust.newEntry();
-		huntingTeam.newEntry();
-		foodConsumedPerTurnHistory.newEntry();
-		lastHunted.newEntry();
+		happinessHistory.newEntry(true);
+		loyaltyHistory.newEntry(true);
+		trust.newEntry(true);
+		huntingTeam.newEntry(false);
+		foodConsumedPerTurnHistory.newEntry(foodConsumption);
+		lastHunted.newEntry(false);
 	}
 }

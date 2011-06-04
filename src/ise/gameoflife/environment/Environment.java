@@ -5,12 +5,15 @@ import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.Hunt;
+import ise.gameoflife.actions.Proposal;
 import ise.gameoflife.actions.RespondToApplication;
+import ise.gameoflife.actions.Vote;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
+import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
@@ -47,11 +50,6 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
-
-	Set<String> getAvailableGroups()
-	{
-		return dmodel.getAvailableGroups();
-	}
 	/**
 	 * Passes on group applications
 	 */
@@ -215,11 +213,62 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final DistributeFood result = (DistributeFood)action;
 			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmount(), sim.getTime()));
-			System.out.println("Agent " + actorID + " was allocated " + result.getAmount() + " units of food");
+			System.out.println("Agent " + result.getAgent() + " was allocated " + result.getAmount() + " units of food");
 			return null;
 		}
 
 		public DistributeFoodHandler(){
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+
+	private class ProposalHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(Proposal.class));
+		}
+
+		@Override
+		public Input handle(Action action, String actorID){
+			final Proposal prop = (Proposal)action;
+			final Proposition p = new Proposition(prop.getType(), actorID, prop.getForGroup(), dmodel.time);
+
+			System.out.println("Agent " + actorID + " proposed a motion of  " + prop.getType() + " to group " + prop.getForGroup());
+
+			for (String member : dmodel.getGroupById(prop.getForGroup()).getMemberList())
+			{
+				sim.getPlayer(member).enqueueInput(p);
+			}
+
+			return null;
+		}
+
+		public ProposalHandler(){
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+
+	private class VoteHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(Vote.class));
+		}
+
+		@Override
+		public Input handle(Action action, String actorID){
+			final Vote vote = (Vote)action;
+			final ise.gameoflife.inputs.Vote v = new ise.gameoflife.inputs.Vote(vote, dmodel.time, actorID);
+
+			System.out.println("Agent " + actorID + " voted " + vote.getVote() + " on a motion of  " + vote.getProposition().getType() + " to group " + vote.getProposition().getOwnerGroup());
+			sim.getPlayer(vote.getProposition().getOwnerGroup()).enqueueInput(v);
+			return null;
+		}
+
+		public VoteHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
@@ -328,6 +377,8 @@ public class Environment extends AbstractEnvironment
 		this.actionhandlers.add(new GroupOrderHandler());
 		this.actionhandlers.add(new RespondToApplicationHandler());
 		this.actionhandlers.add(new DistributeFoodHandler());
+		this.actionhandlers.add(new ProposalHandler());
+		this.actionhandlers.add(new VoteHandler());
 
 		new PublicEnvironmentConnection(new EnvConnector(this));
 
@@ -492,4 +543,24 @@ public class Environment extends AbstractEnvironment
 	{
 		return dmodel.getId();
 	}
+
+	Set<String> getAvailableGroups()
+	{
+		return dmodel.getAvailableGroups();
+	}
+
+	Food seekAdvice(String agent, UUID authToken, String fromAgent,	HuntingTeam agentsTeam)
+	{
+		if (authenticator.get(agent) != authToken) throw new IllegalAccessError("Incorrect access credentials");
+
+		// TODO: Check we're asking a vaguely correct agent, ie one in the same group
+		AbstractAgent a = (AbstractAgent)sim.getPlayer(fromAgent);
+		return a.advise(agent, agentsTeam);
+	}
+
+	double getFoodConsumedPerAdvice()
+	{
+		return dmodel.getFoodConsumedPerAdvice();
+	}
+
 }

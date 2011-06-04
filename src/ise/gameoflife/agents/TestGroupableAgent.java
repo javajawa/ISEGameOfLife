@@ -1,5 +1,9 @@
 package ise.gameoflife.agents;
 
+import ise.gameoflife.actions.Proposal.ProposalType;
+import ise.gameoflife.actions.Vote.VoteType;
+import ise.gameoflife.inputs.Proposition;
+import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
@@ -88,6 +92,29 @@ public class TestGroupableAgent extends AbstractAgent
 	{
 		// TODO: Do something here?
 		// throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected ProposalType makeProposal()
+	{
+		// TODO: Implement
+		return ProposalType.staySame;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected VoteType castVote(Proposition p)
+	{
+		// TODO: Implement
+		return VoteType.For;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
+	{
+		// TODO Implement
+		return null;
 	}
 
 }

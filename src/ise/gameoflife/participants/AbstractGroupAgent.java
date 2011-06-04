@@ -9,6 +9,8 @@ import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.inputs.LeaveNotification;
+import ise.gameoflife.inputs.Proposition;
+import ise.gameoflife.inputs.Vote;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
@@ -57,6 +59,7 @@ public abstract class AbstractGroupAgent implements Participant
 	private EnvironmentConnector tmp_ec;
 	
 	private Map<String, Double> huntResult;
+	private Map<Proposition, Integer> voteResult;
 
 	/**
 	 * 
@@ -116,7 +119,7 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public final void onActivation()
 	{
-		GroupRegistration request = new GroupRegistration(dm.getId());
+		GroupRegistration request = new GroupRegistration(dm.getId(), dm.getPublicVersion());
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
@@ -164,6 +167,12 @@ public abstract class AbstractGroupAgent implements Participant
 			case HuntResults:
 				doHandleHuntResults();
 				break;
+			case MakeProposals:
+				// Nothing here - agents are proposing and voting
+				break;
+			case Voting:
+				countVotes();
+				break;
 		}
 	}
 
@@ -173,6 +182,8 @@ public abstract class AbstractGroupAgent implements Participant
 	private void clearRoundData()
 	{
 		huntResult = new HashMap<String, Double>();
+		voteResult = new HashMap<Proposition, Integer>();
+		dm.clearRoundData();
 	}
 	
 	/**
@@ -233,7 +244,25 @@ public abstract class AbstractGroupAgent implements Participant
 			ec.act(new DistributeFood(agent, 0), getId(), authCode);
 		}
 	}
-	
+
+	private void countVotes()
+	{
+		for (Proposition p : voteResult.keySet())
+		{
+			if (voteResult.get(p) > 0)
+			{
+				// TODO: Enact this proposal
+				// Well, add it to an enacted list
+				// Then average that list
+				System.out.println(p.getProposer() + "'s " + p.getType() + " proposal was voted in (Vote=" + voteResult.get(p) + ')');
+			}
+			else
+			{
+				System.out.println(p.getProposer() + "'s " + p.getType() + " proposal was not voted in (Vote=" + voteResult.get(p) + ')');
+			}
+			// TODO: Store each proposition and result in history?
+		}
+	}
 	/**
 	 * Sets the number of cycles passed
 	 * @param cycle
@@ -301,6 +330,22 @@ public abstract class AbstractGroupAgent implements Participant
 			System.out.println("Agent " + in.getAgent() + " has hunted food worth" + in.getNutritionValue() + " for I, group" + getId());
 			return;
 		}
+
+		if (input.getClass().equals(Vote.class))
+		{
+			final Vote v = (Vote)input;
+			if (!voteResult.containsKey(v.getProposition()))
+			{
+				if (!v.getProposition().getOwnerGroup().equals(getId())) return;
+				voteResult.put(v.getProposition(), 0);
+			}
+			voteResult.put(v.getProposition(), voteResult.get(v.getProposition()) + v.getVote().getValue());
+			System.out.println("Agent " + v.getAgent() + " has voted " + v.getVote() + 
+							" on " + v.getProposition().getType() + " by " + 
+							v.getProposition().getProposer() + " as a member of I, group" + getId());
+			return;
+		}
+
 		ec.logToErrorLog("Group Unable to handle Input of type " + input.getClass().getCanonicalName());
 	}
 

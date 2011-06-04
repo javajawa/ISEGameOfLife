@@ -3,13 +3,18 @@ package ise.gameoflife.participants;
 import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.Hunt;
+import ise.gameoflife.actions.Proposal;
+import ise.gameoflife.actions.Proposal.ProposalType;
+import ise.gameoflife.actions.Vote;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
+import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -119,6 +124,28 @@ abstract public class AbstractAgent implements Participant
 		
 	}
 
+	private class PropositionHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof ise.gameoflife.inputs.Proposition);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final ise.gameoflife.inputs.Proposition in = (ise.gameoflife.inputs.Proposition)input;
+			
+			Vote.VoteType v = castVote(in);
+			ec.act(new Vote(in, v), getId(), authCode);
+			
+			System.out.println("I, agent " + getId() + " voted " + v + " in " + in.getProposer() + "'s vote of " + in.getType());
+		}
+		
+	}
+
 	/**
 	 * The DataModel used by this agent.
 	 */
@@ -192,6 +219,7 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new HuntResultHandler());
 		this.handlers.add(new HuntOrderHandler());
 		this.handlers.add(new ApplicationResponseHandler());
+		this.handlers.add(new PropositionHandler());
 	}
 
 	@Override
@@ -246,6 +274,14 @@ abstract public class AbstractAgent implements Participant
 			case HuntResults:
 				// This is the group's move
 				break;
+			case MakeProposals:
+				doMakeProposal();
+				break;
+			case Voting:
+				// This is the group's move
+				break;
+			default:
+				throw new IllegalStateException("Turn was not recognised");
 		}
 	}
 
@@ -264,11 +300,7 @@ abstract public class AbstractAgent implements Participant
 
 	private void clearRoundData()
 	{
-		//dm.setLastHunted(null);
-		//dm.setHuntingTeam(null);
-		//dm.setOrder(null);
 		dm.newHistoryEntry();
-		dm.setFoodConsumedThisTurn(dm.getFoodConsumption());
 	}
 
 	private void doGroupSelect()
@@ -293,6 +325,12 @@ abstract public class AbstractAgent implements Participant
 		dm.setLastHunted(toHunt);
 	}
 
+	private void doMakeProposal()
+	{
+		if (dm.getGroupId() == null) return;
+		ProposalType t = makeProposal();
+		ec.act(new Proposal(t, dm.getGroupId()), getId(), authCode);
+	}
 	/**
 	 * 
 	 * @param cycle
@@ -301,6 +339,17 @@ abstract public class AbstractAgent implements Participant
 	public final void setTime(long cycle)
 	{
 		dm.setTime(cycle);
+	}
+
+	protected final Food seekAvice(String agent)
+	{
+		dm.increaseFoodConsumedThisTurn(ec.getFoodConsumedPerAdvice());
+		return ec.seekAdvice(getId(), authCode, agent, dm.getHuntingTeam());
+	}
+
+	public Food advise(String agent, HuntingTeam agentsTeam)
+	{
+		return giveAdvice(agent, agentsTeam);
 	}
 
 	/**
@@ -321,6 +370,11 @@ abstract public class AbstractAgent implements Participant
 	@Override
 	public final void enqueueInput(Input input)
 	{
+		if (input.getClass().equals(Proposition.class))
+		{
+			handleInput(input);
+			return;
+		}
 		this.msgQ.enqueue(input);
 	}
 
@@ -408,4 +462,23 @@ abstract public class AbstractAgent implements Participant
 	 * @return The type of food they have decided to hunt
 	 */
 	abstract protected Food chooseFood();
+	/**
+	 * TODO: Document this
+	 * 
+	 * @return 
+	 */
+	abstract protected ProposalType makeProposal();
+	/**
+	 * TOOD: Document this
+	 * @param p
+	 * @return 
+	 */
+	abstract protected Vote.VoteType castVote(Proposition p);
+	/**
+	 * TODO: Documentation
+	 * @param agent
+	 * @param agentsTeam
+	 * @return 
+	 */
+	abstract protected Food giveAdvice(String agent, HuntingTeam agentsTeam);
 }
