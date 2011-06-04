@@ -3,6 +3,7 @@ package ise.gameoflife.agents;
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
 import ise.gameoflife.inputs.Proposition;
+import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.models.Food;
 
@@ -97,6 +98,12 @@ public class TestAgent extends AbstractAgent
 		// TODO: Implement
 		return VoteType.For;
 		//throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
+	{
+		return null;
 	}
 
 }
