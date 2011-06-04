@@ -110,4 +110,9 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable
 		return source.getEconomicPoisition();
 	}
 
+	public String getName()
+	{
+		return source.getName();
+	}
+
 }

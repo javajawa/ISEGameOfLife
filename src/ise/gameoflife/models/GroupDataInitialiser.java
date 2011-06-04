@@ -7,8 +7,12 @@ package ise.gameoflife.models;
  */
 public class GroupDataInitialiser
 {
+	private final static Object counterLock = new Object();
+	private static int counter = 0;
+
 	private long randomSeed;
 	private double initialEconomicBelief;
+	private String name;
 	
 	/**
 	 * Creates an Initialiser for a group
@@ -19,6 +23,11 @@ public class GroupDataInitialiser
 	{
 		this.initialEconomicBelief = initialEconomicBelief;
 		this.randomSeed = randomSeed;
+		synchronized(counterLock)
+		{
+			counter++;
+			this.name = "Group #" + counter;
+		}
 	}
 
 	/**
@@ -33,6 +42,11 @@ public class GroupDataInitialiser
 	public double getInitialEconomicBelief()
 	{
 		return initialEconomicBelief;
+	}
+
+	public String getName()
+	{
+		return name;
 	}
 
 }

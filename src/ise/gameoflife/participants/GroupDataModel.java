@@ -19,6 +19,9 @@ class GroupDataModel extends APlayerDataModel
 {
 	private static final long serialVersionUID = 1L;
 	
+	@Element
+	private String name;
+
 	/**
 	 * Array list of GroupDataModel members
 	 */
@@ -116,4 +119,10 @@ class GroupDataModel extends APlayerDataModel
 	{
 		return new PublicGroupDataModel(this);
 	}
+
+	public String getName()
+	{
+		return name;
+	}
+
 }
