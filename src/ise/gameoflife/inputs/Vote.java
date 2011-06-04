@@ -13,11 +13,12 @@ public class Vote extends GenericInput
 	private String agent;
 	private VoteType vote;
 
-	public Vote(long timestamp, Proposition proposition, VoteType vote)
+	public Vote(long timestamp, Proposition proposition, VoteType vote, String agent)
 	{
 		super(timestamp, "vote");
 		this.proposition = proposition;
 		this.vote = vote;
+		this.agent = agent;
 	}
 
 	public Vote(ise.gameoflife.actions.Vote v, long timesamp, String agent)
@@ -25,6 +26,7 @@ public class Vote extends GenericInput
 		super(timesamp, "vote");
 		this.vote = v.getVote();
 		this.proposition = v.getProposition();
+		this.agent = agent;
 	}
 
 	public Proposition getProposition()

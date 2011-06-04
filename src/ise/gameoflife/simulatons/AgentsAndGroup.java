@@ -39,7 +39,7 @@ public class AgentsAndGroup
 
 		// Basic config
 		presageConfig.setComment("Simple Test of 10 agents consuming food until death");
-		presageConfig.setIterations(100);
+		presageConfig.setIterations(200);
 		presageConfig.setRandomSeed(0);
 
 		presageConfig.setOutputFolder(new File(System.getProperty("user.dir"), "output").getAbsolutePath());

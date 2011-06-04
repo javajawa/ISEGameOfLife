@@ -218,7 +218,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final DistributeFood result = (DistributeFood)action;
 			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmount(), sim.getTime()));
-			System.out.println("Agent " + actorID + " was allocated " + result.getAmount() + " units of food");
+			System.out.println("Agent " + result.getAgent() + " was allocated " + result.getAmount() + " units of food");
 			return null;
 		}
 
@@ -268,9 +268,8 @@ public class Environment extends AbstractEnvironment
 			final Vote vote = (Vote)action;
 			final ise.gameoflife.inputs.Vote v = new ise.gameoflife.inputs.Vote(vote, dmodel.time, actorID);
 
-			sim.getPlayer(vote.getProposition().getOwnerGroup()).enqueueInput(v);
-
 			System.out.println("Agent " + actorID + " voted " + vote.getVote() + " on a motion of  " + vote.getProposition().getType() + " to group " + vote.getProposition().getOwnerGroup());
+			sim.getPlayer(vote.getProposition().getOwnerGroup()).enqueueInput(v);
 			return null;
 		}
 

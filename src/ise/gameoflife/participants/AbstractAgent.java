@@ -365,6 +365,7 @@ abstract public class AbstractAgent implements Participant
 		if (input.getClass().equals(Proposition.class))
 		{
 			handleInput(input);
+			return;
 		}
 		this.msgQ.enqueue(input);
 	}
