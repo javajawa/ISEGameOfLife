@@ -20,7 +20,6 @@ import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,19 +211,20 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	private void doHandleHuntResults()
 	{
-		Map<String, Double> result = distributeFood(Collections.unmodifiableMap(huntResult));
-		double totalHunted = 0;
-		double totalDistributed = 0;
-		
+		double shared = 0;
+		double taxRate = dm.getCurrentEconomicPoisition();
 		for (Double value : huntResult.values()){
-			totalHunted += value;
-		}		
-		for (Double value : result.values()){
-			totalDistributed+= value;
+			shared += value;
 		}
+
+		shared = shared * taxRate / dm.getMemberList().size();
+
+		Map<String, Double> result = new HashMap<String, Double>(huntResult.size());
 		
-		if(totalHunted != totalDistributed){
-			ec.logToErrorLog(this.getId() + " of class type " + this.getClass().getCanonicalName() + " has a discrepacny: " + totalHunted + " was hunted but " + totalDistributed + " was distributed.");
+		for (String agent : huntResult.keySet())
+		{
+			double value = shared + (1-taxRate) * huntResult.get(agent);
+			result.put(agent, value);
 		}
 			
 		List<String> informedAgents = new ArrayList<String>();
@@ -394,20 +394,6 @@ public abstract class AbstractGroupAgent implements Participant
 	 * hunt
 	 */
 	abstract protected Map<HuntingTeam, Food> selectTeams();
-	/**
-	 * TODO-Later: Add stuff to say whether they hunted as ordered / what they hunted
-	 * TODO-Later: Add system for groups to store non-distributed food
-	 * Function used to distribute the food around after the brave
-	 * hunters have returned with their winnings.
-	 * Note that the total values of the distributedFood should be less than or 
-	 * equal to the total amount in gains. This is checked externally, and 
-	 * classes that do not behave in this way will not be acceptable for 
-	 * competition simulations.
-	 * @param gains The map between each member of the group, and the amount of
-	 * food they have contributed to the group from hunting this term
-	 * @return A map of player to the amount of food the group allocated to them
-	 */
-	abstract protected Map<String, Double> distributeFood(final Map<String, Double> gains);
 	/**
 	 * Function that is called after a member leaves the group.
 	 * The member will not appear in the member list

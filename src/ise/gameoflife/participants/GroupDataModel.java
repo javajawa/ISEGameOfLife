@@ -48,6 +48,9 @@ class GroupDataModel extends APlayerDataModel
 		ret.memberList = new ArrayList<String>();
 		ret.myrolesString = "<group>";
 		ret.randomseed = init.getRandomSeed();
+		ret.name = init.getName();
+		ret.econmoicPosition = new History<Double>(50);
+		ret.econmoicPosition.setValue(init.getInitialEconomicBelief());
 		return ret;
 	}
 

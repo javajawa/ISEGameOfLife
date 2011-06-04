@@ -8,13 +8,16 @@ package ise.gameoflife.models;
 public class GroupDataInitialiser
 {
 	private long randomSeed;
+	private double initialEconomicBelief;
 	
 	/**
 	 * Creates an Initialiser for a group
 	 * @param randomSeed The random seed for the group
+	 * @param initialEconomicBelief The initial economic belief of the group
 	 */
-	public GroupDataInitialiser(long randomSeed)
+	public GroupDataInitialiser(long randomSeed, double initialEconomicBelief)
 	{
+		this.initialEconomicBelief = initialEconomicBelief;
 		this.randomSeed = randomSeed;
 	}
 
@@ -25,6 +28,11 @@ public class GroupDataInitialiser
 	public long getRandomSeed()
 	{
 		return randomSeed;
+	}
+
+	public double getInitialEconomicBelief()
+	{
+		return initialEconomicBelief;
 	}
 
 }

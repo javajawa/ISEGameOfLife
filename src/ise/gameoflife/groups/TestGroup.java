@@ -79,12 +79,6 @@ public class TestGroup extends AbstractGroupAgent
 	}
 
 	@Override
-	protected Map<String, Double> distributeFood(Map<String, Double> gains)
-	{
-		return gains;
-	}
-
-	@Override
 	protected void onMemberLeave(String playerID, Reasons reason)
 	{
 		// Do nothing
