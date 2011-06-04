@@ -32,7 +32,7 @@ public class EnvConnector extends EnvironmentConnector
 	 * @param id The id to search for
 	 * @return The group object, or null if not found
 	 */
-	public PublicGroupDataModel getGroupById(UUID id)
+	public PublicGroupDataModel getGroupById(String id)
 	{
 		return dm.getGroupById(id);
 	}

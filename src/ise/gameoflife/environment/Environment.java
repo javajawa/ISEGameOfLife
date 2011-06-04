@@ -5,12 +5,15 @@ import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.Hunt;
+import ise.gameoflife.actions.Proposal;
 import ise.gameoflife.actions.RespondToApplication;
+import ise.gameoflife.actions.Vote;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
+import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
@@ -224,6 +227,58 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 
+	private class ProposalHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(Proposal.class));
+		}
+
+		@Override
+		public Input handle(Action action, String actorID){
+			final Proposal prop = (Proposal)action;
+			final Proposition p = new Proposition(prop.getType(), actorID, prop.getForGroup(), dmodel.time);
+
+			System.out.println("Agent " + actorID + " proposed a motion of  " + prop.getType() + " to group " + prop.getForGroup());
+
+			for (String member : dmodel.getGroupById(prop.getForGroup()).getMemberList())
+			{
+				sim.getPlayer(member).enqueueInput(p);
+			}
+
+			return null;
+		}
+
+		public ProposalHandler(){
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+
+	private class VoteHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(Vote.class));
+		}
+
+		@Override
+		public Input handle(Action action, String actorID){
+			final Vote vote = (Vote)action;
+			final ise.gameoflife.inputs.Vote v = new ise.gameoflife.inputs.Vote(vote, dmodel.time, actorID);
+
+			sim.getPlayer(vote.getProposition().getOwnerGroup()).enqueueInput(v);
+
+			System.out.println("Agent " + actorID + " voted " + vote.getVote() + " on a motion of  " + vote.getProposition().getType() + " to group " + vote.getProposition().getOwnerGroup());
+			return null;
+		}
+
+		public VoteHandler(){
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+
 	private class TeamHuntEvent
 	{
 		private final Food food;
@@ -328,6 +383,8 @@ public class Environment extends AbstractEnvironment
 		this.actionhandlers.add(new GroupOrderHandler());
 		this.actionhandlers.add(new RespondToApplicationHandler());
 		this.actionhandlers.add(new DistributeFoodHandler());
+		this.actionhandlers.add(new ProposalHandler());
+		this.actionhandlers.add(new VoteHandler());
 
 		new PublicEnvironmentConnection(new EnvConnector(this));
 

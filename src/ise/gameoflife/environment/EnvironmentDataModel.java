@@ -108,9 +108,9 @@ public class EnvironmentDataModel extends AEnvDataModel
 		return availableFoodTypes.get(id.toString());
 	}
 
-	public PublicGroupDataModel getGroupById(UUID id)
+	public PublicGroupDataModel getGroupById(String id)
 	{
-		return agentGroups.get(id.toString());
+		return agentGroups.get(id);
 	}
 
 	public PublicAgentDataModel getAgentById(String id)
@@ -131,7 +131,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	boolean registerGroup(GroupRegistration ng)
 	{
-		agentGroups.put(ng.getParticipantID(), null);
+		agentGroups.put(ng.getParticipantID(), ng.getDm());
 		return true;
 	}
 
