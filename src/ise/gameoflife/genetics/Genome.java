@@ -24,6 +24,18 @@ public abstract class Genome implements Serializable
 	}
 
 	/**
+	 * Returns if this genome is compatible with another genome for
+	 * reproduction
+	 * Especially used to deal with crossing over
+	 * @param A Genome instance
+	 * @return A boolean value
+	 */
+	public boolean compatibleGenome(Genome genome)
+	{
+		return this.getClass().equals(genome.getClass());
+	}
+
+	/**
 	 * Generates a randomized genome representation
 	 */
 	abstract public void randomize();
@@ -35,6 +47,8 @@ public abstract class Genome implements Serializable
 
 	/**
 	 * Crosses over with another genome
+	 * Must check if the genome is compatible with this before
+	 * crossing over
 	 * @param genome another genome
 	 */
 	abstract public void crossOver(Genome genome);
