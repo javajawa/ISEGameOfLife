@@ -26,8 +26,10 @@ public class Evolvable
 		// check if genome is compatible
 		if (!aGenome.compatibleEvolvable(this))
 		{
-			throw new RuntimeException("Genome (" + aGenome + ") " +
-					"is not compatible with Evolvable (" + this +")");
+			throw new RuntimeException(
+					"Genome (" + aGenome.getClass().getName() + ") " +
+					"is not compatible with Evolvable (" +
+					this.getClass().getName() +")");
 		}
 
 		// this.genome = aGenome.clone();
