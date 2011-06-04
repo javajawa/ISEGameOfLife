@@ -232,7 +232,7 @@ public abstract class AbstractGroupAgent implements Participant
 		for (String agent : result.keySet())
 		{
 			informedAgents.add(agent);
-			ec.act(new DistributeFood(agent, result.get(agent)), getId(), authCode);
+			ec.act(new DistributeFood(agent, huntResult.get(agent), result.get(agent)), getId(), authCode);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -241,7 +241,7 @@ public abstract class AbstractGroupAgent implements Participant
 
 		for (String agent : uninformedAgents)
 		{
-			ec.act(new DistributeFood(agent, 0), getId(), authCode);
+			ec.act(new DistributeFood(agent, 0, 0), getId(), authCode);
 		}
 	}
 
@@ -327,8 +327,8 @@ public abstract class AbstractGroupAgent implements Participant
 		if (input.getClass().equals(HuntResult.class))
 		{
 			final HuntResult in = (HuntResult)input;
-			huntResult.put(in.getAgent(), in.getNutritionValue());
-			System.out.println("Agent " + ec.nameof(in.getAgent()) + " has hunted food worth" + in.getNutritionValue() + " for I, group" + dm.getName());
+			huntResult.put(in.getAgent(), in.getFoodHunted());
+			System.out.println("Agent " + ec.nameof(in.getAgent()) + " has hunted food worth" + in.getFoodHunted() + " for I, group" + dm.getName());
 			return;
 		}
 

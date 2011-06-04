@@ -13,20 +13,23 @@ public class DistributeFood extends GenericAction
 	 * the Agent receiving food
 	 */
 	private String agent;
+	private double amountHunted;
 	/**
 	 * Amount of food agent receives
 	 */
-	private double amount;
+	private double amountRecieved;
 
 	/**
 	 * Distributes food to agent
 	 * @param agent agent receiving food
-	 * @param amount amount of food received
+	 * @param amountHunted 
+	 * @param amountReceived amount of food received
 	 */
-	public DistributeFood(String agent, double amount)
+	public DistributeFood(String agent, double amountHunted, double amountReceived)
 	{
 		this.agent = agent;
-		this.amount = amount;
+		this.amountHunted = amountHunted;
+		this.amountRecieved = amountReceived;
 	}
 
 	/**
@@ -42,9 +45,14 @@ public class DistributeFood extends GenericAction
 	 * Gets amount of food agent will receive
 	 * @return amount of food agent will receive
 	 */
-	public double getAmount()
+	public double getAmountHunted()
 	{
-		return amount;
+		return amountHunted;
+	}
+
+	public double getAmountRecieved()
+	{
+		return amountRecieved;
 	}
 
 }

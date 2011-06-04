@@ -148,11 +148,11 @@ public class Environment extends AbstractEnvironment
 				Input result;
 				if (food.getHuntersRequired() <= 1)
 				{
-					result = new HuntResult(actorID, food.getNutrition(), dmodel.getTime());
+					result = new HuntResult(actorID, food.getNutrition(), food.getNutrition(), dmodel.getTime());
 				}
 				else
 				{
-					result = new HuntResult(actorID, 0, dmodel.getTime());
+					result = new HuntResult(actorID, 0, 0, dmodel.getTime());
 				}
 				sim.getPlayer(actorID).enqueueInput(result);
 			}
@@ -212,8 +212,8 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID){
 			final DistributeFood result = (DistributeFood)action;
-			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmount(), sim.getTime()));
-			System.out.println("Agent " + nameOf(result.getAgent()) + " was allocated " + result.getAmount() + " units of food");
+			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmountHunted(), result.getAmountRecieved(), sim.getTime()));
+			System.out.println("Agent " + nameOf(result.getAgent()) + " was allocated " + result.getAmountRecieved() + " units of food");
 			return null;
 		}
 
@@ -446,7 +446,7 @@ public class Environment extends AbstractEnvironment
 				Participant g = sim.getPlayer(groupID);
 				for (String agent : agents)
 				{
-					g.enqueueInput(new HuntResult(agent, foodGained, dmodel.time));
+					g.enqueueInput(new HuntResult(agent, foodGained, 0, dmodel.time));
 				}
 			}
 		}

@@ -77,8 +77,9 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final HuntResult in = (HuntResult)input;
-			dm.foodAquired(in.getNutritionValue());
-			System.out.println("I, agent " + dm.getName() + ", recieved " + in.getNutritionValue() + " units of food");
+			dm.foodAquired(in.getFoodReceived());
+			System.out.println("I, agent " + dm.getName() + ", recieved " + in.getFoodReceived() + " units of food");
+			// FIXME: Callback to adjust happiness based on food received / hunted
 		}
 	}
 
