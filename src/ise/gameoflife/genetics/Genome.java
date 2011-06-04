@@ -42,15 +42,17 @@ public abstract class Genome implements Serializable
 
 	/**
 	 * Mutates the genome
+	 * @return a new genome
 	 */
-	abstract public void mutate();
+	abstract public Genome mutate();
 
 	/**
 	 * Crosses over with another genome
 	 * Must check if the genome is compatible with this before
 	 * crossing over
 	 * @param genome another genome
+	 * @return a new genome
 	 */
-	abstract public void crossOver(Genome genome);
+	abstract public Genome crossOver(Genome genome);
 
 }
