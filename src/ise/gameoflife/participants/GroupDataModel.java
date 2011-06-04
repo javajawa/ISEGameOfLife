@@ -1,11 +1,14 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.GroupDataInitialiser;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
@@ -31,6 +34,9 @@ class GroupDataModel extends APlayerDataModel
 	@Element
 	private History<Double> economicPosition;
 
+	@Element
+	private History<HashMap<Proposition,Integer>> propositionHistory;
+
 	@Deprecated
 	GroupDataModel()
 	{
@@ -53,6 +59,7 @@ class GroupDataModel extends APlayerDataModel
 		ret.randomseed = init.getRandomSeed();
 		ret.name = init.getName();
 		ret.economicPosition = new History<Double>(50);
+		ret.propositionHistory = new History<HashMap<Proposition, Integer>>(50);
 		ret.economicPosition.newEntry(init.getInitialEconomicBelief());
 		return ret;
 	}
@@ -91,6 +98,7 @@ class GroupDataModel extends APlayerDataModel
 	void clearRoundData()
 	{
 		economicPosition.newEntry(true);
+		propositionHistory.newEntry(null);
 	}
 
 	void addMember(String a)
@@ -125,4 +133,17 @@ class GroupDataModel extends APlayerDataModel
 		return name;
 	}
 
+	public Map<Proposition, Integer> getTurnsProposals()
+	{
+		if (propositionHistory.isEmpty()) return null;
+		HashMap<Proposition, Integer> d = propositionHistory.getValue();
+
+		if (d == null) return null;
+		return Collections.unmodifiableMap(d);
+	}
+
+	void setProposals(HashMap<Proposition, Integer> p)
+	{
+		propositionHistory.setValue(p);
+	}
 }

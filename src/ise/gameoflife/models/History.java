@@ -167,8 +167,16 @@ public class History<T extends Serializable> implements Serializable
 	{
 		return data.size();
 	}
-	
-	
+
+	/**
+	 * 
+	 * @return the size of the linked list History
+	 */
+	public boolean isEmpty()
+	{
+		return data.isEmpty();
+	}
+
 	/**
 	 * Gets the class used to make the History unmodifiable History
 	 * @return the unmodifiable history pointer

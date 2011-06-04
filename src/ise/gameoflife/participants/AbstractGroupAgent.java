@@ -247,6 +247,7 @@ public abstract class AbstractGroupAgent implements Participant
 
 	private void countVotes()
 	{
+		dm.setProposals(new HashMap<Proposition, Integer>(voteResult));
 		for (Proposition p : voteResult.keySet())
 		{
 			if (voteResult.get(p) > 0)

@@ -1,9 +1,12 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.UnmodifiableHistory;
+import ise.gameoflife.tokens.TurnType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import presage.PlayerDataModel;
 
 /**
@@ -115,4 +118,13 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable
 		return source.getName();
 	}
 
+	/**
+	 * Gets the proposals made this turn, and the results
+	 * The value will be null except on the {@link TurnType#Voting Voting} turn
+	 * @return
+	 */
+	public Map<Proposition, Integer> getTurnsProposals()
+	{
+		return source.getTurnsProposals();
+	}
 }
