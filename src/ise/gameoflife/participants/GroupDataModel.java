@@ -71,9 +71,20 @@ class GroupDataModel extends APlayerDataModel
 		return econmoicPosition.getValue();
 	}
 
+	void shiftEconomicPosition(double amount)
+	{
+		double old = econmoicPosition.getValue();
+		econmoicPosition.setValue(old + amount);
+	}
+
 	UnmodifableHistory<Double> getEconomicPoisition()
 	{
 		return econmoicPosition.getUnmodifableHistory();
+	}
+
+	void clearRoundData()
+	{
+		econmoicPosition.newEntry(true);
 	}
 
 	void addMember(String a)

@@ -183,6 +183,7 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		huntResult = new HashMap<String, Double>();
 		voteResult = new HashMap<Proposition, Integer>();
+		dm.clearRoundData();
 	}
 	
 	/**
