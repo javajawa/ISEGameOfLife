@@ -73,7 +73,11 @@ public class GenePool<SpecieGenome extends Genome>
 	{
 		// cannot reproduce without a genome
 		// maybe should throw exceptions, just being lazy
-		if (pool().isEmpty()) return null;
+		if (pool().isEmpty())
+		{
+			throw new NullPointerException("GenePool (" + this + ") " +
+					"is empty");
+		}
 
 		return this.pairUpAndCrossOver().mutate();
 	}

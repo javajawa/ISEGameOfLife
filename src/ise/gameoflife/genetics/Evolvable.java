@@ -24,8 +24,11 @@ public class Evolvable
 	public void setGenome(Genome aGenome)
 	{
 		// check if genome is compatible
-		// maybe should throw exceptions, just being lazy
-		if (!aGenome.compatibleEvolvable(this)) return;
+		if (!aGenome.compatibleEvolvable(this))
+		{
+			throw new RuntimeException("Genome (" + aGenome + ") " +
+					"is not compatible with Evolvable (" + this +")");
+		}
 
 		// this.genome = aGenome.clone();
 		this.genome = aGenome;
