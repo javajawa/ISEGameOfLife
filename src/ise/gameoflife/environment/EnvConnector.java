@@ -130,4 +130,9 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		return e.getFoodConsumedPerAdvice();
 	}
+
+	public String nameof(String id)
+	{
+		return e.nameOf(id);
+	}
 }

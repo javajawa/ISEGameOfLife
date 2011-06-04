@@ -195,4 +195,8 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 		return source.getEconomicBelief();
 	}
 
+	public String getName()
+	{
+		return source.getName();
+	}
 }

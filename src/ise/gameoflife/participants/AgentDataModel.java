@@ -4,6 +4,7 @@ import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.NameGenerator;
 import java.util.HashMap;
 import org.simpleframework.xml.Element;
 import presage.abstractparticipant.APlayerDataModel;
@@ -15,6 +16,9 @@ import presage.abstractparticipant.APlayerDataModel;
 class AgentDataModel extends APlayerDataModel
 {
 	private static final long serialVersionUID = 1L;
+
+	@Element
+	private String name;
 
 	/**
 	 * Stores amount of food owned by agent
@@ -83,6 +87,7 @@ class AgentDataModel extends APlayerDataModel
 		super(myId, roles, playerClass, randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
+		this.name = NameGenerator.getName();
 		onInitialise();
 	}
 
@@ -302,5 +307,10 @@ class AgentDataModel extends APlayerDataModel
 		huntingTeam.newEntry(false);
 		foodConsumedPerTurnHistory.newEntry(foodConsumption);
 		lastHunted.newEntry(false);
+	}
+
+	public String getName()
+	{
+		return name;
 	}
 }

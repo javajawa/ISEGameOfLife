@@ -307,7 +307,7 @@ public abstract class AbstractGroupAgent implements Participant
 			boolean response = this.respondToJoinRequest(req.getAgent());
 			if (response)	this.dm.addMember(req.getAgent());
 			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(), authCode);
-			System.out.println("I, group " + getId() + ", got a join request from" + ((JoinRequest)input).getAgent());
+			System.out.println("I, " + dm.getName() + ", got a join request from " + ec.nameof(((JoinRequest)input).getAgent()));
 			return;
 		}
 
@@ -316,7 +316,7 @@ public abstract class AbstractGroupAgent implements Participant
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
-			System.out.println("I, group " + getId() + ", lost memeber " + in.getAgent() + " because of " + in.getReason());
+			System.out.println("I, " + dm.getName() + ", lost memeber " + ec.nameof(in.getAgent()) + " because of " + in.getReason());
 			
 			if (dm.getMemberList().isEmpty()) ec.act(new Death(), dm.getId(), authCode);
 			
@@ -327,7 +327,7 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			huntResult.put(in.getAgent(), in.getNutritionValue());
-			System.out.println("Agent " + in.getAgent() + " has hunted food worth" + in.getNutritionValue() + " for I, group" + getId());
+			System.out.println("Agent " + ec.nameof(in.getAgent()) + " has hunted food worth" + in.getNutritionValue() + " for I, group" + dm.getName());
 			return;
 		}
 
@@ -340,9 +340,9 @@ public abstract class AbstractGroupAgent implements Participant
 				voteResult.put(v.getProposition(), 0);
 			}
 			voteResult.put(v.getProposition(), voteResult.get(v.getProposition()) + v.getVote().getValue());
-			System.out.println("Agent " + v.getAgent() + " has voted " + v.getVote() + 
+			System.out.println("Agent " + ec.nameof(v.getAgent()) + " has voted " + v.getVote() + 
 							" on " + v.getProposition().getType() + " by " + 
-							v.getProposition().getProposer() + " as a member of I, group" + getId());
+							ec.nameof(v.getProposition().getProposer()) + " as a member of I, group" + dm.getName());
 			return;
 		}
 

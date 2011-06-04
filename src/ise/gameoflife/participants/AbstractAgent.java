@@ -59,7 +59,7 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
-			System.out.println("I, agent " + getId() + ", consumed " + dm.getFoodConsumedThisTurn() + " units of food");
+			System.out.println("I, agent " + dm.getName() + ", consumed " + dm.getFoodConsumedThisTurn() + " units of food");
 			dm.foodConsumed(dm.getFoodConsumedThisTurn());
 		}
 	}
@@ -78,7 +78,7 @@ abstract public class AbstractAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			dm.foodAquired(in.getNutritionValue());
-			System.out.println("I, agent " + getId() + ", recieved " + in.getNutritionValue() + " units of food");
+			System.out.println("I, agent " + dm.getName() + ", recieved " + in.getNutritionValue() + " units of food");
 		}
 	}
 
@@ -97,7 +97,7 @@ abstract public class AbstractAgent implements Participant
 			final HuntOrder in = (HuntOrder)input;
 			dm.setOrder(in.getOrder());
 			dm.setHuntingTeam(in.getTeam());
-			System.out.println("I, Agent " + getId() + " have been told to hunt " + in.getOrder().getName() + " with Team " + in.getTeam().hashCode());
+			System.out.println("I, Agent " + dm.getName() + " have been told to hunt " + in.getOrder().getName() + " with Team " + in.getTeam().hashCode());
 		}
 	}
 
@@ -119,7 +119,7 @@ abstract public class AbstractAgent implements Participant
 				dm.setGroup(in.getGroup());
 			}
 			groupApplicationResponse(in.wasAccepted());	
-			System.out.println("I, agent " + getId() + " was " + (in.wasAccepted() ? "" : "not ") + "accepted into group " + in.getGroup());
+			System.out.println("I, agent " + dm.getName() + " was " + (in.wasAccepted() ? "" : "not ") + "accepted into group " + ec.nameof(in.getGroup()));
 		}
 		
 	}
@@ -141,7 +141,7 @@ abstract public class AbstractAgent implements Participant
 			Vote.VoteType v = castVote(in);
 			ec.act(new Vote(in, v), getId(), authCode);
 			
-			System.out.println("I, agent " + getId() + " voted " + v + " in " + in.getProposer() + "'s vote of " + in.getType());
+			System.out.println("I, agent " + dm.getName() + " voted " + v + " in " + ec.nameof(in.getProposer()) + "'s vote of " + in.getType());
 		}
 		
 	}
@@ -248,7 +248,7 @@ abstract public class AbstractAgent implements Participant
 		// Check to see if we died due to a message in the queue
 		if (this.dm.getFoodInPossesion() < 0)
 		{
-			System.out.println("I, agent, " + getId() + ", am starving to death!");
+			System.out.println("I, agent, " + dm.getName() + ", am starving to death!");
 			ec.act(new Death(), dm.getId(), authCode);
 		}
 
@@ -316,7 +316,7 @@ abstract public class AbstractAgent implements Participant
 
 		if (toHunt == null)
 		{
-			ec.logToErrorLog("Agent " + this.getId() + " did not pick a food to hunt");
+			ec.logToErrorLog("Agent " + dm.getName() + " did not pick a food to hunt");
 		}
 		else
 		{
