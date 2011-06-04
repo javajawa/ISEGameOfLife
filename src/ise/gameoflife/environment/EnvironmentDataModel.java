@@ -185,7 +185,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 			}
 			catch (Throwable ex)
 			{
-				throw new IllegalArgumentException("Unable to create group - no public constructor with single GroupDataModel argument", ex);
+				throw new IllegalArgumentException("Unable to create group - no public constructor with single GroupDataInitialiser argument", ex);
 			}
 		}
 		else

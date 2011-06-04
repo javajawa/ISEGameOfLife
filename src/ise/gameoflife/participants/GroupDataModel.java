@@ -53,7 +53,7 @@ class GroupDataModel extends APlayerDataModel
 		ret.randomseed = init.getRandomSeed();
 		ret.name = init.getName();
 		ret.econmoicPosition = new History<Double>(50);
-		ret.econmoicPosition.setValue(init.getInitialEconomicBelief());
+		ret.econmoicPosition.newEntry(init.getInitialEconomicBelief());
 		return ret;
 	}
 
