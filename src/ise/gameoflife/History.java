@@ -26,9 +26,9 @@ public class History<T extends Serializable> implements Serializable
 	/**
 	 * Here is where History is written
 	 */
+	@Deprecated
 	public History()
 	{
-		this(new LinkedList<T>(), 10);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class History<T extends Serializable> implements Serializable
 	@SuppressWarnings("unchecked")
 	public void newEntry(boolean cloneOld)
 	{
-		if (cloneOld)
+		if (cloneOld && !data.isEmpty())
 		{
 			T clone;
 			try

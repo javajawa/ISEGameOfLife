@@ -296,11 +296,11 @@ class AgentDataModel extends APlayerDataModel
 
 	public void newHistoryEntry()
 	{
-		happinessHistory.newEntry();
-		loyaltyHistory.newEntry();
-		trust.newEntry();
-		huntingTeam.newEntry();
-		foodConsumedPerTurnHistory.newEntry();
-		lastHunted.newEntry();
+		happinessHistory.newEntry(true);
+		loyaltyHistory.newEntry(true);
+		trust.newEntry(true);
+		huntingTeam.newEntry(false);
+		foodConsumedPerTurnHistory.newEntry(foodConsumption);
+		lastHunted.newEntry(false);
 	}
 }
