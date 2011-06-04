@@ -8,6 +8,7 @@ import ise.gameoflife.actions.Vote.VoteType;
  */
 public class Vote extends GenericInput
 {
+	private static final long serialVersionUID = 1L;
 
 	private Proposition proposition;
 	private String agent;

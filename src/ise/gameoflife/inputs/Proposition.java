@@ -9,6 +9,7 @@ import ise.gameoflife.actions.Proposal.ProposalType;
  */
 public class Proposition extends GenericInput
 {
+	private static final long serialVersionUID = 1L;
 	private Proposal.ProposalType type;
 	private String proposer;
 	private String ownerGroup;

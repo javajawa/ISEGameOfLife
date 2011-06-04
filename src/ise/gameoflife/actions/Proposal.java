@@ -9,6 +9,7 @@ import presage.Action;
  */
 public class Proposal extends GenericAction
 {
+	private static final long serialVersionUID = 1L;
 	public enum ProposalType
 	{
 		/**
