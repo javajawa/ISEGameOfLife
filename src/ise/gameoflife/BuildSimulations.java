@@ -3,6 +3,7 @@ package ise.gameoflife;
 import ise.gameoflife.simulatons.AgentsAndGroup;
 import ise.gameoflife.simulatons.DoubleAgent;
 import ise.gameoflife.simulatons.SingleAgent;
+import ise.gameoflife.simulatons.Politics;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,8 @@ final class BuildSimulations
 	{
 		SingleAgent.class,
 		DoubleAgent.class,
-		AgentsAndGroup.class
+		AgentsAndGroup.class,
+                Politics.class
 	};
 
 	private BuildSimulations()
