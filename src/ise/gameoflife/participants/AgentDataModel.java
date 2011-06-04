@@ -1,7 +1,7 @@
 package ise.gameoflife.participants;
 
-import ise.gameoflife.History;
-import ise.gameoflife.UnmodifableHistory;
+import ise.gameoflife.models.History;
+import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import java.util.HashMap;
@@ -106,7 +106,7 @@ class AgentDataModel extends APlayerDataModel
 	 * Returns the history of food consumed per turn
 	 * @return The history of food consumption per turn
 	 */
-	UnmodifableHistory<Double> getFoodConsumedPerTurnHistory()
+	UnmodifiableHistory<Double> getFoodConsumedPerTurnHistory()
 	{
 		return foodConsumedPerTurnHistory.getUnmodifableHistory();
 	}
@@ -200,7 +200,7 @@ class AgentDataModel extends APlayerDataModel
 		lastHunted.setValue(lastFood);
 	}
 
-	public UnmodifableHistory<Food> getHuntingHistory()
+	public UnmodifiableHistory<Food> getHuntingHistory()
 	{
 		return lastHunted.getUnmodifableHistory();
 	}
@@ -219,7 +219,7 @@ class AgentDataModel extends APlayerDataModel
 		huntingTeam.setValue(team);
 	}
 
-	public UnmodifableHistory<HuntingTeam> getTeamHistory()
+	public UnmodifiableHistory<HuntingTeam> getTeamHistory()
 	{
 		return huntingTeam.getUnmodifableHistory();
 	}
@@ -254,7 +254,7 @@ class AgentDataModel extends APlayerDataModel
 		return happinessHistory.setValue(newHappiness);
 	}
 
-	public UnmodifableHistory<Double> getHappinessHistory()
+	public UnmodifiableHistory<Double> getHappinessHistory()
 	{
 		return happinessHistory.getUnmodifableHistory();
 	}
@@ -269,7 +269,7 @@ class AgentDataModel extends APlayerDataModel
 		return loyaltyHistory.setValue(newLoyalty);
 	}
 
-	public UnmodifableHistory<Double> getLoyaltyHistory()
+	public UnmodifiableHistory<Double> getLoyaltyHistory()
 	{
 		return loyaltyHistory.getUnmodifableHistory();
 	}

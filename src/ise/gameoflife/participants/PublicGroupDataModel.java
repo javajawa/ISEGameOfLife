@@ -1,6 +1,6 @@
 package ise.gameoflife.participants;
 
-import ise.gameoflife.UnmodifableHistory;
+import ise.gameoflife.models.UnmodifiableHistory;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +105,7 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable
 	 * Gets the historical economic positions of the group
 	 * @return The historical economic positions of the group
 	 */
-	public UnmodifableHistory<Double> getEconomicPoisition()
+	public UnmodifiableHistory<Double> getEconomicPoisition()
 	{
 		return source.getEconomicPoisition();
 	}

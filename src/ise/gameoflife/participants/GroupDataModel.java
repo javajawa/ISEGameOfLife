@@ -1,7 +1,7 @@
 package ise.gameoflife.participants;
 
-import ise.gameoflife.History;
-import ise.gameoflife.UnmodifableHistory;
+import ise.gameoflife.models.History;
+import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.GroupDataInitialiser;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +83,7 @@ class GroupDataModel extends APlayerDataModel
 		econmoicPosition.setValue(old + amount);
 	}
 
-	UnmodifableHistory<Double> getEconomicPoisition()
+	UnmodifiableHistory<Double> getEconomicPoisition()
 	{
 		return econmoicPosition.getUnmodifableHistory();
 	}

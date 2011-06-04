@@ -1,4 +1,4 @@
-package ise.gameoflife;
+package ise.gameoflife.models;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -21,10 +21,11 @@ public class History<T extends Serializable> implements Serializable
 	private LinkedList<T> data;
 	@Element
 	private int maxSize;
-	private UnmodifableHistory<T> u;
+	private UnmodifiableHistory<T> u;
 
 	/**
 	 * Here is where History is written
+	 * @deprecated For serialisability
 	 */
 	@Deprecated
 	public History()
@@ -172,9 +173,9 @@ public class History<T extends Serializable> implements Serializable
 	 * Gets the class used to make the History unmodifiable History
 	 * @return the unmodifiable history pointer
 	 */
-	public UnmodifableHistory<T> getUnmodifableHistory()
+	public UnmodifiableHistory<T> getUnmodifableHistory()
 	{
-		if (u == null) u = new UnmodifableHistory<T>(data, maxSize);
+		if (u == null) u = new UnmodifiableHistory<T>(data, maxSize);
 		return u;
 	}
 }

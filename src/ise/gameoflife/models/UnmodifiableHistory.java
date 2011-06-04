@@ -1,4 +1,4 @@
-package ise.gameoflife;
+package ise.gameoflife.models;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -8,11 +8,11 @@ import java.util.LinkedList;
  * @param <T> The type of things being recorded historically
  * @author Benedict
  */
-public class UnmodifableHistory<T extends Serializable> extends History<T>
+public class UnmodifiableHistory<T extends Serializable> extends History<T>
 {
 	private static final long serialVersionUID = 1L;
 
-	UnmodifableHistory(LinkedList<T> d, int size)
+	UnmodifiableHistory(LinkedList<T> d, int size)
 	{
 		super(d, size);
 	}
@@ -48,7 +48,7 @@ public class UnmodifableHistory<T extends Serializable> extends History<T>
 	}
 
 	@Override
-	public UnmodifableHistory<T> getUnmodifableHistory()
+	public UnmodifiableHistory<T> getUnmodifableHistory()
 	{
 		return this;
 	}
