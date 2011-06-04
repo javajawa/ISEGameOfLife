@@ -304,7 +304,7 @@ abstract public class AbstractAgent implements Participant
 		//dm.setHuntingTeam(null);
 		//dm.setOrder(null);
 		dm.newHistoryEntry();
-		dm.setFoodConsumedThisTurn(dm.getFoodConsumption());
+		dm.increaseFoodConsumedThisTurn(dm.getFoodConsumption());
 	}
 
 	private void doGroupSelect()
