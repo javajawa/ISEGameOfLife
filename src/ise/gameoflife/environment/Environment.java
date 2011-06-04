@@ -557,4 +557,9 @@ public class Environment extends AbstractEnvironment
 		return a.advise(agent, agentsTeam);
 	}
 
+	double getFoodConsumedPerAdvice()
+	{
+		return dmodel.getFoodConsumedPerAdvice();
+	}
+
 }

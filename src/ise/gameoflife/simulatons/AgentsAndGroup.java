@@ -91,7 +91,7 @@ public class AgentsAndGroup
 		List<Class<? extends AbstractGroupAgent>> groups = new ArrayList<Class<? extends AbstractGroupAgent>>();
 		groups.add(TestGroup.class);
 		
-		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods, groups);
+		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods, groups, 0.1);
 		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm);
 
 		presageConfig.setEnvironmentClass(environment.getClass());

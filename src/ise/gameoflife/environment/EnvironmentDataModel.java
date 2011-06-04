@@ -59,6 +59,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 	private int cycles;
 	@Element
 	private String id;
+	@Element
+	private double foodConsumedPerAdvice;
 
 	/**
 	 * Serialisable no-arg constructor, do not use
@@ -85,7 +87,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public EnvironmentDataModel(String environmentName,
 					HashMap<String, Food> availableFoodTypes,
-					List<Class<? extends AbstractGroupAgent>> allowedGroupTypes)
+					List<Class<? extends AbstractGroupAgent>> allowedGroupTypes, double foodConsumedPerAdvice)
 	{
 		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
@@ -200,5 +202,10 @@ public class EnvironmentDataModel extends AEnvDataModel
 	public String getId()
 	{
 		return id;
+	}
+
+	double getFoodConsumedPerAdvice()
+	{
+		return foodConsumedPerAdvice;
 	}
 }

@@ -125,4 +125,9 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		return e.seekAdvice(agent, authToken, fromAgent, agentsTeam);
 	}
+
+	public double getFoodConsumedPerAdvice()
+	{
+		return e.getFoodConsumedPerAdvice();
+	}
 }
