@@ -1,27 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.environment.Environment;
-import ise.gameoflife.participants.SimplePoliticalParticipant;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.SortedSet;
-import java.util.TreeMap;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.simpleframework.xml.Element;
-import presage.EnvDataModel;
 import presage.Plugin;
 import presage.Simulation;
 import presage.annotations.PluginConstructor;
@@ -32,24 +20,16 @@ import presage.annotations.PluginConstructor;
  *
  * @author Harry Eakins
  */
-public class PoliticalCompassPlugin extends JPanel implements Plugin {
+public class PoliticalCompassPlugin extends JPanel implements Plugin
+{
 
 	private static final long serialVersionUID = 1L;
 
-	private final static String title = "Political Compass";
-        private final static String label = "Political Compass";
+	private final static String label = "Political Compass";
 
-	private Simulation sim;
-	private Environment en;
-        private EnvDataModel dmodel;
-
-        // Set of political participants that are active
-        private TreeMap<String, SimplePoliticalParticipant> p_players = new TreeMap<String, SimplePoliticalParticipant>();
-
-	@Element(required=false)
+	@Element(required = false)
 	private String outputdirectory;
-
-        private int framecount = 0;
+	private int framecount = 0;
 
 	/**
 	 */
@@ -60,12 +40,9 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
 
 	/**
 	 * Creates a new instance of the PoliticalCompassPlugin
-	 * @param outputpath Path to write the final video to
+	 * @param outputdirectory Path to write the final video to
 	 */
-	@PluginConstructor(
-	{
-		"outputdirectory"
-	})
+	@PluginConstructor({"outputdirectory"})
 	public PoliticalCompassPlugin(String outputdirectory)
 	{
 		super();
@@ -75,127 +52,85 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
 	/**
 	 * Run per-step-in-simulation code that changes the plugin's state. In this
 	 * case, we use the information from the simulation's last step to update
-         * the the political view data of the agents.
+	 * the the political view data of the agents.
 	 */
 	@Override
 	public void execute()
 	{
-                // Add/remove new/old players
-                updatePoliticalPlayers();
 
-                // Calculate new political positions
-                Random randomGenerator = new Random();
-                for(Map.Entry<String, SimplePoliticalParticipant> entry : p_players.entrySet())
-                {
-                        SimplePoliticalParticipant pp = entry.getValue();
+		repaint();
 
-                        // TODO actually implement the measurement of political position
-                        pp.economic += (randomGenerator.nextFloat() - 0.5)/10;
-                        pp.social += (randomGenerator.nextFloat() - 0.5)/10;
-                }
-
-                repaint();
-
-                if(this.outputdirectory != null)
-                {
-                        writeToPNG();
-                }
+		if (this.outputdirectory != null)
+		{
+			writeToPNG();
+		}
 	}
 
-        private void writeToPNG() {
-                BufferedImage bi = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_ARGB);
-                Graphics big = bi.getGraphics();
-                big.setClip(0, 0, 500, 500);
-                this.paint(big);
-                try
-                {
-                        File f =  new File(this.outputdirectory + "test"+this.framecount+".png");
-                        f.mkdirs();
-                        ImageIO.write(bi, "png",f);
-                        this.framecount++;
-                }
-                catch (Exception e)
-                {
-                        System.out.println("Error writing political compass image: " + this.framecount);
-                }
-        }
+	private void writeToPNG()
+	{
+		BufferedImage bi = new BufferedImage(this.getSize().width,
+						this.getSize().height, BufferedImage.TYPE_INT_ARGB);
+		Graphics big = bi.getGraphics();
+		big.setClip(0, 0, 500, 500);
+		this.paint(big);
+		try
+		{
+			File f = new File(this.outputdirectory + "test" + this.framecount + ".png");
+			f.mkdirs();
+			ImageIO.write(bi, "png", f);
+			this.framecount++;
+		}
+		catch (Exception e)
+		{
+			System.out.println(
+							"Error writing political compass image: " + this.framecount);
+		}
+	}
 
-        /**
-         * Adds new players and removes dead players since the last cycle.
-         */
-        private void updatePoliticalPlayers()
-        {
+	/**
+	 * Draw everything to the screen
+	 * @param g Graphics object
+	 */
+	@Override
+	public void paint(Graphics g)
+	{
+		PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
 
-                SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
-                Iterator<String> iter = active_agent_ids.iterator();
-
-                // Add any new agents
-                while(iter.hasNext())
-                {
-                        String id = iter.next();
-                        if(!p_players.containsKey(id))
-                        {
-                                p_players.put(id, new SimplePoliticalParticipant());
-                        }
-                }
-
-                // Delete agents which are no longer active
-                List<String> ids_to_remove = new LinkedList<String>();
-                for(Map.Entry<String, SimplePoliticalParticipant> entry : p_players.entrySet())
-                {
-                        String id = entry.getKey();
-                        if(!active_agent_ids.contains(id))
-                        {
-                                ids_to_remove.add(id);
-                        }
-                }
-                iter = ids_to_remove.iterator();
-                while(iter.hasNext())
-                {
-                        p_players.remove(iter.next());
-                }
-        }
-
-        /**
-         * Draw everything to the screen
-         * @param g Graphics object
-         */
-        @Override
-        public void paint(Graphics g)
-        {
-                // Clear everything
-                g.setColor(Color.LIGHT_GRAY);
+		// Clear everything
+		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, 0, getWidth(), getHeight());
-                
-                // Draw social and economic axis
-                Rectangle rect = g.getClipBounds();
-                g.setColor(Color.YELLOW);
-                g.drawLine(rect.width/2, 0, rect.width/2, rect.height);
-                g.drawLine(0,  rect.height/2, rect.width, rect.height/2);
 
-                // Draw agents
-                for(Map.Entry<String, SimplePoliticalParticipant> entry : p_players.entrySet())
-                {
-                        drawAgent(g, entry.getValue());
-                }
+		// Draw social and economic axis
+		Rectangle rect = g.getClipBounds();
+		g.setColor(Color.YELLOW);
+		g.drawLine(rect.width / 2, 0, rect.width / 2, rect.height);
+		g.drawLine(0, rect.height / 2, rect.width, rect.height / 2);
 
-        }
+		// Draw agents
+		for (String group : PublicEnvironmentConnection.getInstance().availableGroups())
+		{
+			PublicGroupDataModel dm = ec.getGroupById(group);
+			double size = 2 * Math.sqrt((double)dm.size());
+			drawAgent(g, dm.getEstimatedSocialLocation(), dm.getCurrentEconomicPoisition(), (int)size);
+		}
 
-        /**
-         * Draws a circle representing an agent's political views
-         * @param g Graphics objects
-         * @param p_player SimplifiedPoliticalPlayer object to draw
-         */
-        private void drawAgent(Graphics g, SimplePoliticalParticipant p_player)
-        {
-                Rectangle rect = g.getClipBounds();
-                g.setColor(Color.BLUE);
-                g.fillOval((int)((p_player.economic+1)*rect.width/2),
-                            (int)((p_player.social+1)*rect.height/2),
-                            10, 10
-                            );
+	}
 
-        }
+	/**
+	 * Draws a circle representing an agent's political views
+	 * @param g Graphics objects
+	 * @param p_player SimplifiedPoliticalPlayer object to draw
+	 */
+	private void drawAgent(Graphics g, double social, double economic, int size)
+	{
+		Rectangle rect = g.getClipBounds();
+		int c_x = (int)(economic * rect.width);
+		int c_y = (int)(social * rect.height);
+
+		g.setColor(new Color(0.1F, 0.1F, 0.9F, 0.5F));
+		g.fillOval(c_x - size, c_y - size, 2 * size, 2 * size);
+
+	}
 
 	/**
 	 * Returns the label of this plugin
@@ -225,13 +160,8 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
 	@Override
 	public void initialise(Simulation sim)
 	{
-		System.out.println(" -Initialising Political Compass Plugin....");
-
-		this.sim = sim;
-
 		setBackground(Color.GRAY);
-
-                repaint();
+		repaint();
 	}
 
 	/**
@@ -252,8 +182,6 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin {
 	@Override
 	public void onSimulationComplete()
 	{
-
-
 	}
 
 }
