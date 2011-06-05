@@ -45,7 +45,7 @@ class AgentDataModel extends APlayerDataModel
 	private String groupId;
 	
 	@Element
-	private History<HashMap<String, Double>> trust;
+	private HashMap<String,History<Double>> trust;
 
 	@Element
 	private History<Double> happinessHistory;
@@ -186,7 +186,7 @@ class AgentDataModel extends APlayerDataModel
 		huntingTeam = new History<HuntingTeam>(50);
 		loyaltyHistory = new History<Double>(50);
 		lastHunted = new History<Food>(50);
-		trust = new History<HashMap<String, Double>>(50);
+		trust = new HashMap<String, History<Double>>();
 	}
 
 	/**
@@ -279,14 +279,35 @@ class AgentDataModel extends APlayerDataModel
 		return loyaltyHistory.getUnmodifableHistory();
 	}
 	
-	public History<HashMap<String, Double>> getTrust()
+	public History<Double> getTrustHistory(String player)
 	{
-		return trust;
+		if (trust.containsKey(player))
+		{
+			return trust.get(player).getUnmodifableHistory();
+		}
+		History<Double> t = new History<Double>(50);
+		t.newEntry(null);
+		trust.put(player, t);
+		return t.getUnmodifableHistory();
 	}
 
-	public double setTrust(String s, double t)
+	public Double getTrust(String player)
 	{
-		return this.trust.getValue().put(s, t);
+		Double t = getTrustHistory(player).getValue();
+		if (t==null) return null;
+		return new Double(t);
+	}
+
+	public void setTrust(String player, double t)
+	{
+		if (trust.containsKey(player))
+		{
+			trust.get(player).setValue(t);
+			return;
+		}
+		History<Double> h = new History<Double>(50);
+		h.newEntry(t);
+		trust.put(player, h);
 	}
 
 	public double getEconomicBelief()
@@ -303,10 +324,13 @@ class AgentDataModel extends APlayerDataModel
 	{
 		happinessHistory.newEntry(true);
 		loyaltyHistory.newEntry(true);
-		trust.newEntry(true);
 		huntingTeam.newEntry(false);
 		foodConsumedPerTurnHistory.newEntry(foodConsumption);
 		lastHunted.newEntry(false);
+		for (History<Double> h : trust.values())
+		{
+			h.newEntry(true);
+		}
 	}
 
 	public String getName()
