@@ -320,10 +320,9 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		if (input.getClass().equals(JoinRequest.class))
 		{
-			// FIXME: Notify any old group of us leaving
 			final JoinRequest req = (JoinRequest)input;
 			boolean response = this.respondToJoinRequest(req.getAgent());
-			if (response)	this.dm.addMember(req.getAgent());
+			if (response) this.dm.addMember(req.getAgent());
 			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(), authCode);
 			ec.log(dm.getName() + " got a join request from " + ec.nameof(((JoinRequest)input).getAgent()));
 			return;

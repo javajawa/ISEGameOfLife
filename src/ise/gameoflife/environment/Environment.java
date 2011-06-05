@@ -14,6 +14,7 @@ import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
+import ise.gameoflife.inputs.LeaveNotification;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
@@ -194,6 +195,11 @@ public class Environment extends AbstractEnvironment
 			RespondToApplication application = (RespondToApplication)action;
 			
 			sim.getPlayer(application.getAgent()).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, application.wasAccepted()));
+			if (application.wasAccepted())
+			{
+				String old_group = dmodel.getAgentById(application.getAgent()).getGroupId();
+				sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, application.getAgent()));
+			}
 			log("Agent " + nameOf(application.getAgent()) + " has attempted to join group " + nameOf(actorID) + ", and the result was: " + application.wasAccepted());
 			return null;
 		}
