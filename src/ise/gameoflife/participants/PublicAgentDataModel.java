@@ -134,16 +134,6 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	}
 
 	/**
-	 * The food that this agent has been ordered to hunt with it's team in this
-	 * round
-	 * @return Food that was ordered 
-	 */
-	public Food getOrder()
-	{
-		return source.getOrder();
-	}
-
-	/**
 	 * Gets the group ID of the agent
 	 * @return the group ID of the agent
 	 */
