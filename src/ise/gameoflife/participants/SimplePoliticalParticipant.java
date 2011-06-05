@@ -9,6 +9,7 @@ package ise.gameoflife.participants;
  *
  * @author harry
  */
+@Deprecated
 public class SimplePoliticalParticipant {
         public float social;
         public float economic;
