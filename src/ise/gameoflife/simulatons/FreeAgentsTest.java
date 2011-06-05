@@ -1,9 +1,12 @@
 package ise.gameoflife.simulatons;
 
 import ise.gameoflife.agents.TestAgent;
+import ise.gameoflife.agents.TestGroupableAgent;
 import ise.gameoflife.environment.EnvironmentDataModel;
+import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.NameGenerator;
+import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
@@ -11,6 +14,7 @@ import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
@@ -25,25 +29,26 @@ import presage.configure.ConfigurationWriter;
 
 /**
  *
- * @author Harry Eakins
+ * @author Benedict Harcourt
  */
-public class DoubleAgent {
+public class FreeAgentsTest
+{
 
 	public static void main(String args[])
 	{
 		PresageConfig presageConfig = new PresageConfig();
 
 		// Basic config
-		presageConfig.setComment("Simple Test of 2 agents consuming food until death");
-		presageConfig.setIterations(100);
+		presageConfig.setComment("Test of 5 agents with no groups avaialable");
+		presageConfig.setIterations(200);
 		presageConfig.setRandomSeed(0);
 
-		presageConfig.setOutputFolder("tempoutput");
+		presageConfig.setOutputFolder(new File(System.getProperty("user.dir"), "output").getAbsolutePath());
 		presageConfig.setThreadDelay(1);
 		presageConfig.setAutorun(false);
 
 		// Path configuarations
-		String configPath = new File(System.getProperty("user.dir"), "simulations/doubleagent").getAbsolutePath();
+		String configPath = new File(System.getProperty("user.dir"),"simulations/freegrouping").getAbsolutePath();
 		presageConfig.setPluginsConfigPath(configPath + "/plugins.xml");
 		presageConfig.setEventscriptConfigPath(configPath + "/methods.xml");
 		presageConfig.setParticipantsConfigPath(configPath + "/participants.xml");
@@ -63,35 +68,38 @@ public class DoubleAgent {
 
 		EventScriptManager ms = new EventScriptManager();
 
-		TestAgent a = new TestAgent(20, 5);
-
-		parts.put(a.getId(), a);
-		ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
-
-                TestAgent b = new TestAgent(20, 3);
-                parts.put(b.getId(), b);
-		ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(b.getId())));
+		AbstractAgent a;
+		
+		for (int i = 0; i < 5; i++)
+		{
+			a = new TestGroupableAgent(20, 2);
+			parts.put(a.getId(), a);
+			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+		}
+		for (int i = 0; i < 1; i++)
+		{
+			a = new TestAgent(20, 2);
+			parts.put(a.getId(), a);
+			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+		}
 
 		HashMap<String, Food> foods = new HashMap<String, Food>();
-
 		Food rabbit = new Food("rabbit", 1, 1);
-
 		foods.put(rabbit.getId().toString(), rabbit);
-
-                Food chicken = new Food("chicken", 2, 1);
-                foods.put(chicken.getId().toString(),chicken);
-
-		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods);
-
-		Environment environment = (Environment) new ise.gameoflife.environment.Environment(true, 0, dm, null);
+		Food stag = new Food("stag", 5, 2);
+		foods.put(stag.getId().toString(), stag);
+		
+		@SuppressWarnings("unchecked")
+		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods, Collections.EMPTY_LIST, 0.1);
+		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm, BasicFreeAgentGroup.class);
 
 		presageConfig.setEnvironmentClass(environment.getClass());
-
 		ConfigurationWriter.write(configPath + "/sim.xml", presageConfig, parts, environment, pm, ms);
 	}
 
-	private DoubleAgent()
+	private FreeAgentsTest()
 	{
 		// Nothing to see here. Move along, citizen!
 	}
+
 }

@@ -106,9 +106,8 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final HuntOrder in = (HuntOrder)input;
-			dm.setOrder(in.getOrder());
 			dm.setHuntingTeam(in.getTeam());
-			ec.log("I, Agent " + dm.getName() + " have been told to hunt " + in.getOrder().getName() + " with Team " + in.getTeam().hashCode());
+			ec.log("I, Agent " + dm.getName() + " have been told to hunt with Team " + in.getTeam().hashCode());
 		}
 	}
 

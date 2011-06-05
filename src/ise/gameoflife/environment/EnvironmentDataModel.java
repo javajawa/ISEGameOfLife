@@ -213,4 +213,17 @@ public class EnvironmentDataModel extends AEnvDataModel
 	{
 		return agents.keySet();
 	}
+
+	List<String> getUngroupedAgents()
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+		for (String agent : agents.keySet())
+		{
+			if (agents.get(agent).getGroupId() == null)
+			{
+				ret.add(agent);
+			}
+		}
+		return Collections.unmodifiableList(ret);
+	}
 }

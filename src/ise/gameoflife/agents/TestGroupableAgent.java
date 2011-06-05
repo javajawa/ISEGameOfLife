@@ -38,23 +38,27 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected Food chooseFood()
 	{
-		if (this.getDataModel().getOrder() != null) return this.getDataModel().getOrder();
-
+		// TODO: Update this code to work with team
+		HuntingTeam team = this.getDataModel().getHuntingTeam();
+		int teamSize = (team != null ? team.getMembers().size() : 1);
 		Food bestSoFar = null;
 
 		for (Food noms : getConn().availableFoods())
 		{
-			if (noms.getHuntersRequired() <= 1)
+			if (noms.getHuntersRequired() <= teamSize)
 			{
 				if (bestSoFar == null)
 				{
 					bestSoFar = noms;
 				}
-			}
-				if (noms.getNutrition() > bestSoFar.getNutrition())
+				else
 				{
-					bestSoFar = noms;
+					if (noms.getNutrition() > bestSoFar.getNutrition())
+					{
+						bestSoFar = noms;
+					}
 				}
+			}
 		}
 		return bestSoFar;
 	}
@@ -81,6 +85,7 @@ public class TestGroupableAgent extends AbstractAgent
 
 		if (groups.isEmpty())
 		{
+			if (getConn().getAllowedGroupTypes().isEmpty()) return null;
 			Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
 			return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
 		}

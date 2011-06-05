@@ -62,7 +62,6 @@ class AgentDataModel extends APlayerDataModel
 	
 	private History<Food> lastHunted = null;
 	private History<HuntingTeam> huntingTeam = null;
-	private Food lastOrderReceived = null;
 
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
@@ -232,26 +231,6 @@ class AgentDataModel extends APlayerDataModel
 	public History<HuntingTeam> getTeamHistory()
 	{
 		return huntingTeam.getUnmodifableHistory();
-	}
-
-	/**
-	 * The food that this agent has been ordered to hunt with it's team in this
-	 * round
-	 * @return Food that was ordered 
-	 */
-	public Food getOrder()
-	{
-		return lastOrderReceived;
-	}
-
-	/**
-	 * The food that this agent has been ordered to hunt with it's team in this
-	 * round
-	 * @return Food that was ordered 
-	 */
-	public void setOrder(Food newFood)
-	{
-		lastOrderReceived = newFood;
 	}
 
 	public double getCurrentHappiness()

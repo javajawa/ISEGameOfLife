@@ -62,8 +62,7 @@ public class Politics
 		// All the big objects
 		PluginManager pm = new PluginManager();
 		pm.addPlugin(new DebugSwitchPlugin());
-		pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png", 1500,
-						1200));
+		pm.addPlugin(new HuntersAlivePlugin(configPath + "/population.png", 1500,	1200));
 		pm.addPlugin(new ErrorLog());
 		pm.addPlugin(new DatabasePlugin(1, "Simulation comment", false));
 		pm.addPlugin(new HunterListPlugin());
@@ -76,20 +75,20 @@ public class Politics
 		foods.put(rabbit.getId().toString(), rabbit);
 		Food stag = new Food("stag", 5, 2);
 		foods.put(stag.getId().toString(), stag);
-		
-                EventScriptManager ms = new EventScriptManager();
 
-                AbstractAgent politicsAgent;
-                for (int i = 0; i < 10; i++)
+		EventScriptManager ms = new EventScriptManager();
+
+		AbstractAgent politicsAgent;
+		for (int i = 0; i < 10; i++)
 		{
-                        politicsAgent = new TestPoliticalAgentStrategies(20, 2, AgentType.R);
+			politicsAgent = new TestPoliticalAgentStrategies(20, 2, AgentType.R);
 			parts.put(politicsAgent.getId(), politicsAgent);
 			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(politicsAgent.getId())));
 		}
 
-
 		EnvironmentDataModel dm = new EnvironmentDataModel("Political arena simulation", foods);
-		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm);
+		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm, null);
+
 		presageConfig.setEnvironmentClass(environment.getClass());
 		ConfigurationWriter.write(configPath + "/sim.xml", presageConfig, parts, environment, pm, ms);
 	}
