@@ -20,6 +20,7 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.AbstractAgent;
+import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationRequest;
@@ -31,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.simpleframework.xml.Element;
 import presage.Action;
 import presage.EnvDataModel;
@@ -38,6 +41,7 @@ import presage.EnvironmentConnector;
 import presage.Input;
 import presage.Participant;
 import presage.Simulation;
+import presage.annotations.EnvironmentConstructor;
 import presage.environment.AEnvDataModel;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
@@ -75,8 +79,7 @@ public class Environment extends AbstractEnvironment
 			//Nothing to see here, move along citizen.
 		}
 	}
-	
-/**
+	/**
 	 * Kills (deActivates) Agents
 	 */
 	private class DeathHandler implements AbstractEnvironment.ActionHandler
@@ -223,7 +226,6 @@ public class Environment extends AbstractEnvironment
 			// Nothing to see here. Move along, citizen.
 		}
 	}
-
 	private class ProposalHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
@@ -251,7 +253,6 @@ public class Environment extends AbstractEnvironment
 			// Nothing to see here. Move along, citizen.
 		}
 	}
-
 	private class VoteHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
@@ -274,7 +275,6 @@ public class Environment extends AbstractEnvironment
 			// Nothing to see here. Move along, citizen.
 		}
 	}
-
 	private class VoteResultHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
@@ -329,6 +329,9 @@ public class Environment extends AbstractEnvironment
 
 	@Element
 	private boolean debug;
+	@Element(required=false)
+	private Class<? extends AbstractFreeAgentGroup> freeAgentHandler;
+	private AbstractFreeAgentGroup fAGroup;
 
 	/**
 	 * Reference to the list that backs the ErrorLog view plugin.
@@ -341,15 +344,12 @@ public class Environment extends AbstractEnvironment
 	{
 		super();
 	}
-	
-	@presage.annotations.EnvironmentConstructor( { "queueactions",
-			"randomseed", "dmodel" })
-	public Environment(boolean queueactions, long randomseed,
-			EnvironmentDataModel dmodel) {
-		super(queueactions, randomseed);
 
-		// Separation of data from code!
+	@EnvironmentConstructor({"queueactions","randomseed","dmodel"})
+	public Environment(boolean queueactions, long randomseed,	EnvironmentDataModel dmodel, Class<? extends AbstractFreeAgentGroup> freeAgentHandler) {
+		super(queueactions, randomseed);
 		this.dmodel = dmodel;
+		this.freeAgentHandler = freeAgentHandler;
 	}
 
 	@Override
@@ -411,6 +411,20 @@ public class Environment extends AbstractEnvironment
 		new PublicEnvironmentConnection(new EnvConnector(this));
 
 		storedHuntResults = new HashMap<HuntingTeam, List<TeamHuntEvent>>();
+
+		if (freeAgentHandler != null)
+		{
+			try
+			{
+				fAGroup = freeAgentHandler.newInstance();
+			}
+			catch (Exception ex)
+			{
+				Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+
+		authenticator.put(getId(), UUID.fromString(getId()));
 	}
 
 	@Override
@@ -422,6 +436,20 @@ public class Environment extends AbstractEnvironment
 	protected void updatePhysicalWorld()
 	{
 		processTeamHunts();
+
+		// Deal with ungrouped agents having teams formed
+		if (fAGroup != null && dmodel.getTurnType() == TurnType.TeamSelect)
+		{
+			List<HuntingTeam> teams = fAGroup.selectTeams(dmodel.getUngroupedAgents());
+			for (HuntingTeam team : teams)
+			{
+				for (String agent : team.getMembers())
+				{
+					act(new GroupOrder(null, team, agent), getId(), authenticator.get(getId()));
+				}
+			}
+		}
+
 		// Energy used on hunting, so this is when food is consumed
 		if (dmodel.getTurnType() == TurnType.GoHunt)
 		{

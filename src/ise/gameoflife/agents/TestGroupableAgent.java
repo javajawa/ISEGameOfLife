@@ -81,6 +81,7 @@ public class TestGroupableAgent extends AbstractAgent
 
 		if (groups.isEmpty())
 		{
+			if (getConn().getAllowedGroupTypes().isEmpty()) return null;
 			Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
 			return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
 		}

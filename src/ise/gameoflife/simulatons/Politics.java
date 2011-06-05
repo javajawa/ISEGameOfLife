@@ -72,7 +72,7 @@ public class Politics
 
 		EventScriptManager ms = new EventScriptManager();
 		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods);
-		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm);
+		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm, null);
 		presageConfig.setEnvironmentClass(environment.getClass());
 		ConfigurationWriter.write(configPath + "/sim.xml", presageConfig, parts, environment, pm, ms);
 	}

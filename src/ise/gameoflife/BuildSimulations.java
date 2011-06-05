@@ -2,6 +2,7 @@ package ise.gameoflife;
 
 import ise.gameoflife.simulatons.AgentsAndGroup;
 import ise.gameoflife.simulatons.DoubleAgent;
+import ise.gameoflife.simulatons.FreeAgentsTest;
 import ise.gameoflife.simulatons.SingleAgent;
 import ise.gameoflife.simulatons.Politics;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +22,8 @@ final class BuildSimulations
 		SingleAgent.class,
 		DoubleAgent.class,
 		AgentsAndGroup.class,
-                Politics.class
+		Politics.class,
+		FreeAgentsTest.class
 	};
 
 	private BuildSimulations()
