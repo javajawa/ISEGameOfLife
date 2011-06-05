@@ -7,6 +7,7 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.NameGenerator;
 import java.util.HashMap;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementMap;
 import presage.abstractparticipant.APlayerDataModel;
 
 /**
@@ -44,10 +45,10 @@ class AgentDataModel extends APlayerDataModel
 	@Element(required=false)
 	private String groupId;
 	
-	@Element
+	@ElementMap
 	private HashMap<String,History<Double>> trust;
 
-	@Element
+	@ElementMap
 	private HashMap<String,History<Food>> advice;
 
 	@Element
@@ -209,7 +210,7 @@ class AgentDataModel extends APlayerDataModel
 		lastHunted.setValue(lastFood);
 	}
 
-	public UnmodifiableHistory<Food> getHuntingHistory()
+	public History<Food> getHuntingHistory()
 	{
 		return lastHunted.getUnmodifableHistory();
 	}
@@ -228,7 +229,7 @@ class AgentDataModel extends APlayerDataModel
 		huntingTeam.setValue(team);
 	}
 
-	public UnmodifiableHistory<HuntingTeam> getTeamHistory()
+	public History<HuntingTeam> getTeamHistory()
 	{
 		return huntingTeam.getUnmodifableHistory();
 	}
@@ -263,7 +264,7 @@ class AgentDataModel extends APlayerDataModel
 		return happinessHistory.setValue(newHappiness);
 	}
 
-	public UnmodifiableHistory<Double> getHappinessHistory()
+	public History<Double> getHappinessHistory()
 	{
 		return happinessHistory.getUnmodifableHistory();
 	}
@@ -278,7 +279,7 @@ class AgentDataModel extends APlayerDataModel
 		return loyaltyHistory.setValue(newLoyalty);
 	}
 
-	public UnmodifiableHistory<Double> getLoyaltyHistory()
+	public History<Double> getLoyaltyHistory()
 	{
 		return loyaltyHistory.getUnmodifableHistory();
 	}
@@ -295,14 +296,14 @@ class AgentDataModel extends APlayerDataModel
 		return t.getUnmodifableHistory();
 	}
 
-	public Double getTrust(String player)
+	Double getTrust(String player)
 	{
 		Double t = getTrustHistory(player).getValue();
 		if (t==null) return null;
 		return new Double(t);
 	}
 
-	public void setTrust(String player, double t)
+	void setTrust(String player, double t)
 	{
 		if (trust.containsKey(player))
 		{
@@ -351,7 +352,7 @@ class AgentDataModel extends APlayerDataModel
 		return economicBelief;
 	}
 	
-		public void setEconomicBelief(double economicBelief)
+	public void setEconomicBelief(double economicBelief)
 	{
 		this.economicBelief = economicBelief;
 	}
