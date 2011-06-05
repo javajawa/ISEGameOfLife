@@ -51,4 +51,31 @@ public class ValueScalerTest
 
 		assertEquals(expResult, result, 0.0);
 	}
+
+	@Test
+	public void testScale_4()
+	{
+		double old = 0.5;
+		double amount = -1;
+		double step = 0.5;
+
+		double expResult = 0.25;
+		double result = ValueScaler.scale(old, amount, step);
+
+		assertEquals(expResult, result, 0.0);
+	}
+
+	@Test
+	public void testScale_5()
+	{
+		double old = 0.5;
+		double amount = 2;
+		double step = 0.5;
+
+		double expResult = old;
+		double result = ValueScaler.scale(old, amount, step);
+		result = ValueScaler.scale(result, -amount, step);
+
+		assertEquals(expResult, result, 0.0);
+	}
 }

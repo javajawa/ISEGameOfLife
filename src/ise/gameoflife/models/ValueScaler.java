@@ -14,8 +14,9 @@ public class ValueScaler
 	/**
 	 * Allows the easy changing of a value between 0 and 1 by an number of jumps
 	 * whilst guaranteeing that the returned value will never fall outside of the
-	 * range 0 - 1. Also, The operation is (near enough) reversible, meaning that
-	 * the movement amount is actually representative.
+	 * range 0 - 1. Also, The operation is not directly reversible: jumping one
+	 * +1 units then -1 units will result in a smaller value than the one you
+	 * started of with.
 	 * 
 	 * The function is implemented in a similar way to Xeno's paradox - each jump
 	 * towards the end of the range is smaller than the previous space, as defined
