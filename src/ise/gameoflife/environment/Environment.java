@@ -169,7 +169,7 @@ public class Environment extends AbstractEnvironment
 				}
 				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act, actorID));
 			}
-			log("Agent " + nameOf(actorID) + " hunted " + food.getName() + " with team " + am.getHuntingTeam());
+			log("Agent " + nameOf(actorID) + " hunted " + food.getName() + " with team " + am.getHuntingTeam().hashCode());
 			return null;
 		}
 

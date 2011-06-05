@@ -50,11 +50,14 @@ public class TestGroupableAgent extends AbstractAgent
 				{
 					bestSoFar = noms;
 				}
-			}
-				if (noms.getNutrition() > bestSoFar.getNutrition())
+				else
 				{
-					bestSoFar = noms;
+					if (noms.getNutrition() > bestSoFar.getNutrition())
+					{
+						bestSoFar = noms;
+					}
 				}
+			}
 		}
 		return bestSoFar;
 	}
