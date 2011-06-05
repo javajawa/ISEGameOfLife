@@ -5,6 +5,7 @@ import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,35 +48,18 @@ public class TestGroup extends AbstractGroupAgent
 	 * @return the assignment of teams and which food they are to hunt.
 	 */
 	@Override
-	protected Map<HuntingTeam, Food> selectTeams()
+	public List<HuntingTeam> selectTeams()
 	{
-		//Find food with greatest nutrition / hunters required ratio
-		Food bestSoFar = null;
-		for (Food noms : getConn().availableFoods())
-		{
-			if(bestSoFar == null)
-			{
-				bestSoFar = noms;
-			}			
-			if((noms.getNutrition()/noms.getHuntersRequired()) > (bestSoFar.getNutrition()/bestSoFar.getHuntersRequired()))
-			{
-				bestSoFar = noms;
-			}
-		}
-		//Distribute group into teams of this size
-		HashMap<HuntingTeam, Food> map = new HashMap<HuntingTeam, Food>(); 
+		ArrayList<HuntingTeam> teams = new ArrayList <HuntingTeam>();
+		List<String> members = getDataModel().getMemberList();
+		int agents = members.size();
 
-		List<String> memberList = this.getDataModel().getMemberList();
-		int agentsInGroup = memberList.size();
-		int huntersInTeam = bestSoFar.getHuntersRequired();
-
-		for(int i=0; i < agentsInGroup; i += huntersInTeam){
-			int ubound = (i + huntersInTeam >= agentsInGroup) ? agentsInGroup : i + huntersInTeam;
-			HuntingTeam team = new HuntingTeam (memberList.subList(i, ubound));
-			map.put(team, bestSoFar);
+		for(int i=0; i < agents; i += 2){
+			int ubound = (i + 2 >= agents) ? agents : i + 2;
+			teams.add(new HuntingTeam(members.subList(i, ubound)));
 		}
-		//Order them to hunt that food
-		return map;
+
+		return teams;
 	}
 
 	@Override

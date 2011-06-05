@@ -192,16 +192,15 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	private void doTeamSelect()
 	{
-		Map<HuntingTeam, Food> teams = selectTeams();
+		List<HuntingTeam> teams = selectTeams();
 		// TODO: Remove non-group members from teams
 		List<String> memberList = this.dm.getMemberList();
-		for (HuntingTeam team : teams.keySet())
+		for (HuntingTeam team : teams)
 		{
-			Food toHunt = teams.get(team);
 			for (String agent : team.getMembers())
 			{
 				if (memberList.contains(agent)){
-				ec.act(new GroupOrder(team, agent), getId(), authCode);
+					ec.act(new GroupOrder(team, agent), getId(), authCode);
 				}
 			}
 		}
@@ -412,7 +411,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 * @return A map of all hunting teams, and the food they should be ordered to
 	 * hunt
 	 */
-	abstract protected Map<HuntingTeam, Food> selectTeams();
+	abstract protected List<HuntingTeam> selectTeams();
 	/**
 	 * Function that is called after a member leaves the group.
 	 * The member will not appear in the member list
