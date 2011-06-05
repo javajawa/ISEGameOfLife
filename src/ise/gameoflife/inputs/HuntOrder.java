@@ -1,6 +1,5 @@
 package ise.gameoflife.inputs;
 
-import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 
 /**
@@ -14,10 +13,6 @@ public class HuntOrder extends GenericInput
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Food ordered to be hunted
-	 */
-	private Food toHunt;
-	/**
 	 * Team ordered to hunt food specified
 	 */
 	private HuntingTeam team;
@@ -25,23 +20,12 @@ public class HuntOrder extends GenericInput
 	/**
 	 * Lots of lovely instantiations
 	 * @param time
-	 * @param toHunt
 	 * @param team 
 	 */
-	public HuntOrder(long time, Food toHunt, HuntingTeam team)
+	public HuntOrder(long time, HuntingTeam team)
 	{
 		super(time, "hunt_order");
-		this.toHunt = toHunt;
 		this.team = team;
-	}
-
-	/**
-	 * Getter for hunt order
-	 * @return food ordered to be hunted
-	 */
-	public Food getOrder()
-	{
-		return toHunt;
 	}
 
 	/**
