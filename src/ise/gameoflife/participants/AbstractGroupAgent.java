@@ -201,7 +201,7 @@ public abstract class AbstractGroupAgent implements Participant
 			for (String agent : team.getMembers())
 			{
 				if (memberList.contains(agent)){
-				ec.act(new GroupOrder(toHunt, team, agent), getId(), authCode);
+				ec.act(new GroupOrder(team, agent), getId(), authCode);
 				}
 			}
 		}

@@ -118,8 +118,8 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID){
 			final GroupOrder order = (GroupOrder)action;
-			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getToHunt(), order.getTeam()));
-			log("Group " + nameOf(actorID) + " has told team " + order.getTeam() + " to hunt " + order.getToHunt().getName());
+			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getTeam()));
+			log("Group " + nameOf(actorID) + " has created team " + order.getTeam().hashCode());
 			return null;
 		}
 			
@@ -445,7 +445,7 @@ public class Environment extends AbstractEnvironment
 			{
 				for (String agent : team.getMembers())
 				{
-					act(new GroupOrder(null, team, agent), getId(), authenticator.get(getId()));
+					act(new GroupOrder(team, agent), getId(), authenticator.get(getId()));
 				}
 			}
 		}
