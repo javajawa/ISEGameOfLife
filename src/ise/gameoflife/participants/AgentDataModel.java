@@ -87,10 +87,10 @@ class AgentDataModel extends APlayerDataModel
 	@SuppressWarnings("deprecation")
 	 AgentDataModel(String myId, String roles, Class<? extends AbstractAgent> playerClass, long randomseed, double foodInPossesion, double foodConsumption)
 	{
-		super(myId, roles, playerClass.getCanonicalName(), randomseed);
+		super(myId, roles, playerClass.getSimpleName(), randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
-		this.name = NameGenerator.getName() + " (" + playerClass.getSimpleName() + ")";
+		this.name = NameGenerator.getName();
 		onInitialise();
 	}
 

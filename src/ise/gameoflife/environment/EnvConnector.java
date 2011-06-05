@@ -145,4 +145,9 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		return e.getAgents();
 	}
+
+	int getRoundsPassed()
+	{
+		return e.getRoundsPassed();
+	}
 }
