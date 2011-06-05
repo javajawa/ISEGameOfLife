@@ -6,8 +6,7 @@ import java.util.ArrayList;
  * This class provides the framework for iterative evolution
  * @author admko
  */
-public abstract class Evolution
-	<Specie extends Evolvable>
+public abstract class Evolution <Specie extends Evolvable>
 {
 
 	abstract protected Specie newEntity(Genome genome);
@@ -18,17 +17,16 @@ public abstract class Evolution
 
 	abstract protected boolean select(Specie entity);
 
-	// probably not very efficient
-	protected ArrayList<Specie> evaluateAndSelectFromPool(ArrayList<Specie> slist)
+	protected ArrayList<Specie> evaluateAndSelectFromPool(ArrayList<Specie> speciePool)
 	{
-		for (Specie entity : slist)
+		for (Specie entity : speciePool)
 		{
 			evaluate(entity);
 		}
 
 		ArrayList<Specie> newSpeciePool = new ArrayList<Specie>();
 
-		for (Specie entity : slist)
+		for (Specie entity : speciePool)
 		{
 			if (select(entity))
 			{
@@ -74,6 +72,8 @@ public abstract class Evolution
 				genePool.addGenome(genePool.reproduce());
 			}
 			while (genePool.size() < this.population);
+
+			this.setGenePool(genePool);
 		}
 	}
 
