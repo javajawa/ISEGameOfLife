@@ -397,7 +397,9 @@ abstract public class AbstractAgent implements Participant
 	 */
 	public Food advise(String agent, HuntingTeam agentsTeam)
 	{
-		return giveAdvice(agent, agentsTeam);
+		Food advice = giveAdvice(agent, agentsTeam);
+		dm.gaveAdvice(agent, advice);
+		return advice;
 	}
 
 	/**

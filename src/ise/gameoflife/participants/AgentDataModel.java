@@ -48,6 +48,9 @@ class AgentDataModel extends APlayerDataModel
 	private HashMap<String,History<Double>> trust;
 
 	@Element
+	private HashMap<String,History<Food>> advice;
+
+	@Element
 	private History<Double> happinessHistory;
 	
 	@Element
@@ -187,6 +190,7 @@ class AgentDataModel extends APlayerDataModel
 		loyaltyHistory = new History<Double>(50);
 		lastHunted = new History<Food>(50);
 		trust = new HashMap<String, History<Double>>();
+		advice = new HashMap<String, History<Food>>();
 	}
 
 	/**
@@ -310,6 +314,38 @@ class AgentDataModel extends APlayerDataModel
 		trust.put(player, h);
 	}
 
+	/**
+	 * Returns a history of the advice given to this agent.
+	 * getValue() will return null unless advice has already been given this round
+	 * Past rounds where not advice was given will also return null
+	 * isEmpty will always be false, use size() to check for amount of history
+	 * @param player
+	 * @return 
+	 */
+	History<Food> getAdviceHistory(String player)
+	{
+		if (advice.containsKey(player))
+		{
+			return advice.get(player).getUnmodifableHistory();
+		}
+		History<Food> t = new History<Food>(50);
+		t.newEntry(null);
+		advice.put(player, t);
+		return t.getUnmodifableHistory();
+	}
+
+	void gaveAdvice(String player, Food t)
+	{
+		if (advice.containsKey(player))
+		{
+			advice.get(player).setValue(t);
+			return;
+		}
+		History<Food> h = new History<Food>(50);
+		h.newEntry(t);
+		advice.put(player, h);
+	}
+
 	public double getEconomicBelief()
 	{
 		return economicBelief;
@@ -330,6 +366,10 @@ class AgentDataModel extends APlayerDataModel
 		for (History<Double> h : trust.values())
 		{
 			h.newEntry(true);
+		}
+		for (History<Food> h : advice.values())
+		{
+			h.newEntry(null);
 		}
 	}
 
