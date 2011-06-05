@@ -5,6 +5,26 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	</head>
 	<body>
-		<div>TODO write content</div>
+		<div>Welcome to the ISE Game of Life. Here, we shall briefly explain how to utilise the game to your own ends.
+
+			The AbstractAgent class defines how an agent (ie, a Hunters) interact with the modelling system. As a result, all custom Agents should extend AbstractAgent. Each agent has a UUID that identifies it.
+			
+			The constructor requires two primary properties - the starting food amount and the amount to consume each round in order to stay alive. Note that the default constructor should not be used. 
+			
+			The remainder of the class contains functions which allow an angent to perform various actions. These include: 
+				-choosing what to hunt
+				-asking others for advice about what to hunt
+				-giving advice
+				-choosing which group to join and applying to groups
+				-making proposals and voting for group movement
+				-updating loyalty/happiness/trust values
+				-functions to put inputs in a queue and execute them
+				
+			The AbstractGroupAgent class defines the behaviour of groups, and are themsleves modelled as agents (to make Presage happy). Each group has a UUID that idetifies it.
+			
+			Groups contain a list of all the members of the group, and respond to applications. In addition, they have fuctions which deal with the creation of new groups (onActivate()) and remove the group once it is empty or disbanded (onDeActivation()).
+				
+			
+		</div>
 	</body>
 </html>
