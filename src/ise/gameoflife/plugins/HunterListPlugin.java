@@ -25,7 +25,7 @@ import presage.Plugin;
 import presage.Simulation;
 
 /**
- * TODO: Document this plugin
+ * 
  * @author Benedict
  */
 public class HunterListPlugin extends JPanel implements Plugin

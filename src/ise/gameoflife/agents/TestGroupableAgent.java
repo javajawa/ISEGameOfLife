@@ -38,7 +38,6 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected Food chooseFood()
 	{
-		// TODO: Update this code to work with team
 		HuntingTeam team = this.getDataModel().getHuntingTeam();
 		int teamSize = (team != null ? team.getMembers().size() : 1);
 		Food bestSoFar = null;
@@ -96,30 +95,23 @@ public class TestGroupableAgent extends AbstractAgent
 	@Override
 	protected void groupApplicationResponse(boolean accepted)
 	{
-		// TODO: Do something here?
-		// throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected ProposalType makeProposal()
 	{
-		// TODO: Implement
 		return ProposalType.staySame;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected VoteType castVote(Proposition p)
 	{
-		// TODO: Implement
-		return VoteType.For;
-		//throw new UnsupportedOperationException("Not supported yet.");
+		return VoteType.Abstain;
 	}
 
 	@Override
 	protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
 	{
-		// TODO Implement
 		return null;
 	}
 
@@ -127,20 +119,20 @@ public class TestGroupableAgent extends AbstractAgent
 	protected double updateHappinessAfterHunt(double foodHunted,
 					double foodReceived)
 	{
-		return 0; //throw new UnsupportedOperationException("Not supported yet.");
+		return 0;
 	}
 
 	@Override
 	protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
 	{
-		return 0; //throw new UnsupportedOperationException("Not supported yet.");
+		return 0;
 	}
 
 	@Override
 	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
 					double foodReceived)
 	{
-		return null; //throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override
@@ -148,7 +140,6 @@ public class TestGroupableAgent extends AbstractAgent
 					double overallMovement)
 	{
 		return 0;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
@@ -156,7 +147,6 @@ public class TestGroupableAgent extends AbstractAgent
 					double overallMovement)
 	{
 		return 0;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
@@ -164,7 +154,6 @@ public class TestGroupableAgent extends AbstractAgent
 					int votes, double overallMovement)
 	{
 		return null;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 }
