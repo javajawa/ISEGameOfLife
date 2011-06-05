@@ -39,12 +39,13 @@ public class TestGroupableAgent extends AbstractAgent
 	protected Food chooseFood()
 	{
 		// TODO: Update this code to work with team
-
+		HuntingTeam team = this.getDataModel().getHuntingTeam();
+		int teamSize = (team != null ? team.getMembers().size() : 1);
 		Food bestSoFar = null;
 
 		for (Food noms : getConn().availableFoods())
 		{
-			if (noms.getHuntersRequired() <= 1)
+			if (noms.getHuntersRequired() <= teamSize)
 			{
 				if (bestSoFar == null)
 				{

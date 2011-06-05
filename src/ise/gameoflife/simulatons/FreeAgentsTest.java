@@ -3,12 +3,10 @@ package ise.gameoflife.simulatons;
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.agents.TestGroupableAgent;
 import ise.gameoflife.environment.EnvironmentDataModel;
-import ise.gameoflife.groups.TestGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.NameGenerator;
 import ise.gameoflife.participants.AbstractAgent;
-import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
@@ -16,10 +14,8 @@ import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.TreeMap;
 import presage.EventScriptManager;
@@ -77,6 +73,12 @@ public class FreeAgentsTest
 		for (int i = 0; i < 5; i++)
 		{
 			a = new TestGroupableAgent(20, 2);
+			parts.put(a.getId(), a);
+			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+		}
+		for (int i = 0; i < 1; i++)
+		{
+			a = new TestAgent(20, 2);
 			parts.put(a.getId(), a);
 			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
 		}

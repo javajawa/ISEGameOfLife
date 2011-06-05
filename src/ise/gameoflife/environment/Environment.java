@@ -169,7 +169,7 @@ public class Environment extends AbstractEnvironment
 				}
 				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act, actorID));
 			}
-			log("Agent " + nameOf(actorID) + " hunted " + food.getName() + " with team " + am.getHuntingTeam().hashCode());
+			log("Agent " + nameOf(actorID) + " hunted " + food.getName() + (am.getHuntingTeam() == null ? " alone." : " with team " + am.getHuntingTeam().hashCode()));
 			return null;
 		}
 
@@ -488,14 +488,14 @@ public class Environment extends AbstractEnvironment
 			{
 				List<String> agents = hunters.get(f);
 				double foodGained;
-				if (agents.size() >= f.getHuntersRequired())
+
+				int count = 0;
+				while ((count + 1) * f.getHuntersRequired() <= agents.size())
 				{
-					foodGained = f.getNutrition() / agents.size();
+					++count;
 				}
-				else
-				{
-					foodGained = 0;
-				}
+
+				foodGained = count * f.getNutrition() / agents.size();
 
 				// Then, for each agent, send the message
 				String groupID = dmodel.getAgentById(agents.get(0)).getGroupId();

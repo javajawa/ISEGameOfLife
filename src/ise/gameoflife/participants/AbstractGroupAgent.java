@@ -325,7 +325,7 @@ public abstract class AbstractGroupAgent implements Participant
 			boolean response = this.respondToJoinRequest(req.getAgent());
 			if (response)	this.dm.addMember(req.getAgent());
 			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(), authCode);
-			ec.log("I, " + dm.getName() + ", got a join request from " + ec.nameof(((JoinRequest)input).getAgent()));
+			ec.log(dm.getName() + " got a join request from " + ec.nameof(((JoinRequest)input).getAgent()));
 			return;
 		}
 
@@ -334,7 +334,7 @@ public abstract class AbstractGroupAgent implements Participant
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
-			ec.log("I, " + dm.getName() + ", lost memeber " + ec.nameof(in.getAgent()) + " because of " + in.getReason());
+			ec.log(dm.getName() + " lost memeber " + ec.nameof(in.getAgent()) + " because of " + in.getReason());
 			
 			if (dm.getMemberList().isEmpty()) ec.act(new Death(), dm.getId(), authCode);
 			
@@ -345,7 +345,7 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			huntResult.put(in.getAgent(), in.getFoodHunted());
-			ec.log("Agent " + ec.nameof(in.getAgent()) + " has hunted food worth" + in.getFoodHunted() + " for I, group" + dm.getName());
+			ec.log("Agent " + ec.nameof(in.getAgent()) + " has hunted food worth " + in.getFoodHunted() + " for " + dm.getName());
 			return;
 		}
 
@@ -360,7 +360,7 @@ public abstract class AbstractGroupAgent implements Participant
 			voteResult.put(v.getProposition(), voteResult.get(v.getProposition()) + v.getVote().getValue());
 			ec.log("Agent " + ec.nameof(v.getAgent()) + " has voted " + v.getVote() + 
 							" on " + v.getProposition().getType() + " by " + 
-							ec.nameof(v.getProposition().getProposer()) + " as a member of I, group" + dm.getName());
+							ec.nameof(v.getProposition().getProposer()) + " as a member of " + dm.getName());
 			return;
 		}
 
