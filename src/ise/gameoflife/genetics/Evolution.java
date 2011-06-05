@@ -10,9 +10,28 @@ public abstract class Evolution
 	<Specie extends Evolvable, SpecieGenome extends Genome>
 {
 
-	abstract protected void evaluate();
+	abstract protected void evaluate(Specie entity);
 
-	abstract protected void select();
+	protected void evaluate(ArrayList<Specie> slist)
+	{
+		for (Specie entity : slist)
+		{
+			evaluate(entity);
+		}
+	}
+
+	abstract protected boolean select(Specie entity);
+
+	protected ArrayList<Specie> select(ArrayList<Specie> slist)
+	{
+		for (Specie entity : specieList)
+		{
+			if (!select(entity))
+			{
+				specieList.remove(entity); // probably not very efficient
+			}
+		}
+	}
 	
 	public void evolve()
 	{
@@ -33,9 +52,20 @@ public abstract class Evolution
 			 currentIteration <= this.iterations;
 			 currentIteration++)
 		{
-			evaluate();
-			select();
+			evaluate(this.specieList());
+			select(this.specieList());
+			do
+			{
+
+				this.specieList.add();
+			}
+			while ();
 		}
+	}
+
+	private ArrayList<Specie> setSpecieListWithGenePool(GenePool genome)
+	{
+		
 	}
 
 	// boilerplate code for setters & getters
