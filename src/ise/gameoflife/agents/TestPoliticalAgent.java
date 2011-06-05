@@ -71,7 +71,7 @@ public class TestPoliticalAgent extends AbstractAgent{
             i++;
         }
 
-        //Hunting a stag is equivalent with cooperation. Hunting rabbit is equivalent to defection
+        //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
         if (foodArray[0].getNutrition() > foodArray[1].getNutrition()){
             cooperateFood = foodArray[0];
             defectFood = foodArray[1];
@@ -100,7 +100,6 @@ public class TestPoliticalAgent extends AbstractAgent{
                 break;
             case TFT:
                 //Get last hunting choice of opponent and act accordingly
-
                 List<String> members = this.getDataModel().getHuntingTeam().getMembers();
                 Food opponentPreviousChoice = cooperateFood;
 
@@ -109,13 +108,11 @@ public class TestPoliticalAgent extends AbstractAgent{
                 if (members.get(0).equals(this.getId())){
                     if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1){
                         opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
-                        System.out.println(opponentPreviousChoice.getName());
                     }
                 }
                 else{
                     if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1){
                         opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
-                        System.out.println(opponentPreviousChoice.getName());
                     }
                 }  
                 choice = opponentPreviousChoice;

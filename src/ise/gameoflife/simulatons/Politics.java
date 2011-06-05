@@ -73,7 +73,7 @@ public class Politics
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 
 		HashMap<String, Food> foods = new HashMap<String, Food>();
-		Food rabbit = new Food("rabbit", 1, 1);
+		Food rabbit = new Food("rabbit", 2, 1);
 		foods.put(rabbit.getId().toString(), rabbit);
 		Food stag = new Food("stag", 5, 2);
 		foods.put(stag.getId().toString(), stag);
@@ -81,7 +81,16 @@ public class Politics
 		EventScriptManager ms = new EventScriptManager();
 
 		AbstractAgent politicsAgent;
-		for (int i = 0; i < 10; i++)
+		
+
+                for (int i = 0; i < 10; i++)
+		{
+			politicsAgent = new TestPoliticalAgent(20, 2, AgentType.R);
+			parts.put(politicsAgent.getId(), politicsAgent);
+			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(politicsAgent.getId())));
+		}
+
+                for (int i = 0; i < 10; i++)
 		{
 			politicsAgent = new TestPoliticalAgent(20, 2, AgentType.TFT);
 			parts.put(politicsAgent.getId(), politicsAgent);
