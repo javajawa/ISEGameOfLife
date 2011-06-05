@@ -37,8 +37,9 @@ public abstract class Genome implements Serializable
 
 	/**
 	 * Generates a randomized genome representation
+	 * @return a completely randomized feasible genome
 	 */
-	abstract public void randomize();
+	abstract public Genome randomize();
 
 	/**
 	 * Mutates the genome

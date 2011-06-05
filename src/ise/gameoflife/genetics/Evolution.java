@@ -83,9 +83,7 @@ public abstract class Evolution
 		
 		do
 		{
-			Genome genome = this.newGenome();
-			genome.randomize();
-			pool.addGenome(genome);
+			pool.addGenome(this.newGenome().randomize());
 		}
 		while (pool.size() < this.population);
 
