@@ -4,6 +4,7 @@ import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.RespondToApplication;
+import ise.gameoflife.actions.VoteResult;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.HuntResult;
@@ -14,6 +15,7 @@ import ise.gameoflife.inputs.Vote;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
+import static ise.gameoflife.models.ValueScaler.scale;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -248,13 +250,16 @@ public abstract class AbstractGroupAgent implements Participant
 	private void countVotes()
 	{
 		dm.setProposals(new HashMap<Proposition, Integer>(voteResult));
+		HashMap<String, Proposition> props = new HashMap<String, Proposition>();
+		double movement = 0;
+		double motionsPassed = 0;
+
 		for (Proposition p : voteResult.keySet())
 		{
 			if (voteResult.get(p) > 0)
 			{
-				// TODO: Enact this proposal
-				// Well, add it to an enacted list
-				// Then average that list
+				movement += p.getType().getMovement();
+				motionsPassed ++;
 				ec.log(p.getProposer() + "'s " + p.getType() + " proposal was voted in (Vote=" + voteResult.get(p) + ')');
 			}
 			else
@@ -262,6 +267,19 @@ public abstract class AbstractGroupAgent implements Participant
 				ec.log(p.getProposer() + "'s " + p.getType() + " proposal was not voted in (Vote=" + voteResult.get(p) + ')');
 			}
 			// TODO: Store each proposition and result in history?
+			props.put(p.getProposer(), p);
+		}
+
+		// Calculate the groups new position
+		double change = dm.getCurrentEconomicPoisition();
+		dm.setEconomicPosition(scale(change, movement/motionsPassed));
+		change = dm.getCurrentEconomicPoisition() - change;
+
+		// Inform eahc agfent of how their vote went, and the overall group movement
+		for (String agent : props.keySet())
+		{
+			Proposition p = props.get(agent);
+			ec.act(new VoteResult(p, voteResult.get(p), change), getId(), authCode);
 		}
 	}
 	/**
