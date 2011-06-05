@@ -51,6 +51,7 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
+
 	/**
 	 * Passes on group applications
 	 */
@@ -616,5 +617,10 @@ public class Environment extends AbstractEnvironment
 	public void setDebug(boolean debug)
 	{
 		this.debug = debug;
+	}
+
+	Set<String> getAgents()
+	{
+		return dmodel.getAgents();
 	}
 }

@@ -136,4 +136,13 @@ public class PublicEnvironmentConnection
 	{
 		ec.log(s);
 	}
+
+	/**
+	 * Gets a list of all the active agents in the simulation
+	 * @return A list of all the active agents in the simulation
+	 */
+	public Set<String> getAgents()
+	{
+		return ec.getAgents();
+	}
 }

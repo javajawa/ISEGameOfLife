@@ -140,4 +140,9 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		e.log(s);
 	}
+
+	public Set<String> getAgents()
+	{
+		return e.getAgents();
+	}
 }

@@ -208,4 +208,9 @@ public class EnvironmentDataModel extends AEnvDataModel
 	{
 		return foodConsumedPerAdvice;
 	}
+
+	Set<String> getAgents()
+	{
+		return agents.keySet();
+	}
 }
