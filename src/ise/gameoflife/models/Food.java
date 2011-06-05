@@ -105,5 +105,11 @@ public class Food implements Serializable
 		if (id == null) id = UUID.fromString(this.id_string);
 		return id;
 	}
-						
+
+	@Override
+	public String toString()
+	{
+		return "Food [" + getName() + ']';
+	}
+
 }

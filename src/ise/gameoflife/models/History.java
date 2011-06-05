@@ -186,4 +186,11 @@ public class History<T extends Serializable> implements Serializable
 		if (u == null) u = new UnmodifiableHistory<T>(data, maxSize);
 		return u;
 	}
+
+	@Override
+	public String toString()
+	{
+		return super.toString() +  " [" + size() + "] : " + data.toString();
+	}
+
 }

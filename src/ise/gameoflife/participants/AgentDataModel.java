@@ -60,8 +60,8 @@ class AgentDataModel extends APlayerDataModel
 	@Element
 	private double economicBelief;
 	
-	private History<Food> lastHunted = null;
-	private History<HuntingTeam> huntingTeam = null;
+	private History<Food> lastHunted;
+	private History<HuntingTeam> huntingTeam;
 
 	/**
 	 * Serialised constructors in the package are implemented as deprecated to
