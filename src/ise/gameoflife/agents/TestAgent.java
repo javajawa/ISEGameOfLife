@@ -127,4 +127,28 @@ public class TestAgent extends AbstractAgent
 		return null; //throw new UnsupportedOperationException("Not supported yet.");
 	}
 
+	@Override
+	protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
+					double overallMovement)
+	{
+		return 0;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected double updateHappinessAfterVotes(Proposition proposition, int votes,
+					double overallMovement)
+	{
+		return 0;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
+					int votes, double overallMovement)
+	{
+		return null;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
+
 }

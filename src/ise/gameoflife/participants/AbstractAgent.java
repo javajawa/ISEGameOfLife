@@ -561,6 +561,6 @@ abstract public class AbstractAgent implements Participant
 	 */
 	abstract protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
 	abstract protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
-	abstract protected Double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,	int votes, double overallMovement);
 }
