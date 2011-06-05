@@ -120,7 +120,7 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final GroupOrder order = (GroupOrder)action;
 			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getTeam()));
-			log("Group " + nameOf(actorID) + " has created team " + order.getTeam().hashCode());
+			log("Group " + nameOf(actorID) + " has created team " + order.getTeam().hashCode() + " including " + nameOf(order.getAgent()));
 			return null;
 		}
 			
@@ -198,7 +198,10 @@ public class Environment extends AbstractEnvironment
 			if (application.wasAccepted())
 			{
 				String old_group = dmodel.getAgentById(application.getAgent()).getGroupId();
-				sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, application.getAgent()));
+				if (old_group != null)
+				{
+					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, application.getAgent()));
+				}
 			}
 			log("Agent " + nameOf(application.getAgent()) + " has attempted to join group " + nameOf(actorID) + ", and the result was: " + application.wasAccepted());
 			return null;
@@ -451,7 +454,8 @@ public class Environment extends AbstractEnvironment
 			{
 				for (String agent : team.getMembers())
 				{
-					act(new GroupOrder(team, agent), getId(), authenticator.get(getId()));
+					sim.getPlayer(agent).enqueueInput(new HuntOrder(sim.getTime(), team));
+					log("FreeAgentsGroup has created team " + team.hashCode() + " including " + nameOf(agent));
 				}
 			}
 		}
@@ -505,10 +509,20 @@ public class Environment extends AbstractEnvironment
 
 				// Then, for each agent, send the message
 				String groupID = dmodel.getAgentById(agents.get(0)).getGroupId();
-				Participant g = sim.getPlayer(groupID);
-				for (String agent : agents)
+				if (groupID == null)
 				{
-					g.enqueueInput(new HuntResult(agent, foodGained, 0, dmodel.time));
+					for (String agent : agents)
+					{
+						sim.getPlayer(agent).enqueueInput(new HuntResult(agent, foodGained, foodGained, dmodel.time));
+					}
+				}
+				else
+				{
+					Participant g = sim.getPlayer(groupID);
+					for (String agent : agents)
+					{
+						g.enqueueInput(new HuntResult(agent, foodGained, 0, dmodel.time));
+					}
 				}
 			}
 		}

@@ -203,4 +203,9 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getHuntingHistory();
 	}
+
+	public Double getTrust(String agent)
+	{
+		return source.getTrust(agent);
+	}
 }

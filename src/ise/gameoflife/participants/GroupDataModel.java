@@ -1,5 +1,6 @@
 package ise.gameoflife.participants;
 
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
@@ -144,5 +145,55 @@ class GroupDataModel extends APlayerDataModel
 	void setProposals(HashMap<Proposition, Integer> p)
 	{
 		propositionHistory.setValue(p);
+	}
+
+	double getEstimatedSocialLocation()
+	{
+		/*
+		 * Algorithm:
+		 *  - The laeaders are those peopel trust most
+		 *  - The social location is ratio(ish) of leaders to group members
+		 *  - This can be modelled as the the deviation of the trsut values
+		 *   - If one agent is trusted more than others, high deviation
+		 *   - This represents an autocracy
+		 *  - The values used to find standard deviation will be the average of each
+		 *    agent's opinion of an agent
+		 */
+		List<Double> values = new ArrayList<Double>(memberList.size());
+		PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
+		double sigma_x = 0;
+		int n = 0;
+
+		for (String candidate : memberList)
+		{
+			n = 0;
+			sigma_x = 0;
+			for (String truster : memberList)
+			{
+				Double t = ec.getAgentById(truster).getTrust(candidate);
+				if (t != null)
+				{
+					sigma_x += t;
+					++n;
+				}
+			}
+			values.add(sigma_x / n);
+		}
+
+		n = values.size();
+
+		if (n == 0) return 0.5;
+
+		sigma_x = 0;
+		for (Double v : values)	sigma_x += v;
+
+		double mu = sigma_x / n;
+
+		sigma_x = 0;
+		for (Double v : values)	sigma_x += (v - mu)*(v - mu);
+
+		sigma_x = 2 * Math.sqrt(sigma_x);
+
+		return sigma_x;
 	}
 }

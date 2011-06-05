@@ -12,7 +12,6 @@ import ise.gameoflife.inputs.JoinRequest;
 import ise.gameoflife.inputs.LeaveNotification;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.inputs.Vote;
-import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import static ise.gameoflife.models.ValueScaler.scale;
