@@ -9,6 +9,7 @@ public abstract class EvolvableEntity implements Evolvable
 	Genome genome = null;
 	double fitness = -1;
 
+	@Override
 	public Genome genome()
 	{
 		return this.genome;
@@ -18,6 +19,7 @@ public abstract class EvolvableEntity implements Evolvable
 	 * Subclasses should override this method and call super
 	 * @param aGenome a compatible Genome instance for this
 	 */
+	@Override
 	public void setGenome(Genome aGenome)
 	{
 		// check if genome is compatible
@@ -33,11 +35,13 @@ public abstract class EvolvableEntity implements Evolvable
 		this.genome = aGenome;
 	}
 
+	@Override
 	public double fitness()
 	{
 		return this.fitness;
 	}
 
+	@Override
 	public void setFitness()
 	{
 		this.fitness = fitness;
