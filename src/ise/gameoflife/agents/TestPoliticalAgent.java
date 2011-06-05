@@ -103,6 +103,12 @@ public class TestPoliticalAgent extends AbstractAgent{
                 List<String> members = this.getDataModel().getHuntingTeam().getMembers();
                 Food opponentPreviousChoice = cooperateFood;
 
+								// TFT makes no sense in a team of 1...
+								if (members.size() == 1)
+								{
+									choice = defectFood;
+									break;
+								}
                 //Get the previous choice of your pair. For this round imitate him.
                 //In the first round we have no hunting history therefore default choice is stag
                 if (members.get(0).equals(this.getId())){
