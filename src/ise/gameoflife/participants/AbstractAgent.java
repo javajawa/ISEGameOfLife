@@ -61,7 +61,7 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
-			System.out.println("I, agent " + dm.getName() + ", consumed " + dm.getFoodConsumedThisTurn() + " units of food");
+			ec.log("I, agent " + dm.getName() + ", consumed " + dm.getFoodConsumedThisTurn() + " units of food");
 			dm.foodConsumed(dm.getFoodConsumedThisTurn());
 		}
 	}
