@@ -35,7 +35,7 @@ import presage.events.CoreEvents.ActivateParticipant;
  *
  * @author george
  */
-public class Politics
+public class Politics extends GenericSimulation
 {
 
 	public static void main(String Args[])

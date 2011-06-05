@@ -31,7 +31,7 @@ import presage.configure.ConfigurationWriter;
  *
  * @author Benedict Harcourt
  */
-public class FreeAgentsTest
+public class FreeAgentsTest extends GenericSimulation
 {
 
 	public static void main(String args[])

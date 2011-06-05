@@ -27,7 +27,7 @@ import presage.configure.ConfigurationWriter;
  *
  * @author Harry Eakins
  */
-public class DoubleAgent {
+public class DoubleAgent extends GenericSimulation {
 
 	public static void main(String args[])
 	{

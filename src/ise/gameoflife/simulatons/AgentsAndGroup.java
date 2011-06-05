@@ -33,7 +33,7 @@ import presage.configure.ConfigurationWriter;
  *
  * @author Benedict Harcourt
  */
-public class AgentsAndGroup
+public class AgentsAndGroup extends GenericSimulation
 {
 
 	public static void main(String args[])

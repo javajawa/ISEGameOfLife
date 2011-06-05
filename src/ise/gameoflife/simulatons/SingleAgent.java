@@ -28,7 +28,7 @@ import presage.configure.ConfigurationWriter;
  *
  * @author Benedict
  */
-public class SingleAgent
+public class SingleAgent extends GenericSimulation
 {
 
 	public static void main(String args[])
