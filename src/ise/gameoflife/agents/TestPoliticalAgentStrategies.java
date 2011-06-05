@@ -110,49 +110,54 @@ public class TestPoliticalAgentStrategies extends AbstractAgent{
 
     @Override
     protected ProposalType makeProposal() {
-        throw new UnsupportedOperationException("Not supported yet.");
+		// TODO: Implement
+		return ProposalType.staySame;
+		//throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected VoteType castVote(Proposition p) {
-        throw new UnsupportedOperationException("Not supported yet.");
+		// TODO: Implement
+		return VoteType.For;
+		//throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected Food giveAdvice(String agent, HuntingTeam agentsTeam) {
-        throw new UnsupportedOperationException("Not supported yet.");
+		// TODO Implement
+		return null;
     }
 
     @Override
     protected double updateHappinessAfterHunt(double foodHunted, double foodReceived) {
-        throw new UnsupportedOperationException("Not supported yet.");
+		return 0; //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived) {
-        throw new UnsupportedOperationException("Not supported yet.");
+		return 0; //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived) {
-        throw new UnsupportedOperationException("Not supported yet.");
+		return null; //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected double updateLoyaltyAfterVotes(Proposition proposition, int votes, double overallMovement) {
-        throw new UnsupportedOperationException("Not supported yet.");
+ 		return 0;
+		//throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected double updateHappinessAfterVotes(Proposition proposition, int votes, double overallMovement) {
-        throw new UnsupportedOperationException("Not supported yet.");
+		return 0;
+		//throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected Map<String, Double> updateTrustAfterVotes(Proposition proposition, int votes, double overallMovement) {
-        throw new UnsupportedOperationException("Not supported yet.");
+		return null;
+		//throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
-
 }

@@ -72,9 +72,13 @@ public class Politics
 		TreeMap<String, Participant> parts = new TreeMap<String, Participant>();
 
 		HashMap<String, Food> foods = new HashMap<String, Food>();
-		Food chicken = new Food("chicken", 2, 1);
-		foods.put(chicken.getId().toString(), chicken);
-		EventScriptManager ms = new EventScriptManager();
+		Food rabbit = new Food("rabbit", 1, 1);
+		foods.put(rabbit.getId().toString(), rabbit);
+		Food stag = new Food("stag", 5, 2);
+		foods.put(stag.getId().toString(), stag);
+		
+                EventScriptManager ms = new EventScriptManager();
+
                 AbstractAgent politicsAgent;
                 for (int i = 0; i < 10; i++)
 		{
