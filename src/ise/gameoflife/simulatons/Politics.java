@@ -4,8 +4,9 @@
  */
 package ise.gameoflife.simulatons;
 
-import ise.gameoflife.agents.TestPoliticalAgentStrategies;
+import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.environment.EnvironmentDataModel;
+import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.NameGenerator;
 import ise.gameoflife.participants.AbstractAgent;
@@ -17,6 +18,7 @@ import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import ise.gameoflife.tokens.AgentType;
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
@@ -81,13 +83,13 @@ public class Politics
 		AbstractAgent politicsAgent;
 		for (int i = 0; i < 10; i++)
 		{
-			politicsAgent = new TestPoliticalAgentStrategies(20, 2, AgentType.R);
+			politicsAgent = new TestPoliticalAgent(20, 2, AgentType.TFT);
 			parts.put(politicsAgent.getId(), politicsAgent);
 			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(politicsAgent.getId())));
 		}
 
-		EnvironmentDataModel dm = new EnvironmentDataModel("Political arena simulation", foods);
-		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm, null);
+		EnvironmentDataModel dm = new EnvironmentDataModel("Political Arena Simulation", foods, Collections.EMPTY_LIST, 0.1);
+		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm, BasicFreeAgentGroup.class);
 
 		presageConfig.setEnvironmentClass(environment.getClass());
 		ConfigurationWriter.write(configPath + "/sim.xml", presageConfig, parts, environment, pm, ms);

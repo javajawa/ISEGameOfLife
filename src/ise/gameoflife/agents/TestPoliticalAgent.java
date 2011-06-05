@@ -11,6 +11,7 @@ import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.tokens.AgentType;
+import java.util.List;
 import java.util.Map;
 import org.simpleframework.xml.Element;
 import java.util.Random;
@@ -20,19 +21,19 @@ import java.util.Random;
  */
 
 //Test class. I will copy strategies in Aadil's agent
-public class TestPoliticalAgentStrategies extends AbstractAgent{
+public class TestPoliticalAgent extends AbstractAgent{
 
     private static final long serialVersionUID = 1L;
 
     @Deprecated
-    public TestPoliticalAgentStrategies(){
+    public TestPoliticalAgent(){
 		super();
     }
 
     @Element
     private AgentType type;
 
-    public TestPoliticalAgentStrategies(double initialFood, double consumption, AgentType type){
+    public TestPoliticalAgent(double initialFood, double consumption, AgentType type){
         super("<hunter>", 0, initialFood, consumption);
         this.type = type;
     }
@@ -98,8 +99,26 @@ public class TestPoliticalAgentStrategies extends AbstractAgent{
                     choice = defectFood;
                 break;
             case TFT:
-                //Get last huntinh choice of opponent and act accordingly
-                choice = cooperateFood;
+                //Get last hunting choice of opponent and act accordingly
+
+                List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+                Food opponentPreviousChoice = cooperateFood;
+
+                //Get the previous choice of your pair. For this round imitate him.
+                //In the first round we have no hunting history therefore default choice is stag
+                if (members.get(0).equals(this.getId())){
+                    if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1){
+                        opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
+                        System.out.println(opponentPreviousChoice.getName());
+                    }
+                }
+                else{
+                    if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1){
+                        opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
+                        System.out.println(opponentPreviousChoice.getName());
+                    }
+                }  
+                choice = opponentPreviousChoice;
                 break;
             default:
 		throw new IllegalStateException("Agent type was not recognised");
