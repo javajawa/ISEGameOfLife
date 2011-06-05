@@ -186,8 +186,21 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 		return source.getEconomicBelief();
 	}
 
+	/**
+	 * Gets the generate person name and class name of this agent
+	 * @return The generate person name and class name of this agent
+	 */
 	public String getName()
 	{
 		return source.getName();
+	}
+
+	/**
+	 * Gets the hunting history of this agents
+	 * @return The hunting history of this agents
+	 */
+	public History<Food> getHuntingHistory()
+	{
+		return source.getHuntingHistory();
 	}
 }
