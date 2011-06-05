@@ -45,10 +45,10 @@ class AgentDataModel extends APlayerDataModel
 	@Element(required=false)
 	private String groupId;
 	
-	@ElementMap
+	@ElementMap(keyType=String.class,valueType=History.class)
 	private HashMap<String,History<Double>> trust;
 
-	@ElementMap
+	@ElementMap(keyType=String.class,valueType=History.class)
 	private HashMap<String,History<Food>> advice;
 
 	@Element
