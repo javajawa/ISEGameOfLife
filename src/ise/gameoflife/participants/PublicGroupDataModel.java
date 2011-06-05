@@ -127,4 +127,9 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getTurnsProposals();
 	}
+
+	public double getEstimatedSocialLocation()
+	{
+		return source.getEstimatedSocialLocation();
+	}
 }
