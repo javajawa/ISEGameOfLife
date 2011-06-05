@@ -86,12 +86,12 @@ class AgentDataModel extends APlayerDataModel
 	 * @param foodConsumption Food consumed per turn
 	 */
 	@SuppressWarnings("deprecation")
-	 AgentDataModel(String myId, String roles, String playerClass, long randomseed, double foodInPossesion, double foodConsumption)
+	 AgentDataModel(String myId, String roles, Class<? extends AbstractAgent> playerClass, long randomseed, double foodInPossesion, double foodConsumption)
 	{
-		super(myId, roles, playerClass, randomseed);
+		super(myId, roles, playerClass.getCanonicalName(), randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
-		this.name = NameGenerator.getName();
+		this.name = NameGenerator.getName() + " (" + playerClass.getSimpleName() + ")";
 		onInitialise();
 	}
 

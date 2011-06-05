@@ -2,6 +2,7 @@ package ise.gameoflife.participants;
 
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
 import java.util.ArrayList;
 import presage.PlayerDataModel;
@@ -111,7 +112,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	/**
 	 * @return The hunting history of this agent
 	 */
-	public UnmodifiableHistory<Food> huntingHistory()
+	public History<Food> huntingHistory()
 	{
 		return source.getHuntingHistory();
 	}
@@ -127,7 +128,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	/**
 	 * @return The Team history of this agent
 	 */
-	public UnmodifiableHistory<HuntingTeam> getTeamHistory()
+	public History<HuntingTeam> getTeamHistory()
 	{
 		return source.getTeamHistory();
 	}
@@ -164,7 +165,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	 * Gets the history of this agent's happiness
 	 * @return The history of this agent's happiness
 	 */
-	public UnmodifiableHistory<Double> getHappinessHistory()
+	public History<Double> getHappinessHistory()
 	{
 		return source.getHappinessHistory();
 	}
@@ -182,7 +183,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	 * Gets the history of this agent's loyalty
 	 * @return The history of this agent's loyalty
 	 */
-	public UnmodifiableHistory<Double> getLoyaltyHistory()
+	public History<Double> getLoyaltyHistory()
 	{
 		return source.getLoyaltyHistory();
 	}

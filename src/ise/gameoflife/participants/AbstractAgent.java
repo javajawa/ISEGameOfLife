@@ -225,7 +225,7 @@ abstract public class AbstractAgent implements Participant
 	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption)
 	{
 		UUID myid = UUID.randomUUID();
-		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass().getCanonicalName(), randomseed, initialFood, consumption);
+		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption);
 	}
 
 	/**
