@@ -87,13 +87,13 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public EnvironmentDataModel(String environmentName,
 					HashMap<String, Food> availableFoodTypes,
-					List<Class<? extends AbstractGroupAgent>> allowedGroupTypes, double foodConsumedPerAdvice)
+					ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes, double foodConsumedPerAdvice)
 	{
 		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
 
 		this.agentGroups = new HashMap<String, PublicGroupDataModel>();
-		this.allowedGroupTypes = new ArrayList<Class<? extends AbstractGroupAgent>>(allowedGroupTypes);
+		this.allowedGroupTypes = allowedGroupTypes;
 
 		this.turn = TurnType.firstTurn;
 		this.cycles = 0;
