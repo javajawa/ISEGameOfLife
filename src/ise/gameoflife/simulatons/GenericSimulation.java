@@ -33,6 +33,7 @@ abstract public class GenericSimulation
 	private final ArrayList<Class<? extends AbstractGroupAgent>> groups = new ArrayList<Class<? extends AbstractGroupAgent>>();
 	private final EventScriptManager ms = new EventScriptManager();
 	private final PluginManager pm = new PluginManager();
+	private String configPath;
 
 	@SuppressWarnings("OverridableMethodCallInConstructor")
 	GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice)
@@ -48,7 +49,7 @@ abstract public class GenericSimulation
 
 		// Path configuarations
 		File path = new File(System.getProperty("user.dir"), "simulations/" + this.getClass().getSimpleName());
-		String configPath = path.getAbsolutePath();
+		configPath = path.getAbsolutePath();
 
 		presageConfig.setPluginsConfigPath(configPath + "/plugins.xml");
 		presageConfig.setEventscriptConfigPath(configPath + "/methods.xml");
@@ -95,5 +96,10 @@ abstract public class GenericSimulation
 	protected final void addPlugin(Plugin p)
 	{
 		pm.addPlugin(p);
+	}
+
+	protected final String getPath()
+	{
+		return configPath;
 	}
 }
