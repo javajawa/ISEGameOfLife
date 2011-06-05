@@ -3,7 +3,10 @@ package ise.gameoflife.groups.freeagentgroups;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -11,16 +14,27 @@ import java.util.List;
  */
 public class BasicFreeAgentGroup extends AbstractFreeAgentGroup
 {
+	private Comparator<String> c = new Comparator<String>() {
+			private Random r = new Random();
+			@Override
+			public int compare(String o1, String o2)
+			{
+				return (r.nextBoolean() ? -1 : 1);
+			}
+		};
 
 	@Override
 	public List<HuntingTeam> selectTeams(List<String> freeAgents)
 	{
 		ArrayList<HuntingTeam> teams = new ArrayList<HuntingTeam>();
-		int agents = freeAgents.size();
+		List<String> agents = new ArrayList<String>(freeAgents);
+		Collections.sort(agents, c);
 
-		for(int i=0; i < agents; i += 2){
-			int ubound = (i + 2 >= agents) ? agents : i + 2;
-			teams.add(new HuntingTeam (freeAgents.subList(i, ubound)));
+		int count = agents.size();
+
+		for(int i=0; i < count; i += 2){
+			int ubound = (i + 2 >= count) ? count : i + 2;
+			teams.add(new HuntingTeam (agents.subList(i, ubound)));
 		}
 
 		return teams;
