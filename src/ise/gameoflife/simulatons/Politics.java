@@ -4,15 +4,18 @@
  */
 package ise.gameoflife.simulatons;
 
+import ise.gameoflife.agents.TestPoliticalAgentStrategies;
 import ise.gameoflife.environment.EnvironmentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.NameGenerator;
+import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
+import ise.gameoflife.tokens.AgentType;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Random;
@@ -22,7 +25,9 @@ import presage.Participant;
 import presage.PluginManager;
 import presage.PresageConfig;
 import presage.Environment;
+import presage.ScriptedEvent;
 import presage.configure.ConfigurationWriter;
+import presage.events.CoreEvents.ActivateParticipant;
 
 /**
  *
@@ -69,9 +74,17 @@ public class Politics
 		HashMap<String, Food> foods = new HashMap<String, Food>();
 		Food chicken = new Food("chicken", 2, 1);
 		foods.put(chicken.getId().toString(), chicken);
-
 		EventScriptManager ms = new EventScriptManager();
-		EnvironmentDataModel dm = new EnvironmentDataModel("Single Certain Death", foods);
+                AbstractAgent politicsAgent;
+                for (int i = 0; i < 10; i++)
+		{
+                        politicsAgent = new TestPoliticalAgentStrategies(20, 2, AgentType.R);
+			parts.put(politicsAgent.getId(), politicsAgent);
+			ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(politicsAgent.getId())));
+		}
+
+
+		EnvironmentDataModel dm = new EnvironmentDataModel("Political arena simulation", foods);
 		Environment environment = (Environment)new ise.gameoflife.environment.Environment(true, 0, dm);
 		presageConfig.setEnvironmentClass(environment.getClass());
 		ConfigurationWriter.write(configPath + "/sim.xml", presageConfig, parts, environment, pm, ms);
