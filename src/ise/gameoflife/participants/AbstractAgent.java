@@ -13,6 +13,7 @@ import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.Proposition;
+import ise.gameoflife.inputs.VoteResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.tokens.RegistrationRequest;
@@ -156,6 +157,32 @@ abstract public class AbstractAgent implements Participant
 		
 	}
 
+	private class VoteResultHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof VoteResult);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final VoteResult in = (VoteResult)input;
+
+			ec.log("I, agent " + dm.getName() + " got " + in.getVotes() + " for my " + in.getProposition().getType() + " proposal.");
+			dm.setCurrentHappiness(updateHappinessAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
+			dm.setCurrentLoyalty(updateLoyaltyAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
+			Map<String,Double> t = updateTrustAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement());
+			if (t==null) return;
+			for (String agent : t.keySet())
+			{
+				dm.setTrust(agent, t.get(agent));
+			}
+		}
+	}
+
 	/**
 	 * The DataModel used by this agent.
 	 */
@@ -229,6 +256,7 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new HuntOrderHandler());
 		this.handlers.add(new ApplicationResponseHandler());
 		this.handlers.add(new PropositionHandler());
+		this.handlers.add(new VoteResultHandler());
 	}
 
 	@Override
@@ -532,4 +560,7 @@ abstract public class AbstractAgent implements Participant
 	 * values should be scaled between 0 and 1.
 	 */
 	abstract protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
+	abstract protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected Double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,	int votes, double overallMovement);
 }

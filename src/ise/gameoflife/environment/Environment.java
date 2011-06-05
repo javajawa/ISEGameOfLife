@@ -8,6 +8,7 @@ import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.actions.Proposal;
 import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.actions.Vote;
+import ise.gameoflife.actions.VoteResult;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.HuntOrder;
@@ -273,6 +274,28 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 
+	private class VoteResultHandler implements AbstractEnvironment.ActionHandler
+	{
+		@Override
+		public boolean canHandle(Action action)
+		{
+			return (action.getClass().equals(VoteResult.class));
+		}
+
+		@Override
+		public Input handle(Action action, String actorID){
+			final VoteResult vote = (VoteResult)action;
+			final ise.gameoflife.inputs.VoteResult v = new ise.gameoflife.inputs.VoteResult(vote, dmodel.time);
+
+			sim.getPlayer(vote.getProposition().getProposer()).enqueueInput(v);
+			return null;
+		}
+
+		public VoteResultHandler(){
+			// Nothing to see here. Move along, citizen.
+		}
+	}
+
 	private class TeamHuntEvent
 	{
 		private final Food food;
@@ -382,6 +405,7 @@ public class Environment extends AbstractEnvironment
 		this.actionhandlers.add(new DistributeFoodHandler());
 		this.actionhandlers.add(new ProposalHandler());
 		this.actionhandlers.add(new VoteHandler());
+		this.actionhandlers.add(new VoteResultHandler());
 
 		new PublicEnvironmentConnection(new EnvConnector(this));
 
