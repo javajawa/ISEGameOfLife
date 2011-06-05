@@ -7,32 +7,38 @@ import java.util.ArrayList;
  * @author admko
  */
 public abstract class Evolution
-	<Specie extends Evolvable, SpecieGenome extends Genome>
+	<Specie extends Evolvable>
 {
+
+	abstract protected Specie newEntity(Genome genome);
+
+	abstract protected Genome newGenome();
 
 	abstract protected void evaluate(Specie entity);
 
-	protected void evaluate(ArrayList<Specie> slist)
+	abstract protected boolean select(Specie entity);
+
+	// probably not very efficient
+	protected ArrayList<Specie> evaluateAndSelectFromPool(ArrayList<Specie> slist)
 	{
 		for (Specie entity : slist)
 		{
 			evaluate(entity);
 		}
-	}
 
-	abstract protected boolean select(Specie entity);
+		ArrayList<Specie> newSpeciePool = new ArrayList<Specie>();
 
-	protected ArrayList<Specie> select(ArrayList<Specie> slist)
-	{
-		for (Specie entity : specieList)
+		for (Specie entity : slist)
 		{
-			if (!select(entity))
+			if (select(entity))
 			{
-				specieList.remove(entity); // probably not very efficient
+				newSpeciePool.add(entity);
 			}
 		}
+
+		return newSpeciePool;
 	}
-	
+
 	public void evolve()
 	{
 		// parameter checks
@@ -47,48 +53,85 @@ public abstract class Evolution
 					this.population + ". It must be > 0");
 		}
 
-		// iterative genetic algorithm
+		ArrayList<Specie> speciePool;
+
+		// construct gene pool with random genomes
+		this.setGenePool(this.randomGenePool());
 		for (int currentIteration = 1;
 			 currentIteration <= this.iterations;
 			 currentIteration++)
 		{
-			evaluate(this.specieList());
-			select(this.specieList());
+			speciePool = this.speciePoolWithGenePool(this.genePool());
+
+			// evaluate and select
+			speciePool = evaluateAndSelectFromPool(speciePool);
+
+			GenePool<Genome> genePool = genePoolWithSpeciePool(speciePool);
+
 			do
 			{
-
-				this.specieList.add();
+				// repopulate
+				genePool.addGenome(genePool.reproduce());
 			}
-			while ();
+			while (genePool.size() < this.population);
 		}
 	}
 
-	private ArrayList<Specie> setSpecieListWithGenePool(GenePool genome)
+	private GenePool<Genome> randomGenePool()
 	{
+		GenePool<Genome> pool = new GenePool<Genome>();
 		
+		do
+		{
+			Genome genome = this.newGenome();
+			genome.randomize();
+			pool.addGenome(genome);
+		}
+		while (pool.size() < this.population);
+
+		return pool;
+	}
+
+	private ArrayList<Specie> speciePoolWithGenePool(GenePool<Genome> genePool)
+	{
+		ArrayList<Specie> speciePool = new ArrayList<Specie>();
+
+		for (Genome genome : genePool.pool())
+		{
+			speciePool.add(newEntity(genome));
+		}
+
+		return speciePool;
+	}
+
+	private GenePool<Genome> genePoolWithSpeciePool(ArrayList<Specie> speciePool)
+	{
+		GenePool<Genome> genePool = new GenePool<Genome>();
+
+		for (Specie entity : speciePool)
+		{
+			genePool.addGenome(entity.genome());
+		}
+
+		return genePool;
 	}
 
 	// boilerplate code for setters & getters
-	// specieList
-	protected ArrayList<Specie> specieList = null;
-	public ArrayList<Specie> specieList()
-	{
-		if (null != specieList) return specieList;
-
-		specieList = new ArrayList<Specie>();
-		return specieList;
-	}
 	// genePool
-	protected GenePool<SpecieGenome> genePool = null;
-	public GenePool<SpecieGenome> genePool()
+    protected GenePool<Genome> genePool = null;
+    public GenePool<Genome> genePool()
+    {
+        if (null != genePool) return genePool;
+
+        genePool = new GenePool<Genome>();
+        return genePool;
+    }
+	public void setGenePool(GenePool<Genome> pool)
 	{
-		if (null != genePool) return genePool;
-		
-		genePool = new GenePool<SpecieGenome>();
-		return genePool;
+		genePool = pool;
 	}
 	// iterations
-	protected int iterations = -1;
+	private int iterations = -1;
 	public int iterations()
 	{
 		return this.iterations;
@@ -104,7 +147,7 @@ public abstract class Evolution
 		this.iterations = newIterations;
 	}
 	// population
-	protected int population = -1;
+	private int population = -1;
 	public int population()
 	{
 		return this.population;
