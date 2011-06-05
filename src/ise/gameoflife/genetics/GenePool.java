@@ -8,12 +8,15 @@ import java.util.Random;
  * Can reproduce new genomes from this pool
  * @author Xitong Gao
  */
+// Design Decisions:
+//	-	Should GenePool take into account the population size?
+//		Good for random initialisation etc.
 public class GenePool<SpecieGenome extends Genome>
 {
 
 	protected ArrayList<SpecieGenome> pool = null;
 
-	protected ArrayList<SpecieGenome> pool()
+	public ArrayList<SpecieGenome> pool()
 	{
 		if (null != pool) return pool;
 		
@@ -85,4 +88,14 @@ public class GenePool<SpecieGenome extends Genome>
 
 		return this.pairUpAndCrossOver().mutate();
 	}
+
+	/**
+	 * Returns the population size of the pool
+	 * @return an integer value
+	 */
+	public int size()
+	{
+		return pool().size();
+	}
+
 }
