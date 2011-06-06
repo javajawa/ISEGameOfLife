@@ -19,6 +19,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import presage.Plugin;
@@ -61,7 +62,7 @@ public class HunterListPlugin extends JPanel implements Plugin
 			chart.getXYPlot().setBackgroundAlpha(1);
 			domainAxis = chart.getXYPlot().getDomainAxis();
 			domainAxis.setVisible(false);
-			chart.getXYPlot().getRangeAxis().setVisible(false);
+			chart.getXYPlot().getRangeAxis().setRange(new Range(0, 50), true, true);
 
 			JPanel dataPanel = new JPanel(new GridLayout(3, 2, 2, -2));
 			dataPanel.add(labelise(dm.getName()));

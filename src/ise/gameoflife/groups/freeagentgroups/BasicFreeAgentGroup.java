@@ -15,7 +15,7 @@ import java.util.Random;
 public class BasicFreeAgentGroup extends AbstractFreeAgentGroup
 {
 	private Comparator<String> c = new Comparator<String>() {
-			private Random r = new Random();
+			private Random r = new Random(0);
 			@Override
 			public int compare(String o1, String o2)
 			{

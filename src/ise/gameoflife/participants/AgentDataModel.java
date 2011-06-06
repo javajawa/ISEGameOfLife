@@ -73,7 +73,7 @@ class AgentDataModel extends APlayerDataModel
 	{
 		super();
 	}
-	
+
 	/**
 	 * Creates a new agent with a given amount of initial food 
 	 * and the amount of food they consume per turn
@@ -85,9 +85,14 @@ class AgentDataModel extends APlayerDataModel
 	 * @param foodConsumption Food consumed per turn
 	 */
 	@SuppressWarnings("deprecation")
-	 AgentDataModel(String myId, String roles, Class<? extends AbstractAgent> playerClass, long randomseed, double foodInPossesion, double foodConsumption)
+	AgentDataModel(
+	    String myId, String roles,
+	    Class<? extends AbstractAgent> playerClass,
+	    long randomseed, double foodInPossesion, double foodConsumption,
+	    String comment
+	  )
 	{
-		super(myId, roles, playerClass.getSimpleName(), randomseed);
+		super(myId, roles, playerClass.getSimpleName() + " [" +  comment + ']', randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
 		this.name = NameGenerator.getName();

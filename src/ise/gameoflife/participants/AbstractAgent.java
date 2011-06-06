@@ -224,7 +224,21 @@ abstract public class AbstractAgent implements Participant
 	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption)
 	{
 		UUID myid = UUID.randomUUID();
-		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption);
+		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, "");
+	}
+
+	/**
+	 * Creates a new agent with the two primary properties
+	 * @param myroles The roles that this agent can perform
+	 * @param randomseed the random seed for this agent
+	 * @param initialFood The initial amount of food
+	 * @param consumption The amount consumed per turn
+	 * @param comment A comment for this agents class/type (very short, please)
+	 */
+	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption, String comment)
+	{
+		UUID myid = UUID.randomUUID();
+		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, comment);
 	}
 
 	/**
@@ -469,7 +483,12 @@ abstract public class AbstractAgent implements Participant
 	{
 		return this.dm.random.nextLong();
 	}
-	
+
+	protected final boolean uniformRandBoolean()
+	{
+		return this.dm.random.nextBoolean();
+	}
+
 	/**
 	 * Called when the agent has been activated, and when both the {@link 
 	 * PublicAgentDataModel data model} and the {@link PublicEnvironmentConnection
