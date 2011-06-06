@@ -12,6 +12,7 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.tokens.AgentType;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.simpleframework.xml.Element;
@@ -61,25 +62,23 @@ public class TestPoliticalAgent extends AbstractAgent{
 
     @Override
     protected Food chooseFood() {
-        //We assume there will be only two food sources (stags/rabbits)
-        Food[] foodArray = new Food[2];
+        //We assume there will only be two food sources (stags/rabbits)
+        List<Food> foodArray = new LinkedList<Food>();
         Food cooperateFood, defectFood, choice;
-        int i = 0;
 
         //Stores the two sources in an array
         for (Food noms : getConn().availableFoods()){
-            foodArray[i] = noms;
-            i++;
+            foodArray.add(noms);
         }
 
         //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-        if (foodArray[0].getNutrition() > foodArray[1].getNutrition()){
-            cooperateFood = foodArray[0];
-            defectFood = foodArray[1];
+        if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition()){
+            cooperateFood = foodArray.get(0);
+            defectFood = foodArray.get(1);
         }
         else{
-            cooperateFood = foodArray[1];
-            defectFood = foodArray[0];
+            cooperateFood = foodArray.get(1);
+            defectFood = foodArray.get(0);
         }
 
         switch (type){
@@ -127,15 +126,14 @@ public class TestPoliticalAgent extends AbstractAgent{
             default:
 		throw new IllegalStateException("Agent type was not recognised");
         }
-
+        
         return choice;
     }
 
     @Override
     protected ProposalType makeProposal() {
-		// TODO: Implement
                 String groupId = this.getDataModel().getGroupId();
-                if (groupId != null){
+                if (groupId != null){   //If this agent is member of a group
                     double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
                     double agentEconomicBelief = this.getDataModel().getEconomicBelief();
                     if (agentEconomicBelief > groupEconomicPosition)
@@ -143,7 +141,7 @@ public class TestPoliticalAgent extends AbstractAgent{
                     else
                         return ProposalType.moveLeft;
                 }
-                else{
+                else{   //Proposal makes no sense for a free agent
                     return ProposalType.staySame;
                 }
     }
@@ -173,6 +171,7 @@ public class TestPoliticalAgent extends AbstractAgent{
 
     @Override
     protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived) {
+
                 List<String> members = this.getDataModel().getHuntingTeam().getMembers();
                 Map<String, Double> newTrustValue = new HashMap<String, Double>();
                 double trust;

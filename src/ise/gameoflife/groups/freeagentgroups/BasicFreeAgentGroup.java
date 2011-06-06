@@ -31,8 +31,8 @@ public class BasicFreeAgentGroup extends AbstractFreeAgentGroup
 		Collections.sort(agents, c);
 
 		int count = agents.size();
-
-		for(int i=0; i < count; i += 2){
+                
+                for(int i=0; i < count; i += 2){
 			int ubound = (i + 2 >= count) ? count : i + 2;
 			teams.add(new HuntingTeam (agents.subList(i, ubound)));
 		}
