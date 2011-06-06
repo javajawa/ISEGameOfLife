@@ -35,8 +35,7 @@ public class TestPoliticalAgent extends AbstractAgent
 	public TestPoliticalAgent()
 	{
 		super();
-<<<<<<< HEAD
-    }
+        }
 
     @Element
     private AgentType type;
@@ -107,7 +106,6 @@ public class TestPoliticalAgent extends AbstractAgent
         
         if (chosenGroup.equals("")) {
             GroupDataInitialiser myGroup = new GroupDataInitialiser(0, this.getDataModel().getEconomicBelief());
-            TestPoliticalGroup theGroup = new TestPoliticalGroup(myGroup);
             chosenGroup = getConn().createGroup(TestPoliticalGroup.class, myGroup);
         }
         return chosenGroup;
@@ -119,306 +117,197 @@ public class TestPoliticalAgent extends AbstractAgent
     }
 
     @Override
-    protected Food chooseFood() {
-        //We assume there will be only two food sources (stags/rabbits)
-        Food[] foodArray = new Food[2];
-        Food cooperateFood, defectFood, choice;
-        int i = 0;
+    protected Food chooseFood()
+    {
+            //We assume there will only be two food sources (stags/rabbits)
+            List<Food> foodArray = new LinkedList<Food>();
+            Food cooperateFood, defectFood, choice;
 
-        //Stores the two sources in an array
-        for (Food noms : getConn().availableFoods()){
-            foodArray[i] = noms;
-            i++;
-        }
+            //Stores the two sources in an array
+            for (Food noms : getConn().availableFoods())
+            {
+                    foodArray.add(noms);
+            }
 
-        //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-        if (foodArray[0].getNutrition() > foodArray[1].getNutrition()){
-            cooperateFood = foodArray[0];
-            defectFood = foodArray[1];
-        }
-        else{
-            cooperateFood = foodArray[1];
-            defectFood = foodArray[0];
-        }
+            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
+            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
+            {
+                    cooperateFood = foodArray.get(0);
+                    defectFood = foodArray.get(1);
+            }
+            else
+            {
+                    cooperateFood = foodArray.get(1);
+                    defectFood = foodArray.get(0);
+            }
 
-        switch (type){
-            //The choice is always to hunt stags
-            case AC:
-                choice = cooperateFood;
-                break;
-            //The choice is always to hunt rabbits
-            case AD:
-                choice = defectFood;
-                break;
-            //If first time cooperate else imitate what your partner (opponent?) choose the previous time
-            case R:
-                Random random = new Random();
-                if (random.nextInt(2) == 0) //if zero then cooperate
-                    choice = cooperateFood;
-                else                        //else if one then defect
-                    choice = defectFood;
-                break;
-            case TFT:
-                //Get last hunting choice of opponent and act accordingly
-                List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-                Food opponentPreviousChoice = cooperateFood;
+            switch (type)
+            {
+                    //The choice is always to hunt stags
+                    case AC:
+                            choice = cooperateFood;
+                            break;
 
-                //Get the previous choice of your pair. For this round imitate him.
-                //In the first round we have no hunting history therefore default choice is stag
-                if (members.get(0).equals(this.getId())){
-                    if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1){
-                        opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
-                    }
-                }
-                else{
-                    if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1){
-                        opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
-                    }
-                }  
-                choice = opponentPreviousChoice;
-                break;
-            default:
-		throw new IllegalStateException("Agent type was not recognised");
-        }
+                    //The choice is always to hunt rabbits
+                    case AD:
+                            choice = defectFood;
+                            break;
 
-        return choice;
+                    // Picks a random stratergy
+                    case R:
+                            choice = (uniformRandBoolean() ? cooperateFood : defectFood);
+                            break;
+
+                    //If first time cooperate else imitate what your partner (opponent?) choose the previous time
+                    case TFT:
+                            //Get last hunting choice of opponent and act accordingly
+                            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+                            Food opponentPreviousChoice = cooperateFood;
+
+                            // TFT makes no sense in a team of 1...
+                            if (members.size() == 1)
+                            {
+                                    choice = defectFood;
+                                    break;
+                            }
+                            //Get the previous choice of your pair. For this round imitate him.
+                            //In the first round we have no hunting history therefore default choice is stag
+                            if (members.get(0).equals(this.getId()))
+                            {
+                                    if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1)
+                                    {
+                                            opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
+                                    }
+                            }
+                            else
+                            {
+                                    if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1)
+                                    {
+                                            opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
+                                    }
+                            }
+                            choice = opponentPreviousChoice;
+                            break;
+
+                    default:
+                            throw new IllegalStateException("Agent type was not recognised");
+            }
+
+            return choice;
     }
 
     @Override
-    protected ProposalType makeProposal() {
-		// TODO: Implement
-		return ProposalType.staySame;
-		//throw new UnsupportedOperationException("Not supported yet.");
+    protected ProposalType makeProposal()
+    {
+            String groupId = this.getDataModel().getGroupId();
+            if (groupId != null)
+            {   //If this agent is member of a group
+                    double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
+                    double agentEconomicBelief = this.getDataModel().getEconomicBelief();
+                    if (agentEconomicBelief > groupEconomicPosition)
+                    {
+                            return ProposalType.moveRight;
+                    }
+                    else
+                    {
+                            return ProposalType.moveLeft;
+                    }
+            }
+            else
+            {   //Proposal makes no sense for a free agent
+                    return ProposalType.staySame;
+            }
     }
-=======
-	}
 
-	@Element
-	private AgentType type;
+    @Override
+    protected VoteType castVote(Proposition p)
+    {
+            // TODO: Implement
+            return VoteType.For;
+            //throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	public TestPoliticalAgent(double initialFood, double consumption,	AgentType type)
-	{
-		super("<hunter>", 0, initialFood, consumption, type.toString());
-		this.type = type;
-	}
+    @Override
+    protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
+    {
+            // TODO Implement
+            return null;
+    }
 
-	@Override
-	protected void onActivate()
-	{
-		//Do nothing
-	}
+    @Override
+    protected double updateHappinessAfterHunt(double foodHunted,
+                                    double foodReceived)
+    {
+            return 0; //throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	protected void beforeNewRound()
-	{
-		//Do nothing
-	}
+    @Override
+    protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
+    {
+            return 0; //throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-	@Override
-	protected String chooseGroup()
-	{
-		return null;
-	}
+    @Override
+    protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
+                                    double foodReceived)
+    {
 
-	@Override
-	protected void groupApplicationResponse(boolean accepted)
-	{
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
+            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+            if (members.size() == 1) return null;
 
-	@Override
-	protected Food chooseFood()
-	{
-		//We assume there will only be two food sources (stags/rabbits)
-		List<Food> foodArray = new LinkedList<Food>();
-		Food cooperateFood, defectFood, choice;
+            Map<String, Double> newTrustValue = new HashMap<String, Double>();
+            double trust;
 
-		//Stores the two sources in an array
-		for (Food noms : getConn().availableFoods())
-		{
-			foodArray.add(noms);
-		}
+            if (this.getDataModel().getLastHunted().getName().equals("Stag"))
+            {
+                    if (foodHunted == 0) //Agent has been betrayed
+                    {
+                            trust = -1;
+                    }
+                    else
+                    {
+                            trust = 1;
+                    }
+            }
+            else    //Agent hunted rabbit so no trust issues
+            {
+                    trust = 0;
+            }
 
-		//Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-		if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
-		{
-			cooperateFood = foodArray.get(0);
-			defectFood = foodArray.get(1);
-		}
-		else
-		{
-			cooperateFood = foodArray.get(1);
-			defectFood = foodArray.get(0);
-		}
->>>>>>> 75b824532b28b60c6b3990237bd782dca569a19d
+            if (members.get(0).equals(this.getId()))
+            {
+                    newTrustValue.put(members.get(1), trust);
+            }
+            else
+            {
+                    newTrustValue.put(members.get(0), trust);
+            }
 
-		switch (type)
-		{
-			//The choice is always to hunt stags
-			case AC:
-				choice = cooperateFood;
-				break;
+            return newTrustValue;
+    }
 
-			//The choice is always to hunt rabbits
-			case AD:
-				choice = defectFood;
-				break;
+    @Override
+    protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
+                                    double overallMovement)
+    {
+            return 0;
+            //throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-			// Picks a random stratergy
-			case R:
-				choice = (uniformRandBoolean() ? cooperateFood : defectFood);
-				break;
+    @Override
+    protected double updateHappinessAfterVotes(Proposition proposition, int votes,
+                                    double overallMovement)
+    {
+            return 0;
+            //throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-			//If first time cooperate else imitate what your partner (opponent?) choose the previous time
-			case TFT:
-				//Get last hunting choice of opponent and act accordingly
-				List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-				Food opponentPreviousChoice = cooperateFood;
-
-				// TFT makes no sense in a team of 1...
-				if (members.size() == 1)
-				{
-					choice = defectFood;
-					break;
-				}
-				//Get the previous choice of your pair. For this round imitate him.
-				//In the first round we have no hunting history therefore default choice is stag
-				if (members.get(0).equals(this.getId()))
-				{
-					if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1)
-					{
-						opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
-					}
-				}
-				else
-				{
-					if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1)
-					{
-						opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
-					}
-				}
-				choice = opponentPreviousChoice;
-				break;
-
-			default:
-				throw new IllegalStateException("Agent type was not recognised");
-		}
-
-		return choice;
-	}
-
-	@Override
-	protected ProposalType makeProposal()
-	{
-		String groupId = this.getDataModel().getGroupId();
-		if (groupId != null)
-		{   //If this agent is member of a group
-			double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
-			double agentEconomicBelief = this.getDataModel().getEconomicBelief();
-			if (agentEconomicBelief > groupEconomicPosition)
-			{
-				return ProposalType.moveRight;
-			}
-			else
-			{
-				return ProposalType.moveLeft;
-			}
-		}
-		else
-		{   //Proposal makes no sense for a free agent
-			return ProposalType.staySame;
-		}
-	}
-
-	@Override
-	protected VoteType castVote(Proposition p)
-	{
-		// TODO: Implement
-		return VoteType.For;
-		//throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
-	{
-		// TODO Implement
-		return null;
-	}
-
-	@Override
-	protected double updateHappinessAfterHunt(double foodHunted,
-					double foodReceived)
-	{
-		return 0; //throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
-	{
-		return 0; //throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
-					double foodReceived)
-	{
-
-		List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-		if (members.size() == 1) return null;
-
-		Map<String, Double> newTrustValue = new HashMap<String, Double>();
-		double trust;
-
-		if (this.getDataModel().getLastHunted().getName().equals("Stag"))
-		{
-			if (foodHunted == 0) //Agent has been betrayed
-			{
-				trust = -1;
-			}
-			else
-			{
-				trust = 1;
-			}
-		}
-		else    //Agent hunted rabbit so no trust issues
-		{
-			trust = 0;
-		}
-
-		if (members.get(0).equals(this.getId()))
-		{
-			newTrustValue.put(members.get(1), trust);
-		}
-		else
-		{
-			newTrustValue.put(members.get(0), trust);
-		}
-
-		return newTrustValue;
-	}
-
-	@Override
-	protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
-					double overallMovement)
-	{
-		return 0;
-		//throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	protected double updateHappinessAfterVotes(Proposition proposition, int votes,
-					double overallMovement)
-	{
-		return 0;
-		//throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
-					int votes, double overallMovement)
-	{
-		return null;
-		//throw new UnsupportedOperationException("Not supported yet.");
-	}
+    @Override
+    protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
+                                    int votes, double overallMovement)
+    {
+            return null;
+            //throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }
