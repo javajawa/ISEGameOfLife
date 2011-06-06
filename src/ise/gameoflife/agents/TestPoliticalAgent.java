@@ -369,8 +369,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
 
             System.out.println("Trust after Hunt:" + trust);
-
-
+           
             newTrustValue.put(opponentID, trust);
 
             return  newTrustValue;
@@ -398,10 +397,20 @@ public class TestPoliticalAgent extends AbstractAgent
                                     int votes, double overallMovement)
     {
             Map<String, Double> newTrustValue = new HashMap<String, Double>();
-
-            double proposerTrust = this.getDataModel().getTrust(proposition.getProposer()); //get current trust of proposer
             String proposer = proposition.getProposer();
+            double proposerTrust;
 
+            //check for previous value
+            if (this.getDataModel().getTrust(proposition.getProposer()) != null)
+            {
+                    proposerTrust = this.getDataModel().getTrust(proposer); //get current trust of proposer
+            }
+            else
+            {
+                    proposerTrust = 0;
+            }
+
+            //update the value
             if (this.castVote(proposition).equals(VoteType.For)) 
             {
                     proposerTrust = ValueScaler.scale(proposerTrust, 1, 0.1);
@@ -415,7 +424,6 @@ public class TestPoliticalAgent extends AbstractAgent
                    //do nothing
             }
 
-            System.out.println("Trust after voting: " + proposerTrust);
             newTrustValue.put(proposer, proposerTrust);
 
             return newTrustValue;
