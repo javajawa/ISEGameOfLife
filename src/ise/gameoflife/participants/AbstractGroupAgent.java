@@ -212,7 +212,7 @@ public abstract class AbstractGroupAgent implements Participant
 	private void doHandleHuntResults()
 	{
 		double shared = 0;
-		double taxRate = dm.getCurrentEconomicPoisition();
+		double taxRate = 1 - dm.getCurrentEconomicPoisition();
 		for (Double value : huntResult.values()){
 			shared += value;
 		}

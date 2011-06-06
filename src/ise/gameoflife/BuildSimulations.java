@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 final class BuildSimulations
 {
 
-	private static final Class<?>[] simulationClasses =
+	private static final Class[] simulationClasses =
 	{
 		SingleAgent.class,
 		DoubleAgent.class,

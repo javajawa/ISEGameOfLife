@@ -1,7 +1,7 @@
 package ise.gameoflife.models;
 
 /**
- *
+ * TODO: Add license documentation
  * @author Benedict
  */
 public class ValueScaler
