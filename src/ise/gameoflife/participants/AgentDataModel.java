@@ -97,14 +97,14 @@ class AgentDataModel extends APlayerDataModel
 	    Class<? extends AbstractAgent> playerClass,
 	    long randomseed, double foodInPossesion, double foodConsumption)
 	{
-		this(myId, roles, playerClass, randomseed, foodInPossesion, foodConsumption, null);
+		this(myId, roles, playerClass, randomseed, foodInPossesion, foodConsumption, null, 0, 0);
 	}
 	@SuppressWarnings("deprecation")
 	AgentDataModel(
 	    String myId, String roles,
 	    Class<? extends AbstractAgent> playerClass,
 	    long randomseed, double foodInPossesion, double foodConsumption,
-	    AgentType type
+	    AgentType type, double socialBelief, double economicBelief
 	  )
 	{
 		super(myId, roles, playerClass.getSimpleName() + (type == null ? "" : " [" + type + ']'), randomseed);
@@ -112,6 +112,8 @@ class AgentDataModel extends APlayerDataModel
 		this.foodConsumption = foodConsumption;
 		this.name = NameGenerator.getName();
 		this.agentType = type;
+                this.economicBelief = economicBelief;
+                this.socialBelief = socialBelief;
 		onInitialise();
 	}
 

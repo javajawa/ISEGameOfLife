@@ -27,7 +27,7 @@ import ise.gameoflife.participants.AbstractGroupAgent;
  *
  * @author george
  */
-//Test class. I will copy strategies in Aadil's agent
+
 public class TestPoliticalAgent extends AbstractAgent
 {
 
@@ -39,13 +39,13 @@ public class TestPoliticalAgent extends AbstractAgent
 		super();
         }
 
-    @Element
-    private AgentType type;
+   // @Element
+    //private AgentType type;
     
 
-    public TestPoliticalAgent(double initialFood, double consumption, AgentType type){
-        super("<hunter>", 0, initialFood, consumption);
-        this.type = type;
+    public TestPoliticalAgent(double initialFood, double consumption, AgentType type,
+                              double socialBelief, double economicBelief){
+        super("<hunter>", 0, initialFood, consumption, type, socialBelief, economicBelief);
 
     }
 
@@ -61,6 +61,9 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected String chooseGroup() {
+        System.out.println(this.getDataModel().getEconomicBelief());
+                System.out.println(this.getDataModel().getSocialBelief());
+                System.out.println();
 //        if (this.getDataModel().getGroupId() != null) return this.getDataModel().getGroupId();
 //
 //        String chosenGroup = "";
@@ -177,7 +180,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     defectFood = foodArray.get(0);
             }
 
-            switch (type)
+            switch (this.getDataModel().getAgentType())
             {
                     //The choice is always to hunt stags
                     case AC:
@@ -416,8 +419,6 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 trust = ValueScaler.scale(trust, 0, 0.1);
             }
-
-            System.out.println("Trust after Hunt:" + trust);
            
             newTrustValue.put(opponentID, trust);
 

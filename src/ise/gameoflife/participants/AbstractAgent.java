@@ -223,7 +223,7 @@ abstract public class AbstractAgent implements Participant
 	 */
 	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption)
 	{
-		this(myroles, randomseed, initialFood, consumption, null);
+		this(myroles, randomseed, initialFood, consumption, null, 0, 0);
 	}
 	/**
 	 * Creates a new agent with the two primary properties
@@ -231,12 +231,15 @@ abstract public class AbstractAgent implements Participant
 	 * @param randomseed the random seed for this agent
 	 * @param initialFood The initial amount of food
 	 * @param consumption The amount consumed per turn
-	 * @param type The logic type of this agent 
+	 * @param type The logic type of this agent
+         * @param socialBelief The social belief of this agent
+         * @param economicBelief The economic belief of this agent
 	 */
-	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption, AgentType type)
+	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption, AgentType type,
+                            double socialBelief, double economicBelief)
 	{
 		UUID myid = UUID.randomUUID();
-		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, type);
+		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, type, socialBelief, economicBelief);
 	}
 
 	/**
