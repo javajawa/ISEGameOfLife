@@ -41,13 +41,10 @@ public class TestPoliticalAgent extends AbstractAgent
     @Element
     private AgentType type;
     
-    @Element
-    private double socialBelief;
 
-    public TestPoliticalAgent(double initialFood, double consumption, AgentType type, double social){
+    public TestPoliticalAgent(double initialFood, double consumption, AgentType type){
         super("<hunter>", 0, initialFood, consumption);
         this.type = type;
-        this.socialBelief = social;
     }
 
     @Override
@@ -98,7 +95,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 trustFaction = trustSum / numKnownTrustValues;
 
                 economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
-                social = aGroup.getEstimatedSocialLocation() - this.socialBelief;//change in Y
+                social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
                 vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
                 esFaction = 1 - (vectorDistance / maxDistance);
 
@@ -109,7 +106,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     previousHeuristic = currentHeuristic;
                 }
             }
-        
+        }   
             if (chosenGroup.equals("")) {
                 String optimalGrouping = "";
                 //Obtain how much trust there is between this agent and the members of the group
@@ -141,13 +138,11 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
 
             }
-
-            
+         return chosenGroup;           
         }
         
 
-        return chosenGroup;
-    }
+
 
     @Override
     protected void groupApplicationResponse(boolean accepted) {
