@@ -55,6 +55,9 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                             numKnownTrustValues++;
                     }
             }
+            if (numKnownTrustValues == 0) {
+                return true;//this agent, playerID, wants to make a group of only himself
+            }
             trustFaction = trustSum / numKnownTrustValues;
 
             economic = this.getConn().getAgentById(playerID).getEconomicBelief() - this.getDataModel().getCurrentEconomicPoisition();//change in X
