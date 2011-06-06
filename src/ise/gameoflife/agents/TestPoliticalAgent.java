@@ -61,9 +61,9 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected String chooseGroup() {
-        if (this.getDataModel().getGroupId() != null) return null;
+        //if (this.getDataModel().getGroupId() != null) return null;
 
-        if (getConn().availableGroups().isEmpty()) return null;
+        //if (getConn().availableGroups().isEmpty()) return null;
         
         String chosenGroup = "";
         PublicGroupDataModel aGroup;
@@ -78,16 +78,17 @@ public class TestPoliticalAgent extends AbstractAgent
         //used for the trust faction of heuristic
         double trustFaction, trustSum;
         int numKnownTrustValues;
-        
+
         //Assess each group in turn
         for (String groupID : getConn().availableGroups()) {
             aGroup = getConn().getGroupById(groupID);
-            
+
             //Obtain how much trust there is between this agent and the members of the group
             numKnownTrustValues = 0;
             trustSum = 0;
             for (String trustee : aGroup.getMemberList()) {
                     Double trustValue = this.getDataModel().getTrust(trustee);
+
                     if (trustValue != null) {
                             trustSum += trustValue;
                             numKnownTrustValues++;
@@ -108,10 +109,10 @@ public class TestPoliticalAgent extends AbstractAgent
             }
         }
         
-        if (chosenGroup.equals("")) {
-            GroupDataInitialiser myGroup = new GroupDataInitialiser(0, this.getDataModel().getEconomicBelief());
-            chosenGroup = getConn().createGroup(TestPoliticalGroup.class, myGroup);
-        }
+        //if (chosenGroup.equals("")) {
+          //  GroupDataInitialiser myGroup = new GroupDataInitialiser(0, this.getDataModel().getEconomicBelief());
+            //chosenGroup = getConn().createGroup(TestPoliticalGroup.class, myGroup);
+       // }
         return chosenGroup;
     }
 

@@ -36,7 +36,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected boolean respondToJoinRequest(String playerID) {              
-            double heuristic;        
+            double heuristic;
 
             //used for the socio-economic faction of heuristic
             double vectorDistance;
@@ -73,7 +73,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             }
             else {
                 return false;
-            }      
+            }
 	}
 	/**
 	 * Determines the optimum hunting choice in terms of the food gained/hunters needed ratio

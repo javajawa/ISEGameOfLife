@@ -208,4 +208,12 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getTrust(agent);
 	}
+
+	/**
+	 * @return the socialBelief
+	 */
+	double getSocialBelief()
+	{
+		return source.getSocialBelief();
+	}
 }

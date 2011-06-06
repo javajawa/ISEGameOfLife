@@ -1,6 +1,7 @@
 package ise.gameoflife.simulatons;
 
 import ise.gameoflife.agents.TestPoliticalAgent;
+import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.ErrorLog;
@@ -20,7 +21,7 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 1000, 0, 0.1);
+		super("Basic Politics Testing Bed", 200, 0, 0.1);
 	}
 
 	@Override
@@ -45,6 +46,7 @@ public class Politics extends GenericSimulation
 	@Override
 	protected void groups()
 	{
+              addGroup(TestPoliticalGroup.class);
 	}
 
 	@Override
