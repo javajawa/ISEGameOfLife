@@ -61,24 +61,22 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected String chooseGroup() {
-        System.out.println(this.getDataModel().getEconomicBelief());
-                System.out.println(this.getDataModel().getSocialBelief());
-                System.out.println();
-//        if (this.getDataModel().getGroupId() != null) return this.getDataModel().getGroupId();
-//
-//        String chosenGroup = "";
-//
-//        double currentHeuristic, previousHeuristic = 0;
-//
-//        //used for the socio-economic faction of heuristic
-//        double vectorDistance;
-//        double maxDistance = Math.sqrt(2);
-//        double economic, social, esFaction;
-//
-//        //used for the trust faction of heuristic
-//        double trustFaction, trustSum;
-//        int numKnownTrustValues;
-//
+
+        if (this.getDataModel().getGroupId() != null) return this.getDataModel().getGroupId();
+
+        String chosenGroup = "";
+
+        double currentHeuristic, previousHeuristic = 0;
+
+        //used for the socio-economic faction of heuristic
+        double vectorDistance;
+        double maxDistance = Math.sqrt(2);
+        double economic, social, esFaction;
+
+        //used for the trust faction of heuristic
+        double trustFaction, trustSum;
+        int numKnownTrustValues;
+
 //        if (!getConn().availableGroups().isEmpty()) {
 //            PublicGroupDataModel aGroup;
 //
@@ -111,48 +109,47 @@ public class TestPoliticalAgent extends AbstractAgent
 //                    previousHeuristic = currentHeuristic;
 //                }
 //            }
-//        }
-//            if (chosenGroup.equals("")) {
-//                String optimalGrouping = "";
-//                //Obtain how much trust there is between this agent and the members of the group
-//                for (String trustee : getConn().getUngroupedAgents()) {
-//                        Double trustValue = this.getDataModel().getTrust(trustee);
-//                        if (trustValue != null) {
-//                            trustFaction = trustValue;
-//
-//                            //economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
-//                            //social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
-//
-//                            //vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-//                            //esFaction = 1 - (vectorDistance / maxDistance);
-//                            esFaction = 0.5;
-//                            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-//                            if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
-//                                optimalGrouping = trustee;
-//                                previousHeuristic = currentHeuristic;
-//                            }
-//                        }
-//                }
-//                if (optimalGrouping.equals("")){
-//                    return null;
-//                }
-//                else {
-//                    GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(optimalGrouping).getEconomicBelief())/2);
-//                    Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-//                    chosenGroup = getConn().createGroup(gtype, myGroup);
-//                }
-//
-//            }
-//         return chosenGroup;
-        return null;
-    }
-        
+//        }           
+            System.out.println(getConn().availableGroups().size());
 
+        if (chosenGroup.equals("")) {
+            String optimalGrouping = "";
+            //Obtain how much trust there is between this agent and the members of the group
+            for (String trustee : getConn().getUngroupedAgents()) {
+                Double trustValue = this.getDataModel().getTrust(trustee);
+                if (trustValue != null) {
+                    trustFaction = trustValue;
 
+                    economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
+                    social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
 
+                    vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+                    esFaction = 1 - (vectorDistance / maxDistance);
+
+                    currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+                    
+                    if (currentHeuristic > 0.5 && (previousHeuristic < currentHeuristic)) {
+                        optimalGrouping = trustee;
+                        previousHeuristic = currentHeuristic;
+                    }
+                 }
+            }
+
+            if (optimalGrouping.equals("")){
+                return null;
+            }
+            else {
+                GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(optimalGrouping).getEconomicBelief())/2);
+                Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+                chosenGroup = getConn().createGroup(gtype, myGroup);
+            }
+        }
+    return chosenGroup;
+}
+       
     @Override
     protected void groupApplicationResponse(boolean accepted) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
