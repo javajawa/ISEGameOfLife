@@ -16,6 +16,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.inputs.VoteResult;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -223,22 +224,20 @@ abstract public class AbstractAgent implements Participant
 	 */
 	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption)
 	{
-		UUID myid = UUID.randomUUID();
-		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, "");
+		this(myroles, randomseed, initialFood, consumption, null);
 	}
-
 	/**
 	 * Creates a new agent with the two primary properties
 	 * @param myroles The roles that this agent can perform
 	 * @param randomseed the random seed for this agent
 	 * @param initialFood The initial amount of food
 	 * @param consumption The amount consumed per turn
-	 * @param comment A comment for this agents class/type (very short, please)
+	 * @param type The logic type of this agent 
 	 */
-	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption, String comment)
+	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption, AgentType type)
 	{
 		UUID myid = UUID.randomUUID();
-		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, comment);
+		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, type);
 	}
 
 	/**

@@ -5,6 +5,7 @@ import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.NameGenerator;
+import ise.gameoflife.tokens.AgentType;
 import java.util.HashMap;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementMap;
@@ -59,6 +60,12 @@ class AgentDataModel extends APlayerDataModel
 
 	@Element
 	private double economicBelief;
+
+	@Element
+	private double socialBelief;
+
+	@Element(required=false)
+	private AgentType agentType;
 	
 	private History<Food> lastHunted;
 	private History<HuntingTeam> huntingTeam;
@@ -88,14 +95,23 @@ class AgentDataModel extends APlayerDataModel
 	AgentDataModel(
 	    String myId, String roles,
 	    Class<? extends AbstractAgent> playerClass,
+	    long randomseed, double foodInPossesion, double foodConsumption)
+	{
+		this(myId, roles, playerClass, randomseed, foodInPossesion, foodConsumption, null);
+	}
+	@SuppressWarnings("deprecation")
+	AgentDataModel(
+	    String myId, String roles,
+	    Class<? extends AbstractAgent> playerClass,
 	    long randomseed, double foodInPossesion, double foodConsumption,
-	    String comment
+	    AgentType type
 	  )
 	{
-		super(myId, roles, playerClass.getSimpleName() + " [" +  comment + ']', randomseed);
+		super(myId, roles, playerClass.getSimpleName() + (type == null ? "" : " [" + type + ']'), randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
 		this.name = NameGenerator.getName();
+		this.agentType = type;
 		onInitialise();
 	}
 
@@ -361,5 +377,21 @@ class AgentDataModel extends APlayerDataModel
 	public String getName()
 	{
 		return name;
+	}
+
+	/**
+	 * @return the socialBelief
+	 */
+	double getSocialBelief()
+	{
+		return socialBelief;
+	}
+
+	/**
+	 * @return the agentType
+	 */
+	AgentType getAgentType()
+	{
+		return agentType;
 	}
 }
