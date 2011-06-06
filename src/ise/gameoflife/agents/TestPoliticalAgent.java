@@ -11,6 +11,7 @@ import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.tokens.AgentType;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.simpleframework.xml.Element;
@@ -162,7 +163,27 @@ public class TestPoliticalAgent extends AbstractAgent{
 
     @Override
     protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived) {
-		return null; //throw new UnsupportedOperationException("Not supported yet.");
+                List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+                Map<String, Double> newTrustValue = new HashMap<String, Double>();
+                double trust;
+
+                if (this.getDataModel().getLastHunted().getName().equals("Stag")){
+                        if (foodHunted==0) //Agent has been betrayed
+                            trust = -1;
+                        else
+                            trust = 1;
+                }
+                else    //Agent hunted rabbit so no trust issues
+                    trust = 0;
+
+                if (members.get(0).equals(this.getId())){
+                    newTrustValue.put(members.get(1), trust);
+                }
+                else{
+                    newTrustValue.put(members.get(0), trust);
+                }
+
+                return newTrustValue;
     }
 
     @Override
