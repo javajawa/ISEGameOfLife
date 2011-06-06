@@ -351,7 +351,25 @@ public class TestPoliticalAgent extends AbstractAgent
     protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
                                     int votes, double overallMovement)
     {
-            return null;
+            Map<String, Double> newTrustValue = new HashMap<String, Double>();
+
+            double proposerTrust = this.getDataModel().getTrust(proposition.getProposer()); //get current trust of proposer
+            String proposer = proposition.getProposer();
+            
+            if (this.castVote(proposition).equals(VoteType.For)) 
+            {
+                    newTrustValue.put(proposer, proposerTrust + 1);
+            }
+            else if(this.castVote(proposition).equals(VoteType.Against))
+            {
+                    newTrustValue.put(proposer, proposerTrust - 1);
+            }
+            else
+            {
+                    newTrustValue.put(proposer, proposerTrust);
+            }
+                  
+            return newTrustValue;
             //throw new UnsupportedOperationException("Not supported yet.");
     }
 
