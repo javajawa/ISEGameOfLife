@@ -408,7 +408,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
             else if(this.castVote(proposition).equals(VoteType.Against))
             {
-                    proposerTrust = ValueScaler.scale(proposerTrust, 1, 0.1);
+                    proposerTrust = ValueScaler.scale(proposerTrust, -1, 0.1);
             }
             else
             {
