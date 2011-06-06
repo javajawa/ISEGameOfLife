@@ -405,7 +405,6 @@ public abstract class AbstractGroupAgent implements Participant
 	 * environment connection}, and the list of current group members can be 
 	 * found in the {@link GroupDataModel dataModel} which can be accessed with 
 	 * {@link #getInternalDataModel() }
-	 * // TODO-Later: make a getDataModel() function that returns right type
 	 * @return A map of all hunting teams, and the food they should be ordered to
 	 * hunt
 	 */
