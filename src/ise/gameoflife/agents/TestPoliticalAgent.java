@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.simpleframework.xml.Element;
 import java.util.Random;
+import ise.gameoflife.participants.AbstractGroupAgent;
 
 /**
  *
@@ -61,58 +62,90 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected String chooseGroup() {
-        //if (this.getDataModel().getGroupId() != null) return null;
-
-        //if (getConn().availableGroups().isEmpty()) return null;
-        
+        if (this.getDataModel().getGroupId() != null) return this.getDataModel().getGroupId();
+       
         String chosenGroup = "";
-        PublicGroupDataModel aGroup;
-        
+
         double currentHeuristic, previousHeuristic = 0;
-        
+
         //used for the socio-economic faction of heuristic
         double vectorDistance;
         double maxDistance = Math.sqrt(2);
         double economic, social, esFaction;
-        
+
         //used for the trust faction of heuristic
         double trustFaction, trustSum;
-        int numKnownTrustValues;
+        int numKnownTrustValues;        
+        
+        if (!getConn().availableGroups().isEmpty()) {
+            PublicGroupDataModel aGroup;
 
-        //Assess each group in turn
-        for (String groupID : getConn().availableGroups()) {
-            aGroup = getConn().getGroupById(groupID);
+            //Assess each group in turn
+            for (String groupID : getConn().availableGroups()) {
+                aGroup = getConn().getGroupById(groupID);
 
-            //Obtain how much trust there is between this agent and the members of the group
-            numKnownTrustValues = 0;
-            trustSum = 0;
-            for (String trustee : aGroup.getMemberList()) {
-                    Double trustValue = this.getDataModel().getTrust(trustee);
+                //Obtain how much trust there is between this agent and the members of the group
+                numKnownTrustValues = 0;
+                trustSum = 0;
+                for (String trustee : aGroup.getMemberList()) {
+                        Double trustValue = this.getDataModel().getTrust(trustee);
 
-                    if (trustValue != null) {
-                            trustSum += trustValue;
-                            numKnownTrustValues++;
-                    }
+                        if (trustValue != null) {
+                                trustSum += trustValue;
+                                numKnownTrustValues++;
+                        }
+                }
+                trustFaction = trustSum / numKnownTrustValues;
+
+                economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
+                social = aGroup.getEstimatedSocialLocation() - this.socialBelief;//change in Y
+                vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+                esFaction = 1 - (vectorDistance / maxDistance);
+
+                currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+
+                if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
+                    chosenGroup = aGroup.getId();
+                    previousHeuristic = currentHeuristic;
+                }
             }
-            trustFaction = trustSum / numKnownTrustValues;
+        
+            if (chosenGroup.equals("")) {
+                String optimalGrouping = "";
+                //Obtain how much trust there is between this agent and the members of the group
+                for (String trustee : getConn().getUngroupedAgents()) {
+                        Double trustValue = this.getDataModel().getTrust(trustee);
+                        if (trustValue != null) {
+                            trustFaction = trustValue;
 
-            economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
-            social = aGroup.getEstimatedSocialLocation() - this.socialBelief;//change in Y
-            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-            esFaction = 1 - (vectorDistance / maxDistance);
-            
-            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-            
-            if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
-                chosenGroup = aGroup.getId();
-                previousHeuristic = currentHeuristic;
+                            economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
+                            social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
+
+                            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+                            esFaction = 1 - (vectorDistance / maxDistance);
+
+                            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+                            if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
+                                optimalGrouping = trustee;
+                                previousHeuristic = currentHeuristic;
+                            }
+                        }
+                }
+                if (optimalGrouping.equals("")){
+                    return null;
+                }
+                else {
+                    GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(optimalGrouping).getEconomicBelief())/2);
+                    Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+                    chosenGroup = getConn().createGroup(gtype, myGroup);
+                }
+
             }
+
+            
         }
         
-        //if (chosenGroup.equals("")) {
-          //  GroupDataInitialiser myGroup = new GroupDataInitialiser(0, this.getDataModel().getEconomicBelief());
-            //chosenGroup = getConn().createGroup(TestPoliticalGroup.class, myGroup);
-       // }
+
         return chosenGroup;
     }
 
