@@ -368,8 +368,6 @@ public class TestPoliticalAgent extends AbstractAgent
                 trust = ValueScaler.scale(trust, 0, 0.1);
             }
 
-            System.out.println(trust);
-
             newTrustValue.put(opponentID, trust);
 
             return  newTrustValue;
