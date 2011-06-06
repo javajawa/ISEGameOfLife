@@ -134,8 +134,18 @@ public class TestPoliticalAgent extends AbstractAgent{
     @Override
     protected ProposalType makeProposal() {
 		// TODO: Implement
-		return ProposalType.staySame;
-		//throw new UnsupportedOperationException("Not supported yet.");
+                String groupId = this.getDataModel().getGroupId();
+                if (groupId != null){
+                    double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
+                    double agentEconomicBelief = this.getDataModel().getEconomicBelief();
+                    if (agentEconomicBelief > groupEconomicPosition)
+                        return ProposalType.moveRight;
+                    else
+                        return ProposalType.moveLeft;
+                }
+                else{
+                    return ProposalType.staySame;
+                }
     }
 
     @Override
