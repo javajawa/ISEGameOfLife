@@ -61,57 +61,71 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected String chooseGroup() {
-        System.out.println(this.getDataModel().getEconomicBelief());
-                System.out.println(this.getDataModel().getSocialBelief());
-                System.out.println();
-//        if (this.getDataModel().getGroupId() != null) return this.getDataModel().getGroupId();
-//
-//        String chosenGroup = "";
-//
-//        double currentHeuristic, previousHeuristic = 0;
-//
-//        //used for the socio-economic faction of heuristic
-//        double vectorDistance;
-//        double maxDistance = Math.sqrt(2);
-//        double economic, social, esFaction;
-//
-//        //used for the trust faction of heuristic
-//        double trustFaction, trustSum;
-//        int numKnownTrustValues;
-//
-//        if (!getConn().availableGroups().isEmpty()) {
-//            PublicGroupDataModel aGroup;
-//
-//            //Assess each group in turn
-//            for (String groupID : getConn().availableGroups()) {
-//                aGroup = getConn().getGroupById(groupID);
-//
-//                //Obtain how much trust there is between this agent and the members of the group
-//                numKnownTrustValues = 0;
-//                trustSum = 0;
-//                for (String trustee : aGroup.getMemberList()) {
-//                        Double trustValue = this.getDataModel().getTrust(trustee);
-//
-//                        if (trustValue != null) {
-//                                trustSum += trustValue;
-//                                numKnownTrustValues++;
-//                        }
-//                }
-//                trustFaction = trustSum / numKnownTrustValues;
-//
-//                economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
-//                social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
-//                vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-//                esFaction = 1 - (vectorDistance / maxDistance);
-//
-//                currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-//
-//                if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
-//                    chosenGroup = aGroup.getId();
-//                    previousHeuristic = currentHeuristic;
-//                }
-//            }
-//        }
+        if (this.getDataModel().getGroupId() != null) return null;
+
+        if (getConn().availableGroups().isEmpty())
+        {
+                if (getConn().getAllowedGroupTypes().isEmpty()) return null;
+                Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+                return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
+        }
+        
+        //if (this.getDataModel().getGroupId() != null) return this.getDataModel().getGroupId();
+
+        String chosenGroup = "";
+
+        double currentHeuristic = 0, previousHeuristic = 0;
+
+        //used for the socio-economic faction of heuristic
+        double vectorDistance;
+        double maxDistance = Math.sqrt(2);
+        double economic, social, esFaction=0;
+
+        //used for the trust faction of heuristic
+        double trustFaction=0, trustSum;
+        int numKnownTrustValues;
+
+        PublicGroupDataModel aGroup;
+
+        //Assess each group in turn
+        for (String groupID : getConn().availableGroups()) {
+            aGroup = getConn().getGroupById(groupID);
+
+            //Obtain how much trust there is between this agent and the members of the group
+            numKnownTrustValues = 0;
+            trustSum = 0;
+            for (String trustee : aGroup.getMemberList()) {
+                    Double trustValue = this.getDataModel().getTrust(trustee);
+
+                    if (trustValue != null) {
+                            trustSum += trustValue;
+                            numKnownTrustValues++;
+                    }
+            }
+            if(numKnownTrustValues != 0) {                
+                trustFaction = trustSum / numKnownTrustValues;
+            }
+            else {
+                trustFaction = 0;
+            }
+
+            economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
+            social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
+            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+            esFaction = 1 - (vectorDistance / maxDistance);
+
+            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+
+            if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
+                chosenGroup = aGroup.getId();
+                previousHeuristic = currentHeuristic;
+            }
+        }
+                System.out.println("HEURISTIC = " + currentHeuristic + "  Trust = " + trustFaction + "    ES = " + esFaction);
+
+        if (!chosenGroup.isEmpty()) return chosenGroup;
+        
+        return null;
 //            if (chosenGroup.equals("")) {
 //                String optimalGrouping = "";
 //                //Obtain how much trust there is between this agent and the members of the group
@@ -144,7 +158,6 @@ public class TestPoliticalAgent extends AbstractAgent
 //
 //            }
 //         return chosenGroup;
-        return null;
     }
         
 
@@ -152,7 +165,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected void groupApplicationResponse(boolean accepted) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
