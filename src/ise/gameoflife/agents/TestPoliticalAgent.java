@@ -117,12 +117,12 @@ public class TestPoliticalAgent extends AbstractAgent
 //                        if (trustValue != null) {
 //                            trustFaction = trustValue;
 //
-//                            economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
-//                            social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
+//                            //economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
+//                            //social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
 //
-//                            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-//                            esFaction = 1 - (vectorDistance / maxDistance);
-//
+//                            //vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+//                            //esFaction = 1 - (vectorDistance / maxDistance);
+//                            esFaction = 0.5;
 //                            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
 //                            if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
 //                                optimalGrouping = trustee;
@@ -141,7 +141,7 @@ public class TestPoliticalAgent extends AbstractAgent
 //
 //            }
 //         return chosenGroup;
-    return null;
+        return null;
     }
         
 
@@ -343,7 +343,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
             else
             {
-                opponentID = members.get(1);
+                opponentID = members.get(0);
     
             }
 
@@ -365,12 +365,11 @@ public class TestPoliticalAgent extends AbstractAgent
             }
             else    //Agent hunted rabbit so no trust issues
             {
-                trust = ValueScaler.scale(trust, 1, 0);
+                trust = ValueScaler.scale(trust, 0, 0.1);
             }
-            
 
             System.out.println(trust);
-            
+
             newTrustValue.put(opponentID, trust);
 
             return  newTrustValue;
