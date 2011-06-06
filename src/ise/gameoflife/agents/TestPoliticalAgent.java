@@ -369,7 +369,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
             
 
-            System.out.println(trust);
+            System.out.println("Trust after Hunt:" + trust);
             
             newTrustValue.put(opponentID, trust);
 
@@ -401,20 +401,23 @@ public class TestPoliticalAgent extends AbstractAgent
 
             double proposerTrust = this.getDataModel().getTrust(proposition.getProposer()); //get current trust of proposer
             String proposer = proposition.getProposer();
-            
+
             if (this.castVote(proposition).equals(VoteType.For)) 
             {
-                    newTrustValue.put(proposer, proposerTrust + 1);
+                    proposerTrust = ValueScaler.scale(proposerTrust, 1, 0.1);
             }
             else if(this.castVote(proposition).equals(VoteType.Against))
             {
-                    newTrustValue.put(proposer, proposerTrust - 1);
+                    proposerTrust = ValueScaler.scale(proposerTrust, 1, 0.1);
             }
             else
             {
-                    newTrustValue.put(proposer, proposerTrust);
+                   //do nothing
             }
-                  
+
+            System.out.println("Trust after voting: " + proposerTrust);
+            newTrustValue.put(proposer, proposerTrust);
+
             return newTrustValue;
             //throw new UnsupportedOperationException("Not supported yet.");
     }
