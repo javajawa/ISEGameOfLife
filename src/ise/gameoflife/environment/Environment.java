@@ -493,7 +493,6 @@ public class Environment extends AbstractEnvironment
 			}
 
 			// Now, for each food, see if they got a unit on it
-			// TODO: Do we get more than one unit if more people succeed?
 			for (Food f : hunters.keySet())
 			{
 				List<String> agents = hunters.get(f);

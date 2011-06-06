@@ -5,7 +5,6 @@ import ise.gameoflife.simulatons.DoubleAgent;
 import ise.gameoflife.simulatons.FreeAgentsTest;
 import ise.gameoflife.simulatons.SingleAgent;
 import ise.gameoflife.simulatons.Politics;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,44 +36,16 @@ final class BuildSimulations
 	 */
 	public static void main(String args[])
 	{
-
-		Object passedArgv[] =
-		{
-			args
-		};
-
 		for (Class<?> c : simulationClasses)
 		{
 			try
 			{
-				c.getMethod("main", args.getClass()).invoke(null, passedArgv);
+				c.newInstance();
 			}
-			catch (IllegalAccessException ex)
+			catch (Exception ex)
 			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
-								null, ex);
-			}
-			catch (IllegalArgumentException ex)
-			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
-								null, ex);
-			}
-			catch (InvocationTargetException ex)
-			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
-								null, ex);
-			}
-			catch (NoSuchMethodException ex)
-			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
-								null, ex);
-			}
-			catch (SecurityException ex)
-			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE,
-								null, ex);
+				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
 	}
-
 }

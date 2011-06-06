@@ -1,40 +1,101 @@
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.HashMap;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import presage.Plugin;
 import presage.Simulation;
 
 /**
- * TODO: Document this plugin
- * TODO: Convert each Agents section to a Panel
- * Make the left hand side of the panel display name, group, food, etc.
+ * 
  * @author Benedict
  */
 public class HunterListPlugin extends JPanel implements Plugin
 {
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+
+	private class HunterPanel extends JPanel
+	{
+		private static final long serialVersionUID = 1L;
+		private final XYSeries foodHistorySeries;
+		private final PublicAgentDataModel dm;
+		private final ValueAxis domainAxis;
+
+		private JLabel labelise(String s)
+		{
+			JLabel ret = new JLabel(s);
+			ret.setHorizontalAlignment(SwingConstants.CENTER);
+			ret.setFont(ret.getFont().deriveFont(6));
+			return ret;
+		}
+
+		@SuppressWarnings("LeakingThisInConstructor")
+		HunterPanel(PublicAgentDataModel dm)
+		{
+			this.dm = dm;
+			this.foodHistorySeries = new XYSeries(dm.getId());
+
+			JFreeChart chart = ChartFactory.createXYLineChart(null, null, null,
+							new XYSeriesCollection(foodHistorySeries),
+							PlotOrientation.VERTICAL, false, false, false);
+			ChartPanel chartPanel = new ChartPanel(chart);
+
+			chart.getXYPlot().setBackgroundAlpha(1);
+			domainAxis = chart.getXYPlot().getDomainAxis();
+			domainAxis.setVisible(false);
+			chart.getXYPlot().getRangeAxis().setRange(new Range(0, 50), true, true);
+
+			JPanel dataPanel = new JPanel(new GridLayout(3, 2, 2, -2));
+			dataPanel.add(labelise(dm.getName()));
+			dataPanel.add(labelise(dm.getPlayerClass()));
+			dataPanel.add(labelise("Test 1"));
+			dataPanel.add(labelise("Test 2"));
+			dataPanel.add(labelise("Test 3"));
+			dataPanel.add(labelise("Test 4"));
+
+			chartPanel.setVisible(true);
+			this.setLayout(new GridLayout(1, 2));
+			this.add(dataPanel);
+			this.add(chartPanel);
+			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+			window.add(this);
+			this.setPreferredSize(new Dimension(getWidth() - barWidth, 125));
+		}
+
+		void updateData()
+		{
+			foodHistorySeries.addOrUpdate(ec.getRoundsPassed(), dm.getFoodAmount());
+			domainAxis.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
+		}
+	}
+
 	private final static String label = "Hunter Logs";
 	
 	private Simulation sim;
-	private Environment en;
-	private final HashMap<String, XYSeries> series = new HashMap<String, XYSeries>();
+	private PublicEnvironmentConnection ec = null;
+
 	private final JPanel window = new JPanel();
 	private final JScrollPane pane = new JScrollPane(window, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	private final HashMap<String, HunterPanel> panels = new HashMap<String, HunterPanel>();
 	private int barWidth;
 
 	public HunterListPlugin()
@@ -45,55 +106,27 @@ public class HunterListPlugin extends JPanel implements Plugin
 	@Override
 	public void execute()
 	{
-		if (en.getCurrentTurnType() != TurnType.firstTurn) return;
+		if (ec == null) ec = PublicEnvironmentConnection.getInstance();
+		if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
 
 		for (String aid : sim.getactiveParticipantIdSet("hunter"))
 		{
-			if (!series.containsKey(aid))
+			if (!panels.containsKey(aid))
 			{
-				series.put(aid, createChart(aid));
+				panels.put(aid, new HunterPanel(ec.getAgentById(aid)));
 			}
-
+			panels.get(aid).updateData();
 		}
-
-		for (String aid : series.keySet())
-		{
-			PublicAgentDataModel dm = PublicEnvironmentConnection.getInstance().getAgentById(aid);
-			if (dm != null)
-			{
-				series.get(aid).add(en.getRoundsPassed(), dm.getFoodAmount());
-			}
-			else
-			{
-				series.get(aid).add(en.getRoundsPassed(), 0);
-			}
-		}
-
 		validate();
 	}
 
-	private XYSeries createChart(String id)
-	{
-		XYSeries g = new XYSeries(id);
-		
-		JFreeChart chart = ChartFactory.createXYLineChart(null, null, null,	new XYSeriesCollection(g), PlotOrientation.VERTICAL, false, false, false);
-		ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new Dimension(getWidth() - barWidth, 125));
-
-		chartPanel.setVisible(true);
-		window.add(chartPanel);
-
-		return g;
-	}
-	
 	@Override
 	public void initialise(Simulation sim)
 	{
 		setLayout(new BorderLayout());
 		this.sim = sim;
-		this.en = (Environment)sim.environment;
 		window.setLayout(new BoxLayout(window, BoxLayout.PAGE_AXIS));
 		this.add(pane);
 	}

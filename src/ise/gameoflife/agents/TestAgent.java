@@ -88,17 +88,13 @@ public class TestAgent extends AbstractAgent
 	@Override
 	protected ProposalType makeProposal()
 	{
-		// TODO: Implement
 		return ProposalType.staySame;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	protected VoteType castVote(Proposition p)
 	{
-		// TODO: Implement
-		return VoteType.For;
-		//throw new UnsupportedOperationException("Not supported yet.");
+		return VoteType.Abstain;
 	}
 
 	@Override
@@ -111,20 +107,20 @@ public class TestAgent extends AbstractAgent
 	protected double updateHappinessAfterHunt(double foodHunted,
 					double foodReceived)
 	{
-		return 0;//throw new UnsupportedOperationException("Not supported yet.");
+		return 0;
 	}
 
 	@Override
 	protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
 	{
-		return 0;//throw new UnsupportedOperationException("Not supported yet.");
+		return 0;
 	}
 
 	@Override
 	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
 					double foodReceived)
 	{
-		return null; //throw new UnsupportedOperationException("Not supported yet.");
+		return null;
 	}
 
 	@Override
@@ -132,7 +128,6 @@ public class TestAgent extends AbstractAgent
 					double overallMovement)
 	{
 		return 0;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
@@ -140,7 +135,6 @@ public class TestAgent extends AbstractAgent
 					double overallMovement)
 	{
 		return 0;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
@@ -148,7 +142,6 @@ public class TestAgent extends AbstractAgent
 					int votes, double overallMovement)
 	{
 		return null;
-		//throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 }

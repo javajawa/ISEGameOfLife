@@ -10,7 +10,6 @@ import java.util.Map;
 import presage.PlayerDataModel;
 
 /**
- * FIXME: Add useful functions to this
  * Used by objects to access data about a desired group
  * @author Benedict
  */
