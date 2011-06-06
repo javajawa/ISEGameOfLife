@@ -213,9 +213,13 @@ public class TestPoliticalAgent extends AbstractAgent
                     {
                             return ProposalType.moveRight;
                     }
-                    else
+                    else if (agentEconomicBelief < groupEconomicPosition)
                     {
                             return ProposalType.moveLeft;
+                    }
+                    else
+                    {
+                            return ProposalType.staySame;
                     }
             }
             else
@@ -227,8 +231,44 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected VoteType castVote(Proposition p)
     {
-            // TODO: Implement
-            return VoteType.For;
+            String groupId = this.getDataModel().getGroupId();
+            String proposerGroup = p.getOwnerGroup();
+            ProposalType agentProposal;
+
+            if (groupId != null){ //check if is in a group
+                    if (groupId.equals(proposerGroup)){ //check if agent is in the same group as the proposal
+                            double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
+                            double agentEconomicBelief = this.getDataModel().getEconomicBelief();
+                            if (agentEconomicBelief > groupEconomicPosition)
+                            {
+                                 agentProposal = ProposalType.moveRight;
+                            }
+                            else if (agentEconomicBelief < groupEconomicPosition)
+                            {
+                                agentProposal = ProposalType.moveLeft;
+                            }
+                            else
+                            {
+                                agentProposal = ProposalType.staySame;
+                            }
+                            //Compare proposals
+                            if (p.getType().equals(agentProposal))
+                            {
+                                return VoteType.For;
+                            }
+                            else
+                            {
+                                return VoteType.Against;
+                            }
+                    }
+                    else{ //must never happen!!
+                        throw new UnsupportedOperationException("Agent cannot vote for other Groups ");
+                    }
+            }
+            else //must never happen!!
+            {
+                return VoteType.Abstain;
+            }
             //throw new UnsupportedOperationException("Not supported yet.");
     }
 
