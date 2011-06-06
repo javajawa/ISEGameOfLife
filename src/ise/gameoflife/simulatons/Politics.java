@@ -31,8 +31,8 @@ public class Politics extends GenericSimulation
 		{
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.AC));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.R));
+			//addAgent(new TestPoliticalAgent(20, 2, AgentType.AD));
+			//addAgent(new TestPoliticalAgent(20, 2, AgentType.R));
 		}
 	}
 
