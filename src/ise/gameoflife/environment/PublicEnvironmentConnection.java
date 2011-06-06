@@ -156,4 +156,9 @@ public class PublicEnvironmentConnection
 	{
 		return ec.getRoundsPassed();
 	}
+
+	public List<String> getUngroupedAgents()
+	{
+		return ec.getUngroupedAgents();
+	}
 }

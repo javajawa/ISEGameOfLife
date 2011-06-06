@@ -150,4 +150,9 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		return e.getRoundsPassed();
 	}
+
+	List<String> getUngroupedAgents()
+	{
+		return e.getUngroupedAgents();
+	}
 }

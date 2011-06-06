@@ -670,4 +670,9 @@ public class Environment extends AbstractEnvironment
 	{
 		return dmodel.getAgents();
 	}
+
+	List<String> getUngroupedAgents()
+	{
+		return dmodel.getUngroupedAgents();
+	}
 }
