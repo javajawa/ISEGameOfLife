@@ -61,6 +61,10 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected String chooseGroup() {
+        if (this.getDataModel().getGroupId() != null) return null;
+
+        if (getConn().availableGroups().isEmpty()) return null;
+        
         String chosenGroup = "";
         PublicGroupDataModel aGroup;
         
