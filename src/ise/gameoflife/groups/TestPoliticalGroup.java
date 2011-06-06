@@ -61,8 +61,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             trustFaction = trustSum / numKnownTrustValues;
 
             economic = this.getConn().getAgentById(playerID).getEconomicBelief() - this.getDataModel().getCurrentEconomicPoisition();//change in X
-            //social = this.getConn().getAgentById(playerID).getSocialBelief() - this.getDataModel().getEstimatedSocialLocation();//change in Y
-            social = 0.5;
+            social = this.getConn().getAgentById(playerID).getSocialBelief() - this.getDataModel().getEstimatedSocialLocation();//change in Y
             vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
             esFaction = 1 - (vectorDistance / maxDistance);
 

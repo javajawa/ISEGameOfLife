@@ -4,6 +4,7 @@ import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import presage.PlayerDataModel;
 
@@ -212,8 +213,16 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	/**
 	 * @return the socialBelief
 	 */
-	double getSocialBelief()
+	public double getSocialBelief()
 	{
 		return source.getSocialBelief();
+	}
+
+	/**
+	 * @return the socialBelief
+	 */
+	public AgentType getAgentType()
+	{
+		return source.getAgentType();
 	}
 }
