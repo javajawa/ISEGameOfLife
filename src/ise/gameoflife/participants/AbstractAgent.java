@@ -170,7 +170,6 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final VoteResult in = (VoteResult)input;
-
 			ec.log("I, agent " + dm.getName() + " got " + in.getVotes() + " for my " + in.getProposition().getType() + " proposal.");
 			dm.setCurrentHappiness(updateHappinessAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			dm.setCurrentLoyalty(updateLoyaltyAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));

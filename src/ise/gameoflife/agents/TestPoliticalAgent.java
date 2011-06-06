@@ -265,7 +265,6 @@ public class TestPoliticalAgent extends AbstractAgent
             String groupId = this.getDataModel().getGroupId();
             String proposerGroup = p.getOwnerGroup();
             ProposalType agentProposal;
-
             if (groupId != null){ //check if is in a group
                     if (groupId.equals(proposerGroup)){ //check if agent is in the same group as the proposal
                             double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
@@ -301,19 +300,69 @@ public class TestPoliticalAgent extends AbstractAgent
                 return VoteType.Abstain;
             }
             //throw new UnsupportedOperationException("Not supported yet.");
+             
     }
 
     @Override
     protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
     {
-            // TODO Implement
-            return null;
+            double MaxThreshold = 0.8;
+            double MinThreshold = 0.2;
+            String opponent;
+
+            //find opponent
+            if (agentsTeam.getMembers().get(0).equals(agent))
+                opponent = agentsTeam.getMembers().get(1);
+            else
+                opponent = agentsTeam.getMembers().get(0);
+
+            //get opponent trust value from "this" agent
+            double opponentTrust = this.getDataModel().getTrust(opponent);
+
+            //We assume there will only be two food sources (stags/rabbits)
+            List<Food> foodArray = new LinkedList<Food>();
+            Food cooperateFood, defectFood, choice;
+
+            //Stores the two sources in an array
+            for (Food noms : getConn().availableFoods())
+            {
+                    foodArray.add(noms);
+            }
+
+            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
+            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
+            {
+                    cooperateFood = foodArray.get(0);
+                    defectFood = foodArray.get(1);
+            }
+            else
+            {
+                    cooperateFood = foodArray.get(1);
+                    defectFood = foodArray.get(0);
+            }
+
+            //Check for threshold values
+            if(opponentTrust >= MaxThreshold)
+            {
+                    choice = cooperateFood;
+            }
+            else if(opponentTrust <= MinThreshold)
+            {
+                    choice = defectFood;
+            }
+            else
+            {
+                choice = null;  //!!!!!!! can be modified to use distribution for inbetween values
+            }
+
+            return choice;
     }
 
     @Override
     protected double updateHappinessAfterHunt(double foodHunted,
                                     double foodReceived)
     {
+
             return 0; //throw new UnsupportedOperationException("Not supported yet.");
     }
 
