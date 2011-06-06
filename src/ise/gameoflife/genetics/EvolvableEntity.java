@@ -4,13 +4,14 @@ package ise.gameoflife.genetics;
  * An entity which conforms to the Evolvable interface
  * @author Xitong Gao
  */
-public abstract class EvolvableEntity implements Evolvable
+public abstract class EvolvableEntity<SpecieGenome extends Genome>
+		implements Evolvable<SpecieGenome>
 {
-	Genome genome = null;
+	SpecieGenome genome = null;
 	double fitness = -1;
 
 	@Override
-	public Genome genome()
+	public SpecieGenome genome()
 	{
 		return this.genome;
 	}
@@ -20,7 +21,7 @@ public abstract class EvolvableEntity implements Evolvable
 	 * @param aGenome a compatible Genome instance for this
 	 */
 	@Override
-	public void setGenome(Genome aGenome)
+	public void setGenome(SpecieGenome aGenome)
 	{
 		// check if genome is compatible
 		if (!aGenome.compatibleEvolvable(this))
