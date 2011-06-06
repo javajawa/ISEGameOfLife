@@ -75,7 +75,12 @@ public class GenePool<SpecieGenome extends Genome>
 		// return crossed version
 		return genomeA.crossOver(genomeB);
 	}
-	
+
+	/**
+	 * Gives a random offspring from the pool with two parents
+	 * Mutation is also taken into account
+	 * @return a genome
+	 */
 	public Genome reproduce()
 	{
 		// cannot reproduce without a genome

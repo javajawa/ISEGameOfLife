@@ -4,19 +4,45 @@ import java.util.ArrayList;
 
 /**
  * This class provides the framework for iterative evolution
- * @author admko
+ * @author Xitong Gao
  */
 public abstract class Evolution <Specie extends Evolvable>
 {
 
+	/**
+	 * A factory method for creating new entities
+	 * @param genome a genome compatible with the Specie instance
+	 * @return a Specie instance
+	 */
 	abstract protected Specie newEntity(Genome genome);
 
+	/**
+	 * A factory method for creating new genomes
+	 * @return a new genome
+	 */
 	abstract protected Genome newGenome();
 
+	/**
+	 * Evaluate and update the fitness value of a Specie instance
+	 * @param entity a Specie instance
+	 */
 	abstract protected void evaluate(Specie entity);
 
+	/**
+	 * Determines whether the Specie instance should be selected
+	 * @param entity a Specie instance
+	 * @return a boolean
+	 */
 	abstract protected boolean select(Specie entity);
 
+
+	/**
+	 * A very basic procedure for fitness evaluation and selection
+	 * This two separate procedures are put together so the user can
+	 * have more flexibility over efficiency
+	 * @param speciePool a list of entities
+	 * @return a list of entities after selection
+	 */
 	protected ArrayList<Specie> evaluateAndSelectFromPool(ArrayList<Specie> speciePool)
 	{
 		for (Specie entity : speciePool)
@@ -37,6 +63,10 @@ public abstract class Evolution <Specie extends Evolvable>
 		return newSpeciePool;
 	}
 
+	/**
+	 * The iterative evolution procedure
+	 * Call this for evolution
+	 */
 	public void evolve()
 	{
 		// parameter checks

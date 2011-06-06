@@ -2,7 +2,7 @@ package ise.gameoflife.genetics;
 
 /**
  * An entity which conforms to the Evolvable interface
- * @author admko
+ * @author Xitong Gao
  */
 public abstract class EvolvableEntity implements Evolvable
 {

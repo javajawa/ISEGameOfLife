@@ -10,6 +10,11 @@ public interface Evolvable
 
 	public Genome genome();
 	public void setGenome(Genome aGenome);
+	/**
+	 * Evolvable being must update its data structures that define its
+	 * behaviour when setting the genome.
+	 * @param genome a genome matching SpecieGenome generic
+	 */
 
 	public double fitness();
 	public void setFitness();
