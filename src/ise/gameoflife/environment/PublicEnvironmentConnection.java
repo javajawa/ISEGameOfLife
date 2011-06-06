@@ -5,6 +5,7 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.participants.PublicGroupDataModel;
+import ise.gameoflife.tokens.TurnType;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -144,5 +145,15 @@ public class PublicEnvironmentConnection
 	public Set<String> getAgents()
 	{
 		return ec.getAgents();
+	}
+
+	public TurnType getCurrentTurnType()
+	{
+		return ec.getCurrentTurnType();
+	}
+
+	public int getRoundsPassed()
+	{
+		return ec.getRoundsPassed();
 	}
 }
