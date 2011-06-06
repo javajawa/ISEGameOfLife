@@ -81,7 +81,6 @@ public class TestGroupableAgent extends AbstractAgent
 		if (this.getDataModel().getGroupId() != null) return null;
 
 		Set<String> groups = getConn().availableGroups();
-
 		if (groups.isEmpty())
 		{
 			if (getConn().getAllowedGroupTypes().isEmpty()) return null;
