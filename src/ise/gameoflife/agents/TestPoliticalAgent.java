@@ -10,6 +10,9 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
+import ise.gameoflife.participants.PublicGroupDataModel;
+import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.tokens.AgentType;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +35,14 @@ public class TestPoliticalAgent extends AbstractAgent{
 
     @Element
     private AgentType type;
+    
+    @Element
+    private double socialBelief;
 
-    public TestPoliticalAgent(double initialFood, double consumption, AgentType type){
+    public TestPoliticalAgent(double initialFood, double consumption, AgentType type, double social){
         super("<hunter>", 0, initialFood, consumption);
         this.type = type;
+        this.socialBelief = social;
     }
 
     @Override
@@ -50,7 +57,55 @@ public class TestPoliticalAgent extends AbstractAgent{
 
     @Override
     protected String chooseGroup() {
-        return null;
+        String chosenGroup = "";
+        PublicGroupDataModel aGroup;
+        
+        double currentHeuristic, previousHeuristic = 0;
+        
+        //used for the socio-economic faction of heuristic
+        double vectorDistance;
+        double maxDistance = Math.sqrt(2);
+        double economic, social, esFaction;
+        
+        //used for the trust faction of heuristic
+        double trustFaction, trustSum;
+        int numKnownTrustValues;
+        
+        //Assess each group in turn
+        for (String groupID : getConn().availableGroups()) {
+            aGroup = getConn().getGroupById(groupID);
+            
+            //Obtain how much trust there is between this agent and the members of the group
+            numKnownTrustValues = 0;
+            trustSum = 0;
+            for (String trustee : aGroup.getMemberList()) {
+                    Double trustValue = this.getDataModel().getTrust(trustee);
+                    if (trustValue != null) {
+                            trustSum += trustValue;
+                            numKnownTrustValues++;
+                    }
+            }
+            trustFaction = trustSum / numKnownTrustValues;
+
+            economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
+            social = aGroup.getEstimatedSocialLocation() - this.socialBelief;//change in Y
+            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+            esFaction = 1 - (vectorDistance / maxDistance);
+            
+            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+            
+            if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
+                chosenGroup = aGroup.getId();
+                previousHeuristic = currentHeuristic;
+            }
+        }
+        
+        if (chosenGroup.equals("")) {
+            GroupDataInitialiser myGroup = new GroupDataInitialiser(0, this.getDataModel().getEconomicBelief());
+            TestPoliticalGroup theGroup = new TestPoliticalGroup(myGroup);
+            chosenGroup = getConn().createGroup(TestPoliticalGroup.class, myGroup);
+        }
+        return chosenGroup;
     }
 
     @Override
