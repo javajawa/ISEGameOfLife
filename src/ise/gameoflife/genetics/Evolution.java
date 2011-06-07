@@ -8,7 +8,9 @@ import java.util.Comparator;
  * This class provides the framework for iterative evolution
  * @author Xitong Gao
  */
-public abstract class Evolution <Specie extends Evolvable>
+public abstract class Evolution
+	<SpecieGenome extends Genome<SpecieGenome>,
+	 Specie extends Evolvable<SpecieGenome>>
 {
 
 	/**
@@ -16,13 +18,13 @@ public abstract class Evolution <Specie extends Evolvable>
 	 * @param genome a genome compatible with the Specie instance
 	 * @return a Specie instance
 	 */
-	abstract protected Specie newEntity(Genome genome);
+	abstract protected Specie newEntity(SpecieGenome genome);
 
 	/**
 	 * A factory method for creating new genomes
 	 * @return a new genome
 	 */
-	abstract protected Genome newGenome();
+	abstract protected SpecieGenome newGenome();
 
 	/**
 	 * Evaluate and update the fitness value of a Specie instance
@@ -98,7 +100,7 @@ public abstract class Evolution <Specie extends Evolvable>
 			// evaluate and select
 			speciePool = evaluateAndSelectFromPool(speciePool);
 
-			GenePool<Genome> genePool = genePoolWithSpeciePool(speciePool);
+			GenePool<SpecieGenome> genePool = genePoolWithSpeciePool(speciePool);
 
 			do
 			{
@@ -111,9 +113,9 @@ public abstract class Evolution <Specie extends Evolvable>
 		}
 	}
 
-	private GenePool<Genome> randomGenePool()
+	private GenePool<SpecieGenome> randomGenePool()
 	{
-		GenePool<Genome> pool = new GenePool<Genome>();
+		GenePool<SpecieGenome> pool = new GenePool<SpecieGenome>();
 		
 		do
 		{
@@ -152,11 +154,11 @@ public abstract class Evolution <Specie extends Evolvable>
 	 * @param genePool a gene pool
 	 * @return a specie pool
 	 */
-	protected ArrayList<Specie> speciePoolWithGenePool(GenePool<Genome> genePool)
+	protected ArrayList<Specie> speciePoolWithGenePool(GenePool<SpecieGenome> genePool)
 	{
 		ArrayList<Specie> speciePool = new ArrayList<Specie>();
 
-		for (Genome genome : genePool.pool())
+		for (SpecieGenome genome : genePool.pool())
 		{
 			speciePool.add(newEntity(genome));
 		}
@@ -170,9 +172,9 @@ public abstract class Evolution <Specie extends Evolvable>
 	 * @param speciePool a specie pool
 	 * @return a gene pool
 	 */
-	protected GenePool<Genome> genePoolWithSpeciePool(ArrayList<Specie> speciePool)
+	protected GenePool<SpecieGenome> genePoolWithSpeciePool(ArrayList<Specie> speciePool)
 	{
-		GenePool<Genome> genePool = new GenePool<Genome>();
+		GenePool<SpecieGenome> genePool = new GenePool<SpecieGenome>();
 
 		for (Specie entity : speciePool)
 		{
@@ -184,15 +186,15 @@ public abstract class Evolution <Specie extends Evolvable>
 
 	// boilerplate code for setters & getters
 	// genePool
-    protected GenePool<Genome> genePool = null;
-    public GenePool<Genome> genePool()
+    protected GenePool<SpecieGenome> genePool = null;
+    public GenePool<SpecieGenome> genePool()
     {
         if (null != genePool) return genePool;
 
-        genePool = new GenePool<Genome>();
+        genePool = new GenePool<SpecieGenome>();
         return genePool;
     }
-	public void setGenePool(GenePool<Genome> pool)
+	public void setGenePool(GenePool<SpecieGenome> pool)
 	{
 		genePool = pool;
 	}
