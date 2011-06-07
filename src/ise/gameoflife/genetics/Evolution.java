@@ -120,7 +120,13 @@ public abstract class Evolution <Specie extends Evolvable>
 		return pool;
 	}
 
-	private ArrayList<Specie> speciePoolWithGenePool(GenePool<Genome> genePool)
+	/**
+	 * Converts a gene pool into a specie pool
+	 * both must be compatible with each other
+	 * @param genePool a gene pool
+	 * @return a specie pool
+	 */
+	protected ArrayList<Specie> speciePoolWithGenePool(GenePool<Genome> genePool)
 	{
 		ArrayList<Specie> speciePool = new ArrayList<Specie>();
 
@@ -132,7 +138,13 @@ public abstract class Evolution <Specie extends Evolvable>
 		return speciePool;
 	}
 
-	private GenePool<Genome> genePoolWithSpeciePool(ArrayList<Specie> speciePool)
+	/**
+	 * Converts a specie pool into a gene pool
+	 * both must be compatible with each other
+	 * @param speciePool a specie pool
+	 * @return a gene pool
+	 */
+	protected GenePool<Genome> genePoolWithSpeciePool(ArrayList<Specie> speciePool)
 	{
 		GenePool<Genome> genePool = new GenePool<Genome>();
 
