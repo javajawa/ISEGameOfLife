@@ -292,6 +292,7 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new ApplicationResponseHandler());
 		this.handlers.add(new PropositionHandler());
 		this.handlers.add(new VoteResultHandler());
+		this.handlers.add(new InvitationHandler());
 	}
 
 	@Override
