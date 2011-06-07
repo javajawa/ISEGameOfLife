@@ -1,6 +1,8 @@
 package ise.gameoflife.genetics;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * This class provides the framework for iterative evolution
@@ -49,6 +51,8 @@ public abstract class Evolution <Specie extends Evolvable>
 		{
 			evaluate(entity);
 		}
+
+		this.sortByFitness(speciePool);
 
 		ArrayList<Specie> newSpeciePool = new ArrayList<Specie>();
 
@@ -118,6 +122,28 @@ public abstract class Evolution <Specie extends Evolvable>
 		while (pool.size() < this.population);
 
 		return pool;
+	}
+
+	/**
+	 * A utility function to sort species by their fitness
+	 * Useful for writing your own selection function
+	 * @param speciePool a specie pool
+	 */
+	protected void sortByFitness(ArrayList<Specie> speciePool)
+	{
+		// sort speciePool entities
+		// with their fitness values in descending order
+
+		Collections.sort(speciePool, Collections.reverseOrder
+		(
+			new Comparator<Specie>()
+			{
+				public int compare(Specie entityA, Specie entityB)
+				{
+					return Double.compare(entityA.fitness(), entityB.fitness());
+				}
+			}
+		));
 	}
 
 	/**
