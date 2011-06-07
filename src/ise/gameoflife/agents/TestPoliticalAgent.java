@@ -405,9 +405,9 @@ public class TestPoliticalAgent extends AbstractAgent
     protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
                                     double foodReceived)
     {
-
+            Food lastHunted = this.getDataModel().getLastHunted();
             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-            if (members.size() < 2) return null;
+            if ((lastHunted == null)||(members.size() <2)) return null;
 
             String opponentID;
 
@@ -430,7 +430,7 @@ public class TestPoliticalAgent extends AbstractAgent
             else
                 trust = 0;
             
-            if (this.getDataModel().getLastHunted().getName().equals("Stag"))
+            if (lastHunted.getName().equals("Stag"))
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
