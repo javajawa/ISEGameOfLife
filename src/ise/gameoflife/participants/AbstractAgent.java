@@ -10,6 +10,7 @@ import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.GroupInvite;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.Proposition;
@@ -180,6 +181,26 @@ abstract public class AbstractAgent implements Participant
 				dm.setTrust(agent, t.get(agent));
 			}
 		}
+	}
+
+	private class InvitationHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof GroupInvite);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final GroupInvite in = (GroupInvite)input;
+
+			onInvite(in.getGroup());
+			ec.log("I, agent " + dm.getName() + " was inivited to the new " + ec.nameof(in.getGroup()) + " group.");
+		}
+
 	}
 
 	/**
@@ -584,4 +605,12 @@ abstract public class AbstractAgent implements Participant
 	abstract protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,	int votes, double overallMovement);
+	/**
+	 * Notifies you when you have been invited to a new group.
+	 * It is up to agent implementations to supply a place in their own class to
+	 * store this information. They will be able to join the group when the
+	 * chooseGroup function is called.
+	 * @param group The group they've been invited to
+	 */
+	abstract protected void onInvite(String group);
 }

@@ -155,4 +155,10 @@ public class TestGroupableAgent extends AbstractAgent
 		return null;
 	}
 
+	@Override
+	protected void onInvite(String group)
+	{
+		// Nothing to see here. Move along, citizen!
+	}
+
 }

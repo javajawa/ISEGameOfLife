@@ -11,6 +11,7 @@ import ise.gameoflife.actions.Vote;
 import ise.gameoflife.actions.VoteResult;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.GroupInvite;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
@@ -585,6 +586,19 @@ public class Environment extends AbstractEnvironment
 		sim.addParticipant(g.getId(), g);
 		sim.activateParticipant(g.getId());
 		return g.getId();
+	}
+
+	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init, String... invitees)
+	{
+		String gid = createGroup(type, init);
+		if (gid != null)
+		{
+			for (String agent : invitees)
+			{
+				sim.getPlayer(agent).enqueueInput(new GroupInvite(sim.getTime(), gid));
+			}
+		}
+		return gid;
 	}
 
 	List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
