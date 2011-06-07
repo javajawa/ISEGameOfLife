@@ -12,15 +12,12 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.models.GroupDataInitialiser;
-import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.models.ValueScaler;
 import ise.gameoflife.tokens.AgentType;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.simpleframework.xml.Element;
-import java.util.Random;
 import ise.gameoflife.participants.AbstractGroupAgent;
 
 /**
@@ -35,6 +32,12 @@ public class TestPoliticalAgent extends AbstractAgent
 
         private String invitationHolder = null;
 
+        public boolean hasInvitation(){
+            if (this.invitationHolder != null)
+                return true;
+            return false;
+        }
+        
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -62,49 +65,41 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //ONLY FOR DEBUGGING
         System.out.println("No of groups: " + getConn().availableGroups().size());
-        
+
         if (this.getDataModel().getGroupId() == null)
             System.out.println("Hi I am a free agent!");
         else
-            System.out.println("Hi I am agent " + this.getDataModel().getName() + "and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
+            System.out.println("Hi I am agent " + this.getDataModel().getName() + " with E belief: "+ this.getDataModel().getEconomicBelief() + "and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
         //ONLY FOR DEBUGGING END
 
         String chosenGroup = "";
-
-        //If there are no groups at all then try to group among freeagents
-        if (this.getConn().availableGroups().isEmpty())
-        {
-            chosenGroup = this.freeAgentsGrouping();
-            return chosenGroup;
-        }
         
         //If agent is already member of a group just do nothing
         if (this.getDataModel().getGroupId() != null) {
             return this.getDataModel().getGroupId();
         }
-        
-        //If this agent has a pending invitation to a group, return the invitation
-        if(this.invitationHolder != null)
+        else if(this.invitationHolder != null) //If this agent has a pending invitation to a group, return the invitation
         {
             String invitation = this.invitationHolder;
             this.invitationHolder = null;
             return invitation;
         }
-        
-        //If none of the above worked out then first try to find an optimal group to join with
-        chosenGroup = agentGroupGrouping();
-        
+        else //If none of the above worked out then first try to find an optimal group to join with
+        {
+            chosenGroup = agentGroupGrouping();
+        }
+
         //And if the above line didn't work then try to group with other free agents
         if (chosenGroup.equals(""))
         {
-           chosenGroup = this.freeAgentsGrouping();
+           chosenGroup = freeAgentsGrouping();
         }
         System.out.println();
 
         return chosenGroup;
     }
 
-    protected String agentGroupGrouping() {
+    private String agentGroupGrouping() {
         String chosenGroup = "";
         double currentHeuristic = 0, previousHeuristic = 0;
         //used for the socio-economic faction of heuristic
@@ -146,7 +141,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
             currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
 
-            if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
+            if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
                 previousHeuristic = currentHeuristic;
             }
@@ -154,7 +149,7 @@ public class TestPoliticalAgent extends AbstractAgent
         return chosenGroup;
     }    
     
-    protected String freeAgentsGrouping() {
+    private String freeAgentsGrouping() {
         String chosenGroup = "";
         double currentHeuristic = 0, previousHeuristic = 0;
         //used for the socio-economic faction of heuristic
@@ -170,7 +165,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             //if an agent is not comparing with itself
             if (!this.getId().equals(trustee))
-            {
+            { 
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
@@ -180,14 +175,12 @@ public class TestPoliticalAgent extends AbstractAgent
                 esFaction = 1 - (vectorDistance / maxDistance);
 
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-
-                if (currentHeuristic > 0.5 && (previousHeuristic < currentHeuristic))
+                if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
                 }
             }
-
         }
         if (bestPartner.equals(""))
         {
@@ -200,7 +193,7 @@ public class TestPoliticalAgent extends AbstractAgent
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
             //ONLY FOR DEBUGGING
             System.out.println("I, agent "+this.getDataModel().getName() + " I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
-            System.out.println("HEURISTIC = " + currentHeuristic + " Trust = " + trustFaction + " ES = " + esFaction);
+            System.out.println("HEURISTIC = " + previousHeuristic + " Trust = " + trustFaction + " ES = " + esFaction);
             System.out.println("Therefore agents " + this.getDataModel().getName() + " and " + this.getConn().getAgentById(bestPartner).getName() + " are eligible to group together" );
             //ONLY FOR DEBUGGING END
             return chosenGroup;
@@ -360,6 +353,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 return VoteType.Abstain;
             }
             //throw new UnsupportedOperationException("Not supported yet.");
+
              
     }
 
