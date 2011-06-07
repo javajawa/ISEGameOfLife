@@ -22,7 +22,7 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 300, 0, 0.1);
+		super("Basic Politics Testing Bed", 5000, 0, 0.1);
 	}
 
 	@Override
@@ -30,6 +30,8 @@ public class Politics extends GenericSimulation
 	{
                 addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
                 addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+                addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+                addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
 //              Random randomGenerator = new Random();
 //		for (int i = 0; i < 10; i++)
 //		{

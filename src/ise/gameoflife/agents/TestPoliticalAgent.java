@@ -33,6 +33,8 @@ public class TestPoliticalAgent extends AbstractAgent
 
 	private static final long serialVersionUID = 1L;
 
+        private String invitationHolder = null;
+
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -58,30 +60,37 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected String chooseGroup() {
 
-        System.out.println("No of free agents: " + this.getConn().getUngroupedAgents().size());
+        //ONLY FOR DEBUGGING
+        System.out.println("No of groups: " + getConn().availableGroups().size());
         
+        if (this.getDataModel().getGroupId() == null)
+            System.out.println("Hi I am a free agent!");
+        else
+            System.out.println("Hi I am agent " + this.getDataModel().getName() + "and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
+        //ONLY FOR DEBUGGING END
+        
+
         //If agent is already member of a group just do nothing
         if (this.getDataModel().getGroupId() != null) {
             return this.getDataModel().getGroupId();
         }
+        //If this agent has a pending invitation to a group return the invitation
+        else if(this.invitationHolder != null)
+        {
+            String invitation = this.invitationHolder;
+            this.invitationHolder = null;
+            return invitation;
+        }
 
         String chosenGroup = "";
-
-//        if (getConn().availableGroups().isEmpty())
-//        {
-//                if (getConn().getAllowedGroupTypes().isEmpty()) return null;
-//                Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-//                chosenGroup = getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
-//        }
-
         double currentHeuristic = 0, previousHeuristic = 0;
-
         //used for the socio-economic faction of heuristic
-        double vectorDistance; double maxDistance = Math.sqrt(2);double economic, social, esFaction=0;
-
+        double vectorDistance; 
+        double maxDistance = Math.sqrt(2);
+        double economic, social, esFaction=0;
         //used for the trust faction of heuristic
-        double trustFaction=0, trustSum;int numKnownTrustValues;
-
+        double trustFaction=0, trustSum;
+        int numKnownTrustValues;
         PublicGroupDataModel aGroup;
 
         //Assess each group in turn
@@ -154,11 +163,14 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(optimalGrouping).getEconomicBelief())/2);
                 Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-                chosenGroup = getConn().createGroup(gtype, myGroup);
+                chosenGroup = getConn().createGroup(gtype, myGroup, optimalGrouping);
+                //ONLY FOR DEBUGGING
+                System.out.println("I, agent "+this.getDataModel().getName() + " I have tried the heuristic with "+this.getConn().getAgentById(optimalGrouping).getName());
+                System.out.println("HEURISTIC = " + currentHeuristic + " Trust = " + trustFaction + " ES = " + esFaction);
+                System.out.println("Therefore agents " + this.getDataModel().getName() + " and " + this.getConn().getAgentById(optimalGrouping).getName() + " are eligible to group together" );
+                //ONLY FOR DEBUGGING END
             }
         }
-        System.out.println("No of groups: " + getConn().availableGroups().size());
-        System.out.println("HEURISTIC = " + currentHeuristic + " Trust = " + trustFaction + " ES = " + esFaction);
         System.out.println();
 
      return chosenGroup;
@@ -497,7 +509,7 @@ public class TestPoliticalAgent extends AbstractAgent
 	@Override
 	protected void onInvite(String group)
 	{
-		// TODO: Implement
+		this.invitationHolder = group;
 	}
 
 }
