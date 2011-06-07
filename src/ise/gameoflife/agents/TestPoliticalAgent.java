@@ -494,4 +494,10 @@ public class TestPoliticalAgent extends AbstractAgent
             //throw new UnsupportedOperationException("Not supported yet.");
     }
 
+	@Override
+	protected void onInvite(String group)
+	{
+		// TODO: Implement
+	}
+
 }

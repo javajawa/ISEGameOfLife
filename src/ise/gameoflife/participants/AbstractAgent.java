@@ -10,6 +10,7 @@ import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.GroupInvite;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.Proposition;
@@ -182,6 +183,27 @@ abstract public class AbstractAgent implements Participant
 		}
 	}
 
+	private class InvitationHandler implements InputHandler
+	{
+
+		@Override
+		public boolean canHandle(Input input)
+		{
+			return (input instanceof GroupInvite);
+		}
+
+		@Override
+		public void handle(Input input)
+		{
+			final GroupInvite in = (GroupInvite)input;
+
+			onInvite(in.getGroup());
+			ec.log("I, agent " + dm.getName() + " was inivited to the new " + ec.nameof(in.getGroup()) + " group.");
+		}
+
+	}
+
+	public final static String leaveGroup = UUID.randomUUID().toString();
 	/**
 	 * The DataModel used by this agent.
 	 */
@@ -271,6 +293,7 @@ abstract public class AbstractAgent implements Participant
 		this.handlers.add(new ApplicationResponseHandler());
 		this.handlers.add(new PropositionHandler());
 		this.handlers.add(new VoteResultHandler());
+		this.handlers.add(new InvitationHandler());
 	}
 
 	@Override
@@ -356,8 +379,14 @@ abstract public class AbstractAgent implements Participant
 
 	private void doGroupSelect()
 	{
-                String gid = chooseGroup();
-		if (gid == null ? false : gid.equals(dm.getGroupId())) return;
+		String gid = chooseGroup();
+		if (gid == null ? true : gid.equals(dm.getGroupId())) return;
+		if (gid.equals(leaveGroup))
+		{
+			ec.act(new ApplyToGroup(gid), getId(), authCode);
+			this.dm.setGroup(null);
+			return;
+		}
 		if (getConn().isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
         
@@ -509,7 +538,13 @@ abstract public class AbstractAgent implements Participant
 	/**
 	 * Magic heuristic to select which Group the agent wishes to be a part of
 	 * for the next round. The list of groups can be obtained through the 
-	 * connector {@link #conn this.conn}, as can functions to create a new group
+	 * connector {@link #conn this.conn}, as can functions to create a new group.
+	 * IF the agent wishes to remain in the same group, it can either return the
+	 * current group id, or null.
+	 * If the agent wished to leave it's current group, and rejoin the pool of 
+	 * free agents, it should return the constant value at {@link 
+	 * AbstractAgent#leaveGroup}. The value is designed not to collide with any
+	 * group name.
 	 * @return The is of the group we should try to join
 	 */
 	abstract protected String chooseGroup();
@@ -584,4 +619,12 @@ abstract public class AbstractAgent implements Participant
 	abstract protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,	int votes, double overallMovement);
+	/**
+	 * Notifies you when you have been invited to a new group.
+	 * It is up to agent implementations to supply a place in their own class to
+	 * store this information. They will be able to join the group when the
+	 * chooseGroup function is called.
+	 * @param group The group they've been invited to
+	 */
+	abstract protected void onInvite(String group);
 }
