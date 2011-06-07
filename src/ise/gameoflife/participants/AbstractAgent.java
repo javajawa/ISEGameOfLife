@@ -356,11 +356,11 @@ abstract public class AbstractAgent implements Participant
 
 	private void doGroupSelect()
 	{
-		String gid = chooseGroup();
+                String gid = chooseGroup();
 		if (gid == null ? false : gid.equals(dm.getGroupId())) return;
 		if (getConn().isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
-
+        
 	private void doHuntTurn()
 	{
 		Food toHunt = chooseFood();
