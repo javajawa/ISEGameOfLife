@@ -22,6 +22,7 @@ import java.util.Map;
 import org.simpleframework.xml.Element;
 import java.util.Random;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import presage.Participant;
 
 /**
  *
@@ -434,7 +435,6 @@ public class TestPoliticalAgent extends AbstractAgent
             }
            
             newTrustValue.put(opponentID, trust);
-
             return  newTrustValue;
 
     }

@@ -9,6 +9,7 @@ import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
+import ise.gameoflife.plugins.PoliticalCompass2Plugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import ise.gameoflife.tokens.AgentType;
 import java.util.Random;
@@ -29,7 +30,7 @@ public class Politics extends GenericSimulation
 	protected void agents()
 	{
                 Random randomGenerator = new Random();
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
@@ -66,6 +67,7 @@ public class Politics extends GenericSimulation
 		addPlugin(new DatabasePlugin(1,"Simulation comment",false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
+                addPlugin(new PoliticalCompass2Plugin());
 	}
 
 	@Override
