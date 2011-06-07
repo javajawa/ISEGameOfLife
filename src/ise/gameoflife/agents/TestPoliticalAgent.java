@@ -423,8 +423,51 @@ public class TestPoliticalAgent extends AbstractAgent
     protected double updateHappinessAfterHunt(double foodHunted,
                                     double foodReceived)
     {
-
-            return 0; //throw new UnsupportedOperationException("Not supported yet.");
+            double myEconomic = getDataModel().getEconomicBelief();
+            double entitlement = myEconomic * foodHunted;
+            double difference, ratio, happiness;            
+            
+            if (foodReceived == entitlement)
+            {
+                //you're satisifed, but happy
+                happiness = getDataModel().getCurrentHappiness() + 0.01;//a measure of your satisfaction
+                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
+                    return 1;
+                else                  
+                    return happiness;             
+            }
+            
+            if (foodReceived > entitlement)
+            {
+                //you're overjoyed
+                difference = foodReceived - entitlement;
+                if (entitlement > difference)
+                    ratio = difference / entitlement;
+                else
+                    ratio = entitlement / difference;
+                happiness = getDataModel().getCurrentHappiness() + ratio;//a measure of your happiness
+                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
+                    return 1;
+                else                  
+                    return happiness;                
+            }
+            
+            if (foodReceived < entitlement)
+            {
+                //you're dissapointed
+                difference = entitlement - foodReceived;
+                if (entitlement > difference)
+                    ratio = difference / entitlement;
+                else
+                    ratio = entitlement / difference;
+                happiness = getDataModel().getCurrentHappiness() - ratio;//a measure of your dissapointment
+                if ((getDataModel().getCurrentHappiness() == 0) || (happiness <= 0)) 
+                    return 0;
+                else                  
+                    return happiness;                                 
+            }
+            
+            return getDataModel().getCurrentHappiness();//if got here without hunting first
     }
 
     @Override
