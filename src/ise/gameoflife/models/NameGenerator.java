@@ -110,7 +110,7 @@ public class NameGenerator
 		"Penny", "Kay", "Priscilla", "Naomi", "Carole", "Brandy", "Olga", "Billie",
 		"Dianne", "Tracey", "Leona", "Jenny", "Felicia", "Sonia", "Miriam", "Velma",
 		"Becky", "Bobbie", "Violet", "Kristina", "Toni", "Misty", "Mae", "Shelly",
-		"Daisy", "Ramona", "Sherri", "Erika", "Katrina", "Claire","Chuck"
+		"Daisy", "Ramona", "Sherri", "Erika", "Katrina", "Claire", "Chuck"
 	};
 	private static String[] lastNames = {
 		"Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller",
@@ -202,14 +202,14 @@ public class NameGenerator
 		"Whitehead", "Meyers", "Keith", "Garrison", "Vincent", "Shields",
 		"Horn", "Savage", "Olsen", "Schroeder", "Hartman", "Woodard",
 		"Mueller", "Kemp", "Deleon", "Booth", "Patel", "Calhoun", "Wiley",
-		"Eaton", "Cline", "Navarro", "Harrell", "Lester", "Humphrey","Norris",
+		"Eaton", "Cline", "Navarro", "Harrell", "Lester", "Humphrey", "Norris",
 		"Parrish"
 	};
 
 	private static int foreNameIndex = 0;
 	private static int lastNameIndex = 0;
 	private static boolean hasRandomised = false;
-	private static Random rand = new Random(System.currentTimeMillis());
+	private static Random rand = null;
 	
 	public synchronized static void setRandomiser(Random r)
 	{
