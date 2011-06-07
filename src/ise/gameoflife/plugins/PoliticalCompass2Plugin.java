@@ -304,35 +304,45 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	@Override
 	public void execute()
 	{
-                data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getRoundsPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
+                
 
               updatePoliticalPlayers();
               SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
               Iterator<String> iter = active_agent_ids.iterator();
               String name;
 
-              if (en.getRoundsPassed() == rounds){
+              //if (en.getRoundsPassed() == rounds){
+                data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getRoundsPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
-                        data.add(entry.getValue().getDataModel().getName()+ " Trust Values: ");
+                        data.add("***"+ entry.getValue().getDataModel().getName()+ " Trust Values: ");
                         data.add("");
-                        while (iter.hasNext()){
-                                if (p_players.get(iter.next()) != null){
-                                     if(entry.getValue().getDataModel().getTrust(iter.next()) != null){
-                                            trust = entry.getValue().getDataModel().getFoodAmount();
-                                            name = p_players.get(iter.next()).getDataModel().getName();
-
-                                            data.add("-->" + name + "Trust:" + trust);
-
-                                      }
-                                }
                         trust=0;
-                        }
+                        while (iter.hasNext()){
+                                String id = iter.next();
+                                if (p_players.get(id) != null){
+                                     if(entry.getValue().getDataModel().getTrust(id) != null){
+                                         //if( !id.equals(entry.getValue().getDataModel().getId()))
+                                         {
+                                            trust = entry.getValue().getDataModel().getTrust(id);
+                                            name = p_players.get(id).getDataModel().getName();
+
+                                            data.add(" --> " + name + " trust: " + trust);
+                                            trust=0;
+                                         }
+                                      }
+                                     else{
+                                         name = p_players.get(id).getDataModel().getName();
+                                         data.add(" --> " + name + " trust: Null");
+                                     }
+                                }
+                        
+                        } 
                         data.add("--------");
                         iter = active_agent_ids.iterator();
                 }
              rounds++;
-            }
+            //}
 	}
 
 
@@ -372,7 +382,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                         }
                 }
 
-                // Delete agents which are no longer active
+               // Delete agents which are no longer active
                 List<String> ids_to_remove = new LinkedList<String>();
                 for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
                 {

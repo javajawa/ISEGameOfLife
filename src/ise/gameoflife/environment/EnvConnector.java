@@ -106,6 +106,11 @@ public class EnvConnector extends EnvironmentConnector
 		return e.createGroup(type, init);
 	}
 
+	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init, String... invitees)
+	{
+		return e.createGroup(type, init, invitees);
+	}
+
 	public boolean isAgentId(String id)
 	{
 		return e.isAgentId(id);

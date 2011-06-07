@@ -11,6 +11,7 @@ import ise.gameoflife.actions.Vote;
 import ise.gameoflife.actions.VoteResult;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
+import ise.gameoflife.inputs.GroupInvite;
 import ise.gameoflife.inputs.HuntOrder;
 import ise.gameoflife.inputs.HuntResult;
 import ise.gameoflife.inputs.JoinRequest;
@@ -71,8 +72,21 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
-			log("Agent " + nameOf(actorID) + " has attempted to join group " + nameOf(((ApplyToGroup)action).getGroup()));
+			final ApplyToGroup app = (ApplyToGroup)action;
+			if (app.getGroup().equals(AbstractAgent.leaveGroup))
+			{
+				String old_group = dmodel.getAgentById(actorID).getGroupId();
+				if (old_group != null)
+				{
+					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, actorID));
+				}
+				log("Agent " + nameOf(actorID) + " has rejoined the free agents group.");
+			}
+			else
+			{
+				sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
+				log("Agent " + nameOf(actorID) + " has attempted to join group " + nameOf(((ApplyToGroup)action).getGroup()));
+			}
 			return null;
 		}
 		
@@ -585,6 +599,19 @@ public class Environment extends AbstractEnvironment
 		sim.addParticipant(g.getId(), g);
 		sim.activateParticipant(g.getId());
 		return g.getId();
+	}
+
+	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init, String... invitees)
+	{
+		String gid = createGroup(type, init);
+		if (gid != null)
+		{
+			for (String agent : invitees)
+			{
+				sim.getPlayer(agent).enqueueInput(new GroupInvite(sim.getTime(), gid));
+			}
+		}
+		return gid;
 	}
 
 	List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()

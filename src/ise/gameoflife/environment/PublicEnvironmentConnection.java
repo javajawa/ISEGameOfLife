@@ -99,6 +99,20 @@ public class PublicEnvironmentConnection
 	}
 
 	/**
+	 * Function used to create a new group. 
+	 * Group data initialiser is an object that contains all the information used
+	 * to create a new group.
+	 * @param type The class of group to create
+	 * @param init The initialisation parameters for the group
+	 * @param invitees Any agents you wish to invite to the new group
+	 * @return The ID of the created group
+	 */
+	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init, String... invitees)
+	{
+		return ec.createGroup(type, init, invitees);
+	}
+
+	/**
 	 * Determines whether a string represents the id of an active agent in this
 	 * simulation
 	 * @param id The id to check
