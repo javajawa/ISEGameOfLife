@@ -11,23 +11,27 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
-
 import ise.gameoflife.environment.Environment;
-import java.awt.BorderLayout;
+import ise.gameoflife.participants.SimplePoliticalParticipant;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
-import javax.swing.JList;
+import java.util.Map;
+import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
+import org.simpleframework.xml.Element;
+import presage.EnvDataModel;
 import presage.Plugin;
 import presage.Simulation;
+import presage.annotations.PluginConstructor;
 
 /**
  * Draws a representation of the agents and groups on the political
@@ -37,349 +41,112 @@ import presage.Simulation;
  */
 public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
-	/**
-	 * Class that creates a syncronised, type-safe list that can be used with
-	 * a JList, and allow the list to be updated after creation.
-         */
-         // Set of political participants that are active
-        private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
-        double trust=0;
-        int rounds=0;
+	private static final long serialVersionUID = 1L;
 
-	private final class JListModel implements ListModel, List<String>
-	{
-		private final ArrayList<String> data;
-		private final ArrayList<ListDataListener> listeners;
+	private final static String title = "Political Compass2";
+        private final static String label = "Political Compass2";
 
-		JListModel()
-		{
-			this(new ArrayList<String>());
-		}
-
-		/**
-		 * TODO: Spread this out to be better implementation
-		 */
-		synchronized private void informListeners()
-		{
-			for (ListDataListener l : listeners)
-			{
-				l.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()));
-			}
-		}
-
-		JListModel(Collection<String> data)
-		{
-			this.data = new ArrayList<String>(data);
-			this.listeners = new ArrayList<ListDataListener>();
-		}
-
-		@Override
-		synchronized public boolean add(String e)
-		{
-			informListeners();
-			return data.add(e);
-		}
-
-		@Override
-		synchronized public void add(int index, String element)
-		{
-			informListeners();
-			data.add(index, element);
-		}
-
-		@Override
-		synchronized public boolean addAll(Collection<? extends String> c)
-		{
-			informListeners();
-			return data.addAll(c);
-		}
-
-		@Override
-		synchronized public boolean addAll(int index,
-						Collection<? extends String> c)
-		{
-			informListeners();
-			return data.addAll(index, c);
-		}
-
-		@Override
-		synchronized public void addListDataListener(ListDataListener l)
-		{
-			listeners.add(l);
-		}
-
-		@Override
-		synchronized public int getSize()
-		{
-			return data.size();
-		}
-
-		@Override
-		synchronized public Object getElementAt(int index)
-		{
-			return data.get(index);
-		}
-
-		@Override
-		synchronized public void removeListDataListener(ListDataListener l)
-		{
-			listeners.remove(l);
-		}
-
-		@Override
-		synchronized public int size()
-		{
-			return data.size();
-		}
-
-		@Override
-		synchronized public boolean isEmpty()
-		{
-			return data.isEmpty();
-		}
-
-		@Override
-		synchronized public boolean contains(Object o)
-		{
-			return data.contains((String)o);
-		}
-
-		@Override
-		synchronized public Iterator<String> iterator()
-		{
-			return data.iterator();
-		}
-
-		@Override
-		synchronized public Object[] toArray()
-		{
-			return data.toArray();
-		}
-
-		@Override
-		synchronized public <T> T[] toArray(T[] a)
-		{
-			return data.toArray(a);
-		}
-
-		@Override
-		synchronized public boolean remove(Object o)
-		{
-			informListeners();
-			return data.remove((String)o);
-		}
-
-		@Override
-		synchronized public boolean containsAll(Collection<?> c)
-		{
-			return data.containsAll(c);
-		}
-
-		@Override
-		synchronized public boolean removeAll(Collection<?> c)
-		{
-			informListeners();
-			return data.removeAll(c);
-		}
-
-		@Override
-		synchronized public boolean retainAll(Collection<?> c)
-		{
-			return data.retainAll(c);
-		}
-
-		@Override
-		synchronized public void clear()
-		{
-			informListeners();
-			data.clear();
-		}
-
-		@Override
-		synchronized public String get(int index)
-		{
-			return data.get(index);
-		}
-
-		@Override
-		synchronized public String set(int index, String element)
-		{
-			return data.set(index, element);
-		}
-
-		@Override
-		synchronized public String remove(int index)
-		{
-			informListeners();
-			return data.remove(index);
-		}
-
-		@Override
-		synchronized public int indexOf(Object o)
-		{
-			return data.indexOf(o);
-		}
-
-		@Override
-		synchronized public int lastIndexOf(Object o)
-		{
-			return data.lastIndexOf((String)o);
-		}
-
-		@Override
-		synchronized public ListIterator<String> listIterator()
-		{
-			return data.listIterator();
-		}
-
-		@Override
-		synchronized public ListIterator<String> listIterator(int index)
-		{
-			return data.listIterator(index);
-		}
-
-		@Override
-		synchronized public List<String> subList(int fromIndex, int toIndex)
-		{
-			return data.subList(fromIndex, toIndex);
-		}
-	}
-
-	private final static long serialVersionUID = 1L;
-	private final static String label = "Trust Log";
 
 	private Simulation sim;
 	private Environment en;
-	private final JListModel data = new JListModel();
+        private EnvDataModel dmodel;
+
+        // Set of political participants that are active
+        private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
+
+	@Element(required=false)
+	private String outputdirectory;
+
+        private int framecount = 0;
 
 	/**
-	 * Default constructor - does nothing.
 	 */
 	public PoliticalCompass2Plugin()
 	{
-		super(new BorderLayout());
+		this.outputdirectory = null;
 	}
 
 	/**
-	 * Returns the Label
-	 * @return The label
+	 * Creates a new instance of the PoliticalCompassPlugin
+	 * @param outputpath Path to write the final video to
 	 */
-	@Override
-	public String getLabel()
+	@PluginConstructor(
 	{
-		return label;
+		"outputdirectory"
+	})
+	public PoliticalCompass2Plugin(String outputdirectory)
+	{
+		super();
+		this.outputdirectory = outputdirectory;
 	}
 
 	/**
-	 * Returns the Short Label
-	 * @return The short label
-	 */
-	@Override
-	public String getShortLabel()
-	{
-		return label;
-	}
-
-	/**
-	 * Creates a new instance of ErrorLog - called during simulation
-	 * @param sim
-	 */
-	@Override
-	public void initialise(Simulation sim)
-	{
-		this.sim = sim;
-		this.en = (Environment)sim.environment;
-		this.add(new JScrollPane(new JList(data)));
-
-		en.setErrorLog(data);
-		setBackground(Color.LIGHT_GRAY);
-                
-	}
-
-	/**
-	 * Marks the beginning of a new cycle
+	 * Run per-step-in-simulation code that changes the plugin's state. In this
+	 * case, we use the information from the simulation's last step to update
+         * the the political view data of the agents.
 	 */
 	@Override
 	public void execute()
 	{
+                // Add/remove new/old players
+                updatePoliticalPlayers();
+
+                // Calculate new political positions
+               // for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
+               // {
+               //        TestPoliticalAgent p_player = entry.getValue();
+               //        System.out.println(p_player.getDataModel().getEconomicBelief()+ "hello" + p_player.getDataModel().getSocialBelief());
+                      //   TODO actually implement the measurement of political position
+                      //  pp.getDataModel().getEconomicBelief() +=  //(randomGenerator.nextFloat() - 0.5)/10;
+                      //  pp.social += //(randomGenerator.nextFloat() - 0.5)/10;
+               // }
                 
+                repaint();
 
-             
-              SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
-              Iterator<String> iter = active_agent_ids.iterator();
-              String name;
-       
-               updatePoliticalPlayers(active_agent_ids, iter);
-
-               if (en.getRoundsPassed() == rounds){
-                data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getRoundsPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
-                for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
+                if(this.outputdirectory != null)
                 {
-                        data.add("***"+ entry.getValue().getDataModel().getName()+ " Trust Values: ");
-                        data.add("");
-                        trust=0;
-                        while (iter.hasNext()){
-                                String id = iter.next();
-                                if (p_players.get(id) != null){
-                                     if(entry.getValue().getDataModel().getTrust(id) != null){
-                                         //if( !id.equals(entry.getValue().getDataModel().getId()))
-                                         {
-                                            trust = entry.getValue().getDataModel().getTrust(id);
-                                            name = p_players.get(id).getDataModel().getName();
-
-                                            data.add(" --> " + name + " trust: " + trust);
-                                            trust=0;
-                                         }
-                                      }
-                                     else{
-                                         name = p_players.get(id).getDataModel().getName();
-                                         data.add(" --> " + name + " trust: Null");
-                                     }
-                                }
-                        
-                        } 
-                        data.add("--------");
-                        iter = active_agent_ids.iterator();
+                        writeToPNG();
                 }
-              
-             rounds++;
-            }
-
-
 	}
 
+        private void writeToPNG() {
+                BufferedImage bi = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_ARGB);
+                Graphics big = bi.getGraphics();
+                big.setClip(0, 0, 500, 500);
+                this.paint(big);
+                try
+                {
+                        File f =  new File(this.outputdirectory + "test"+this.framecount+".png");
+                        f.mkdirs();
+                        ImageIO.write(bi, "png",f);
+                        this.framecount++;
+                }
+                catch (Exception e)
+                {
+                        System.out.println("Error writing political compass image: " + this.framecount);
+                }
+        }
 
-	/**
-	 * Deals with plugin upon plugin deletion
-	 * @deprecated
-	 */
-	@Deprecated
-	@Override
-	public void onDelete()
-	{
-	}
-
-	@Override
-	public void onSimulationComplete()
-	{
-}
-        private void updatePoliticalPlayers(SortedSet<String> active_agent_ids, Iterator<String> itera)
+        /**
+         * Adds new players and removes dead players since the last cycle.
+         */
+        private void updatePoliticalPlayers()
         {
 
-               //SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
-               //Iterator<String> itera = active_agent_ids.iterator();
+               SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
+               Iterator<String> iter = active_agent_ids.iterator();
 
                 // Add any new agents
-                while(itera.hasNext())
+                while(iter.hasNext())
                 {
-                        String id = itera.next();
+                        String id = iter.next();
                         if(!p_players.containsKey(id))
                         {
                                 p_players.put(id, (TestPoliticalAgent) sim.getPlayer(id));
                         }
                 }
 
-               // Delete agents which are no longer active
+                // Delete agents which are no longer active
                 List<String> ids_to_remove = new LinkedList<String>();
                 for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
                 {
@@ -389,11 +156,111 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                                 ids_to_remove.add(id);
                         }
                 }
-                itera = ids_to_remove.iterator();
-                while(itera.hasNext())
+                iter = ids_to_remove.iterator();
+                while(iter.hasNext())
                 {
-                        p_players.remove(itera.next());
+                        p_players.remove(iter.next());
                 }
         }
+
+        /**
+         * Draw everything to the screen
+         * @param g Graphics object
+         */
+        @Override
+        public void paint(Graphics g)
+        {
+                // Clear everything
+                g.setColor(Color.LIGHT_GRAY);
+		g.fillRect(0, 0, getWidth(), getHeight());
+
+                // Draw social and economic axis
+                Rectangle rect = g.getClipBounds();
+                g.setColor(Color.DARK_GRAY);
+                g.drawLine(rect.width/2, 0, rect.width/2, rect.height);
+                g.drawLine(0,  rect.height/2, rect.width, rect.height/2);
+
+                // Draw agents
+                for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
+                {
+                        drawAgent(g, entry.getValue());
+                }
+
+        }
+
+        /**
+         * Draws a circle representing an agent's political views
+         * @param g Graphics objects
+         * @param p_player SimplifiedPoliticalPlayer object to draw
+         */
+        private void drawAgent(Graphics g, TestPoliticalAgent p_player)
+        {
+                Rectangle rect = g.getClipBounds();
+                g.setColor(Color.BLUE);
+                g.fillOval((int)((p_player.getDataModel().getEconomicBelief())*rect.width/2),
+                            (int)((p_player.getDataModel().getSocialBelief())*rect.height/2),
+                            10, 10
+                            );
+
+        }
+
+	/**
+	 * Returns the label of this plugin
+	 * @return The label of this plugin
+	 */
+	@Override
+	public String getLabel()
+	{
+		return label;
+	}
+
+	/**
+	 * Returns the short label of this plugin
+	 * @return The short label of this plugin
+	 */
+	@Override
+	public String getShortLabel()
+	{
+		return label;
+	}
+
+	/**
+	 * Initialises a plugin that was stored using the SimpleXML framework, making
+	 * it ready to be used in the visualisation of a simulation
+	 * @param sim The simulation to which this plugin will belong
+	 */
+	@Override
+	public void initialise(Simulation sim)
+	{
+		System.out.println(" -Initialising Political Compass Plugin....");
+
+		this.sim = sim;
+
+		setBackground(Color.CYAN);
+
+                repaint();
+	}
+
+	/**
+	 * Is not used by simulation
+	 * @deprecated Not used by any calling class
+	 */
+	@Deprecated
+	@Override
+	public void onDelete()
+	{
+		// Nothing to see here. Move along, citizen!
+	}
+
+	/**
+	 * Preforms actions when a simulation has run to completion, such as
+	 * outputting the graph to a file for later viewing
+	 */
+	@Override
+	public void onSimulationComplete()
+	{
+
+
+	}
 
 }
