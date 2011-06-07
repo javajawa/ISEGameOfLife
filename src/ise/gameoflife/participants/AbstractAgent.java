@@ -203,6 +203,7 @@ abstract public class AbstractAgent implements Participant
 
 	}
 
+	public final static String leaveGroup = UUID.randomUUID().toString();
 	/**
 	 * The DataModel used by this agent.
 	 */
@@ -380,6 +381,12 @@ abstract public class AbstractAgent implements Participant
 	{
 		String gid = chooseGroup();
 		if (gid == null ? false : gid.equals(dm.getGroupId())) return;
+		if (gid.equals(leaveGroup))
+		{
+			ec.act(new ApplyToGroup(gid), getId(), authCode);
+			this.dm.setGroup(null);
+			return;
+		}
 		if (getConn().isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
 	}
 
@@ -531,7 +538,13 @@ abstract public class AbstractAgent implements Participant
 	/**
 	 * Magic heuristic to select which Group the agent wishes to be a part of
 	 * for the next round. The list of groups can be obtained through the 
-	 * connector {@link #conn this.conn}, as can functions to create a new group
+	 * connector {@link #conn this.conn}, as can functions to create a new group.
+	 * IF the agent wishes to remain in the same group, it can either return the
+	 * current group id, or null.
+	 * If the agent wished to leave it's current group, and rejoin the pool of 
+	 * free agents, it should return the constant value at {@link 
+	 * AbstractAgent#leaveGroup}. The value is designed not to collide with any
+	 * group name.
 	 * @return The is of the group we should try to join
 	 */
 	abstract protected String chooseGroup();

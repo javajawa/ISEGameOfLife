@@ -72,8 +72,21 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
-			log("Agent " + nameOf(actorID) + " has attempted to join group " + nameOf(((ApplyToGroup)action).getGroup()));
+			final ApplyToGroup app = (ApplyToGroup)action;
+			if (app.getGroup().equals(AbstractAgent.leaveGroup))
+			{
+				String old_group = dmodel.getAgentById(actorID).getGroupId();
+				if (old_group != null)
+				{
+					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, actorID));
+				}
+				log("Agent " + nameOf(actorID) + " has rejoined the free agents group.");
+			}
+			else
+			{
+				sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
+				log("Agent " + nameOf(actorID) + " has attempted to join group " + nameOf(((ApplyToGroup)action).getGroup()));
+			}
 			return null;
 		}
 		
