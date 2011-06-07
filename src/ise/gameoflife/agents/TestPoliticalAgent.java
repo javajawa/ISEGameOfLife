@@ -68,20 +68,43 @@ public class TestPoliticalAgent extends AbstractAgent
         else
             System.out.println("Hi I am agent " + this.getDataModel().getName() + "and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
         //ONLY FOR DEBUGGING END
-        
 
+        String chosenGroup = "";
+
+        //If there are no groups at all then try to group among freeagents
+        if (this.getConn().availableGroups().isEmpty())
+        {
+            chosenGroup = this.freeAgentsGrouping();
+            return chosenGroup;
+        }
+        
         //If agent is already member of a group just do nothing
         if (this.getDataModel().getGroupId() != null) {
             return this.getDataModel().getGroupId();
         }
-        //If this agent has a pending invitation to a group return the invitation
-        else if(this.invitationHolder != null)
+        
+        //If this agent has a pending invitation to a group, return the invitation
+        if(this.invitationHolder != null)
         {
             String invitation = this.invitationHolder;
             this.invitationHolder = null;
             return invitation;
         }
+        
+        //If none of the above worked out then first try to find an optimal group to join with
+        chosenGroup = agentGroupGrouping();
+        
+        //And if the above line didn't work then try to group with other free agents
+        if (chosenGroup.equals(""))
+        {
+           chosenGroup = this.freeAgentsGrouping();
+        }
+        System.out.println();
 
+        return chosenGroup;
+    }
+
+    protected String agentGroupGrouping() {
         String chosenGroup = "";
         double currentHeuristic = 0, previousHeuristic = 0;
         //used for the socio-economic faction of heuristic
@@ -91,90 +114,98 @@ public class TestPoliticalAgent extends AbstractAgent
         //used for the trust faction of heuristic
         double trustFaction=0, trustSum;
         int numKnownTrustValues;
+        
         PublicGroupDataModel aGroup;
 
         //Assess each group in turn
-//        if (!getConn().availableGroups().isEmpty()){
-//            for (String groupID : getConn().availableGroups()) {
-//                aGroup = getConn().getGroupById(groupID);
-//
-//                //Obtain how much trust there is between this agent and the members of the group
-//                numKnownTrustValues = 0;
-//                trustSum = 0;
-//                for (String trustee : aGroup.getMemberList()) {
-//                        Double trustValue = this.getDataModel().getTrust(trustee);
-//
-//                        if (trustValue != null) {
-//                                trustSum += trustValue;
-//                                numKnownTrustValues++;
-//                        }
-//                }
-//                if(numKnownTrustValues != 0) {
-//                    trustFaction = trustSum / numKnownTrustValues;
-//                }
-//                else {
-//                    trustFaction = 0;
-//                }
-//
-//                economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
-//                social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
-//                vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-//                esFaction = 1 - (vectorDistance / maxDistance);
-//
-//                currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-//
-//                if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
-//                    chosenGroup = aGroup.getId();
-//                    previousHeuristic = currentHeuristic;
-//                }
-//            }
-//        }
+        for (String groupID : getConn().availableGroups()) {
+            aGroup = getConn().getGroupById(groupID);
 
-        if (chosenGroup.equals(""))
-        {
-            String optimalGrouping = "";
-
-            for (String trustee : getConn().getUngroupedAgents())
-            {
+            //Obtain how much trust there is between this agent and the members of the group
+            numKnownTrustValues = 0;
+            trustSum = 0;
+            for (String trustee : aGroup.getMemberList()) {
                     Double trustValue = this.getDataModel().getTrust(trustee);
-                    if (trustValue != null)
-                    {
-                        trustFaction = trustValue;
 
-                        economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
-                        social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
-                        vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-                        esFaction = 1 - (vectorDistance / maxDistance);
-                        
-                        currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-
-                        if (currentHeuristic > 0.5 && (previousHeuristic < currentHeuristic))
-                        {
-                            optimalGrouping = trustee;
-                            previousHeuristic = currentHeuristic;
-                        }
+                    if (trustValue != null) {
+                            trustSum += trustValue;
+                            numKnownTrustValues++;
                     }
             }
-            if (optimalGrouping.equals(""))
-            {
-                return null;
+            if(numKnownTrustValues != 0) {
+                trustFaction = trustSum / numKnownTrustValues;
             }
-            else
-            {
-                GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(optimalGrouping).getEconomicBelief())/2);
-                Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-                chosenGroup = getConn().createGroup(gtype, myGroup, optimalGrouping);
-                //ONLY FOR DEBUGGING
-                System.out.println("I, agent "+this.getDataModel().getName() + " I have tried the heuristic with "+this.getConn().getAgentById(optimalGrouping).getName());
-                System.out.println("HEURISTIC = " + currentHeuristic + " Trust = " + trustFaction + " ES = " + esFaction);
-                System.out.println("Therefore agents " + this.getDataModel().getName() + " and " + this.getConn().getAgentById(optimalGrouping).getName() + " are eligible to group together" );
-                //ONLY FOR DEBUGGING END
+            else {
+                trustFaction = 0;
+            }
+
+            economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
+            social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
+            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+            esFaction = 1 - (vectorDistance / maxDistance);
+
+            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+
+            if (currentHeuristic > 0.5 && previousHeuristic < currentHeuristic) {
+                chosenGroup = aGroup.getId();
+                previousHeuristic = currentHeuristic;
             }
         }
-        System.out.println();
+        return chosenGroup;
+    }    
+    
+    protected String freeAgentsGrouping() {
+        String chosenGroup = "";
+        double currentHeuristic = 0, previousHeuristic = 0;
+        //used for the socio-economic faction of heuristic
+        double vectorDistance; 
+        double maxDistance = Math.sqrt(2);
+        double economic, social, esFaction=0;
+        //used for the trust faction of heuristic
+        double trustFaction=0;
+        
+        String bestPartner = "";
 
-     return chosenGroup;
-}
+        for (String trustee : getConn().getUngroupedAgents())
+        {
+            //if an agent is not comparing with itself
+            if (!this.getId().equals(trustee))
+            {
+                Double trustValue = this.getDataModel().getTrust(trustee);
+                if (trustValue != null) trustFaction = trustValue;
+
+                economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
+                social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
+                vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+                esFaction = 1 - (vectorDistance / maxDistance);
+
+                currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+
+                if (currentHeuristic > 0.5 && (previousHeuristic < currentHeuristic))
+                {
+                    bestPartner = trustee;
+                    previousHeuristic = currentHeuristic;
+                }
+            }
+
+        }
+        if (bestPartner.equals(""))
+        {
+            return null;
+        }
+        else
+        {
+            GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
+            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+            chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
+            //ONLY FOR DEBUGGING
+            System.out.println("I, agent "+this.getDataModel().getName() + " I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
+            System.out.println("HEURISTIC = " + currentHeuristic + " Trust = " + trustFaction + " ES = " + esFaction);
+            System.out.println("Therefore agents " + this.getDataModel().getName() + " and " + this.getConn().getAgentById(bestPartner).getName() + " are eligible to group together" );
+            //ONLY FOR DEBUGGING END
+            return chosenGroup;
+        }        
+    }
        
     @Override
     protected void groupApplicationResponse(boolean accepted) {
