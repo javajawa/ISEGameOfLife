@@ -380,7 +380,7 @@ abstract public class AbstractAgent implements Participant
 	private void doGroupSelect()
 	{
 		String gid = chooseGroup();
-		if (gid == null ? false : gid.equals(dm.getGroupId())) return;
+		if (gid == null ? true : gid.equals(dm.getGroupId())) return;
 		if (gid.equals(leaveGroup))
 		{
 			ec.act(new ApplyToGroup(gid), getId(), authCode);
