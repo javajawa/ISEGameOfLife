@@ -39,6 +39,7 @@ public class HunterListPlugin extends JPanel implements Plugin
 		private final XYSeries foodHistorySeries;
 		private final PublicAgentDataModel dm;
 		private final ValueAxis domainAxis;
+		private final ValueAxis rangeAxis;
 
 		private JLabel labelise(String s)
 		{
@@ -61,8 +62,7 @@ public class HunterListPlugin extends JPanel implements Plugin
 
 			chart.getXYPlot().setBackgroundAlpha(1);
 			domainAxis = chart.getXYPlot().getDomainAxis();
-			domainAxis.setVisible(false);
-			chart.getXYPlot().getRangeAxis().setRange(new Range(0, 50), true, true);
+			rangeAxis = chart.getXYPlot().getRangeAxis();
 
 			JPanel dataPanel = new JPanel(new GridLayout(3, 2, 2, -2));
 			dataPanel.add(labelise(dm.getName()));
@@ -83,8 +83,10 @@ public class HunterListPlugin extends JPanel implements Plugin
 
 		void updateData()
 		{
+			if (dm.getFoodAmount() > graphHeight) graphHeight += 25;
 			foodHistorySeries.addOrUpdate(ec.getRoundsPassed(), dm.getFoodAmount());
 			domainAxis.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
+			rangeAxis.setRange(0, graphHeight);
 		}
 	}
 
@@ -97,6 +99,7 @@ public class HunterListPlugin extends JPanel implements Plugin
 	private final JScrollPane pane = new JScrollPane(window, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	private final HashMap<String, HunterPanel> panels = new HashMap<String, HunterPanel>();
 	private int barWidth;
+	private int graphHeight = 50;
 
 	public HunterListPlugin()
 	{
