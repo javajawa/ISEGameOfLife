@@ -5,7 +5,7 @@ package ise.gameoflife.genetics;
  * Its behaviour is defined by a Genome instance of its own type.
  * @author Xitong Gao
  */
-public interface Evolvable<SpecieGenome extends Genome>
+public interface Evolvable<SpecieGenome extends Genome<SpecieGenome>>
 {
 
 	public SpecieGenome genome();

@@ -11,7 +11,7 @@ import java.util.Random;
 // Design Decisions:
 //	-	Should GenePool take into account the population size?
 //		Good for random initialisation etc.
-public class GenePool<SpecieGenome extends Genome>
+public class GenePool<SpecieGenome extends Genome<SpecieGenome>>
 {
 
 	protected ArrayList<SpecieGenome> pool = null;
@@ -49,7 +49,7 @@ public class GenePool<SpecieGenome extends Genome>
 	}
 
 	Random rand = new Random();
-	protected Genome pairUpAndCrossOver()
+	protected SpecieGenome pairUpAndCrossOver()
 	{
 		int popSize = pool().size();
 		
@@ -81,7 +81,7 @@ public class GenePool<SpecieGenome extends Genome>
 	 * Mutation is also taken into account
 	 * @return a genome
 	 */
-	public Genome reproduce()
+	public SpecieGenome reproduce()
 	{
 		// cannot reproduce without a genome
 		// maybe should throw exceptions, just being lazy

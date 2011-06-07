@@ -4,8 +4,9 @@ package ise.gameoflife.genetics;
  * An entity which conforms to the Evolvable interface
  * @author Xitong Gao
  */
-public abstract class EvolvableEntity<SpecieGenome extends Genome>
-		implements Evolvable<SpecieGenome>
+public abstract class EvolvableEntity
+	<SpecieGenome extends Genome<SpecieGenome>>
+	implements Evolvable<SpecieGenome>
 {
 	SpecieGenome genome = null;
 	double fitness = -1;

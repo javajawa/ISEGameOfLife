@@ -10,7 +10,8 @@ import java.io.Serializable;
  * All methods must be overridden.
  * @author Xitong Gao
  */
-public abstract class Genome implements Serializable
+public abstract class Genome
+	<DerivedGenome extends Genome<DerivedGenome>> implements Serializable
 {
 
 	/**
@@ -37,23 +38,22 @@ public abstract class Genome implements Serializable
 
 	/**
 	 * Generates a randomized genome representation
-	 * @return a completely randomized feasible genome
 	 */
-	abstract public Genome randomize();
+	abstract public DerivedGenome randomize();
 
 	/**
 	 * Mutates the genome
-	 * @return a new genome
 	 */
-	abstract public Genome mutate();
+	abstract public DerivedGenome mutate();
 
 	/**
 	 * Crosses over with another genome
 	 * Must check if the genome is compatible with this before
 	 * crossing over
+	 * GenePool already knows how to provide genomes in an unbiased order
 	 * @param genome another genome
 	 * @return a new genome
 	 */
-	abstract public Genome crossOver(Genome genome);
+	abstract public DerivedGenome crossOver(DerivedGenome genome);
 
 }
