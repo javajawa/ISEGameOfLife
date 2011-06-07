@@ -40,8 +40,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	/**
 	 * Class that creates a syncronised, type-safe list that can be used with
 	 * a JList, and allow the list to be updated after creation.
-	 * TODO: Document each of these functions
-	 */
+         */
          // Set of political participants that are active
         private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
         double trust=0;
@@ -293,7 +292,6 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 		this.add(new JScrollPane(new JList(data)));
 
 		en.setErrorLog(data);
-
 		setBackground(Color.LIGHT_GRAY);
                 
 	}
@@ -306,12 +304,14 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	{
                 
 
-              updatePoliticalPlayers();
+             
               SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
               Iterator<String> iter = active_agent_ids.iterator();
               String name;
+       
+               updatePoliticalPlayers(active_agent_ids, iter);
 
-              //if (en.getRoundsPassed() == rounds){
+               if (en.getRoundsPassed() == rounds){
                 data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getRoundsPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
@@ -341,8 +341,11 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                         data.add("--------");
                         iter = active_agent_ids.iterator();
                 }
+              
              rounds++;
-            //}
+            }
+
+
 	}
 
 
@@ -354,23 +357,17 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	@Override
 	public void onDelete()
 	{
-		// Nothing to see here. Move along, citizen!
 	}
 
-	/**
-	 * Deals with plugin upon simulation completion
-	 * by writing a completion banner and outputting
-	 * the log to a file called ErrorLog.txt
-	 */
 	@Override
 	public void onSimulationComplete()
 	{
 }
-        private void updatePoliticalPlayers()
+        private void updatePoliticalPlayers(SortedSet<String> active_agent_ids, Iterator<String> itera)
         {
 
-               SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
-               Iterator<String> itera = active_agent_ids.iterator();
+               //SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
+               //Iterator<String> itera = active_agent_ids.iterator();
 
                 // Add any new agents
                 while(itera.hasNext())
