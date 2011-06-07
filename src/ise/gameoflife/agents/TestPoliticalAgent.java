@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import presage.Participant;
 
 /**
  *
@@ -416,8 +417,52 @@ public class TestPoliticalAgent extends AbstractAgent
     protected double updateHappinessAfterHunt(double foodHunted,
                                     double foodReceived)
     {
-
-            return 0; //throw new UnsupportedOperationException("Not supported yet.");
+//            double myEconomic = getDataModel().getEconomicBelief();
+//            double entitlement = myEconomic * foodHunted;
+//            double difference, ratio, happiness;            
+//            
+//            if (foodReceived == entitlement)
+//            {
+//                //you're satisifed, but happy
+//                happiness = getDataModel().getCurrentHappiness() + 0.01;//a measure of your satisfaction
+//                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
+//                    return 1;
+//                else                  
+//                    return happiness;             
+//            }
+//            
+//            if (foodReceived > entitlement)
+//            {
+//                //you're overjoyed
+//                difference = foodReceived - entitlement;
+//                if (entitlement > difference)
+//                    ratio = difference / entitlement;
+//                else
+//                    ratio = entitlement / difference;
+//                happiness = getDataModel().getCurrentHappiness() + ratio;//a measure of your happiness
+//                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
+//                    return 1;
+//                else                  
+//                    return happiness;                
+//            }
+//            
+//            if (foodReceived < entitlement)
+//            {
+//                //you're dissapointed
+//                difference = entitlement - foodReceived;
+//                if (entitlement > difference)
+//                    ratio = difference / entitlement;
+//                else
+//                    ratio = entitlement / difference;
+//                happiness = getDataModel().getCurrentHappiness() - ratio;//a measure of your dissapointment
+//                if ((getDataModel().getCurrentHappiness() == 0) || (happiness <= 0)) 
+//                    return 0;
+//                else                  
+//                    return happiness;                                 
+//            }
+//            
+//            return getDataModel().getCurrentHappiness();//if got here without hunting first
+        return 0;
     }
 
     @Override
@@ -472,7 +517,6 @@ public class TestPoliticalAgent extends AbstractAgent
             }
            
             newTrustValue.put(opponentID, trust);
-
             return  newTrustValue;
 
     }
@@ -500,36 +544,45 @@ public class TestPoliticalAgent extends AbstractAgent
             Map<String, Double> newTrustValue = new HashMap<String, Double>();
             String proposer = proposition.getProposer();
             double proposerTrust;
-
-            //check for previous value
-            if (this.getDataModel().getTrust(proposition.getProposer()) != null)
-            {
-                    proposerTrust = this.getDataModel().getTrust(proposer); //get current trust of proposer
-            }
-            else
-            {
-                    proposerTrust = 0;
-            }
-
-            //update the value
-            if (this.castVote(proposition).equals(VoteType.For)) 
-            {
-                    proposerTrust = ValueScaler.scale(proposerTrust, 1, 0.1);
-            }
-            else if(this.castVote(proposition).equals(VoteType.Against))
-            {
-                    proposerTrust = ValueScaler.scale(proposerTrust, -1, 0.1);
-            }
-            else
-            {
+            if (!this.getDataModel().getId().equals(proposer)){
+                //check for previous value
+                if (this.getDataModel().getTrust(proposer) != null)
+                {
+                       proposerTrust = this.getDataModel().getTrust(proposer); //get current trust of proposer
+                 }
+                else
+                 {
+                       proposerTrust = 0;
+                }
+                //discuss...
+                /*
+                //update the value
+                if (this.castVote(proposition).equals(VoteType.For))
+                {
+                       proposerTrust = ValueScaler.scale(proposerTrust, votes, 0.1);
+                }
+                else if(this.castVote(proposition).equals(VoteType.Against))
+                {
+                       proposerTrust = ValueScaler.scale(proposerTrust, -1, 0.1);
+                }
+                else
+                {
                    //do nothing
+                }
+                */
+                    //increase the trust for proposer by number of votes
+                    proposerTrust = ValueScaler.scale(proposerTrust, votes, 0.1);
+            }
+            else
+            {
+                    proposerTrust = 1; //trust for himself
             }
 
             newTrustValue.put(proposer, proposerTrust);
 
             return newTrustValue;
             //throw new UnsupportedOperationException("Not supported yet.");
-    }
+        }
 
 	@Override
 	protected void onInvite(String group)
