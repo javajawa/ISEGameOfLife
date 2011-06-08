@@ -76,7 +76,7 @@ public class Politics extends GenericSimulation
 		addPlugin(new DatabasePlugin(1,"Simulation comment",false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
-                addPlugin(new TrustLogPlugin());
+                //addPlugin(new TrustLogPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
 
 	}
