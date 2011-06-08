@@ -147,7 +147,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	 * Gets the current happiness of this agent
 	 * @return The current happiness of this agent
 	 */
-	public double getCurrentHappiness()
+	public Double getCurrentHappiness()
 	{
 		return source.getCurrentHappiness();
 	}

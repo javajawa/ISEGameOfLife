@@ -6,6 +6,7 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -426,69 +427,69 @@ return VoteType.For;
     protected double updateHappinessAfterHunt(double foodHunted,
                                     double foodReceived)
     {
-//            double myEconomic = getDataModel().getEconomicBelief();
-//            double entitlement = myEconomic * foodHunted;
-//            double difference, ratio, happiness;
-//            
-//            if ((Double)getDataModel().getCurrentHappiness() == null)
-//                happiness = myEconomic;
-//            else
-//                happiness = getDataModel().getCurrentHappiness();
-//
-//            if (foodReceived == entitlement)
-//            {
-//                //you're satisifed, but happy
-//                happiness += 0.01;//a measure of your satisfaction
-//
-//                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
-//                    return 1;
-//                else                  
-//                    return happiness;             
-//            }
-//            
-//            if (foodReceived > entitlement)
-//            {
-//                //you're overjoyed
-//                difference = foodReceived - entitlement;
-//                if (entitlement > difference)
-//                    ratio = difference / entitlement;
-//                else
-//                    ratio = entitlement / difference;
-//                happiness += ratio;//a measure of your happiness
-//
-//                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
-//                    return 1;
-//                else                  
-//                    return happiness;                
-//            }
-//            
-//            if (foodReceived < entitlement)
-//            {
-//                //you're dissapointed
-//                difference = entitlement - foodReceived;
-//                if (entitlement > difference)
-//                    ratio = difference / entitlement;
-//                else
-//                    ratio = entitlement / difference;
-//                happiness -= ratio;//a measure of your dissapointment
-//
-//                if ((getDataModel().getCurrentHappiness() == 0) || (happiness <= 0)) 
-//                    return 0;
-//                else                  
-//                    return happiness;                                 
-//            }
-//            
-//            return happiness;//if we got to this update here without hunting first then don't change anything
-            return 0; //throw new UnsupportedOperationException("Not supported yet.");
+            //'entitelment' denotes the amount of food an agent wants to get, at the least
+            double entitlement = getDataModel().getEconomicBelief() * foodHunted;
+            double difference, ratio, newHappiness;
+            Double currentHappiness = getDataModel().getCurrentHappiness();
+
+            if (currentHappiness == null)
+            {
+                //By default we are all satisfied with the economic position
+                //we start off in, unless you are always happy or just hate life
+                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
+                newHappiness = currentHappiness;
+            }
+            else 
+                newHappiness = currentHappiness;
+            
+            if (foodReceived == entitlement)
+            {
+                //you're satisifed, but happy
+                newHappiness += 0.01;//a measure of your satisfaction
+
+                if ((currentHappiness == 1) || (newHappiness >= 1)) 
+                    return 1;
+                else                  
+                    return newHappiness;             
+            }
+            
+            if (foodReceived > entitlement)
+            {
+                //you're overjoyed
+                difference = foodReceived - entitlement;
+                ratio = difference / entitlement;
+                newHappiness += ratio;//a measure of your happiness
+
+                if (newHappiness >= 1) 
+                    return 1;
+                else                  
+                    return newHappiness;                
+            }
+            
+            if (foodReceived < entitlement)
+            {
+                //you're dissapointed
+                difference = entitlement - foodReceived;
+                ratio = difference / entitlement;
+                newHappiness -= ratio;//a measure of your dissapointment
+
+                if (newHappiness <= 0) 
+                    return 0;
+                else                  
+                    return newHappiness;                                 
+            }
+
+            return newHappiness;//if we got to this update here without hunting first then don't change anything
+//            return 0; //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
     {
             //loyalty after hunting refines from how happy you are after the hunt?        
-//            if (this.getDataModel().getGroupId() != null)
-//                return updateHappinessAfterHunt(foodHunted, foodReceived);
-//            else
+            if (this.getDataModel().getGroupId() != null)
+                return updateHappinessAfterHunt(foodHunted, foodReceived);
+            else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
     }
