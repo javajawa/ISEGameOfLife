@@ -1,5 +1,6 @@
 package ise.gameoflife;
 
+import javax.swing.UIManager;
 import presage.gui.ControlCenter;
 
 /**
@@ -20,8 +21,9 @@ public class RunSimulation
 	 * decode the XML and make Multi-Agent magic happen
 	 * @param args Command line arguments
 	 */
-	public static void main(String args[])
+	public static void main(String args[]) throws Exception
 	{
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		BuildSimulations.main(args);
 		ControlCenter.main(args);
 	}
