@@ -396,6 +396,7 @@ public class TrustLogPlugin extends JPanel implements Plugin {
                 {
                         p_players.remove(itera.next());
                 }
+
         }
 
 }

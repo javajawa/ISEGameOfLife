@@ -54,6 +54,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         // Set of political participants that are active
         private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
 
+        private TreeMap<String, TestPoliticalAgent> p_groups = new TreeMap<String, TestPoliticalAgent>();
+
 	@Element(required=false)
 	private String outputdirectory;
 
@@ -90,7 +92,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	{
                 // Add/remove new/old players
                 updatePoliticalPlayers();
-
+                updateGroups();
                 // Calculate new political positions
                // for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
                // {
@@ -130,6 +132,20 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         /**
          * Adds new players and removes dead players since the last cycle.
          */
+        private void updateGroups(){
+                for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
+                {
+                    if(entry.getValue().getDataModel().getGroupId() != null){
+                        String id = entry.getValue().getDataModel().getGroupId();
+                        if(!p_groups.containsKey(id))
+                        {
+                                p_groups.put(id, entry.getValue());
+                        }
+                    }                    
+
+                }
+        }
+
         private void updatePoliticalPlayers()
         {
 
@@ -144,6 +160,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                         {
                                 p_players.put(id, (TestPoliticalAgent) sim.getPlayer(id));
                         }
+
+
                 }
 
                 // Delete agents which are no longer active
@@ -180,11 +198,15 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 g.drawLine(rect.width/2, 0, rect.width/2, rect.height);
                 g.drawLine(0,  rect.height/2, rect.width, rect.height/2);
 
+
+
                 // Draw agents
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
                         drawAgent(g, entry.getValue());
                 }
+
+                drawGroupLines(g);
 
         }
 
@@ -193,6 +215,28 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
          * @param g Graphics objects
          * @param p_player SimplifiedPoliticalPlayer object to draw
          */
+        private void drawGroupLines(Graphics g){
+                double x1,y1,x2,y2;
+                Rectangle rect = g.getClipBounds();
+                g.setColor(Color.ORANGE);
+                g.drawLine(5,5,0,0);
+                for(Map.Entry<String,TestPoliticalAgent> entry1 : p_groups.entrySet())
+                {
+                        for(Map.Entry<String,TestPoliticalAgent> entry2 : p_groups.entrySet())
+                        {
+                              if( entry1.getKey().equals(entry2.getKey()))
+                              {
+                                  x1 = entry1.getValue().getDataModel().getEconomicBelief();
+                                  x2 = entry2.getValue().getDataModel().getEconomicBelief();
+                                  y1 = entry1.getValue().getDataModel().getSocialBelief();
+                                  y2 = entry2.getValue().getDataModel().getSocialBelief();
+                                  g.drawLine((int)x1*rect.width/2,(int)y1*rect.width/2,(int)x2*rect.width/2,(int)y2*rect.width/2);
+
+                              }
+                        }
+                }
+        }
+
         private void drawAgent(Graphics g, TestPoliticalAgent p_player)
         {
                 Rectangle rect = g.getClipBounds();
@@ -201,7 +245,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                             (int)((p_player.getDataModel().getSocialBelief())*rect.height/2),
                             10, 10
                             );
-
+                //g.drawLine(0,0,1,1);
         }
 
 	/**
@@ -235,7 +279,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 		System.out.println(" -Initialising Political Compass Plugin....");
 
 		this.sim = sim;
-
+                this.en = (Environment)sim.environment;
 		setBackground(Color.CYAN);
 
                 repaint();
