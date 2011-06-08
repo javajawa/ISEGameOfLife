@@ -69,8 +69,6 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 			this.add(box);
 		}
 	}
-	private JButton b;
-	private Environment env;
 	
 	@Override
 	public void execute()
@@ -81,18 +79,6 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 	@Override
 	public void initialise(Simulation sim)
 	{
-		env = (Environment)sim.environment;
-		b = new JButton("Turn on Debug Mode");
-		b.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				env.setDebug(!env.getDebug());
-				b.setText("Turn Debug " + (env.getDebug() ? "Off" : "On"));
-			}
-		});
-		this.setLayout(new BorderLayout());
 
 		JPanel loggers = new JPanel();
 		loggers.setLayout(new BoxLayout(loggers, BoxLayout.PAGE_AXIS));
@@ -116,8 +102,7 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 		{
 			loggers.add(sortingTree.get(it));
 		}
-		this.add(b, BorderLayout.NORTH);
-		this.add(new JScrollPane(loggers), BorderLayout.CENTER);
+		this.add(new JScrollPane(loggers));
 	}
 
 	@Override
