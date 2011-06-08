@@ -93,8 +93,10 @@ public abstract class Evolution
 
 		// construct gene pool with random genomes
 		this.setGenePool(this.randomGenePool());
-		for (int currentIteration = 1;
-			 currentIteration <= this.iterations;
+
+		boolean bestFit = false;
+		for (currentIteration = 1;
+			 currentIteration <= this.iterations && !bestFit;
 			 currentIteration++)
 		{
 			speciePool = this.speciePoolWithGenePool(this.genePool());
@@ -199,6 +201,12 @@ public abstract class Evolution
 	public void setGenePool(GenePool<SpecieGenome> pool)
 	{
 		genePool = pool;
+	}
+	// current iteration count
+	private int currentIteration = -1;
+	public int currentIteration()
+	{
+		return this.currentIteration;
 	}
 	// iterations
 	private int iterations = -1;
