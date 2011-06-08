@@ -63,6 +63,52 @@ public class TestPoliticalAgent extends AbstractAgent
          //Do nothing
     }
 
+    protected boolean SatisfiedInGroup() {
+        double loyalty, trust, socioEconomic, satisfaction = 0;
+        
+        //how loyal you are to the group (effectively, are you happy in the group)
+        if (getDataModel().getCurrentLoyalty() == null)
+            loyalty = 0;
+        else
+            loyalty = getDataModel().getCurrentLoyalty();
+        
+        
+        //how much trust is there between you and the rest of the group
+        PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
+        double trustSum = 0;
+        Double trustValue;
+        int numKnownTrustValues = 0;
+        
+        for (String trustee : myGroup.getMemberList()) {
+                trustValue = getDataModel().getTrust(trustee);
+                if (trustValue != null) {
+                        trustSum += trustValue;
+                        numKnownTrustValues++;
+                }
+        }
+        if (numKnownTrustValues != 0)
+            trust = trustSum / numKnownTrustValues;
+        else
+            trust = 0;
+        
+        
+        //how much more or less does my group believe in the same beliefs as mine
+        double economic, social, vectorDistance, maxDistance = Math.sqrt(2);
+        
+        economic = myGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
+        social = myGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
+        vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+        socioEconomic = 1 - (vectorDistance / maxDistance);        
+        
+        
+        //how much are you satisifed with this group
+        satisfaction = 0.33*loyalty + 0.33*trust + 0.34*socioEconomic;
+        if (satisfaction > 0.66)
+            return true;
+        else
+            return false;
+    }    
+    
     @Override
     protected String chooseGroup() {
          logger.log(Level.INFO, "----------------------------------------------------");
@@ -83,7 +129,10 @@ public class TestPoliticalAgent extends AbstractAgent
                     groupFounders.remove(this.getId());
             if (invitationHolders.contains(this.getId()))
                     invitationHolders.remove(this.getId());
-            return null;
+            //if (SatisfiedInGroup())
+                //return null;
+            //else
+                //return leaveGroup;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -143,12 +192,10 @@ public class TestPoliticalAgent extends AbstractAgent
                             numKnownTrustValues++;
                     }
             }
-            if(numKnownTrustValues != 0) {
+            if(numKnownTrustValues != 0)
                 trustFaction = trustSum / numKnownTrustValues;
-            }
-            else {
+            else
                 trustFaction = 0;
-            }
 
             economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
             social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
@@ -174,14 +221,14 @@ public class TestPoliticalAgent extends AbstractAgent
         double economic, social, esFaction=0;
         //used for the trust faction of heuristic
         double trustFaction=0;
-        
+
         String bestPartner = "";
-        int i =0;
+
         for (String trustee : getConn().getUngroupedAgents())
         {
             //if an agent is not comparing with itself and has not been invited
             if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
-            {   i++;         logger.log(Level.INFO, "No of ungrouped agents: " +i);
+            {
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
@@ -191,7 +238,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 esFaction = 1 - (vectorDistance / maxDistance);
 
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-                if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic))
+                if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
@@ -200,9 +247,7 @@ public class TestPoliticalAgent extends AbstractAgent
         }
         
         if (bestPartner.equals(""))
-        {
             return null;
-        }
         else
         {
             GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
@@ -229,10 +274,6 @@ public class TestPoliticalAgent extends AbstractAgent
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
-             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-
-            //This agent has no pair therefore it will be inactive for this round
-            if (members.size() == 1) return null;
 
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())
@@ -273,7 +314,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     case TFT:
                             //Get last hunting choice of opponent and act accordingly
                             Food opponentPreviousChoice = cooperateFood;
-
+                            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
                             // TFT makes no sense in a team of 1...
                             if (members.size() == 1)
                             {
@@ -537,16 +578,16 @@ return VoteType.For;
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                        trust = ValueScaler.scale(trust, -1, 0.1);
+                        trust = ValueScaler.scale(trust, -1, 0.5);
                     }
                     else
                     {
-                        trust = ValueScaler.scale(trust, 1, 0.1);
+                        trust = ValueScaler.scale(trust, 1, 0.5);
                     }
             }
             else    //Agent hunted rabbit so no trust issues
             {
-                trust = ValueScaler.scale(trust, 0, 0.1);
+                trust = ValueScaler.scale(trust, 0, 0.5);
             }
            
             newTrustValue.put(opponentID, trust);
