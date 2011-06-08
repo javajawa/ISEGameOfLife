@@ -15,30 +15,6 @@ public abstract class Genome
 {
 
 	/**
-	 * Returns if this genome is compatible with the Evolvable class
-	 * @param evolvable An Evolvable instance
-	 * @return A boolean value
-	 */
-	public boolean compatibleEvolvable(Evolvable evolvable)
-	{
-		return true;
-		// return evolvable.getClass().equals(Evolvable.class);
-	}
-
-	/**
-	 * Returns if this genome is compatible with another genome for
-	 * reproduction
-	 * Especially used to deal with crossing over
-	 * @param genome A Genome instance
-	 * @return A boolean value
-	 */
-	public boolean compatibleGenome(Genome genome)
-	{
-		return true;
-		// return this.getClass().equals(genome.getClass());
-	}
-
-	/**
 	 * Generates a randomized genome representation
 	 */
 	abstract public void randomize();

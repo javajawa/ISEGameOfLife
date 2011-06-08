@@ -24,15 +24,6 @@ public class EvolvableEntity
 	@Override
 	public void setGenome(SpecieGenome aGenome)
 	{
-		// check if genome is compatible
-		if (!aGenome.compatibleEvolvable(this))
-		{
-			throw new RuntimeException(
-					"Genome (" + aGenome.getClass().getName() + ") " +
-					"is not compatible with Evolvable (" +
-					this.getClass().getName() +")");
-		}
-
 		// this.genome = aGenome.clone();
 		this.genome = aGenome;
 	}
