@@ -36,6 +36,7 @@ public class TestPoliticalAgent extends AbstractAgent
         private String invitationToGroup = null;
 
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
+        private final static TreeSet<String> groupFounders = new TreeSet<String>();
 
 	@Deprecated
 	public TestPoliticalAgent()
@@ -62,6 +63,7 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected String chooseGroup() {
          System.out.println("----------------------------------------------------");
+
         //ONLY FOR DEBUGGING
         if (this.getDataModel().getGroupId() == null)
             System.out.println("I, agent "+ this.getDataModel().getName() + " am a free agent!");
@@ -74,15 +76,16 @@ public class TestPoliticalAgent extends AbstractAgent
         
         //If agent is already member of a group do nothing
         if (this.getDataModel().getGroupId() != null) {
-            return this.getDataModel().getGroupId();
+            if (groupFounders.contains(this.getId()))
+                    groupFounders.remove(this.getId());
+            if (invitationHolders.contains(this.getId()))
+                    invitationHolders.remove(this.getId());
+            return null;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
             System.out.println("I was invited in a group so I will join it");
-            invitationHolders.remove(this.getId());
-            String invitation = this.invitationToGroup;
-            this.invitationToGroup = null;
-            return invitation;
+            return this.invitationToGroup;
         }
         else //If none of the above worked out then first try to find an optimal group to join with
         {
@@ -170,12 +173,12 @@ public class TestPoliticalAgent extends AbstractAgent
         double trustFaction=0;
         
         String bestPartner = "";
-
+        int i =0;
         for (String trustee : getConn().getUngroupedAgents())
         {
             //if an agent is not comparing with itself and has not been invited
-            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee)))
-            {
+            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
+            {   i++;         System.out.println("No of ungrouped agents: " +i);
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
@@ -202,6 +205,7 @@ public class TestPoliticalAgent extends AbstractAgent
             GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
+            groupFounders.add(this.getId());
             //ONLY FOR DEBUGGING
             System.out.println("I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
             System.out.println("HEURISTIC = " + previousHeuristic);
@@ -222,6 +226,10 @@ public class TestPoliticalAgent extends AbstractAgent
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
+             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
+            //This agent has no pair therefore it will be inactive for this round
+            if (members.size() == 1) return null;
 
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())
@@ -261,7 +269,6 @@ public class TestPoliticalAgent extends AbstractAgent
                     //If first time cooperate else imitate what your partner (opponent?) choose the previous time
                     case TFT:
                             //Get last hunting choice of opponent and act accordingly
-                            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
                             Food opponentPreviousChoice = cooperateFood;
 
                             // TFT makes no sense in a team of 1...
@@ -582,7 +589,7 @@ return VoteType.For;
                  {
                        proposerTrust = 0;
                 }
-                //discuss...
+                //discuss... //increase or decrease trust according to what agent vote and what was the proposal
                 /*
                 //update the value
                 if (this.castVote(proposition).equals(VoteType.For))
