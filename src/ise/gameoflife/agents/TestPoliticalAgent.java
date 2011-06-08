@@ -425,12 +425,18 @@ public class TestPoliticalAgent extends AbstractAgent
     {
 //            double myEconomic = getDataModel().getEconomicBelief();
 //            double entitlement = myEconomic * foodHunted;
-//            double difference, ratio, happiness;            
+//            double difference, ratio, happiness;
 //            
+//            if ((Double)getDataModel().getCurrentHappiness() == null)
+//                happiness = myEconomic;
+//            else
+//                happiness = getDataModel().getCurrentHappiness();
+//
 //            if (foodReceived == entitlement)
 //            {
 //                //you're satisifed, but happy
-//                happiness = getDataModel().getCurrentHappiness() + 0.01;//a measure of your satisfaction
+//                happiness += 0.01;//a measure of your satisfaction
+//
 //                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
 //                    return 1;
 //                else                  
@@ -445,7 +451,8 @@ public class TestPoliticalAgent extends AbstractAgent
 //                    ratio = difference / entitlement;
 //                else
 //                    ratio = entitlement / difference;
-//                happiness = getDataModel().getCurrentHappiness() + ratio;//a measure of your happiness
+//                happiness += ratio;//a measure of your happiness
+//
 //                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
 //                    return 1;
 //                else                  
@@ -460,21 +467,27 @@ public class TestPoliticalAgent extends AbstractAgent
 //                    ratio = difference / entitlement;
 //                else
 //                    ratio = entitlement / difference;
-//                happiness = getDataModel().getCurrentHappiness() - ratio;//a measure of your dissapointment
+//                happiness -= ratio;//a measure of your dissapointment
+//
 //                if ((getDataModel().getCurrentHappiness() == 0) || (happiness <= 0)) 
 //                    return 0;
 //                else                  
 //                    return happiness;                                 
 //            }
 //            
-//            return getDataModel().getCurrentHappiness();//if got here without hunting first
-        return 0;
+//            return happiness;//if we got to this update here without hunting first then don't change anything
+            return 0; //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
     {
-            return 0; //throw new UnsupportedOperationException("Not supported yet.");
+            //loyalty after hunting refines from how happy you are after the hunt?        
+//            if (this.getDataModel().getGroupId() != null)
+//                return updateHappinessAfterHunt(foodHunted, foodReceived);
+//            else
+                return 0;//agent doesnt belong to a group and so is not loyal to anyone
+            //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -531,7 +544,11 @@ public class TestPoliticalAgent extends AbstractAgent
     protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
-            return 0;
+            //loyalty after a vote refines from how happy you are after the vote?        
+//            if (this.getDataModel().getGroupId() != null)
+//                return updateHappinessAfterHunt(foodHunted, foodReceived);
+//            else
+                return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -539,6 +556,7 @@ public class TestPoliticalAgent extends AbstractAgent
     protected double updateHappinessAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
+        
             return 0;
             //throw new UnsupportedOperationException("Not supported yet.");
     }
