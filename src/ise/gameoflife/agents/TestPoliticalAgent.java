@@ -172,12 +172,12 @@ public class TestPoliticalAgent extends AbstractAgent
         double trustFaction=0;
         
         String bestPartner = "";
-        int i =0;
+
         for (String trustee : getConn().getUngroupedAgents())
         {
             //if an agent is not comparing with itself and has not been invited
             if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
-            {   i++;         System.out.println("No of ungrouped agents: " +i);
+            {
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
@@ -187,7 +187,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 esFaction = 1 - (vectorDistance / maxDistance);
 
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-                if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic))
+                if ((currentHeuristic > 0.6) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
@@ -225,10 +225,6 @@ public class TestPoliticalAgent extends AbstractAgent
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
-             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-
-            //This agent has no pair therefore it will be inactive for this round
-            if (members.size() == 1) return null;
 
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())
@@ -269,7 +265,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     case TFT:
                             //Get last hunting choice of opponent and act accordingly
                             Food opponentPreviousChoice = cooperateFood;
-
+                            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
                             // TFT makes no sense in a team of 1...
                             if (members.size() == 1)
                             {
