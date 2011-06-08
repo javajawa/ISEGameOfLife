@@ -366,6 +366,8 @@ public class Environment extends AbstractEnvironment
 	 * Reference to the list that backs the ErrorLog view plugin.
 	 */
 	private final static Logger logger = Logger.getLogger("gameoflife.Main");
+	private final static Logger rootLogger = Logger.getLogger("gameoflife");
+
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
 
 	@Deprecated
