@@ -21,7 +21,8 @@ public abstract class Genome
 	 */
 	public boolean compatibleEvolvable(Evolvable evolvable)
 	{
-		return evolvable.getClass().equals(Evolvable.class);
+		return true;
+		// return evolvable.getClass().equals(Evolvable.class);
 	}
 
 	/**
@@ -33,7 +34,8 @@ public abstract class Genome
 	 */
 	public boolean compatibleGenome(Genome genome)
 	{
-		return this.getClass().equals(genome.getClass());
+		return true;
+		// return this.getClass().equals(genome.getClass());
 	}
 
 	/**
