@@ -41,6 +41,7 @@ public class DatabasePlugin implements Plugin {
     
     private PreparedStatement prep;
     private PreparedStatement prep2;
+    
     //database local connection
     private Connection conn;
     //Remote MySQL server
@@ -153,10 +154,11 @@ public class DatabasePlugin implements Plugin {
 	    }
 	
 	try {
+	    //path to /Simulations folder
 	    String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
-
-	    
+	    //create connection to local db
 	    conn = DriverManager.getConnection("jdbc:sqlite:"+ configPath + "/Simulations.db");
+	    
 	    stat = conn.createStatement();
 	    stat.executeUpdate("create table if not exists [simulations]("
 		    + "[simId] not null,\n"
@@ -180,9 +182,23 @@ public class DatabasePlugin implements Plugin {
 		    + "CONSTRAINT [] PRIMARY KEY ([simId],[cycle])"
 		    + ");\n"
 		    );
-	    stat.executeUpdate("REPLACE INTO [simulations]" +                             
-		   "VALUES ('"+local_simId+"','"+System.getProperty("user.name")+"',"
-		    + "'"+sim_comment+"',null,0)");
+	    
+	    stat.executeUpdate("INSERT INTO simulations " +                             
+		   "VALUES (null,'"+System.getProperty("user.name")+"','"+sim_comment+"',null,0);",      
+		   Statement.RETURN_GENERATED_KEYS);   // Indicate you want automatically 
+						       // generated keys
+		ResultSet rs = stat.getGeneratedKeys();         // Retrieve the automatically       
+						       // generated key value in a ResultSet.
+						       // Only one row is returned.
+					 // Create ResultSet for query
+		while (rs.next()) {
+		    remote_simId  = rs.getInt(1);     // Get automatically generated key 
+						       // value
+		    System.out.println("Remote DB simId = " + remote_simId);
+		}
+		rs.close();                           // Close ResultSet
+		stat.close();                         // Close Statement
+		
 	    stat.close();
 	    conn.setAutoCommit(false);
 	    prep = conn.prepareStatement(
@@ -196,7 +212,7 @@ public class DatabasePlugin implements Plugin {
 		   "VALUES (null,'"+System.getProperty("user.name")+"','"+sim_comment+"',null,0);",      
 		   Statement.RETURN_GENERATED_KEYS);   // Indicate you want automatically 
 						       // generated keys
-		ResultSet rs = stat.getGeneratedKeys();         // Retrieve the automatically       
+		rs = stat.getGeneratedKeys();         // Retrieve the automatically       
 						       // generated key value in a ResultSet.
 						       // Only one row is returned.
 					 // Create ResultSet for query
