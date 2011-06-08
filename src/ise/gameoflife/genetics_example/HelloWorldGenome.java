@@ -33,7 +33,7 @@ public class HelloWorldGenome extends Genome<HelloWorldGenome>
 	 */
 	public HelloWorldGenome randomize()
 	{
-		char str[] = {};
+		char str[] = "           ".toCharArray();
 		for (int i = 0; i < 11; i++)
 		{
 			str[i] = (char)(rand.nextInt(90) + 32);
