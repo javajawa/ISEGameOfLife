@@ -25,27 +25,28 @@ public class Politics extends GenericSimulation
 	public Politics()
 	{
 
-		super("Basic Politics Testing Bed", 150, 0, 0.1);
+		super("Basic Politics Testing Bed", 300, 0, 0.1);
 
 	}
 
 	@Override
 	protected void agents()
 	{
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
-              Random randomGenerator = new Random();
-		for (int i = 0; i < 5; i++)
-		{
-                      addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-		}
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+//              Random randomGenerator = new Random();
+//		for (int i = 0; i < 5; i++)
+//		{
+//                        addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//		}
 	}
 
 	@Override
@@ -76,7 +77,7 @@ public class Politics extends GenericSimulation
 		addPlugin(new DatabasePlugin(1,"Simulation comment",false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
-                //addPlugin(new TrustLogPlugin());
+                addPlugin(new TrustLogPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
 
 	}
