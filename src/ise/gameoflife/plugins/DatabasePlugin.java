@@ -1,11 +1,11 @@
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.environment.Environment;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.tokens.TurnType;
 import org.simpleframework.xml.Element;
 import java.util.SortedSet;
 import java.io.File;
-//import com.google.common.io.Files;
 import presage.Plugin;
 import presage.Simulation;
 import presage.annotations.PluginConstructor;
@@ -32,7 +32,8 @@ public class DatabasePlugin implements Plugin {
     private final static String label = "DatabasePlugin";
 
     private Simulation sim;
-    private Environment en;
+    private PublicEnvironmentConnection ec = null;
+    
     //given by remote server
     private int remote_simId;
     private Statement stat;
@@ -90,18 +91,18 @@ public class DatabasePlugin implements Plugin {
     public void execute()
     {
 	//people only updated at the beginning of turn
-	if (en.getCurrentTurnType() != TurnType.firstTurn) return;
+	if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 	try {
 		
 		//prep.setInt(1,local_simId);
 		prep.setLong(1, sim.getTime());
-		prep.setInt(2,en.getRoundsPassed());
+		prep.setInt(2,ec.getRoundsPassed());
 		prep.setInt(3,getNumHunters());
 		prep.addBatch();
 		if (saveToRemote) {
 		    //prep2.setInt(1,remote_simId);
 		    prep2.setLong(1, sim.getTime());
-		    prep2.setInt(2,en.getRoundsPassed());
+		    prep2.setInt(2,ec.getRoundsPassed());
 		    prep2.setInt(3,getNumHunters());
 		    prep2.addBatch();
 		}
@@ -141,7 +142,8 @@ public class DatabasePlugin implements Plugin {
     public void initialise(Simulation sim)
     {
 	this.sim = sim;
-	this.en = (Environment)sim.environment;
+	ec = PublicEnvironmentConnection.getInstance();
+	
 	try {    
 	    Class.forName("org.sqlite.JDBC");
 	}
@@ -212,6 +214,7 @@ public class DatabasePlugin implements Plugin {
 
 	}
 	catch (SQLException e) {
+	    //PublicEnvironmentConnection.logger(Level.WARNING, "Description", Excpetion);
 	    e.printStackTrace();
 	    return;
 	}
