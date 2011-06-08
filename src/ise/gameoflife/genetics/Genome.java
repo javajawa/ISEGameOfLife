@@ -13,6 +13,7 @@ import java.io.Serializable;
 public abstract class Genome
 	<DerivedGenome extends Genome<DerivedGenome>> implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Generates a randomized genome representation

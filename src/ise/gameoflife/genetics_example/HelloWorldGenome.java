@@ -10,6 +10,8 @@ import java.lang.String;
  */
 public class HelloWorldGenome extends Genome<HelloWorldGenome>
 {
+	private static final long serialVersionUID = 1L;
+
 	private int strLen = 13;
 	private String emptyStr = "             ";
 	private float mutateRate = 0.25f;

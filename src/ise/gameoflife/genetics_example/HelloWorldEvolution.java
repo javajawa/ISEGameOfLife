@@ -2,7 +2,6 @@ package ise.gameoflife.genetics_example;
 
 import ise.gameoflife.genetics.Evolution;
 import ise.gameoflife.genetics.EvolvableEntity;
-import java.lang.Math;
 
 /**
  *
