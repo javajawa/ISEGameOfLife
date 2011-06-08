@@ -40,6 +40,18 @@ public abstract class Evolution
 	 */
 	abstract protected boolean select(int rank, Specie entity);
 
+	/**
+	 * Determines whether Evolution should stop evolving
+	 * Best for when the fitness of the best entity reaches
+	 * the greatest fitness achievable
+	 * @param fitness the fitness of entity
+	 * @param entity the best entity from current iteration
+	 * @return a boolean
+	 */
+	protected boolean achievedBestFit(double fitness, Specie entity)
+	{
+		return false;
+	}
 
 	/**
 	 * A very basic procedure for fitness evaluation and selection
@@ -103,6 +115,10 @@ public abstract class Evolution
 
 			// evaluate and select
 			speciePool = evaluateAndSelectFromPool(speciePool);
+
+			// determine if it's best we can get
+			Specie bestEntity = speciePool.get(0);
+			bestFit = achievedBestFit(bestEntity.fitness(), bestEntity);
 
 			GenePool<SpecieGenome> genePool = genePoolWithSpeciePool(speciePool);
 
