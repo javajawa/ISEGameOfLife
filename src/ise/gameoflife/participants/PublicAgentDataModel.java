@@ -165,7 +165,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	 * Gets the current loyalty of this agent
 	 * @return The current loyalty of this agent
 	 */
-	public double getCurrentLoyalty()
+	public Double getCurrentLoyalty()
 	{
 		return source.getCurrentLoyalty();
 	}
