@@ -161,6 +161,8 @@ class GroupDataModel extends APlayerDataModel
 		 */
 		List<Double> values = new ArrayList<Double>(memberList.size());
 		PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
+		if (ec == null) return 0.5;
+
 		double sigma_x = 0;
 		int n = 0;
 
@@ -170,8 +172,9 @@ class GroupDataModel extends APlayerDataModel
 			sigma_x = 0;
 			for (String truster : memberList)
 			{
-				Double t = ec.getAgentById(truster).getTrust(candidate);
-				if (t != null)
+				PublicAgentDataModel dm = ec.getAgentById(truster);
+				Double t = (dm == null ? null : dm.getTrust(candidate));
+				if (t != null && !candidate.equals(truster))
 				{
 					sigma_x += t;
 					++n;
