@@ -6,10 +6,6 @@
 package ise.gameoflife.plugins;
 
 import ise.gameoflife.agents.TestPoliticalAgent;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeMap;
 
 import ise.gameoflife.environment.Environment;
 import java.awt.Color;
@@ -17,12 +13,11 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import javax.imageio.ImageIO;
@@ -91,17 +86,14 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	public void execute()
 	{
                 // Add/remove new/old players
+             try{
                 updatePoliticalPlayers();
-                // Calculate new political positions
-               // for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
-               // {
-               //        TestPoliticalAgent p_player = entry.getValue();
-               //        System.out.println(p_player.getDataModel().getEconomicBelief()+ "hello" + p_player.getDataModel().getSocialBelief());
-                      //   TODO actually implement the measurement of political position
-                      //  pp.getDataModel().getEconomicBelief() +=  //(randomGenerator.nextFloat() - 0.5)/10;
-                      //  pp.social += //(randomGenerator.nextFloat() - 0.5)/10;
-               // }
-                
+                }
+             catch (Exception e)
+                {
+                        System.out.println("Error updating Political Players: " + e.getMessage());
+                }
+
                 repaint();
 
                 if(this.outputdirectory != null)
@@ -134,7 +126,6 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
          */
         private void updatePoliticalPlayers()
         {
-
                SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
                Iterator<String> iter = active_agent_ids.iterator();
 
@@ -149,7 +140,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
 
                 }
-
+                
                 // Delete agents which are no longer active
                 List<String> ids_to_remove = new LinkedList<String>();
                 for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
@@ -165,6 +156,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 {
                         p_players.remove(iter.next());
                 }
+                 
         }
 
         /**
@@ -187,14 +179,21 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
 
                 // Draw agents
+          try{
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
                         g.setColor(Color.BLUE);
                         drawAgent(g, entry.getValue());
                 }
+                
+                 // Draw agents + agents
 
                 drawGroupLines(g);
-
+            }
+            catch (Exception e)
+                {
+                        System.out.println("Error in mapping: " + e.getMessage());
+                }
         }
 
         /**
@@ -207,7 +206,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 Rectangle rect = g.getClipBounds();
                 g.setColor(Color.RED);
 
-                for(Map.Entry<String,TestPoliticalAgent> entry1 : p_players.entrySet())
+                for(Map.Entry<String, TestPoliticalAgent> entry1 : p_players.entrySet())
                 {
                         for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
                         {
