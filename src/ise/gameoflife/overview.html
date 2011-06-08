@@ -17,23 +17,50 @@
 
 			<h2>Getting Started</h2>
 			<p>
-				
+				Each Simulation represents a unique world. While these worlds will have similar starting points, 
+				most of the features are specified by you, the user, or are randomly generated. This includes everything from the
+				initial state of each agent - name, beliefs, food - to fundamental properties of the environment,
+				such as how much food each animal is worth. 
+			</p>
+			<p>
+				Within each simulation, there exists the Environment and Agents. The environment contains 
+				information about the world, such as animals that exist and how much food they provide when hunted, but also the 
+				status of each agent - alive or dead and in which group they are. The agents represent the hunters themselves, and contain methods to group together and assist each other in making hunting decisions.
+			</p>
+			<p>
+				Agents perform actions upon the environment, such as hunting, attempting to join groups or dying which are dealt with 
+				via ActionHandlers in the environment. Similarly, the environment provides agents with inputs (dealt with by the agent 
+				via InputHandlers) and include events such as the result of a hunt and consuming food.
 			</p>
 
 			<h2>Creating your own Simulations</h2>
 			<p>
-				
+				To create your own simulation, you add a new class to the Simulations package. This class must extend GenericSimulation 
+				and implement all of the abstract function, which convey:
+			</p>
+				<ul>
+					<li>What plugins the simulation will use</li>
+					<li>What food exists, how much nutrition they provide and how many hunters are required to succeed</li>
+					<li>What kinds of agents exist</li>
+					<li>What kinds of groups exist</li>
+					<li>Events which can occur</li>
+					<li>How Free Agents are handled</li>
+				</ul>
+			<p>
+				The functions used to specify these facts are found within GenericSimulation. Note that 
+				if you wish to include your own custom agents/groups/plugins they must be present as their 
+				own seperate class in the correct package. More details are given below.
 			</p>
 
 			<h2>Implementing Your Own Agents</h2>
 			<p>
-				The {@link AbstractAgent} class defines how an agent (ie, a Hunters) 
+				The {@link AbstractAgent} class defines how an agent (ie Hunters) 
 				interact with the modelling system. As a result, all custom Agents 
 				should extend AbstractAgent. Each agent has a UUID that identifies it.
 			</p>
 			<p>
-				The constructor requires two primary properties - the starting food 
-				amount and the amount to consume each round in order to stay alive. 
+				The constructor requires two primary properties - the amount of food 
+				that the agent starts with and the amount consumed each turn. 
 				Note that the default constructor should not be used. 
 			</p>
 			<p>
