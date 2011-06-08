@@ -146,44 +146,29 @@ public class DatabasePlugin implements Plugin {
 	this.sim = sim;
 	ec = PublicEnvironmentConnection.getInstance();
 	
-	try {    
-	    Class.forName("org.sqlite.JDBC");
-	}
-	catch (Exception e)
-	    {
-		    System.err.println("Database library not available:" + e);
+	if (!saveToRemote) {
+	    try {    
+		Class.forName("org.sqlite.JDBC");
 	    }
-	
+	    catch (Exception e)
+		{
+			System.err.println("SQLite database library not available:" + e);
+		}
+	}
 	try {
-	    //path to /Simulations folder
-	    String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
-	    //create connection to local db
-	    conn = DriverManager.getConnection("jdbc:sqlite:"+ configPath + "/Simulations.db");
+
+	    if (!saveToRemote) {
+		//path to /Simulations folder
+		String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
+		//create connection to local db
+		conn = DriverManager.getConnection("jdbc:sqlite:"+ configPath + "/Simulations.db");
+	    }
+	    else {
+		conn = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
+			    "stratra1_isegol","ise4r3g00d");
+	    }
 	    
 	    stat = conn.createStatement();
-	    stat.executeUpdate("create table if not exists [simulations]("
-		    + "[simId] not null,\n"
-		    + "[uid] ,\n"
-		    + "[comment] TEXT,\n"
-		    + "[timestmp] TIME,\n"
-		    + "[done] not null,\n"
-		    + "CONSTRAINT [] PRIMARY KEY ([simId]));\n");
-	    stat.executeUpdate("CREATE TRIGGER if not exists insert_simulations_timestmp "
-		    + "AFTER INSERT ON [simulations]"
-		    + "BEGIN"
-		    + "  UPDATE [simulations] SET timestmp = TIME('NOW')"
-		    + "  WHERE rowid = new.rowid; END;");
-	    
-	    stat.executeUpdate("CREATE TABLE if not exists [data] (\n"
-		    + "[simId] NOT NULL REFERENCES [simulations]([simId])"
-			+ " ON DELETE CASCADE ON UPDATE CASCADE MATCH FULL DEFERRABLE INITIALLY IMMEDIATE,\n"
-		    + "[cycle]  NOT NULL,\n"
-		    + "[turn]  NOT NULL,\n"
-		    + "[pop]  NOT NULL,\n"
-		    + "CONSTRAINT [] PRIMARY KEY ([simId],[cycle])"
-		    + ");\n"
-		    );
-	    
 	    stat.executeUpdate("INSERT INTO [simulations] " +
 		"(sim_uuid,userid,comment)" +
 		"VALUES ('"+ec.getId()+"','"+System.getProperty("user.name")+"','"+sim_comment+"');"
@@ -193,19 +178,15 @@ public class DatabasePlugin implements Plugin {
 		simId  = rs.getInt(1);    
 	    }
 	    rs.close();                           // Close ResultSet
-	    logger.log(Level.INFO, "This run has: simId = {0}", simId);
+	    logger.log(Level.INFO, "This simulation is saved in DB with: simId = {0}", simId);
 	    stat.close();                         // Close Statement
-		
-	    stat.close();
+
 	    conn.setAutoCommit(false);
 	    prep = conn.prepareStatement(
-		"REPLACE into data values ('"+simId+"', ?, ?, ? );");
+		"INSERT into data values ('"+simId+"', ?, ?, ? );");
 	    
-	    if (saveToRemote) {
-		rcon = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
-			    "stratra1_isegol","ise4r3g00d");
-		stat = rcon.createStatement();
-		stat.executeUpdate("INSERT INTO simulations " +                             
+	       /*
+		  stat.executeUpdate("INSERT INTO simulations " +                             
 		   "VALUES (null,'"+System.getProperty("user.name")+"','"+sim_comment+"',null,0);",      
 		   Statement.RETURN_GENERATED_KEYS);   // Indicate you want automatically 
 						       // generated keys
@@ -222,12 +203,12 @@ public class DatabasePlugin implements Plugin {
 		stat.close();                         // Close Statement
 		prep2 = rcon.prepareStatement(
 		"insert into data values ('"+simId+"', ?, ?, ? );");
-	    }
+	    */
 
 
 	}
 	catch (SQLException e) {
-	    //PublicEnvironmentConnection.logger(Level.WARNING, "Description", Excpetion);
+	    logger.log(Level.WARNING, "SQL Error: {0}", e);
 	    e.printStackTrace();
 	    return;
 	}
