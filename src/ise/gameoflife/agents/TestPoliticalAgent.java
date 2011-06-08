@@ -75,11 +75,10 @@ public class TestPoliticalAgent extends AbstractAgent
         
         //If agent is already member of a group do nothing
         if (this.getDataModel().getGroupId() != null) {
-            //if (groupFounders.contains(this.getId()))
-                    //groupFounders.remove(this.getId());
-            //if (invitationHolders.contains(this.getId()))
-                    //invitationHolders.remove(this.getId());
-
+            if (groupFounders.contains(this.getId()))
+                    groupFounders.remove(this.getId());
+            if (invitationHolders.contains(this.getId()))
+                    invitationHolders.remove(this.getId());
             return null;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
@@ -152,7 +151,7 @@ public class TestPoliticalAgent extends AbstractAgent
             vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
             esFaction = 1 - (vectorDistance / maxDistance);
 
-            currentHeuristic = 0.3*trustFaction + 0.7*esFaction;
+            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
 
             if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
@@ -226,6 +225,10 @@ public class TestPoliticalAgent extends AbstractAgent
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
+             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
+            //This agent has no pair therefore it will be inactive for this round
+            if (members.size() == 1) return null;
 
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())
@@ -265,7 +268,6 @@ public class TestPoliticalAgent extends AbstractAgent
                     //If first time cooperate else imitate what your partner (opponent?) choose the previous time
                     case TFT:
                             //Get last hunting choice of opponent and act accordingly
-                            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
                             Food opponentPreviousChoice = cooperateFood;
 
                             // TFT makes no sense in a team of 1...
