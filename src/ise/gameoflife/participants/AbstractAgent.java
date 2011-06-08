@@ -132,7 +132,7 @@ abstract public class AbstractAgent implements Participant
 		{
 			final ApplicationResponse in = (ApplicationResponse)input;
 			if (in.wasAccepted())
-			{
+			{ 
 				dm.setGroup(in.getGroup());
 			}
 			groupApplicationResponse(in.wasAccepted());	
