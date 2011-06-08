@@ -2,7 +2,6 @@ package ise.gameoflife.simulatons;
 
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
-import ise.gameoflife.plugins.ErrorLog;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
@@ -51,7 +50,6 @@ public class DoubleAgent extends GenericSimulation {
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new ErrorLog());
 		addPlugin(new DatabasePlugin(1,"Simulation comment",false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin()); // Use this for just a display of the political compass

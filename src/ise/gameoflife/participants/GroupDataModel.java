@@ -180,7 +180,7 @@ class GroupDataModel extends APlayerDataModel
 					++n;
 				}
 			}
-			values.add(sigma_x / n);
+			if (n > 0) values.add(sigma_x / n);
 		}
 
 		n = values.size();
@@ -198,5 +198,10 @@ class GroupDataModel extends APlayerDataModel
 		sigma_x = 2 * Math.sqrt(sigma_x);
                 
                 return sigma_x;
+	}
+
+	int size()
+	{
+		return memberList.size();
 	}
 }
