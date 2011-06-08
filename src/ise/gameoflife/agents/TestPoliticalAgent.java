@@ -508,7 +508,7 @@ return VoteType.For;
                 //you're satisifed, but happy
                 newHappiness += 0.01;//a measure of your satisfaction
 
-                if ((currentHappiness == 1) || (newHappiness >= 1)) 
+                if (newHappiness >= 1) 
                     return 1;
                 else                  
                     return newHappiness;             
@@ -641,7 +641,7 @@ return VoteType.For;
                 if(votes > 0)
                 {
                     //your happy your proposition was passed
-                    newHappiness += ValueScaler.scale(overallMovement, votes, 0.1);
+                    newHappiness += ValueScaler.scale(overallMovement, votes, 0.01);
                     if (newHappiness >= 1)
                         return 1;
                     else
@@ -652,7 +652,7 @@ return VoteType.For;
                 if (votes < 0)
                 {
                     //your dissapointed your proposition didn't pass
-                    newHappiness -= ValueScaler.scale(overallMovement, votes, 0.1);
+                    newHappiness -= ValueScaler.scale(overallMovement, votes, 0.01);
                     if (newHappiness <= 0)
                         return 0;
                     else
