@@ -199,4 +199,9 @@ class GroupDataModel extends APlayerDataModel
                 
                 return sigma_x;
 	}
+
+	int size()
+	{
+		return memberList.size();
+	}
 }
