@@ -9,8 +9,10 @@ import java.io.File;
 import presage.Plugin;
 import presage.Simulation;
 import presage.annotations.PluginConstructor;
+import java.util.logging.Logger;
 
 import java.sql.*;
+import java.util.logging.Level;
 
 /**
  *
@@ -30,12 +32,11 @@ public class DatabasePlugin implements Plugin {
 
     private final static String title = "DatabasePlugin";
     private final static String label = "DatabasePlugin";
+    public final static Logger logger = Logger.getLogger("gameoflife.DatabaseLogger");
 
     private Simulation sim;
     private PublicEnvironmentConnection ec = null;
     
-    //given by remote server
-    private int remote_simId;
     private Statement stat;
 
     
@@ -48,7 +49,7 @@ public class DatabasePlugin implements Plugin {
     private Connection rcon;
 
     @Element
-    private int local_simId;
+    private int simId;
     @Element
     private String sim_comment;
     @Element
@@ -65,9 +66,9 @@ public class DatabasePlugin implements Plugin {
 
     /**
      * Creates a new instance of the DatabasePlugin
-     * @param simId - Simulation ID inside local DB
+     * @param simId - Simulation ID inside lDB
      * @param sim_comment - Comment inside DB
-     * @param saveToRemote - enables remote DB connection
+     * @param saveToRemote - uses remote DB instead of local
      */
     @PluginConstructor(
     {
@@ -76,7 +77,7 @@ public class DatabasePlugin implements Plugin {
     public DatabasePlugin(int simId, String sim_comment, Boolean saveToRemote)
     {
 	    super();
-	    local_simId = simId;
+	    this.simId = simId;
 	    this.sim_comment = sim_comment;
 	    this.saveToRemote = saveToRemote;
 	    
@@ -183,26 +184,22 @@ public class DatabasePlugin implements Plugin {
 		    + ");\n"
 		    );
 	    
-	    stat.executeUpdate("INSERT INTO simulations " +                             
-		   "VALUES (null,'"+System.getProperty("user.name")+"','"+sim_comment+"',null,0);",      
-		   Statement.RETURN_GENERATED_KEYS);   // Indicate you want automatically 
-						       // generated keys
-		ResultSet rs = stat.getGeneratedKeys();         // Retrieve the automatically       
-						       // generated key value in a ResultSet.
-						       // Only one row is returned.
-					 // Create ResultSet for query
-		while (rs.next()) {
-		    remote_simId  = rs.getInt(1);     // Get automatically generated key 
-						       // value
-		    System.out.println("Remote DB simId = " + remote_simId);
-		}
-		rs.close();                           // Close ResultSet
-		stat.close();                         // Close Statement
+	    stat.executeUpdate("INSERT INTO [simulations] " +
+		"(sim_uuid,userid,comment)" +
+		"VALUES ('"+ec.getId()+"','"+System.getProperty("user.name")+"','"+sim_comment+"');"
+			    );
+	    ResultSet rs = stat.getGeneratedKeys();         
+	    while (rs.next()) {
+		simId  = rs.getInt(1);    
+	    }
+	    rs.close();                           // Close ResultSet
+	    logger.log(Level.INFO, "This run has: simId = {0}", simId);
+	    stat.close();                         // Close Statement
 		
 	    stat.close();
 	    conn.setAutoCommit(false);
 	    prep = conn.prepareStatement(
-		"REPLACE into data values ('"+local_simId+"', ?, ?, ? );");
+		"REPLACE into data values ('"+simId+"', ?, ?, ? );");
 	    
 	    if (saveToRemote) {
 		rcon = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
@@ -217,14 +214,14 @@ public class DatabasePlugin implements Plugin {
 						       // Only one row is returned.
 					 // Create ResultSet for query
 		while (rs.next()) {
-		    remote_simId  = rs.getInt(1);     // Get automatically generated key 
+		    simId  = rs.getInt(1);     // Get automatically generated key 
 						       // value
-		    System.out.println("Remote DB simId = " + remote_simId);
+		    System.out.println("Remote DB simId = " + simId);
 		}
 		rs.close();                           // Close ResultSet
 		stat.close();                         // Close Statement
 		prep2 = rcon.prepareStatement(
-		"insert into data values ('"+remote_simId+"', ?, ?, ? );");
+		"insert into data values ('"+simId+"', ?, ?, ? );");
 	    }
 
 
@@ -284,7 +281,7 @@ public class DatabasePlugin implements Plugin {
 	    stat = conn.createStatement();
 	    stat.executeUpdate("UPDATE simulations\n"
 		    + "SET done='1'\n"
-		    + "WHERE simId='"+local_simId+"';");
+		    + "WHERE simId='"+simId+"';");
 	    conn.commit();
 	    stat.close();
 	    if (saveToRemote) {
@@ -293,7 +290,7 @@ public class DatabasePlugin implements Plugin {
 		stat = rcon.createStatement();
 		stat.executeUpdate("UPDATE simulations\n"
 		    + "SET done=1\n"
-		    + "WHERE simId='"+remote_simId+"';");
+		    + "WHERE simId='"+simId+"';");
 		rcon.close();
 	    }
 	    //commits all transactions
