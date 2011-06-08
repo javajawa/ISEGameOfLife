@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import presage.Participant;
 
 /**
@@ -38,6 +40,7 @@ public class TestPoliticalAgent extends AbstractAgent
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static TreeSet<String> groupFounders = new TreeSet<String>();
 
+				private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -62,14 +65,14 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected String chooseGroup() {
-         System.out.println("----------------------------------------------------");
+         logger.log(Level.INFO, "----------------------------------------------------");
 
         //ONLY FOR DEBUGGING
         if (this.getDataModel().getGroupId() == null)
-            System.out.println("I, agent "+ this.getDataModel().getName() + " am a free agent!");
+            logger.log(Level.INFO, "I, agent "+ this.getDataModel().getName() + " am a free agent!");
         else
-            System.out.println("I, agent " + this.getDataModel().getName() + " with E belief: "+ this.getDataModel().getEconomicBelief() + " and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
-        System.out.println("No of groups so far: " + getConn().availableGroups().size());
+            logger.log(Level.INFO, "I, agent " + this.getDataModel().getName() + " with E belief: "+ this.getDataModel().getEconomicBelief() + " and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
+        logger.log(Level.INFO, "No of groups so far: " + getConn().availableGroups().size());
         //ONLY FOR DEBUGGING END
 
         String chosenGroup = "";
@@ -84,7 +87,7 @@ public class TestPoliticalAgent extends AbstractAgent
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
-            System.out.println("I was invited in a group so I will join it");
+            logger.log(Level.INFO, "I was invited in a group so I will join it");
             return this.invitationToGroup;
         }
         else //If none of the above worked out then first try to find an optimal group to join with
@@ -92,9 +95,9 @@ public class TestPoliticalAgent extends AbstractAgent
             chosenGroup = agentGroupGrouping();
             //ONLY FOR DEBUGGING
             if (chosenGroup.equals(""))
-                System.out.println("I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups with no success" );
+                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups with no success" );
             else
-                System.out.println("I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups and joined one" );
+                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups and joined one" );
             //ONLY FOR DEBUGGING END
         }
 
@@ -104,9 +107,9 @@ public class TestPoliticalAgent extends AbstractAgent
            chosenGroup = freeAgentsGrouping();
            //ONLY FOR DEBUGGING
             if ((chosenGroup == null))
-                System.out.println("I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents with no success" );
+                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents with no success" );
             else
-                System.out.println("I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents and joined one" );
+                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents and joined one" );
            //ONLY FOR DEBUGGING END
         }
         return chosenGroup;
@@ -178,7 +181,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             //if an agent is not comparing with itself and has not been invited
             if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
-            {   i++;         System.out.println("No of ungrouped agents: " +i);
+            {   i++;         logger.log(Level.INFO, "No of ungrouped agents: " +i);
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
@@ -207,9 +210,9 @@ public class TestPoliticalAgent extends AbstractAgent
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
             groupFounders.add(this.getId());
             //ONLY FOR DEBUGGING
-            System.out.println("I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
-            System.out.println("HEURISTIC = " + previousHeuristic);
-            System.out.println("Therefore I can form a group with "+ this.getConn().getAgentById(bestPartner).getName() );
+            logger.log(Level.INFO, "I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
+            logger.log(Level.INFO, "HEURISTIC = " + previousHeuristic);
+            logger.log(Level.INFO, "Therefore I can form a group with "+ this.getConn().getAgentById(bestPartner).getName() );
             //ONLY FOR DEBUGGING END
             return chosenGroup;
         }        
