@@ -238,7 +238,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 esFaction = 1 - (vectorDistance / maxDistance);
 
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-                if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic))
+                if ((currentHeuristic > 0.75) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
@@ -315,29 +315,39 @@ public class TestPoliticalAgent extends AbstractAgent
                             //Get last hunting choice of opponent and act accordingly
                             Food opponentPreviousChoice = cooperateFood;
                             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
                             // TFT makes no sense in a team of 1...
                             if (members.size() == 1)
                             {
-                                    choice = defectFood;
-                                    break;
+                                    choice = cooperateFood;
+                                    return choice;
                             }
                             //Get the previous choice of your pair. For this round imitate him.
                             //In the first round we have no hunting history therefore default choice is stag
                             if (members.get(0).equals(this.getId()))
-                            {
-                                    if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1)
+                            {      
+                                    if (getConn().getAgentById(members.get(1)) != null)
                                     {
-                                            opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
+                                        if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1)
+                                        {
+                                                opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
+                                                System.out.println("My opponent hunted: "+ opponentPreviousChoice);
+                                        }
                                     }
                             }
                             else
-                            {
-                                    if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1)
+                            {      
+                                    if (getConn().getAgentById(members.get(0)) != null)
                                     {
-                                            opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
+                                        if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1)
+                                        {
+                                                opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
+                                        System.out.println("My opponent hunted: "+ opponentPreviousChoice);
+                                        }
                                     }
                             }
                             choice = opponentPreviousChoice;
+                            System.out.println("Therefore I will hunt: "+choice);
                             break;
 
                     default:

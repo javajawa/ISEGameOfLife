@@ -9,7 +9,10 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 /**
  *
  * @author Aadil
@@ -82,7 +85,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 //            }
             return true;
 	}
-        
 	/**
 	 * Determines the optimum hunting choice in terms of the food gained/hunters needed ratio
 	 * divides the group up into teams of this size, then passes them the order to hunt that food.
@@ -95,7 +97,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 		ArrayList<HuntingTeam> teams = new ArrayList <HuntingTeam>();
 		List<String> members = getDataModel().getMemberList();
 		int agents = members.size();
-
+                
 		for(int i=0; i < agents; i += 2){
 			int ubound = (i + 2 >= agents) ? agents : i + 2;
 			teams.add(new HuntingTeam(members.subList(i, ubound)));
