@@ -120,13 +120,13 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 	@Override
 	public String getLabel()
 	{
-		return "DebugSwitch";
+		return "Loggers";
 	}
 
 	@Override
 	public String getShortLabel()
 	{
-		return "DebugSwitch";
+		return "Loggers";
 	}
 	
 }
