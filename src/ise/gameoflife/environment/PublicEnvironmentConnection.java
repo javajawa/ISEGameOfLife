@@ -8,7 +8,7 @@ import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Used to access any information available to objects about the environment
@@ -17,6 +17,7 @@ import java.util.UUID;
 public class PublicEnvironmentConnection
 {
 	private static PublicEnvironmentConnection inst;
+	public final static Logger logger = Logger.getLogger("gameoflife.PublicLogger");
 	
 	public static PublicEnvironmentConnection getInstance()
 	{
@@ -31,6 +32,7 @@ public class PublicEnvironmentConnection
 	 * uses to access environmental information
 	 * @param ec 
 	 */
+	@SuppressWarnings("LeakingThisInConstructor")
 	PublicEnvironmentConnection(EnvConnector ec)
 	{
 		this.ec = ec;
@@ -147,9 +149,9 @@ public class PublicEnvironmentConnection
 	 * Write a string to the standard output, if debug mode is enabled.
 	 * @param s The string to log
 	 */
-	public void log(String s)
+	public Logger getLogger()
 	{
-		ec.log(s);
+		return logger;
 	}
 
 	/**

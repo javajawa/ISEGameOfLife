@@ -10,6 +10,7 @@ import ise.gameoflife.tokens.TurnType;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 import presage.EnvironmentConnector;
 
 /**
@@ -72,18 +73,9 @@ public class EnvConnector extends EnvironmentConnector
 	 * Logs an error in the ErrorLog
 	 * @param s Error string to log
 	 */
-	public void logToErrorLog(String s)
+	public Logger getLogger()
 	{
-		e.logToErrorLog(s);
-	}
-
-	/**
-	 * Logs an error in the ErrorLog
-	 * @param s Error to Log
-	 */
-	public void logToErrorLog(Throwable s)
-	{
-		e.logToErrorLog(s);
+		return e.getMainLogger();
 	}
 
 	public TurnType getCurrentTurnType()
@@ -139,11 +131,6 @@ public class EnvConnector extends EnvironmentConnector
 	public String nameof(String id)
 	{
 		return e.nameOf(id);
-	}
-
-	public void log(String s)
-	{
-		e.log(s);
 	}
 
 	public Set<String> getAgents()

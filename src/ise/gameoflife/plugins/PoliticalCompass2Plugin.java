@@ -12,12 +12,12 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 
 import ise.gameoflife.environment.Environment;
-import ise.gameoflife.participants.SimplePoliticalParticipant;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,8 +53,6 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
         // Set of political participants that are active
         private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
-
-        private TreeMap<String, TestPoliticalAgent> p_groups = new TreeMap<String, TestPoliticalAgent>();
 
 	@Element(required=false)
 	private String outputdirectory;
@@ -92,7 +90,6 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	{
                 // Add/remove new/old players
                 updatePoliticalPlayers();
-                updateGroups();
                 // Calculate new political positions
                // for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
                // {
@@ -129,23 +126,10 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 }
         }
 
-        /**
+       
+         /**
          * Adds new players and removes dead players since the last cycle.
          */
-        private void updateGroups(){
-                for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
-                {
-                    if(entry.getValue().getDataModel().getGroupId() != null){
-                        String id = entry.getValue().getDataModel().getGroupId();
-                        if(!p_groups.containsKey(id))
-                        {
-                                p_groups.put(id, entry.getValue());
-                        }
-                    }                    
-
-                }
-        }
-
         private void updatePoliticalPlayers()
         {
 
@@ -218,21 +202,22 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         private void drawGroupLines(Graphics g){
                 double x1,y1,x2,y2;
                 Rectangle rect = g.getClipBounds();
-                g.setColor(Color.ORANGE);
-                g.drawLine(5,5,0,0);
-                for(Map.Entry<String,TestPoliticalAgent> entry1 : p_groups.entrySet())
+                g.setColor(Color.red);
+                for(Map.Entry<String,TestPoliticalAgent> entry1 : p_players.entrySet())
                 {
-                        for(Map.Entry<String,TestPoliticalAgent> entry2 : p_groups.entrySet())
+                        for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
                         {
-                              if( entry1.getKey().equals(entry2.getKey()))
+                           if(entry1.getValue().getDataModel().getGroupId() != null && entry2.getValue().getDataModel().getGroupId() != null ){
+                              if( !entry1.getKey().equals(entry2.getKey()) && entry1.getValue().getDataModel().getGroupId().equals(entry2.getValue().getDataModel().getGroupId()))
                               {
-                                  x1 = entry1.getValue().getDataModel().getEconomicBelief();
-                                  x2 = entry2.getValue().getDataModel().getEconomicBelief();
-                                  y1 = entry1.getValue().getDataModel().getSocialBelief();
-                                  y2 = entry2.getValue().getDataModel().getSocialBelief();
-                                  g.drawLine((int)x1*rect.width/2,(int)y1*rect.width/2,(int)x2*rect.width/2,(int)y2*rect.width/2);
-
+                                  x1 = entry1.getValue().getDataModel().getEconomicBelief()*rect.width;
+                                  x2 = entry2.getValue().getDataModel().getEconomicBelief()*rect.width;
+                                  y1 = entry1.getValue().getDataModel().getSocialBelief()*rect.height;
+                                  y2 = entry2.getValue().getDataModel().getSocialBelief()*rect.height;
+                                  g.drawLine((int)x1+1,(int)y1+1,(int)x2+1,(int)y2+1);
+                                  
                               }
+                            }
                         }
                 }
         }
@@ -241,8 +226,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         {
                 Rectangle rect = g.getClipBounds();
                 g.setColor(Color.BLUE);
-                g.fillOval((int)((p_player.getDataModel().getEconomicBelief())*rect.width/2),
-                            (int)((p_player.getDataModel().getSocialBelief())*rect.height/2),
+                g.fillOval((int)((p_player.getDataModel().getEconomicBelief())*rect.width),
+                            (int)((p_player.getDataModel().getSocialBelief())*rect.height),
                             10, 10
                             );
                 //g.drawLine(0,0,1,1);

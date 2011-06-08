@@ -44,7 +44,6 @@ import presage.Input;
 import presage.Participant;
 import presage.Simulation;
 import presage.annotations.EnvironmentConstructor;
-import presage.environment.AEnvDataModel;
 import presage.environment.AbstractEnvironment;
 import presage.environment.messages.ENVDeRegisterRequest;
 import presage.environment.messages.ENVRegisterRequest;
@@ -80,17 +79,18 @@ public class Environment extends AbstractEnvironment
 				{
 					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, actorID));
 				}
-				log("Agent " + nameOf(actorID) + " has rejoined the free agents group.");
+				logger.log(Level.FINE, "Agent {0} has rejoined the free agents group.", nameOf(actorID));
 			}
 			else
 			{
-				sim.getPlayer(((ApplyToGroup)action).getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
-				log("Agent " + nameOf(actorID) + " has attempted to join group " + nameOf(((ApplyToGroup)action).getGroup()));
+				sim.getPlayer(app.getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
+				logger.log(Level.FINE, "Agent {0} has attempted to join group {1}", new Object[]{nameOf(actorID),
+								nameOf(app.getGroup())});
 			}
 			return null;
 		}
 		
-		public ApplyToGroupHandler(){
+		ApplyToGroupHandler(){
 			//Nothing to see here, move along citizen.
 		}
 	}
@@ -109,11 +109,11 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID)
 		{
 			sim.deActivateParticipant(actorID);
-			log("Agent " + nameOf(actorID) + " has died. So long and thanks for all the fish.");
+			logger.log(Level.FINE, "Agent {0} has died. So long and thanks for all the fish.", nameOf(actorID));
 			return null;
 		}
 		
-			public DeathHandler()
+		DeathHandler()
 		{
 			// Nothing to see here. Move along, citizen.
 		}
@@ -134,11 +134,12 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final GroupOrder order = (GroupOrder)action;
 			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getTeam()));
-			log("Group " + nameOf(actorID) + " has created team " + order.getTeam().hashCode() + " including " + nameOf(order.getAgent()));
+			logger.log(Level.FINE, "Group {0} has created team {1} including {2}", new Object[]{nameOf(actorID),
+							order.getTeam().hashCode(), nameOf(order.getAgent())});
 			return null;
 		}
 			
-		public GroupOrderHandler(){
+		GroupOrderHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
@@ -184,11 +185,13 @@ public class Environment extends AbstractEnvironment
 				}
 				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act, actorID));
 			}
-			log("Agent " + nameOf(actorID) + " hunted " + food.getName() + (am.getHuntingTeam() == null ? " alone." : " with team " + am.getHuntingTeam().hashCode()));
+			logger.log(Level.FINE, "Agent {0} hunted {1}{2}", new Object[]{nameOf(actorID),
+							food.getName(),
+							am.getHuntingTeam() == null ? " alone." : " with team " + am.getHuntingTeam().hashCode()});
 			return null;
 		}
 
-		public HuntHandler()
+		HuntHandler()
 		{
 			// Nothing to see here. Move along, citizen.
 		}
@@ -217,11 +220,12 @@ public class Environment extends AbstractEnvironment
 					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, application.getAgent()));
 				}
 			}
-			log("Agent " + nameOf(application.getAgent()) + " has attempted to join group " + nameOf(actorID) + ", and the result was: " + application.wasAccepted());
+			logger.log(Level.FINE, "Agent {0} has attempted to join group {1}, and the result was: {2}", new Object[]{nameOf(application.getAgent()),
+							nameOf(actorID), application.wasAccepted()});
 			return null;
 		}
 		
-		public RespondToApplicationHandler(){
+		RespondToApplicationHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
@@ -241,11 +245,12 @@ public class Environment extends AbstractEnvironment
 		public Input handle(Action action, String actorID){
 			final DistributeFood result = (DistributeFood)action;
 			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmountHunted(), result.getAmountRecieved(), sim.getTime()));
-			log("Agent " + nameOf(result.getAgent()) + " was allocated " + result.getAmountRecieved() + " units of food");
+			logger.log(Level.FINE, "Agent {0} was allocated {1} units of food", new Object[]{nameOf(result.getAgent()),
+							result.getAmountRecieved()});
 			return null;
 		}
 
-		public DistributeFoodHandler(){
+		DistributeFoodHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
@@ -262,7 +267,8 @@ public class Environment extends AbstractEnvironment
 			final Proposal prop = (Proposal)action;
 			final Proposition p = new Proposition(prop.getType(), actorID, prop.getForGroup(), dmodel.time);
 
-			log("Agent " + nameOf(actorID) + " proposed a motion of  " + prop.getType() + " to group " + nameOf(prop.getForGroup()));
+			logger.log(Level.FINE, "Agent {0} proposed a motion of  {1} to group {2}", new Object[]{nameOf(actorID),
+							prop.getType(), nameOf(prop.getForGroup())});
 
 			for (String member : dmodel.getGroupById(prop.getForGroup()).getMemberList())
 			{
@@ -272,7 +278,7 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
-		public ProposalHandler(){
+		ProposalHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
@@ -289,12 +295,14 @@ public class Environment extends AbstractEnvironment
 			final Vote vote = (Vote)action;
 			final ise.gameoflife.inputs.Vote v = new ise.gameoflife.inputs.Vote(vote, dmodel.time, actorID);
 
-			log("Agent " + nameOf(actorID) + " voted " + vote.getVote() + " on a motion of  " + vote.getProposition().getType() + " to group " + nameOf(vote.getProposition().getOwnerGroup()));
+			logger.log(Level.FINE, "Agent {0} voted {1} on a motion of  {2} to group {3}", new Object[]{nameOf(actorID),
+							vote.getVote(), vote.getProposition().getType(),
+							nameOf(vote.getProposition().getOwnerGroup())});
 			sim.getPlayer(vote.getProposition().getOwnerGroup()).enqueueInput(v);
 			return null;
 		}
 
-		public VoteHandler(){
+		VoteHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
@@ -315,7 +323,7 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
-		public VoteResultHandler(){
+		VoteResultHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
 	}
@@ -325,18 +333,18 @@ public class Environment extends AbstractEnvironment
 		private final Food food;
 		private final String agent;
 
-		public TeamHuntEvent(Hunt hunt, String actorID)
+		TeamHuntEvent(Hunt hunt, String actorID)
 		{
 			this.food = dmodel.getFoodById(hunt.getFoodTypeId());
 			this.agent = actorID;
 		}
 
-		public String getAgent()
+		String getAgent()
 		{
 			return agent;
 		}
 
-		public Food getFood()
+		Food getFood()
 		{
 			return food;
 		}
@@ -350,8 +358,6 @@ public class Environment extends AbstractEnvironment
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
 	private EnvironmentDataModel dmodel;
 
-	@Element
-	private boolean debug;
 	@Element(required=false)
 	private Class<? extends AbstractFreeAgentGroup> freeAgentHandler;
 	private AbstractFreeAgentGroup fAGroup;
@@ -359,7 +365,9 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Reference to the list that backs the ErrorLog view plugin.
 	 */
-	private List<String> errorLog;
+	private final static Logger logger = Logger.getLogger("gameoflife.Main");
+	private final static Logger rootLogger = Logger.getLogger("gameoflife");
+
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
 
 	@Deprecated
@@ -443,7 +451,7 @@ public class Environment extends AbstractEnvironment
 			}
 			catch (Exception ex)
 			{
-				Logger.getLogger(Environment.class.getName()).log(Level.SEVERE, null, ex);
+				logger.log(Level.SEVERE, "Evver whilst trying to load FreeAgentGroup class" + freeAgentHandler.getCanonicalName(), ex);
 			}
 		}
 
@@ -469,7 +477,8 @@ public class Environment extends AbstractEnvironment
 				for (String agent : team.getMembers())
 				{
 					sim.getPlayer(agent).enqueueInput(new HuntOrder(sim.getTime(), team));
-					log("FreeAgentsGroup has created team " + team.hashCode() + " including " + nameOf(agent));
+					logger.log(Level.FINE, "FreeAgentsGroup has created team {0} including {1}", new Object[]{team.hashCode(),
+									nameOf(agent)});
 				}
 			}
 		}
@@ -553,33 +562,10 @@ public class Environment extends AbstractEnvironment
 	{
 		this.dmodel.setTime(cycle);
 	}
-	
-	@SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
-	public void setErrorLog(List<String> loginput)
+
+	Logger getMainLogger()
 	{
-		if (this.errorLog == null) this.errorLog = loginput;
-	}
-
-	void logToErrorLog(String s)
-	{
-		if (this.errorLog == null)
-		{
-			System.err.println(s);
-			return;
-		}
-
-		this.errorLog.add(s);
-	}
-
-	void logToErrorLog(Throwable s)
-	{
-		if (this.errorLog == null)
-		{
-			System.err.println(s.getMessage());
-			return;
-		}
-
-		this.errorLog.add(s.getMessage());
+		return logger;
 	}
 
 	public TurnType getCurrentTurnType()
@@ -676,21 +662,6 @@ public class Environment extends AbstractEnvironment
 			return dmodel.getGroupById(id).getName();
 		}
 		return null;
-	}
-
-	public void log(String s)
-	{
-		if (debug) System.out.println(s);
-	}
-
-	public boolean getDebug()
-	{
-		return debug;
-	}
-
-	public void setDebug(boolean debug)
-	{
-		this.debug = debug;
 	}
 
 	Set<String> getAgents()

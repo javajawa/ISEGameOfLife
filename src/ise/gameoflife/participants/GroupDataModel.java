@@ -151,9 +151,9 @@ class GroupDataModel extends APlayerDataModel
 	{
 		/*
 		 * Algorithm:
-		 *  - The laeaders are those peopel trust most
+		 *  - The leaders are those people trust most
 		 *  - The social location is ratio(ish) of leaders to group members
-		 *  - This can be modelled as the the deviation of the trsut values
+		 *  - This can be modelled as the the deviation of the trust values
 		 *   - If one agent is trusted more than others, high deviation
 		 *   - This represents an autocracy
 		 *  - The values used to find standard deviation will be the average of each
@@ -161,6 +161,8 @@ class GroupDataModel extends APlayerDataModel
 		 */
 		List<Double> values = new ArrayList<Double>(memberList.size());
 		PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
+		if (ec == null) return 0.5;
+
 		double sigma_x = 0;
 		int n = 0;
 
@@ -170,8 +172,9 @@ class GroupDataModel extends APlayerDataModel
 			sigma_x = 0;
 			for (String truster : memberList)
 			{
-				Double t = ec.getAgentById(truster).getTrust(candidate);
-				if (t != null)
+				PublicAgentDataModel dm = ec.getAgentById(truster);
+				Double t = (dm == null ? null : dm.getTrust(candidate));
+				if (t != null && !candidate.equals(truster))
 				{
 					sigma_x += t;
 					++n;
@@ -193,7 +196,7 @@ class GroupDataModel extends APlayerDataModel
 		for (Double v : values)	sigma_x += (v - mu)*(v - mu);
 
 		sigma_x = 2 * Math.sqrt(sigma_x);
-
-		return sigma_x;
+                
+                return sigma_x;
 	}
 }

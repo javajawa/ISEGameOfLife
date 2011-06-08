@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
 import presage.Input;
@@ -40,6 +42,7 @@ import presage.environment.messages.ENVRegistrationResponse;
 public abstract class AbstractGroupAgent implements Participant
 {
 	private static final long serialVersionUID = 1L;
+	private final static Logger logger = Logger.getLogger("gameoflife.AbstractGroup");
 
 	/**
 	 * The DataModel used by this agent.
@@ -258,11 +261,13 @@ public abstract class AbstractGroupAgent implements Participant
 			{
 				movement += p.getType().getMovement();
 				motionsPassed ++;
-				ec.log(p.getProposer() + "'s " + p.getType() + " proposal was voted in (Vote=" + voteResult.get(p) + ')');
+				logger.log(Level.FINE, "{0}''s {1} proposal was voted in (Vote={2})", new Object[]{p.getProposer(),
+								p.getType(), voteResult.get(p)});
 			}
 			else
 			{
-				ec.log(p.getProposer() + "'s " + p.getType() + " proposal was not voted in (Vote=" + voteResult.get(p) + ')');
+				logger.log(Level.FINE, "{0}''s {1} proposal was not voted in (Vote={2})", new Object[]{p.getProposer(),
+								p.getType(), voteResult.get(p)});
 			}
 			// TODO: Store each proposition and result in history?
 			props.put(p.getProposer(), p);
@@ -323,7 +328,8 @@ public abstract class AbstractGroupAgent implements Participant
 			boolean response = this.respondToJoinRequest(req.getAgent());
 			if (response) this.dm.addMember(req.getAgent());
 			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(), authCode);
-			ec.log(dm.getName() + " got a join request from " + ec.nameof(((JoinRequest)input).getAgent()));
+			logger.log(Level.FINE, "{0} got a join request from {1}", new Object[]{dm.getName(),
+							ec.nameof(((JoinRequest)input).getAgent())});
 			return;
 		}
 
@@ -332,7 +338,8 @@ public abstract class AbstractGroupAgent implements Participant
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
-			ec.log(dm.getName() + " lost memeber " + ec.nameof(in.getAgent()) + " because of " + in.getReason());
+			logger.log(Level.FINE, "{0} lost memeber {1} because of {2}", new Object[]{dm.getName(),
+							ec.nameof(in.getAgent()), in.getReason()});
 			
 			if (dm.getMemberList().isEmpty()) ec.act(new Death(), dm.getId(), authCode);
 			
@@ -343,7 +350,8 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			huntResult.put(in.getAgent(), in.getFoodHunted());
-			ec.log("Agent " + ec.nameof(in.getAgent()) + " has hunted food worth " + in.getFoodHunted() + " for " + dm.getName());
+			logger.log(Level.FINE, "Agent {0} has hunted food worth {1} for {2}", new Object[]{ec.nameof(in.getAgent()),
+							in.getFoodHunted(), dm.getName()});
 			return;
 		}
 
@@ -356,13 +364,13 @@ public abstract class AbstractGroupAgent implements Participant
 				voteResult.put(v.getProposition(), 0);
 			}
 			voteResult.put(v.getProposition(), voteResult.get(v.getProposition()) + v.getVote().getValue());
-			ec.log("Agent " + ec.nameof(v.getAgent()) + " has voted " + v.getVote() + 
-							" on " + v.getProposition().getType() + " by " + 
-							ec.nameof(v.getProposition().getProposer()) + " as a member of " + dm.getName());
+			logger.log(Level.FINE, "Agent {0} has voted {1} on {2} by {3} as a member of {4}", new Object[]{ec.nameof(v.getAgent()),
+							v.getVote(), v.getProposition().getType(),
+							ec.nameof(v.getProposition().getProposer()), dm.getName()});
 			return;
 		}
 
-		ec.logToErrorLog("Group Unable to handle Input of type " + input.getClass().getCanonicalName());
+		logger.log(Level.SEVERE, "Group Unable to handle Input of type {0}", input.getClass().getCanonicalName());
 	}
 
 	/**
