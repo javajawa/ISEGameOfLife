@@ -34,10 +34,11 @@ public abstract class Evolution
 
 	/**
 	 * Determines whether the Specie instance should be selected
+	 * @param rank the fitness rank of entity
 	 * @param entity a Specie instance
 	 * @return a boolean
 	 */
-	abstract protected boolean select(Specie entity);
+	abstract protected boolean select(int rank, Specie entity);
 
 
 	/**
@@ -58,9 +59,10 @@ public abstract class Evolution
 
 		ArrayList<Specie> newSpeciePool = new ArrayList<Specie>();
 
+		int rank = 0;
 		for (Specie entity : speciePool)
 		{
-			if (select(entity))
+			if (select(++rank, entity))
 			{
 				newSpeciePool.add(entity);
 			}
