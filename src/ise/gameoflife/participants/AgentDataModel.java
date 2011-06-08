@@ -256,7 +256,7 @@ class AgentDataModel extends APlayerDataModel
 		return huntingTeam.getUnmodifableHistory();
 	}
 
-	public double getCurrentHappiness()
+	public Double getCurrentHappiness()
 	{
 		return happinessHistory.getValue();
 	}

@@ -6,6 +6,7 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -35,6 +36,7 @@ public class TestPoliticalAgent extends AbstractAgent
         private String invitationToGroup = null;
 
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
+        private final static TreeSet<String> groupFounders = new TreeSet<String>();
 
 	@Deprecated
 	public TestPoliticalAgent()
@@ -61,6 +63,7 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected String chooseGroup() {
          System.out.println("----------------------------------------------------");
+
         //ONLY FOR DEBUGGING
         if (this.getDataModel().getGroupId() == null)
             System.out.println("I, agent "+ this.getDataModel().getName() + " am a free agent!");
@@ -73,15 +76,16 @@ public class TestPoliticalAgent extends AbstractAgent
         
         //If agent is already member of a group do nothing
         if (this.getDataModel().getGroupId() != null) {
-            return this.getDataModel().getGroupId();
+            if (groupFounders.contains(this.getId()))
+                    groupFounders.remove(this.getId());
+            if (invitationHolders.contains(this.getId()))
+                    invitationHolders.remove(this.getId());
+            return null;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
             System.out.println("I was invited in a group so I will join it");
-            invitationHolders.remove(this.getId());
-            String invitation = this.invitationToGroup;
-            this.invitationToGroup = null;
-            return invitation;
+            return this.invitationToGroup;
         }
         else //If none of the above worked out then first try to find an optimal group to join with
         {
@@ -169,12 +173,12 @@ public class TestPoliticalAgent extends AbstractAgent
         double trustFaction=0;
         
         String bestPartner = "";
-
+        int i =0;
         for (String trustee : getConn().getUngroupedAgents())
         {
             //if an agent is not comparing with itself and has not been invited
-            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee)))
-            {
+            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
+            {   i++;         System.out.println("No of ungrouped agents: " +i);
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
@@ -201,6 +205,7 @@ public class TestPoliticalAgent extends AbstractAgent
             GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
+            groupFounders.add(this.getId());
             //ONLY FOR DEBUGGING
             System.out.println("I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
             System.out.println("HEURISTIC = " + previousHeuristic);
@@ -221,6 +226,10 @@ public class TestPoliticalAgent extends AbstractAgent
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
+             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
+            //This agent has no pair therefore it will be inactive for this round
+            if (members.size() == 1) return null;
 
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())
@@ -260,7 +269,6 @@ public class TestPoliticalAgent extends AbstractAgent
                     //If first time cooperate else imitate what your partner (opponent?) choose the previous time
                     case TFT:
                             //Get last hunting choice of opponent and act accordingly
-                            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
                             Food opponentPreviousChoice = cooperateFood;
 
                             // TFT makes no sense in a team of 1...
@@ -426,69 +434,69 @@ return VoteType.For;
     protected double updateHappinessAfterHunt(double foodHunted,
                                     double foodReceived)
     {
-//            double myEconomic = getDataModel().getEconomicBelief();
-//            double entitlement = myEconomic * foodHunted;
-//            double difference, ratio, happiness;
-//            
-//            if ((Double)getDataModel().getCurrentHappiness() == null)
-//                happiness = myEconomic;
-//            else
-//                happiness = getDataModel().getCurrentHappiness();
-//
-//            if (foodReceived == entitlement)
-//            {
-//                //you're satisifed, but happy
-//                happiness += 0.01;//a measure of your satisfaction
-//
-//                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
-//                    return 1;
-//                else                  
-//                    return happiness;             
-//            }
-//            
-//            if (foodReceived > entitlement)
-//            {
-//                //you're overjoyed
-//                difference = foodReceived - entitlement;
-//                if (entitlement > difference)
-//                    ratio = difference / entitlement;
-//                else
-//                    ratio = entitlement / difference;
-//                happiness += ratio;//a measure of your happiness
-//
-//                if ((getDataModel().getCurrentHappiness() == 1) || (happiness >= 1)) 
-//                    return 1;
-//                else                  
-//                    return happiness;                
-//            }
-//            
-//            if (foodReceived < entitlement)
-//            {
-//                //you're dissapointed
-//                difference = entitlement - foodReceived;
-//                if (entitlement > difference)
-//                    ratio = difference / entitlement;
-//                else
-//                    ratio = entitlement / difference;
-//                happiness -= ratio;//a measure of your dissapointment
-//
-//                if ((getDataModel().getCurrentHappiness() == 0) || (happiness <= 0)) 
-//                    return 0;
-//                else                  
-//                    return happiness;                                 
-//            }
-//            
-//            return happiness;//if we got to this update here without hunting first then don't change anything
-            return 0; //throw new UnsupportedOperationException("Not supported yet.");
+            //'entitelment' denotes the amount of food an agent wants to get, at the least
+            double entitlement = getDataModel().getEconomicBelief() * foodHunted;
+            double difference, ratio, newHappiness;
+            Double currentHappiness = getDataModel().getCurrentHappiness();
+
+            if (currentHappiness == null)
+            {
+                //By default we are all satisfied with the economic position
+                //we start off in, unless you are always happy or just hate life
+                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
+                newHappiness = currentHappiness;
+            }
+            else 
+                newHappiness = currentHappiness;
+            
+            if (foodReceived == entitlement)
+            {
+                //you're satisifed, but happy
+                newHappiness += 0.01;//a measure of your satisfaction
+
+                if ((currentHappiness == 1) || (newHappiness >= 1)) 
+                    return 1;
+                else                  
+                    return newHappiness;             
+            }
+            
+            if (foodReceived > entitlement)
+            {
+                //you're overjoyed
+                difference = foodReceived - entitlement;
+                ratio = difference / entitlement;
+                newHappiness += ratio;//a measure of your happiness
+
+                if (newHappiness >= 1) 
+                    return 1;
+                else                  
+                    return newHappiness;                
+            }
+            
+            if (foodReceived < entitlement)
+            {
+                //you're dissapointed
+                difference = entitlement - foodReceived;
+                ratio = difference / entitlement;
+                newHappiness -= ratio;//a measure of your dissapointment
+
+                if (newHappiness <= 0) 
+                    return 0;
+                else                  
+                    return newHappiness;                                 
+            }
+
+            return newHappiness;//if we got to this update here without hunting first then don't change anything
+//            return 0; //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
     {
             //loyalty after hunting refines from how happy you are after the hunt?        
-//            if (this.getDataModel().getGroupId() != null)
-//                return updateHappinessAfterHunt(foodHunted, foodReceived);
-//            else
+            if (this.getDataModel().getGroupId() != null)
+                return updateHappinessAfterHunt(foodHunted, foodReceived);
+            else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -540,7 +548,6 @@ return VoteType.For;
            
             newTrustValue.put(opponentID, trust);
             return  newTrustValue;
-
     }
 
     @Override
@@ -548,9 +555,9 @@ return VoteType.For;
                                     double overallMovement)
     {
             //loyalty after a vote refines from how happy you are after the vote?        
-//            if (this.getDataModel().getGroupId() != null)
-//                return updateHappinessAfterHunt(foodHunted, foodReceived);
-//            else
+            if (this.getDataModel().getGroupId() != null)
+                return updateHappinessAfterVotes(proposition, votes, overallMovement);
+            else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -559,9 +566,50 @@ return VoteType.For;
     protected double updateHappinessAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
-        
-            return 0;
-            //throw new UnsupportedOperationException("Not supported yet.");
+            double newHappiness;
+            Double currentHappiness = getDataModel().getCurrentHappiness();            
+            
+            
+            if (currentHappiness == null)
+            {
+                //By default we are all satisfied with the economic position
+                //we start off in, unless you are always happy or just hate life
+                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
+                newHappiness = currentHappiness;
+            }
+            else 
+                newHappiness = currentHappiness;
+                
+            //If this concerns you...
+            if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+            {
+                //If I won...
+                if(votes > 0)
+                {
+                    //your happy your proposition was passed
+                    newHappiness += ValueScaler.scale(overallMovement, votes, 0.1);
+                    if (newHappiness >= 1)
+                        return 1;
+                    else
+                        return newHappiness;
+                }
+
+                //If I lost...
+                if (votes < 0)
+                {
+                    //your dissapointed your proposition didn't pass
+                    newHappiness -= ValueScaler.scale(overallMovement, votes, 0.1);
+                    if (newHappiness <= 0)
+                        return 0;
+                    else
+                        return newHappiness;
+                }
+            }
+            
+            //If this proposition doesn't concern you or if nothing happened, no decision
+            //was made, then you're not affected
+            return newHappiness;
+           
     }
 
     @Override
@@ -581,7 +629,7 @@ return VoteType.For;
                  {
                        proposerTrust = 0;
                 }
-                //discuss...
+                //discuss... //increase or decrease trust according to what agent vote and what was the proposal
                 /*
                 //update the value
                 if (this.castVote(proposition).equals(VoteType.For))

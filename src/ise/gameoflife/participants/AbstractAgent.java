@@ -132,7 +132,7 @@ abstract public class AbstractAgent implements Participant
 		{
 			final ApplicationResponse in = (ApplicationResponse)input;
 			if (in.wasAccepted())
-			{
+			{ 
 				dm.setGroup(in.getGroup());
 			}
 			groupApplicationResponse(in.wasAccepted());	
@@ -582,9 +582,10 @@ abstract public class AbstractAgent implements Participant
 	 */
 	abstract protected Food chooseFood();
 	/**
-	 * TODO: Document this
-	 * 
-	 * @return 
+	 * Allows the agent to propose a shift of the group's economic status
+	 * along the axis. The exact direction and magnitude of the shift 
+	 * depends on how the function is defined.
+	 * @return The direction and magnitude of the proposed move
 	 */
 	abstract protected ProposalType makeProposal();
 	/**
@@ -605,7 +606,7 @@ abstract public class AbstractAgent implements Participant
 	 * Allows the happiness value of the agent to be updated after the completion 
 	 * of the hunt
 	 * @param foodHunted The amount of food the agent brought back to the group
-	 * @param foodReceived THe amount of food that the agent was allowed to keep
+	 * @param foodReceived The amount of food that the agent was allowed to keep
 	 * @return The new happiness value of the agent, scaled between 0 and 1
 	 */
 	abstract protected double updateHappinessAfterHunt(double foodHunted,	double foodReceived);
