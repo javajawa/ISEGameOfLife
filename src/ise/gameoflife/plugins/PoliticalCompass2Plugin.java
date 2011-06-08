@@ -12,7 +12,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 
 import ise.gameoflife.environment.Environment;
-import ise.gameoflife.participants.SimplePoliticalParticipant;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -197,8 +196,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         {
                 Rectangle rect = g.getClipBounds();
                 g.setColor(Color.BLUE);
-                g.fillOval((int)((p_player.getDataModel().getEconomicBelief())*rect.width/2),
-                            (int)((p_player.getDataModel().getSocialBelief())*rect.height/2),
+                g.fillOval((int)((p_player.getDataModel().getEconomicBelief())*rect.width),
+                            (int)((p_player.getDataModel().getSocialBelief())*rect.height),
                             10, 10
                             );
 
