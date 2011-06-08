@@ -331,7 +331,6 @@ public class TestPoliticalAgent extends AbstractAgent
                                         if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1)
                                         {
                                                 opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
-                                                System.out.println("My opponent hunted: "+ opponentPreviousChoice);
                                         }
                                     }
                             }
@@ -342,12 +341,10 @@ public class TestPoliticalAgent extends AbstractAgent
                                         if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1)
                                         {
                                                 opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
-                                        System.out.println("My opponent hunted: "+ opponentPreviousChoice);
                                         }
                                     }
                             }
                             choice = opponentPreviousChoice;
-                            System.out.println("Therefore I will hunt: "+choice);
                             break;
 
                     default:
@@ -360,28 +357,31 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected ProposalType makeProposal()
     {
+            //Note : No need to check if agent is in a group. This is done by doMakeProposal
+
             String groupId = this.getDataModel().getGroupId();
-            if (groupId != null)
-            {   //If this agent is member of a group
-                    double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
-                    double agentEconomicBelief = this.getDataModel().getEconomicBelief();
-                    if (agentEconomicBelief > groupEconomicPosition)
-                    {
-                            return ProposalType.moveRight;
-                    }
-                    else if (agentEconomicBelief < groupEconomicPosition)
-                    {
-                            return ProposalType.moveLeft;
-                    }
-                    else
-                    {
-                            return ProposalType.staySame;
-                    }
+            ProposalType proposal;
+            //Get the economic beliefs of the agent and the group
+            double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
+            double agentEconomicBelief = this.getDataModel().getEconomicBelief();
+            System.out.println("My economic belief is " + agentEconomicBelief);
+            System.out.println("Group economic belief is " + groupEconomicPosition);
+            //Three cases: -> Agent economic belief = Group economic belief -> agent proposes to stay there
+            //             -> Agent economic belief > group economic belief -> agent prefers to move right (remember left is zero and right is one)
+            //             -> Agent economic belief < group economic belief -> agent prefers to move left
+            if (agentEconomicBelief > groupEconomicPosition)
+            {
+                    proposal = ProposalType.moveRight;
+            }
+            else if (agentEconomicBelief < groupEconomicPosition)
+            {
+                    proposal = ProposalType.moveLeft;
             }
             else
-            {   //Proposal makes no sense for a free agent
-                    return ProposalType.staySame;
+            {
+                    proposal = ProposalType.staySame;
             }
+            return proposal;
     }
 
     @Override
