@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
 import presage.Input;
@@ -40,6 +42,7 @@ import presage.environment.messages.ENVRegistrationResponse;
 public abstract class AbstractGroupAgent implements Participant
 {
 	private static final long serialVersionUID = 1L;
+	private final static Logger logger = PublicEnvironmentConnection.logger;
 
 	/**
 	 * The DataModel used by this agent.
@@ -362,7 +365,7 @@ public abstract class AbstractGroupAgent implements Participant
 			return;
 		}
 
-		ec.logToErrorLog("Group Unable to handle Input of type " + input.getClass().getCanonicalName());
+		logger.log(Level.SEVERE, "Group Unable to handle Input of type " + input.getClass().getCanonicalName());
 	}
 
 	/**

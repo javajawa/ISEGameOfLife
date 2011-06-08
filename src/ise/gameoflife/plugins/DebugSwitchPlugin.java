@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.Collator;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -18,7 +17,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.xml.bind.annotation.XmlElementDecl.GLOBAL;
 import presage.Plugin;
 import presage.Simulation;
 
@@ -33,6 +31,7 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 
 	private class LoggerPanel extends JPanel
 	{
+		private static final long serialVersionUID = 1L;
 		private final JComboBox box;
 		private final JLabel lbl;
 		private final Logger logger;

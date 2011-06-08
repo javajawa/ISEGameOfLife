@@ -359,7 +359,7 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Reference to the list that backs the ErrorLog view plugin.
 	 */
-	private List<String> errorLog;
+	private final static Logger logger = Logger.getLogger("gameoflife.Main");
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
 
 	@Deprecated
@@ -553,33 +553,10 @@ public class Environment extends AbstractEnvironment
 	{
 		this.dmodel.setTime(cycle);
 	}
-	
-	@SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
-	public void setErrorLog(List<String> loginput)
+
+	Logger getMainLogger()
 	{
-		if (this.errorLog == null) this.errorLog = loginput;
-	}
-
-	void logToErrorLog(String s)
-	{
-		if (this.errorLog == null)
-		{
-			System.err.println(s);
-			return;
-		}
-
-		this.errorLog.add(s);
-	}
-
-	void logToErrorLog(Throwable s)
-	{
-		if (this.errorLog == null)
-		{
-			System.err.println(s.getMessage());
-			return;
-		}
-
-		this.errorLog.add(s.getMessage());
+		return logger;
 	}
 
 	public TurnType getCurrentTurnType()

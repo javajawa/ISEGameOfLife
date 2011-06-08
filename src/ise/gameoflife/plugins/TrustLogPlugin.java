@@ -293,7 +293,7 @@ public class TrustLogPlugin extends JPanel implements Plugin {
 		this.en = (Environment)sim.environment;
 		this.add(new JScrollPane(new JList(data)));
 
-		en.setErrorLog(data);
+		//en.setErrorLog(data);
 		setBackground(Color.LIGHT_GRAY);
 
 	}

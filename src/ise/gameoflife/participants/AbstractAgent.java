@@ -25,6 +25,8 @@ import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.simpleframework.xml.Element;
 import presage.EnvironmentConnector;
 import presage.Input;
@@ -203,6 +205,7 @@ abstract public class AbstractAgent implements Participant
 
 	}
 
+	private final static Logger logger = PublicEnvironmentConnection.logger;
 	public final static String leaveGroup = UUID.randomUUID().toString();
 	/**
 	 * The DataModel used by this agent.
@@ -322,7 +325,7 @@ abstract public class AbstractAgent implements Participant
 		// Check to see if we died due to a message in the queue
 		if (this.dm.getFoodInPossesion() < 0)
 		{
-			System.out.println("I, agent, " + dm.getName() + ", am starving to death!");
+			logger.log(Level.FINE, "I, agent, {0}, am starving to death!", dm.getName());
 			ec.act(new Death(), dm.getId(), authCode);
 		}
 
@@ -369,7 +372,7 @@ abstract public class AbstractAgent implements Participant
 				return;
 			}
 		}
-		ec.logToErrorLog("AbstractAgent can not handle inputs of type " + i.getClass().getCanonicalName());
+		logger.log(Level.SEVERE, "AbstractAgent can not handle inputs of type {0}", i.getClass().getCanonicalName());
 	}
 
 	private void clearRoundData()
@@ -396,7 +399,7 @@ abstract public class AbstractAgent implements Participant
 
 		if (toHunt == null)
 		{
-			ec.logToErrorLog("Agent " + dm.getName() + " did not pick a food to hunt");
+			logger.log(Level.WARNING, "Agent {0} did not pick a food to hunt", dm.getName());
 		}
 		else
 		{
