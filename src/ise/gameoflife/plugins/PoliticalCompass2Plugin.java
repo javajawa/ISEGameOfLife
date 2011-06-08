@@ -17,6 +17,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,7 +90,6 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	{
                 // Add/remove new/old players
                 updatePoliticalPlayers();
-
                 // Calculate new political positions
                // for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
                // {
@@ -126,7 +126,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 }
         }
 
-        /**
+       
+         /**
          * Adds new players and removes dead players since the last cycle.
          */
         private void updatePoliticalPlayers()
@@ -143,6 +144,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                         {
                                 p_players.put(id, (TestPoliticalAgent) sim.getPlayer(id));
                         }
+
+
                 }
 
                 // Delete agents which are no longer active
@@ -179,11 +182,15 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 g.drawLine(rect.width/2, 0, rect.width/2, rect.height);
                 g.drawLine(0,  rect.height/2, rect.width, rect.height/2);
 
+
+
                 // Draw agents
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
                         drawAgent(g, entry.getValue());
                 }
+
+                drawGroupLines(g);
 
         }
 
@@ -192,6 +199,29 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
          * @param g Graphics objects
          * @param p_player SimplifiedPoliticalPlayer object to draw
          */
+        private void drawGroupLines(Graphics g){
+                double x1,y1,x2,y2;
+                Rectangle rect = g.getClipBounds();
+                g.setColor(Color.red);
+                for(Map.Entry<String,TestPoliticalAgent> entry1 : p_players.entrySet())
+                {
+                        for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
+                        {
+                           if(entry1.getValue().getDataModel().getGroupId() != null && entry2.getValue().getDataModel().getGroupId() != null ){
+                              if( !entry1.getKey().equals(entry2.getKey()) && entry1.getValue().getDataModel().getGroupId().equals(entry2.getValue().getDataModel().getGroupId()))
+                              {
+                                  x1 = entry1.getValue().getDataModel().getEconomicBelief()*rect.width;
+                                  x2 = entry2.getValue().getDataModel().getEconomicBelief()*rect.width;
+                                  y1 = entry1.getValue().getDataModel().getSocialBelief()*rect.height;
+                                  y2 = entry2.getValue().getDataModel().getSocialBelief()*rect.height;
+                                  g.drawLine((int)x1+1,(int)y1+1,(int)x2+1,(int)y2+1);
+                                  
+                              }
+                            }
+                        }
+                }
+        }
+
         private void drawAgent(Graphics g, TestPoliticalAgent p_player)
         {
                 Rectangle rect = g.getClipBounds();
@@ -200,7 +230,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                             (int)((p_player.getDataModel().getSocialBelief())*rect.height),
                             10, 10
                             );
-
+                //g.drawLine(0,0,1,1);
         }
 
 	/**
@@ -234,7 +264,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 		System.out.println(" -Initialising Political Compass Plugin....");
 
 		this.sim = sim;
-
+                this.en = (Environment)sim.environment;
 		setBackground(Color.CYAN);
 
                 repaint();

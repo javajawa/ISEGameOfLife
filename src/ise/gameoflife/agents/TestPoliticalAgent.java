@@ -586,7 +586,7 @@ return VoteType.For;
                  {
                        proposerTrust = 0;
                 }
-                //discuss...
+                //discuss... //increase or decrease trust according to what agent vote and what was the proposal
                 /*
                 //update the value
                 if (this.castVote(proposition).equals(VoteType.For))
