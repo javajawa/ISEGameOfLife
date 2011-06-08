@@ -548,7 +548,6 @@ return VoteType.For;
            
             newTrustValue.put(opponentID, trust);
             return  newTrustValue;
-
     }
 
     @Override
@@ -556,9 +555,9 @@ return VoteType.For;
                                     double overallMovement)
     {
             //loyalty after a vote refines from how happy you are after the vote?        
-//            if (this.getDataModel().getGroupId() != null)
-//                return updateHappinessAfterHunt(foodHunted, foodReceived);
-//            else
+            if (this.getDataModel().getGroupId() != null)
+                return updateHappinessAfterVotes(proposition, votes, overallMovement);
+            else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -567,9 +566,50 @@ return VoteType.For;
     protected double updateHappinessAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
-        
-            return 0;
-            //throw new UnsupportedOperationException("Not supported yet.");
+            double newHappiness;
+            Double currentHappiness = getDataModel().getCurrentHappiness();            
+            
+            
+            if (currentHappiness == null)
+            {
+                //By default we are all satisfied with the economic position
+                //we start off in, unless you are always happy or just hate life
+                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
+                newHappiness = currentHappiness;
+            }
+            else 
+                newHappiness = currentHappiness;
+                
+            //If this concerns you...
+            if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+            {
+                //If I won...
+                if(votes > 0)
+                {
+                    //your happy your proposition was passed
+                    newHappiness += ValueScaler.scale(overallMovement, votes, 0.1);
+                    if (newHappiness >= 1)
+                        return 1;
+                    else
+                        return newHappiness;
+                }
+
+                //If I lost...
+                if (votes < 0)
+                {
+                    //your dissapointed your proposition didn't pass
+                    newHappiness -= ValueScaler.scale(overallMovement, votes, 0.1);
+                    if (newHappiness <= 0)
+                        return 0;
+                    else
+                        return newHappiness;
+                }
+            }
+            
+            //If this proposition doesn't concern you or if nothing happened, no decision
+            //was made, then you're not affected
+            return newHappiness;
+           
     }
 
     @Override
