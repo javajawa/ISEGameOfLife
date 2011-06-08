@@ -65,7 +65,8 @@ abstract public class AbstractAgent implements Participant
 		@Override
 		public void handle(Input input)
 		{
-			ec.log("I, agent " + dm.getName() + ", consumed " + dm.getFoodConsumedThisTurn() + " units of food");
+			logger.log(Level.FINE, "I, agent {0}, consumed {1} units of food", new Object[]{dm.getName(),
+							dm.getFoodConsumedThisTurn()});
 			dm.foodConsumed(dm.getFoodConsumedThisTurn());
 		}
 	}
@@ -84,7 +85,8 @@ abstract public class AbstractAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			dm.foodAquired(in.getFoodReceived());
-			ec.log("I, agent " + dm.getName() + ", recieved " + in.getFoodReceived() + " units of food");
+			logger.log(Level.FINE, "I, agent {0}, recieved {1} units of food", new Object[]{dm.getName(),
+							in.getFoodReceived()});
 
 			dm.setCurrentHappiness(updateHappinessAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
 			dm.setCurrentLoyalty(updateLoyaltyAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
@@ -111,7 +113,8 @@ abstract public class AbstractAgent implements Participant
 		{
 			final HuntOrder in = (HuntOrder)input;
 			dm.setHuntingTeam(in.getTeam());
-			ec.log("I, Agent " + dm.getName() + " have been told to hunt with Team " + in.getTeam().hashCode());
+			logger.log(Level.FINE, "I, Agent {0} have been told to hunt with Team {1}", new Object[]{dm.getName(),
+							in.getTeam().hashCode()});
 		}
 	}
 
@@ -133,7 +136,8 @@ abstract public class AbstractAgent implements Participant
 				dm.setGroup(in.getGroup());
 			}
 			groupApplicationResponse(in.wasAccepted());	
-			ec.log("I, agent " + dm.getName() + " was " + (in.wasAccepted() ? "" : "not ") + "accepted into group " + ec.nameof(in.getGroup()));
+			logger.log(Level.FINE, "I, agent {0} was {1}accepted into group {2}", new Object[]{dm.getName(),
+							in.wasAccepted() ? "" : "not ", ec.nameof(in.getGroup())});
 		}
 		
 	}
@@ -155,7 +159,8 @@ abstract public class AbstractAgent implements Participant
 			Vote.VoteType v = castVote(in);
 			ec.act(new Vote(in, v), getId(), authCode);
 			
-			ec.log("I, agent " + dm.getName() + " voted " + v + " in " + ec.nameof(in.getProposer()) + "'s vote of " + in.getType());
+			logger.log(Level.FINE, "I, agent {0} voted {1} in {2}'s vote of {3}", new Object[]{dm.getName(),
+							v, ec.nameof(in.getProposer()), in.getType()});
 		}
 		
 	}
@@ -173,7 +178,8 @@ abstract public class AbstractAgent implements Participant
 		public void handle(Input input)
 		{
 			final VoteResult in = (VoteResult)input;
-			ec.log("I, agent " + dm.getName() + " got " + in.getVotes() + " for my " + in.getProposition().getType() + " proposal.");
+			logger.log(Level.FINE, "I, agent {0} got {1} for my {2} proposal.", new Object[]{dm.getName(),
+							in.getVotes(), in.getProposition().getType()});
 			dm.setCurrentHappiness(updateHappinessAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			dm.setCurrentLoyalty(updateLoyaltyAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			Map<String,Double> t = updateTrustAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement());
@@ -200,7 +206,8 @@ abstract public class AbstractAgent implements Participant
 			final GroupInvite in = (GroupInvite)input;
 
 			onInvite(in.getGroup());
-			ec.log("I, agent " + dm.getName() + " was inivited to the new " + ec.nameof(in.getGroup()) + " group.");
+			logger.log(Level.FINE, "I, agent {0} was inivited to the new {1} group.", new Object[]{dm.getName(),
+							ec.nameof(in.getGroup())});
 		}
 
 	}
@@ -492,7 +499,8 @@ abstract public class AbstractAgent implements Participant
 	}
 
 	@Override
-	public void onSimulationComplete()
+	@SuppressWarnings("NoopMethodInAbstractClass")
+	public final void onSimulationComplete()
 	{
 		// Nothing to see here. Move along, citizen!
 	}

@@ -32,6 +32,7 @@ public class PublicEnvironmentConnection
 	 * uses to access environmental information
 	 * @param ec 
 	 */
+	@SuppressWarnings("LeakingThisInConstructor")
 	PublicEnvironmentConnection(EnvConnector ec)
 	{
 		this.ec = ec;
@@ -148,9 +149,9 @@ public class PublicEnvironmentConnection
 	 * Write a string to the standard output, if debug mode is enabled.
 	 * @param s The string to log
 	 */
-	public void log(String s)
+	public Logger getLogger()
 	{
-		ec.log(s);
+		return logger;
 	}
 
 	/**
