@@ -1,5 +1,6 @@
 package ise.gameoflife.plugins;
 
+import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.tokens.TurnType;
@@ -12,6 +13,11 @@ import presage.annotations.PluginConstructor;
 import java.util.logging.Logger;
 
 import java.sql.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 /**
@@ -32,21 +38,22 @@ public class DatabasePlugin implements Plugin {
 
     private final static String title = "DatabasePlugin";
     private final static String label = "DatabasePlugin";
+    
     public final static Logger logger = Logger.getLogger("gameoflife.DatabaseLogger");
 
     private Simulation sim;
     private PublicEnvironmentConnection ec = null;
     
-    private Statement stat;
-
+    private TreeMap<String, PublicAgentDataModel> agentMap = new TreeMap<String, PublicAgentDataModel>();
     
-    private PreparedStatement prep;
-    private PreparedStatement prep2;
-    
-    //database local connection
+    //database connection
     private Connection conn;
-    //Remote MySQL server
-    private Connection rcon;
+    private Statement stat;
+    private PreparedStatement prep;
+    private PreparedStatement prep_newAgent;
+    
+
+
 
     @Element
     private int simId;
@@ -82,7 +89,125 @@ public class DatabasePlugin implements Plugin {
 	    this.saveToRemote = saveToRemote;
 	    
     }
+//Creates connections and local DB if not exists.Otherwise, adds to existing
+    //DB.
+    @Override
+    public void initialise(Simulation sim)
+    {
+	this.sim = sim;
+	ec = PublicEnvironmentConnection.getInstance();
+	
+	if (!saveToRemote) {
+	    try {    
+		Class.forName("org.sqlite.JDBC");
+	    }
+	    catch (Exception e)
+		{
+			System.err.println("SQLite database library not available:" + e);
+		}
+	}
+	try {
 
+	    if (!saveToRemote) {
+		//path to /Simulations folder
+		String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
+		//create connection to local db
+		conn = DriverManager.getConnection("jdbc:sqlite:"+ configPath + "/Simulations.db");
+	    }
+	    else {
+		conn = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
+			    "stratra1_isegol","ise4r3g00d");
+	    }
+	    
+	    stat = conn.createStatement();
+	    stat.executeUpdate("INSERT INTO [simulations] " +
+		"(sim_uuid,userid,comment)" +
+		"VALUES ('"+ec.getId()+"','"+System.getProperty("user.name")+"','"+sim_comment+"');"
+			    );
+	    ResultSet rs = stat.getGeneratedKeys();         
+	    while (rs.next()) {
+		simId  = rs.getInt(1);    
+	    }
+	    rs.close();                           // Close ResultSet
+	    logger.log(Level.INFO, "This simulation is saved in DB with: simId = {0}", simId);
+	    stat.close();                         // Close Statement
+
+	    conn.setAutoCommit(false);
+	    prep = conn.prepareStatement(
+		"INSERT into data values ('"+simId+"', ?, ?, ? );");
+	    prep_newAgent = conn.prepareStatement("INSERT into [agents] (simid,a_uuid,name) VALUES(?,?,?)");
+	    
+	       /*
+		  stat.executeUpdate("INSERT INTO simulations " +                             
+		   "VALUES (null,'"+System.getProperty("user.name")+"','"+sim_comment+"',null,0);",      
+		   Statement.RETURN_GENERATED_KEYS);   // Indicate you want automatically 
+						       // generated keys
+		rs = stat.getGeneratedKeys();         // Retrieve the automatically       
+						       // generated key value in a ResultSet.
+						       // Only one row is returned.
+					 // Create ResultSet for query
+		while (rs.next()) {
+		    simId  = rs.getInt(1);     // Get automatically generated key 
+						       // value
+		    System.out.println("Remote DB simId = " + simId);
+		}
+		rs.close();                           // Close ResultSet
+		stat.close();                         // Close Statement
+		prep2 = rcon.prepareStatement(
+		"insert into data values ('"+simId+"', ?, ?, ? );");
+	    */
+
+
+	}
+	catch (SQLException e) {
+	    logger.log(Level.WARNING, "SQL Error: {0}", e);
+	    e.printStackTrace();
+	    return;
+	}
+    }
+    
+    
+    
+    private void updateAgents()
+    {
+	   SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
+	   
+	   Iterator<String> iter = active_agent_ids.iterator();
+
+	    // Add any new agents
+	    while(iter.hasNext())
+	    {
+		    String id = iter.next();
+		    if(!agentMap.containsKey(id))
+		    {
+			PublicAgentDataModel newAgent = agentMap.put(id, (PublicAgentDataModel) ec.getAgentById(id));
+			prep_newAgent.setInt(1,simId);
+			prep_newAgent.setString(2,newAgent.getId());
+			prep_newAgent.setInt(3,getNumHunters());
+			prep_newAgent.addBatch();
+			
+		    }
+
+
+	    }
+
+	    // Delete agents which are no longer active
+	    List<String> ids_to_remove = new LinkedList<String>();
+	    for(Map.Entry<String, TestPoliticalAgent> entry : agentMap.entrySet())
+	    {
+		    String id = entry.getKey();
+		    if(!active_agent_ids.contains(id))
+		    {
+			    ids_to_remove.add(id);
+		    }
+	    }
+	    iter = ids_to_remove.iterator();
+	    while(iter.hasNext())
+	    {
+		    agentMap.remove(iter.next());
+	    }
+    }
+	   
     private int getNumHunters()
     {
 	    SortedSet<String> participantIdSet = sim.getactiveParticipantIdSet("hunter");
@@ -138,110 +263,7 @@ public class DatabasePlugin implements Plugin {
 	    return label;
     }
     
-    //Creates connections and local DB if not exists.Otherwise, adds to existing
-    //DB.
-    @Override
-    public void initialise(Simulation sim)
-    {
-	this.sim = sim;
-	ec = PublicEnvironmentConnection.getInstance();
-	
-	if (!saveToRemote) {
-	    try {    
-		Class.forName("org.sqlite.JDBC");
-	    }
-	    catch (Exception e)
-		{
-			System.err.println("SQLite database library not available:" + e);
-		}
-	}
-	try {
-
-	    if (!saveToRemote) {
-		//path to /Simulations folder
-		String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
-		//create connection to local db
-		conn = DriverManager.getConnection("jdbc:sqlite:"+ configPath + "/Simulations.db");
-	    }
-	    else {
-		conn = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
-			    "stratra1_isegol","ise4r3g00d");
-	    }
-	    
-	    stat = conn.createStatement();
-	    stat.executeUpdate("INSERT INTO [simulations] " +
-		"(sim_uuid,userid,comment)" +
-		"VALUES ('"+ec.getId()+"','"+System.getProperty("user.name")+"','"+sim_comment+"');"
-			    );
-	    ResultSet rs = stat.getGeneratedKeys();         
-	    while (rs.next()) {
-		simId  = rs.getInt(1);    
-	    }
-	    rs.close();                           // Close ResultSet
-	    logger.log(Level.INFO, "This simulation is saved in DB with: simId = {0}", simId);
-	    stat.close();                         // Close Statement
-
-	    conn.setAutoCommit(false);
-	    prep = conn.prepareStatement(
-		"INSERT into data values ('"+simId+"', ?, ?, ? );");
-	    
-	       /*
-		  stat.executeUpdate("INSERT INTO simulations " +                             
-		   "VALUES (null,'"+System.getProperty("user.name")+"','"+sim_comment+"',null,0);",      
-		   Statement.RETURN_GENERATED_KEYS);   // Indicate you want automatically 
-						       // generated keys
-		rs = stat.getGeneratedKeys();         // Retrieve the automatically       
-						       // generated key value in a ResultSet.
-						       // Only one row is returned.
-					 // Create ResultSet for query
-		while (rs.next()) {
-		    simId  = rs.getInt(1);     // Get automatically generated key 
-						       // value
-		    System.out.println("Remote DB simId = " + simId);
-		}
-		rs.close();                           // Close ResultSet
-		stat.close();                         // Close Statement
-		prep2 = rcon.prepareStatement(
-		"insert into data values ('"+simId+"', ?, ?, ? );");
-	    */
-
-
-	}
-	catch (SQLException e) {
-	    logger.log(Level.WARNING, "SQL Error: {0}", e);
-	    e.printStackTrace();
-	    return;
-	}
-
-
-	//JLabel label = new JLabel("Graph will update every " + updaterate
-	//		+ " Simulation cycles, to update now click: ");
-
-	//JButton updateButton = new JButton("Update database");
-/*
-	updateButton.addActionListener(new ActionListener()
-	{
-
-		@Override
-		public void actionPerformed(ActionEvent ae)
-		{
-			
-		try {
-		    prep.executeBatch();
-		} catch (Exception e)
-		    {
-			    System.err.println("Database Exception:" + e);
-			    return;
-		    }
-		}
-
-	});
-*/
-	//control.add(updateButton);
-	//this.setLayout(new BorderLayout());
-	//add(control, BorderLayout.NORTH);
-
-    }
+    
 
     @Deprecated
     @Override
@@ -260,19 +282,13 @@ public class DatabasePlugin implements Plugin {
 	    conn.commit();
 	    prep.close();
 	    stat = conn.createStatement();
-	    stat.executeUpdate("UPDATE simulations\n"
-		    + "SET done='1'\n"
-		    + "WHERE simId='"+simId+"';");
+	    int executeUpdate = stat.executeUpdate("UPDATE simulations\n"
+					+ "SET done='1'\n"
+					+ "WHERE simId='"+simId+"';");
 	    conn.commit();
 	    stat.close();
 	    if (saveToRemote) {
-		prep2.executeBatch();
-		prep2.close();
-		stat = rcon.createStatement();
-		stat.executeUpdate("UPDATE simulations\n"
-		    + "SET done=1\n"
-		    + "WHERE simId='"+simId+"';");
-		rcon.close();
+
 	    }
 	    //commits all transactions
 	    conn.close();
