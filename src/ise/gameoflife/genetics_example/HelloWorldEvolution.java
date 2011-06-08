@@ -12,7 +12,8 @@ public class HelloWorldEvolution extends Evolution
 	<HelloWorldGenome, EvolvableEntity<HelloWorldGenome>>
 {
 	private float elitistProportion = 0.10f;
-	private char helloStr[] = "Hello World".toCharArray();
+	private int strLen = 13;
+	private char helloStr[] = "Hello, World!".toCharArray();
 
 	/**
 	 * A factory method for creating new entities
@@ -44,7 +45,7 @@ public class HelloWorldEvolution extends Evolution
 		char str[] = entity.genome().geneString().toCharArray();
 		int fitness = 0;
 
-		for (int i = 0; i < 11; i++)
+		for (int i = 0; i < strLen; i++)
 		{
 			if (str[i] == helloStr[i])
 			{
@@ -64,8 +65,9 @@ public class HelloWorldEvolution extends Evolution
 	{
 		if (rank <= 1)
 		{
-			System.out.println("Iteration: " + this.iterations() + 
-					", best:" + entity.genome().geneString());
+			System.out.println("Iteration: " + this.currentIteration() +
+					",\tbest: " + entity.genome().geneString() +
+					",\tfitness: " + entity.fitness());
 		}
 
 		if (rank <= this.population() * elitistProportion)
@@ -76,10 +78,27 @@ public class HelloWorldEvolution extends Evolution
 		return false;
 	}
 
+	/**
+	 * Determines whether Evolution should stop evolving
+	 * Best for when the fitness of the best entity reaches
+	 * the greatest fitness achievable
+	 * @param fitness the fitness of entity
+	 * @param entity the best entity from current iteration
+	 * @return a boolean
+	 */
+	protected boolean achievedBestFit(double fitness, EvolvableEntity<HelloWorldGenome> entity)
+	{
+		if (fitness == strLen)
+		{
+			return true;
+		}
+		return false;
+	}
+
 	public static void main(String args[])
 	{
 		HelloWorldEvolution evolution = new HelloWorldEvolution();
-		evolution.setPopulation(128);
+		evolution.setPopulation(512);
 		evolution.setIterations(1000);
 		evolution.evolve();
 	}

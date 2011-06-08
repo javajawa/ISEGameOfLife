@@ -10,9 +10,8 @@ import java.lang.String;
  */
 public class HelloWorldGenome extends Genome<HelloWorldGenome>
 {
-
-	Random rand = new Random();
-
+	private int strLen = 13;
+	private String emptyStr = "             ";
 	private float mutateRate = 0.25f;
 
 	// geneString and its setter & getter
@@ -29,20 +28,15 @@ public class HelloWorldGenome extends Genome<HelloWorldGenome>
 	/**
 	 * Generates a randomized genome representation
 	 * by giving a random string
-	 * @return a completely randomized feasible genome
 	 */
-	public HelloWorldGenome randomize()
+	public void randomize()
 	{
-		char str[] = "           ".toCharArray();
-		for (int i = 0; i < 11; i++)
+		char str[] = emptyStr.toCharArray();
+		for (int i = 0; i < strLen; i++)
 		{
 			str[i] = (char)(rand.nextInt(90) + 32);
 		}
-
-		HelloWorldGenome genome = new HelloWorldGenome();
-		genome.setGeneString(new String(str));
-		
-		return genome;
+		this.setGeneString(new String(str));
 	}
 
 	/**
@@ -57,7 +51,7 @@ public class HelloWorldGenome extends Genome<HelloWorldGenome>
 		}
 
 		char str[] = this.geneString().toCharArray();
-		int pos = rand.nextInt(11);
+		int pos = rand.nextInt(strLen);
 		str[pos] = (char)(rand.nextInt(90) + 32);
 
 		HelloWorldGenome genome = new HelloWorldGenome();
@@ -79,14 +73,15 @@ public class HelloWorldGenome extends Genome<HelloWorldGenome>
 		String geneStringA = genome.geneString();
 		String geneStringB = this.geneString();
 
-		int pos = rand.nextInt(10);
+		int pos = rand.nextInt(strLen) + 1;
 		String newString = new String(geneStringA.substring(0, pos));
-		newString.concat(geneStringB.substring(pos+1, 10));
+		newString += geneStringB.substring(pos, strLen);
 
 		HelloWorldGenome newGenome = new HelloWorldGenome();
-		genome.setGeneString(newString);
+		newGenome.setGeneString(newString);
 
 		return newGenome;
 	}
 
+	Random rand = new Random();
 }
