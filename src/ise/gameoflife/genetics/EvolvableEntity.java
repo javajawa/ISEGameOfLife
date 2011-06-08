@@ -44,9 +44,9 @@ public abstract class EvolvableEntity
 	}
 
 	@Override
-	public void setFitness()
+	public void setFitness(double aFitness)
 	{
-		this.fitness = fitness;
+		this.fitness = aFitness;
 	}
 
 }

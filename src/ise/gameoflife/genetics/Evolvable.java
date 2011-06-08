@@ -19,6 +19,6 @@ public interface Evolvable<SpecieGenome extends Genome<SpecieGenome>>
 
 	public double fitness();
 
-	public void setFitness();
+	public void setFitness(double aFitness);
 
 }
