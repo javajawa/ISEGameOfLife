@@ -212,7 +212,7 @@ abstract public class AbstractAgent implements Participant
 
 	}
 
-	private final static Logger logger = PublicEnvironmentConnection.logger;
+	private final static Logger logger = Logger.getLogger("gameoflife.AbstractAgent");
 	public final static String leaveGroup = UUID.randomUUID().toString();
 	/**
 	 * The DataModel used by this agent.
