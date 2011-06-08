@@ -5,17 +5,17 @@ package ise.gameoflife.genetics;
  * Its behaviour is defined by a Genome instance of its own type.
  * @author Xitong Gao
  */
-public interface Evolvable<SpecieGenome extends Genome<SpecieGenome>>
+public interface Evolvable<EntityGenome extends Genome<EntityGenome>>
 {
 
-	public SpecieGenome genome();
+	public EntityGenome genome();
 
 	/**
 	 * Evolvable being must update its data structures that define its
 	 * behaviour when setting the genome.
-	 * @param genome a genome matching SpecieGenome generic
+	 * @param genome a genome matching EntityGenome generic
 	 */
-	public void setGenome(SpecieGenome genome);
+	public void setGenome(EntityGenome genome);
 
 	public double fitness();
 

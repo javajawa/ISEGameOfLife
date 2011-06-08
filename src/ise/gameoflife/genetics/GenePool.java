@@ -8,19 +8,16 @@ import java.util.Random;
  * Can reproduce new genomes from this pool
  * @author Xitong Gao
  */
-// Design Decisions:
-//	-	Should GenePool take into account the population size?
-//		Good for random initialisation etc.
-public class GenePool<SpecieGenome extends Genome<SpecieGenome>>
+public class GenePool<EntityGenome extends Genome<EntityGenome>>
 {
 
-	protected ArrayList<SpecieGenome> pool = null;
+	protected ArrayList<EntityGenome> pool = null;
 
-	public ArrayList<SpecieGenome> pool()
+	public ArrayList<EntityGenome> pool()
 	{
 		if (null != pool) return pool;
 		
-		pool = new ArrayList<SpecieGenome>();
+		pool = new ArrayList<EntityGenome>();
 		return pool;
 	}
 
@@ -28,7 +25,7 @@ public class GenePool<SpecieGenome extends Genome<SpecieGenome>>
 	 * Add a new genome to the pool
 	 * @param genome a genome matching generic type
 	 */
-	public void addGenome(SpecieGenome genome)
+	public void addGenome(EntityGenome genome)
 	{
 		if (pool().contains(genome)) return;
 
@@ -39,24 +36,24 @@ public class GenePool<SpecieGenome extends Genome<SpecieGenome>>
 	 * Add a list of genomes to the pool
 	 * @param genomes a list of genomes matching generic type
 	 */
-	public void addGenomes(ArrayList<SpecieGenome> genomes)
+	public void addGenomes(ArrayList<EntityGenome> genomes)
 	{
 		// need custom add to check for duplicates
-		for (SpecieGenome genome : genomes)
+		for (EntityGenome genome : genomes)
 		{
 			this.addGenome(genome);
 		}
 	}
 
 	Random rand = new Random();
-	protected SpecieGenome pairUpAndCrossOver()
+	protected EntityGenome pairUpAndCrossOver()
 	{
 		int popSize = pool().size();
 		
 		// can only do crossing with two or more
 		if (popSize < 2)
 		{
-			return (SpecieGenome)pool().get(0);
+			return (EntityGenome)pool().get(0);
 		}
 
 		// select two distinct indices
@@ -69,8 +66,8 @@ public class GenePool<SpecieGenome extends Genome<SpecieGenome>>
 		while (indA == indB);
 
 		// thus select two distinct genomes
-		SpecieGenome genomeA = pool().get(indA);
-		SpecieGenome genomeB = pool().get(indB);
+		EntityGenome genomeA = pool().get(indA);
+		EntityGenome genomeB = pool().get(indB);
 
 		// return crossed version
 		return genomeA.crossOver(genomeB);
@@ -81,7 +78,7 @@ public class GenePool<SpecieGenome extends Genome<SpecieGenome>>
 	 * Mutation is also taken into account
 	 * @return a genome
 	 */
-	public SpecieGenome reproduce()
+	public EntityGenome reproduce()
 	{
 		// cannot reproduce without a genome
 		// maybe should throw exceptions, just being lazy

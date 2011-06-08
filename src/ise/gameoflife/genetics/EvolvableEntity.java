@@ -5,14 +5,14 @@ package ise.gameoflife.genetics;
  * @author Xitong Gao
  */
 public class EvolvableEntity
-	<SpecieGenome extends Genome<SpecieGenome>>
-	implements Evolvable<SpecieGenome>
+	<EntityGenome extends Genome<EntityGenome>>
+	implements Evolvable<EntityGenome>
 {
-	SpecieGenome genome = null;
+	EntityGenome genome = null;
 	double fitness = -1;
 
 	@Override
-	public SpecieGenome genome()
+	public EntityGenome genome()
 	{
 		return this.genome;
 	}
@@ -22,7 +22,7 @@ public class EvolvableEntity
 	 * @param aGenome a compatible Genome instance for this
 	 */
 	@Override
-	public void setGenome(SpecieGenome aGenome)
+	public void setGenome(EntityGenome aGenome)
 	{
 		// this.genome = aGenome.clone();
 		this.genome = aGenome;

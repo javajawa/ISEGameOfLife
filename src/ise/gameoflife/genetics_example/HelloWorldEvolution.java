@@ -16,8 +16,8 @@ public class HelloWorldEvolution extends Evolution
 
 	/**
 	 * A factory method for creating new entities
-	 * @param genome a genome compatible with the Specie instance
-	 * @return a Specie instance
+	 * @param genome a genome compatible with the Entity instance
+	 * @return a Entity instance
 	 */
 	protected EvolvableEntity<HelloWorldGenome> newEntity(HelloWorldGenome genome)
 	{
@@ -36,8 +36,8 @@ public class HelloWorldEvolution extends Evolution
 	}
 
 	/**
-	 * Evaluate and update the fitness value of a Specie instance
-	 * @param entity a Specie instance
+	 * Evaluate and update the fitness value of a Entity instance
+	 * @param entity a Entity instance
 	 */
 	protected void evaluate(EvolvableEntity<HelloWorldGenome> entity)
 	{
@@ -56,8 +56,8 @@ public class HelloWorldEvolution extends Evolution
 	}
 
 	/**
-	 * Determines whether the Specie instance should be selected
-	 * @param entity a Specie instance
+	 * Determines whether the Entity instance should be selected
+	 * @param entity a Entity instance
 	 * @return a boolean
 	 */
 	protected boolean select(int rank, EvolvableEntity<HelloWorldGenome> entity)

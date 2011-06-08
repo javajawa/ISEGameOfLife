@@ -9,36 +9,36 @@ import java.util.Comparator;
  * @author Xitong Gao
  */
 public abstract class Evolution
-	<SpecieGenome extends Genome<SpecieGenome>,
-	 Specie extends Evolvable<SpecieGenome>>
+	<EntityGenome extends Genome<EntityGenome>,
+	 Entity extends Evolvable<EntityGenome>>
 {
 
 	/**
 	 * A factory method for creating new entities
-	 * @param genome a genome compatible with the Specie instance
-	 * @return a Specie instance
+	 * @param genome a genome compatible with the Entity instance
+	 * @return an Entity instance
 	 */
-	abstract protected Specie newEntity(SpecieGenome genome);
+	abstract protected Entity newEntity(EntityGenome genome);
 
 	/**
 	 * A factory method for creating new genomes
 	 * @return a new genome
 	 */
-	abstract protected SpecieGenome newGenome();
+	abstract protected EntityGenome newGenome();
 
 	/**
-	 * Evaluate and update the fitness value of a Specie instance
-	 * @param entity a Specie instance
+	 * Evaluate and update the fitness value of an Entity instance
+	 * @param entity an Entity instance
 	 */
-	abstract protected void evaluate(Specie entity);
+	abstract protected void evaluate(Entity entity);
 
 	/**
-	 * Determines whether the Specie instance should be selected
+	 * Determines whether the Entity instance should be selected
 	 * @param rank the fitness rank of entity
-	 * @param entity a Specie instance
+	 * @param entity an Entity instance
 	 * @return a boolean
 	 */
-	abstract protected boolean select(int rank, Specie entity);
+	abstract protected boolean select(int rank, Entity entity);
 
 	/**
 	 * Determines whether Evolution should stop evolving
@@ -48,7 +48,7 @@ public abstract class Evolution
 	 * @param entity the best entity from current iteration
 	 * @return a boolean
 	 */
-	protected boolean achievedBestFit(double fitness, Specie entity)
+	protected boolean achievedBestFit(double fitness, Entity entity)
 	{
 		return false;
 	}
@@ -57,22 +57,22 @@ public abstract class Evolution
 	 * A very basic procedure for fitness evaluation and selection
 	 * This two separate procedures are put together so the user can
 	 * have more flexibility over efficiency
-	 * @param speciePool a list of entities
+	 * @param entityPool a list of entities
 	 * @return a list of entities after selection
 	 */
-	protected ArrayList<Specie> evaluateAndSelectFromPool(ArrayList<Specie> speciePool)
+	protected ArrayList<Entity> evaluateAndSelectFromPool(ArrayList<Entity> entityPool)
 	{
-		for (Specie entity : speciePool)
+		for (Entity entity : entityPool)
 		{
 			evaluate(entity);
 		}
 
-		this.sortByFitness(speciePool);
+		this.sortByFitness(entityPool);
 
-		ArrayList<Specie> newSpeciePool = new ArrayList<Specie>();
+		ArrayList<Entity> newSpeciePool = new ArrayList<Entity>();
 
 		int rank = 0;
-		for (Specie entity : speciePool)
+		for (Entity entity : entityPool)
 		{
 			if (select(++rank, entity))
 			{
@@ -101,7 +101,7 @@ public abstract class Evolution
 					this.population + ". It must be > 0");
 		}
 
-		ArrayList<Specie> speciePool;
+		ArrayList<Entity> entityPool;
 
 		// construct gene pool with random genomes
 		this.setGenePool(this.randomGenePool());
@@ -111,16 +111,16 @@ public abstract class Evolution
 			 currentIteration <= this.iterations && !bestFit;
 			 currentIteration++)
 		{
-			speciePool = this.speciePoolWithGenePool(this.genePool());
+			entityPool = this.speciePoolWithGenePool(this.genePool());
 
 			// evaluate and select
-			speciePool = evaluateAndSelectFromPool(speciePool);
+			entityPool = evaluateAndSelectFromPool(entityPool);
 
 			// determine if it's best we can get
-			Specie bestEntity = speciePool.get(0);
+			Entity bestEntity = entityPool.get(0);
 			bestFit = achievedBestFit(bestEntity.fitness(), bestEntity);
 
-			GenePool<SpecieGenome> genePool = genePoolWithSpeciePool(speciePool);
+			GenePool<EntityGenome> genePool = genePoolWithSpeciePool(entityPool);
 
 			do
 			{
@@ -133,13 +133,13 @@ public abstract class Evolution
 		}
 	}
 
-	private GenePool<SpecieGenome> randomGenePool()
+	private GenePool<EntityGenome> randomGenePool()
 	{
-		GenePool<SpecieGenome> pool = new GenePool<SpecieGenome>();
+		GenePool<EntityGenome> pool = new GenePool<EntityGenome>();
 		
 		do
 		{
-			SpecieGenome genome = this.newGenome();
+			EntityGenome genome = this.newGenome();
 			genome.randomize();
 			pool.addGenome(genome);
 		}
@@ -149,20 +149,20 @@ public abstract class Evolution
 	}
 
 	/**
-	 * A utility function to sort species by their fitness
+	 * A utility function to sort Entity by their fitness
 	 * Useful for writing your own selection function
-	 * @param speciePool a specie pool
+	 * @param entityPool an Entity pool
 	 */
-	protected void sortByFitness(ArrayList<Specie> speciePool)
+	protected void sortByFitness(ArrayList<Entity> entityPool)
 	{
-		// sort speciePool entities
+		// sort entityPool entities
 		// with their fitness values in descending order
 
-		Collections.sort(speciePool, Collections.reverseOrder
+		Collections.sort(entityPool, Collections.reverseOrder
 		(
-			new Comparator<Specie>()
+			new Comparator<Entity>()
 			{
-				public int compare(Specie entityA, Specie entityB)
+				public int compare(Entity entityA, Entity entityB)
 				{
 					return Double.compare(entityA.fitness(), entityB.fitness());
 				}
@@ -171,34 +171,34 @@ public abstract class Evolution
 	}
 
 	/**
-	 * Converts a gene pool into a specie pool
+	 * Converts a gene pool into an Entity pool
 	 * both must be compatible with each other
 	 * @param genePool a gene pool
-	 * @return a specie pool
+	 * @return an Entity pool
 	 */
-	protected ArrayList<Specie> speciePoolWithGenePool(GenePool<SpecieGenome> genePool)
+	protected ArrayList<Entity> speciePoolWithGenePool(GenePool<EntityGenome> genePool)
 	{
-		ArrayList<Specie> speciePool = new ArrayList<Specie>();
+		ArrayList<Entity> entityPool = new ArrayList<Entity>();
 
-		for (SpecieGenome genome : genePool.pool())
+		for (EntityGenome genome : genePool.pool())
 		{
-			speciePool.add(newEntity(genome));
+			entityPool.add(newEntity(genome));
 		}
 
-		return speciePool;
+		return entityPool;
 	}
 
 	/**
-	 * Converts a specie pool into a gene pool
+	 * Converts an Entity pool into a gene pool
 	 * both must be compatible with each other
-	 * @param speciePool a specie pool
+	 * @param entityPool an Entity pool
 	 * @return a gene pool
 	 */
-	protected GenePool<SpecieGenome> genePoolWithSpeciePool(ArrayList<Specie> speciePool)
+	protected GenePool<EntityGenome> genePoolWithSpeciePool(ArrayList<Entity> entityPool)
 	{
-		GenePool<SpecieGenome> genePool = new GenePool<SpecieGenome>();
+		GenePool<EntityGenome> genePool = new GenePool<EntityGenome>();
 
-		for (Specie entity : speciePool)
+		for (Entity entity : entityPool)
 		{
 			genePool.addGenome(entity.genome());
 		}
@@ -208,15 +208,15 @@ public abstract class Evolution
 
 	// boilerplate code for setters & getters
 	// genePool
-    protected GenePool<SpecieGenome> genePool = null;
-    public GenePool<SpecieGenome> genePool()
+    protected GenePool<EntityGenome> genePool = null;
+    public GenePool<EntityGenome> genePool()
     {
         if (null != genePool) return genePool;
 
-        genePool = new GenePool<SpecieGenome>();
+        genePool = new GenePool<EntityGenome>();
         return genePool;
     }
-	public void setGenePool(GenePool<SpecieGenome> pool)
+	public void setGenePool(GenePool<EntityGenome> pool)
 	{
 		genePool = pool;
 	}
