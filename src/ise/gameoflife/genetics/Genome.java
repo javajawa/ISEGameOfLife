@@ -39,7 +39,7 @@ public abstract class Genome
 	/**
 	 * Generates a randomized genome representation
 	 */
-	abstract public DerivedGenome randomize();
+	abstract public void randomize();
 
 	/**
 	 * Mutates the genome
