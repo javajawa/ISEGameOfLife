@@ -180,7 +180,7 @@ class GroupDataModel extends APlayerDataModel
 					++n;
 				}
 			}
-			values.add(sigma_x / n);
+			if (n > 0) values.add(sigma_x / n);
 		}
 
 		n = values.size();
