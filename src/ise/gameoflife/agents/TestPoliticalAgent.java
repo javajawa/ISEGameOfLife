@@ -319,7 +319,7 @@ public class TestPoliticalAgent extends AbstractAgent
                             // TFT makes no sense in a team of 1...
                             if (members.size() == 1)
                             {
-                                    choice = defectFood;
+                                    choice = cooperateFood;
                                     return choice;
                             }
                             //Get the previous choice of your pair. For this round imitate him.
@@ -331,6 +331,7 @@ public class TestPoliticalAgent extends AbstractAgent
                                         if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1)
                                         {
                                                 opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
+                                                System.out.println("My opponent hunted: "+ opponentPreviousChoice);
                                         }
                                     }
                             }
@@ -341,10 +342,12 @@ public class TestPoliticalAgent extends AbstractAgent
                                         if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1)
                                         {
                                                 opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
+                                        System.out.println("My opponent hunted: "+ opponentPreviousChoice);
                                         }
                                     }
                             }
                             choice = opponentPreviousChoice;
+                            System.out.println("Therefore I will hunt: "+choice);
                             break;
 
                     default:
