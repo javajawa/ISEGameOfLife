@@ -129,10 +129,10 @@ public class TestPoliticalAgent extends AbstractAgent
                     groupFounders.remove(this.getId());
             if (invitationHolders.contains(this.getId()))
                     invitationHolders.remove(this.getId());
-            if (SatisfiedInGroup())
-                return null;
-            else
-                return leaveGroup;
+            //if (SatisfiedInGroup())
+                //return null;
+            //else
+                //return leaveGroup;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -221,14 +221,14 @@ public class TestPoliticalAgent extends AbstractAgent
         double economic, social, esFaction=0;
         //used for the trust faction of heuristic
         double trustFaction=0;
-        int i = 0;
+
         String bestPartner = "";
 
         for (String trustee : getConn().getUngroupedAgents())
         {
             //if an agent is not comparing with itself and has not been invited
             if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
-            {   i++;         logger.log(Level.INFO, "No of ungrouped agents: " +i);
+            {
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
@@ -238,7 +238,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 esFaction = 1 - (vectorDistance / maxDistance);
 
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-                if ((currentHeuristic > 0.6) && (previousHeuristic < currentHeuristic))
+                if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
@@ -578,16 +578,16 @@ return VoteType.For;
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                        trust = ValueScaler.scale(trust, -1, 0.1);
+                        trust = ValueScaler.scale(trust, -1, 0.5);
                     }
                     else
                     {
-                        trust = ValueScaler.scale(trust, 1, 0.1);
+                        trust = ValueScaler.scale(trust, 1, 0.5);
                     }
             }
             else    //Agent hunted rabbit so no trust issues
             {
-                trust = ValueScaler.scale(trust, 0, 0.1);
+                trust = ValueScaler.scale(trust, 0, 0.5);
             }
            
             newTrustValue.put(opponentID, trust);
