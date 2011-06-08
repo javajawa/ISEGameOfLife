@@ -187,6 +187,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 // Draw agents
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
+                        g.setColor(Color.BLUE);
                         drawAgent(g, entry.getValue());
                 }
 
@@ -210,12 +211,13 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                            if(entry1.getValue().getDataModel().getGroupId() != null && entry2.getValue().getDataModel().getGroupId() != null ){
                               if( !entry1.getKey().equals(entry2.getKey()) && entry1.getValue().getDataModel().getGroupId().equals(entry2.getValue().getDataModel().getGroupId()))
                               {
-                                  x1 = entry1.getValue().getDataModel().getEconomicBelief()*rect.width;
-                                  x2 = entry2.getValue().getDataModel().getEconomicBelief()*rect.width;
-                                  y1 = entry1.getValue().getDataModel().getSocialBelief()*rect.height;
-                                  y2 = entry2.getValue().getDataModel().getSocialBelief()*rect.height;
+                                  x1 = entry1.getValue().getDataModel().getEconomicBelief()*(rect.width-10);
+                                  x2 = entry2.getValue().getDataModel().getEconomicBelief()*(rect.width-10);
+                                  y1 = entry1.getValue().getDataModel().getSocialBelief()*(rect.height-10);
+                                  y2 = entry2.getValue().getDataModel().getSocialBelief()*(rect.height-10);
                                   g.drawLine((int)x1+1,(int)y1+1,(int)x2+1,(int)y2+1);
-                                  
+                                  drawAgent(g, entry1.getValue());
+                                  drawAgent(g, entry2.getValue());
                               }
                             }
                         }
@@ -225,9 +227,9 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         private void drawAgent(Graphics g, TestPoliticalAgent p_player)
         {
                 Rectangle rect = g.getClipBounds();
-                g.setColor(Color.BLUE);
-                g.fillOval((int)((p_player.getDataModel().getEconomicBelief())*rect.width),
-                            (int)((p_player.getDataModel().getSocialBelief())*rect.height),
+                //g.setColor(Color.BLUE);
+                g.fillOval((int)((p_player.getDataModel().getEconomicBelief())*(rect.width-10)),
+                            (int)((p_player.getDataModel().getSocialBelief())*(rect.height-10)),
                             10, 10
                             );
                 //g.drawLine(0,0,1,1);

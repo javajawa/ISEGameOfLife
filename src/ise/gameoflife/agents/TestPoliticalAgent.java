@@ -152,7 +152,7 @@ public class TestPoliticalAgent extends AbstractAgent
             vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
             esFaction = 1 - (vectorDistance / maxDistance);
 
-            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+            currentHeuristic = 0.3*trustFaction + 0.7*esFaction;
 
             if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
