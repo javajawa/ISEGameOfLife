@@ -63,6 +63,52 @@ public class TestPoliticalAgent extends AbstractAgent
          //Do nothing
     }
 
+    protected boolean SatisfiedInGroup() {
+        double loyalty, trust, socioEconomic, satisfaction = 0;
+        
+        //how loyal you are to the group (effectively, are you happy in the group)
+        if (getDataModel().getCurrentLoyalty() == null)
+            loyalty = 0;
+        else
+            loyalty = getDataModel().getCurrentLoyalty();
+        
+        
+        //how much trust is there between you and the rest of the group
+        PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
+        double trustSum = 0;
+        Double trustValue;
+        int numKnownTrustValues = 0;
+        
+        for (String trustee : myGroup.getMemberList()) {
+                trustValue = getDataModel().getTrust(trustee);
+                if (trustValue != null) {
+                        trustSum += trustValue;
+                        numKnownTrustValues++;
+                }
+        }
+        if (numKnownTrustValues != 0)
+            trust = trustSum / numKnownTrustValues;
+        else
+            trust = 0;
+        
+        
+        //how much more or less does my group believe in the same beliefs as mine
+        double economic, social, vectorDistance, maxDistance = Math.sqrt(2);
+        
+        economic = myGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
+        social = myGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
+        vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+        socioEconomic = 1 - (vectorDistance / maxDistance);        
+        
+        
+        //how much are you satisifed with this group
+        satisfaction = 0.33*loyalty + 0.33*trust + 0.34*socioEconomic;
+        if (satisfaction > 0.66)
+            return true;
+        else
+            return false;
+    }    
+    
     @Override
     protected String chooseGroup() {
          logger.log(Level.INFO, "----------------------------------------------------");
@@ -83,7 +129,10 @@ public class TestPoliticalAgent extends AbstractAgent
                     groupFounders.remove(this.getId());
             if (invitationHolders.contains(this.getId()))
                     invitationHolders.remove(this.getId());
-            return null;
+            if (SatisfiedInGroup())
+                return null;
+            else
+                return leaveGroup;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -143,12 +192,10 @@ public class TestPoliticalAgent extends AbstractAgent
                             numKnownTrustValues++;
                     }
             }
-            if(numKnownTrustValues != 0) {
+            if(numKnownTrustValues != 0)
                 trustFaction = trustSum / numKnownTrustValues;
-            }
-            else {
+            else
                 trustFaction = 0;
-            }
 
             economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
             social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
@@ -200,9 +247,7 @@ public class TestPoliticalAgent extends AbstractAgent
         }
         
         if (bestPartner.equals(""))
-        {
             return null;
-        }
         else
         {
             GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
