@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.simpleframework.xml.Element;
@@ -24,6 +26,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 {
 
 	private static final long serialVersionUID = 1L;
+	private final static Logger logger = Logger.getLogger("gameofline.Plugins.GroupCompass");
 
 	private final static String label = "Political Compass";
 
@@ -111,7 +114,10 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 		{
 			PublicGroupDataModel dm = ec.getGroupById(group);
 			double size = 2 * Math.sqrt((double)dm.size());
-			drawAgent(g, dm.getEstimatedSocialLocation(), dm.getCurrentEconomicPoisition(), (int)size);
+			logger.log(Level.INFO, "{0} [{1}) '{'{2},{3},{4}'}'", new Object[]{group,
+							dm.getName(), dm.getCurrentEconomicPoisition(),
+							dm.getEstimatedSocialLocation(), dm.size()});
+			drawAgent(g, dm.getEstimatedSocialLocation(), dm.getCurrentEconomicPoisition(), (int)size, dm.getName());
 		}
 
 	}
@@ -121,7 +127,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 	 * @param g Graphics objects
 	 * @param p_player SimplifiedPoliticalPlayer object to draw
 	 */
-	private void drawAgent(Graphics g, double social, double economic, int size)
+	private void drawAgent(Graphics g, double social, double economic, int size, String name)
 	{
 		Rectangle rect = g.getClipBounds();
 		int c_x = (int)(economic * rect.width);
@@ -129,7 +135,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 
 		g.setColor(new Color(0.1F, 0.1F, 0.9F, 0.5F));
 		g.fillOval(c_x - size, c_y - size, 2 * size, 2 * size);
-
+		g.drawString(name + '[' + size + ']', c_x, c_y);
 	}
 
 	/**
