@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import java.util.TreeSet;
 import presage.Participant;
 
 /**
@@ -31,14 +32,10 @@ public class TestPoliticalAgent extends AbstractAgent
 
 	private static final long serialVersionUID = 1L;
 
-        private String invitationHolder = null;
+        private String invitationToGroup = null;
 
-        public boolean hasInvitation(){
-            if (this.invitationHolder != null)
-                return true;
-            return false;
-        }
-        
+        private final static TreeSet<String> invitationHolders = new TreeSet<String>();
+
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -63,40 +60,51 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected String chooseGroup() {
-
+         System.out.println("----------------------------------------------------");
         //ONLY FOR DEBUGGING
-        System.out.println("No of groups: " + getConn().availableGroups().size());
-
         if (this.getDataModel().getGroupId() == null)
-            System.out.println("Hi I am a free agent!");
+            System.out.println("I, agent "+ this.getDataModel().getName() + " am a free agent!");
         else
-            System.out.println("Hi I am agent " + this.getDataModel().getName() + " with E belief: "+ this.getDataModel().getEconomicBelief() + "and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
+            System.out.println("I, agent " + this.getDataModel().getName() + " with E belief: "+ this.getDataModel().getEconomicBelief() + " and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
+        System.out.println("No of groups so far: " + getConn().availableGroups().size());
         //ONLY FOR DEBUGGING END
 
         String chosenGroup = "";
         
-        //If agent is already member of a group just do nothing
+        //If agent is already member of a group do nothing
         if (this.getDataModel().getGroupId() != null) {
             return this.getDataModel().getGroupId();
         }
-        else if(this.invitationHolder != null) //If this agent has a pending invitation to a group, return the invitation
+        else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
-            String invitation = this.invitationHolder;
-            this.invitationHolder = null;
+            System.out.println("I was invited in a group so I will join it");
+            invitationHolders.remove(this.getId());
+            String invitation = this.invitationToGroup;
+            this.invitationToGroup = null;
             return invitation;
         }
         else //If none of the above worked out then first try to find an optimal group to join with
         {
             chosenGroup = agentGroupGrouping();
+            //ONLY FOR DEBUGGING
+            if (chosenGroup.equals(""))
+                System.out.println("I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups with no success" );
+            else
+                System.out.println("I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups and joined one" );
+            //ONLY FOR DEBUGGING END
         }
 
         //And if the above line didn't work then try to group with other free agents
         if (chosenGroup.equals(""))
         {
            chosenGroup = freeAgentsGrouping();
+           //ONLY FOR DEBUGGING
+            if ((chosenGroup == null))
+                System.out.println("I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents with no success" );
+            else
+                System.out.println("I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents and joined one" );
+           //ONLY FOR DEBUGGING END
         }
-        System.out.println();
-
         return chosenGroup;
     }
 
@@ -164,9 +172,9 @@ public class TestPoliticalAgent extends AbstractAgent
 
         for (String trustee : getConn().getUngroupedAgents())
         {
-            //if an agent is not comparing with itself
-            if (!this.getId().equals(trustee))
-            { 
+            //if an agent is not comparing with itself and has not been invited
+            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee)))
+            {
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
@@ -183,6 +191,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
             }
         }
+        
         if (bestPartner.equals(""))
         {
             return null;
@@ -193,9 +202,9 @@ public class TestPoliticalAgent extends AbstractAgent
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
             //ONLY FOR DEBUGGING
-            System.out.println("I, agent "+this.getDataModel().getName() + " I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
-            System.out.println("HEURISTIC = " + previousHeuristic + " Trust = " + trustFaction + " ES = " + esFaction);
-            System.out.println("Therefore agents " + this.getDataModel().getName() + " and " + this.getConn().getAgentById(bestPartner).getName() + " are eligible to group together" );
+            System.out.println("I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
+            System.out.println("HEURISTIC = " + previousHeuristic);
+            System.out.println("Therefore I can form a group with "+ this.getConn().getAgentById(bestPartner).getName() );
             //ONLY FOR DEBUGGING END
             return chosenGroup;
         }        
@@ -316,45 +325,45 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected VoteType castVote(Proposition p)
     {
-            String groupId = this.getDataModel().getGroupId();
-            String proposerGroup = p.getOwnerGroup();
-            ProposalType agentProposal;
-            if (groupId != null){ //check if is in a group
-                    if (groupId.equals(proposerGroup)){ //check if agent is in the same group as the proposal
-                            double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
-                            double agentEconomicBelief = this.getDataModel().getEconomicBelief();
-                            if (agentEconomicBelief > groupEconomicPosition)
-                            {
-                                 agentProposal = ProposalType.moveRight;
-                            }
-                            else if (agentEconomicBelief < groupEconomicPosition)
-                            {
-                                agentProposal = ProposalType.moveLeft;
-                            }
-                            else
-                            {
-                                agentProposal = ProposalType.staySame;
-                            }
-                            //Compare proposals
-                            if (p.getType().equals(agentProposal))
-                            {
-                                return VoteType.For;
-                            }
-                            else
-                            {
-                                return VoteType.Against;
-                            }
-                    }
-                    else{ //must never happen!!
-                        throw new UnsupportedOperationException("Agent cannot vote for other Groups ");
-                    }
-            }
-            else //must never happen!!
-            {
-                return VoteType.Abstain;
-            }
+//            String groupId = this.getDataModel().getGroupId();
+//            String proposerGroup = p.getOwnerGroup();
+//            ProposalType agentProposal;
+//            if (groupId != null){ //check if is in a group
+//                    if (groupId.equals(proposerGroup)){ //check if agent is in the same group as the proposal
+//                            double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
+//                            double agentEconomicBelief = this.getDataModel().getEconomicBelief();
+//                            if (agentEconomicBelief > groupEconomicPosition)
+//                            {
+//                                 agentProposal = ProposalType.moveRight;
+//                            }
+//                            else if (agentEconomicBelief < groupEconomicPosition)
+//                            {
+//                                agentProposal = ProposalType.moveLeft;
+//                            }
+//                            else
+//                            {
+//                                agentProposal = ProposalType.staySame;
+//                            }
+//                            //Compare proposals
+//                            if (p.getType().equals(agentProposal))
+//                            {
+//                                return VoteType.For;
+//                            }
+//                            else
+//                            {
+//                                return VoteType.Against;
+//                            }
+//                    }
+//                    else{ //must never happen!!
+//                        throw new UnsupportedOperationException("Agent cannot vote for other Groups ");
+//                    }
+//            }
+//            else //must never happen!!
+//            {
+//                return VoteType.Abstain;
+//            }
             //throw new UnsupportedOperationException("Not supported yet.");
-
+return VoteType.For;
              
     }
 
@@ -587,7 +596,9 @@ public class TestPoliticalAgent extends AbstractAgent
 	@Override
 	protected void onInvite(String group)
 	{
-		this.invitationHolder = group;
+		invitationHolders.add(this.getId());
+                this.invitationToGroup = group;
+
 	}
 
 }
