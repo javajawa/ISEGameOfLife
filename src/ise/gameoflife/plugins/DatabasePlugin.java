@@ -50,9 +50,12 @@ public class DatabasePlugin implements Plugin {
     //database connection
     private Connection conn;
     private Statement stat;
-    private PreparedStatement prep;
     private PreparedStatement prep_newAgent;
     private PreparedStatement prep_dieAgent;
+    private PreparedStatement prep_newGroup;
+    private PreparedStatement prep_dieGroup;
+    private PreparedStatement prep_roundAgent;
+    private PreparedStatement prep_roundGroup;
     
 
 
@@ -91,75 +94,7 @@ public class DatabasePlugin implements Plugin {
 	    this.saveToRemote = saveToRemote;
 	    
     }
-//Creates connections and local DB if not exists.Otherwise, adds to existing
-    //DB.
-    @Override
-    public void initialise(Simulation sim)
-    {
-	this.sim = sim;
-	ec = PublicEnvironmentConnection.getInstance();
-	
-	if (!saveToRemote) {
-	    try {    
-		Class.forName("org.sqlite.JDBC");
-	    }
-	    catch (Exception e)
-		{
-			System.err.println("SQLite database library not available:" + e);
-		}
-	}
-	try {
 
-	    if (!saveToRemote) {
-		//path to /Simulations folder
-		String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
-		//create connection to local db
-		conn = DriverManager.getConnection("jdbc:sqlite:"+ configPath + "/Simulations.db");
-		DatabaseMetaData md = conn.getMetaData();
-		ResultSet rs = md.getTables(null, null, "data", null);
-		stat = conn.createStatement();
-		//if old table exists, drop database
-		if (rs.next()) {
-		  rs.close();
-		  stat.executeUpdate("DROP TABLE data; DROP TABLE simulations;");
-		  stat.executeUpdate("DROP TABLE simulations;");
-		}
-		createDatabaseSchema();
-	    }
-	    else {
-		conn = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
-			    "stratra1_isegol","ise4r3g00d");
-	    }
-	    
-	    stat = conn.createStatement();
-	    stat.executeUpdate("INSERT INTO [simulations] " +
-		"(sim_uuid,userid,comment)" +
-		"VALUES ('"+ec.getId()+"','"+System.getProperty("user.name")+"','"+sim_comment+"');"
-			    );
-	    ResultSet rs = stat.getGeneratedKeys();         
-	    while (rs.next()) {
-		simid  = rs.getInt(1);    
-	    }
-	    rs.close();                           // Close ResultSet
-	    logger.log(Level.INFO, "This simulation is saved in DB with: simid = {0}", simid);
-	    stat.close();                         // Close Statement
-
-	    conn.setAutoCommit(false);
-	    prep_newAgent = conn.prepareStatement(
-		    "INSERT into [agents] (simid,a_uuid,name,start,socialBelief,economicBelief)"
-		    + " VALUES ("+simid+",?,?,?,?,?);");
-	    prep_dieAgent = conn.prepareStatement("UPDATE [agents]\n"
-					+ "SET end=?\n"
-					+ "WHERE simid="+simid+"\n"
-					+ "AND a_uuid=?;");
-	    
-	  
-	}
-	catch (SQLException x) {
-	    logger.log(Level.WARNING, "Initialise DB Error", x);
-	    return;
-	}
-    }
     
     private void createDatabaseSchema() {
 	try {
@@ -238,15 +173,17 @@ public class DatabasePlugin implements Plugin {
 		if(!agentMap.containsKey(id))
 		{
 		    try {
-			PublicAgentDataModel newAgent = agentMap.put(id, (PublicAgentDataModel) ec.getAgentById(id));
+			PublicAgentDataModel newAgent = ec.getAgentById(id);
+			agentMap.put(id, newAgent);
+			//a_uuid
 			prep_newAgent.setString(1,id);
-			//prep_newAgent.setString(2,newAgent.getName());
+			//agent name
+			prep_newAgent.setString(2,newAgent.getName());
+			//start
 			prep_newAgent.setInt(3,ec.getRoundsPassed());
-			//prep_newAgent.setDouble(4,newAgent.getSocialBelief());
-			//prep_newAgent.setDouble(5,newAgent.getEconomicBelief());
 			prep_newAgent.addBatch();
 		    } catch (SQLException ex) {
-			logger.log(Level.SEVERE, null, ex);
+			logger.log(Level.WARNING, null, ex);
 			return;
 		    }
 		}
@@ -261,13 +198,32 @@ public class DatabasePlugin implements Plugin {
 		{
 		    try {
 			ids_to_remove.add(id);
+			//end round for cycle written
 			prep_dieAgent.setInt(1,ec.getRoundsPassed());
 			prep_dieAgent.setString(2,id);
 			prep_dieAgent.addBatch();
 		    } catch (SQLException ex) {
-			logger.log(Level.SEVERE, null, ex);
+			logger.log(Level.WARNING, null, ex);
 		    }
 		}
+		else {
+		    try {
+			PublicAgentDataModel agent = entry.getValue();
+			prep_roundAgent.setInt(1,ec.getRoundsPassed());
+			prep_roundAgent.setString(2,id);
+			prep_roundAgent.setString(3,agent.getGroupId());
+			prep_roundAgent.setDouble(4,agent.getFoodAmount());
+			prep_roundAgent.setString(5,"Food unknown");
+			prep_roundAgent.setDouble(6,agent.getSocialBelief());
+			prep_roundAgent.setDouble(7,agent.getEconomicBelief());
+			prep_roundAgent.setDouble(8,0.0);
+			prep_roundAgent.setDouble(9,0.0);
+			prep_roundAgent.addBatch();
+		    } catch (SQLException ex) {
+			Logger.getLogger(DatabasePlugin.class.getName()).log(Level.WARNING, null, ex);
+		    }
+		}
+		
 	    }
 	    iter = ids_to_remove.iterator();
 	    while(iter.hasNext())
@@ -282,48 +238,59 @@ public class DatabasePlugin implements Plugin {
 	   
 	   Iterator<String> iter = active_group_ids.iterator();
 
-	    // Add any new agents
+	    // Add any new groups
 	    while(iter.hasNext())
 	    {
 		String id = iter.next();
 		if(!groupMap.containsKey(id))
 		{
 		    try {
-			PublicGroupDataModel newGroup = groupMap.put(id, (PublicGroupDataModel) ec.getGroupById(id));
-			//prep_newGroup.setString(1,id);
-			//prep_newAgent.setString(2,newAgent.getName());
-			//prep_newGroup.setInt(3,ec.getRoundsPassed());
-			//prep_newAgent.setDouble(4,newAgent.getSocialBelief());
-			//prep_newAgent.setDouble(5,newAgent.getEconomicBelief());
-			prep_newAgent.addBatch();
+			PublicGroupDataModel newGroup = ec.getGroupById(id);
+			groupMap.put(id, newGroup);
+			prep_newGroup.setString(1,id);
+			prep_newGroup.setInt(2,ec.getRoundsPassed());
+			prep_newGroup.addBatch();
 		    } catch (SQLException ex) {
-			logger.log(Level.SEVERE, null, ex);
-			return;
+			logger.log(Level.WARNING, null, ex);
 		    }
 		}
 	    }
-
-	    // Delete agents which are no longer active
+	    
+	    // Delete groups which are no longer active
 	    List<String> ids_to_remove = new LinkedList<String>();
-	    for(Map.Entry<String, PublicAgentDataModel> entry : agentMap.entrySet())
+	    for(Map.Entry<String, PublicGroupDataModel> entry : groupMap.entrySet())
 	    {
 		String id = entry.getKey();
 		if(!active_group_ids.contains(id))
 		{
 		    try {
 			ids_to_remove.add(id);
-			prep_dieAgent.setInt(1,ec.getRoundsPassed());
-			prep_dieAgent.setString(2,id);
-			prep_dieAgent.addBatch();
+			//write end time
+			prep_dieGroup.setInt(1,ec.getRoundsPassed());
+			prep_dieGroup.setString(2,id);
+			prep_dieGroup.addBatch();
 		    } catch (SQLException ex) {
-			logger.log(Level.SEVERE, null, ex);
+			logger.log(Level.WARNING, null, ex);
+		    }
+		}
+		else{
+		    try {
+			PublicGroupDataModel group = entry.getValue();
+			prep_roundGroup.setInt(1,ec.getRoundsPassed());
+			prep_roundGroup.setString(2,id);
+			prep_roundGroup.setInt(3,group.getMemberList().size());
+			prep_roundGroup.setDouble(4,group.getEstimatedSocialLocation());
+			prep_roundGroup.setDouble(5,group.getCurrentEconomicPoisition());
+			prep_roundGroup.addBatch();
+		    } catch (SQLException ex) {
+			Logger.getLogger(DatabasePlugin.class.getName()).log(Level.WARNING, null, ex);
 		    }
 		}
 	    }
 	    iter = ids_to_remove.iterator();
 	    while(iter.hasNext())
 	    {
-		    agentMap.remove(iter.next());
+		    groupMap.remove(iter.next());
 	    }
     }
 	   
@@ -333,13 +300,17 @@ public class DatabasePlugin implements Plugin {
 	try {
 	    //data only updated at the beginning of turn
 	    if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
-	    
 		updateAgents();
-		if (sim.getTime()%50 == 0) {
+		updateGroups();
+		if (ec.getRoundsPassed()%10 == 0) {
 		    prep_newAgent.executeBatch();
 		    prep_dieAgent.executeBatch();
+		    prep_roundAgent.executeBatch();
+		    prep_newGroup.executeBatch();
+		    prep_dieGroup.executeBatch();
+		    prep_roundGroup.executeBatch();
 		}
-		if (sim.getTime()%100 == 0) {
+		if (ec.getRoundsPassed()%50 == 0) {
 		    conn.commit();
 		}
 	} catch (SQLException ex) {
@@ -347,7 +318,89 @@ public class DatabasePlugin implements Plugin {
 	}
 
     }
+    
+//Creates connections and local DB if not exists.Otherwise, adds to existing
+    //DB.
+    @Override
+    public void initialise(Simulation sim)
+    {
+	this.sim = sim;
+	ec = PublicEnvironmentConnection.getInstance();
+	
+	if (!saveToRemote) {
+	    try {    
+		Class.forName("org.sqlite.JDBC");
+	    }
+	    catch (Exception e)
+		{
+			System.err.println("SQLite database library not available:" + e);
+		}
+	}
+	try {
 
+	    if (!saveToRemote) {
+		//path to /Simulations folder
+		String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
+		//create connection to local db
+		conn = DriverManager.getConnection("jdbc:sqlite:"+ configPath + "/Simulations.db");
+		DatabaseMetaData md = conn.getMetaData();
+		ResultSet rs = md.getTables(null, null, "data", null);
+		stat = conn.createStatement();
+		//if old table exists, drop database
+		if (rs.next()) {
+		  rs.close();
+		  stat.executeUpdate("DROP TABLE data; DROP TABLE simulations;");
+		  stat.executeUpdate("DROP TABLE simulations;");
+		}
+		createDatabaseSchema();
+	    }
+	    else {
+		conn = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
+			    "stratra1_isegol","ise4r3g00d");
+	    }
+	    
+	    stat = conn.createStatement();
+	    stat.executeUpdate("INSERT INTO [simulations] " +
+		"(sim_uuid,userid,comment)" +
+		"VALUES ('"+ec.getId()+"','"+System.getProperty("user.name")+"','"+sim_comment+"');"
+			    );
+	    ResultSet rs = stat.getGeneratedKeys();         
+	    while (rs.next()) {
+		simid  = rs.getInt(1);    
+	    }
+	    rs.close();                           // Close ResultSet
+	    logger.log(Level.INFO, "This simulation is saved in DB with: simid = {0}", simid);
+	    stat.close();                         // Close Statement
+
+	    conn.setAutoCommit(false);
+	    prep_newAgent = conn.prepareStatement(
+		    "INSERT into [agents] (simid,a_uuid,name,start)"
+		    + " VALUES ("+simid+",?,?,?);");
+	    prep_newGroup = conn.prepareStatement(
+		    "INSERT into [groups] (simid,g_uuid,start)"
+		    + " VALUES ("+simid+",?,?);");
+	    prep_dieAgent = conn.prepareStatement("UPDATE [agents]\n"
+					+ "SET end=?\n"
+					+ "WHERE simid="+simid+"\n"
+					+ "AND a_uuid=?;");
+	    prep_dieGroup = conn.prepareStatement("UPDATE [groups]\n"
+					+ "SET end=?\n"
+					+ "WHERE simid="+simid+"\n"
+					+ "AND g_uuid=?;");
+	    prep_roundGroup = conn.prepareStatement(
+		    "INSERT into [g_data] (simid,round,g_uuid,pop,socialPosition,economicPosition)"
+		    + " VALUES ("+simid+",?,?,?,?,?);");
+	    prep_roundAgent = conn.prepareStatement(
+		     "INSERT into [a_data] (simid,round,a_uuid,g_uuid,foodAmount,lastHunted,socialBelief,economicBelief,happiness,loyalty)"
+		    + " VALUES ("+simid+",?,?,?,?,?,?,?,?,?);");
+   
+	  
+	}
+	catch (SQLException x) {
+	    logger.log(Level.WARNING, "Initialise DB Error", x);
+	    return;
+	}
+    }
  
     @Override
     public String getLabel()
@@ -378,11 +431,17 @@ public class DatabasePlugin implements Plugin {
 	    //sends left over data to DB
 	    prep_newAgent.executeBatch();
 	    prep_dieAgent.executeBatch();
-	    conn.commit();
-	    //prep.close();
+	    prep_roundAgent.executeBatch();
+	    prep_newGroup.executeBatch();
+	    prep_dieGroup.executeBatch();
+	    prep_roundGroup.executeBatch();
 	    stat = conn.createStatement();
-	    //Update agent end time to end of simulation, if still lives
+	    //Update agent and group end time to end of simulation, if still lives
 	    stat.executeUpdate("UPDATE [agents]\n"
+					+ "SET end="+ec.getRoundsPassed()+"\n"
+					+ "WHERE simid="+simid+"\n"
+					+ "AND end IS NULL;");
+	    stat.executeUpdate("UPDATE [groups]\n"
 					+ "SET end="+ec.getRoundsPassed()+"\n"
 					+ "WHERE simid="+simid+"\n"
 					+ "AND end IS NULL;");
@@ -391,10 +450,6 @@ public class DatabasePlugin implements Plugin {
 					+ "WHERE simid="+simid+";");
 	    conn.commit();
 	    stat.close();
-	    if (saveToRemote) {
-
-	    }
-	    //commits all transactions
 	    conn.close();
 	}
 	catch (SQLException ex) {
@@ -402,9 +457,9 @@ public class DatabasePlugin implements Plugin {
 	    try {
 		conn.close();
 	    } catch (SQLException ex1) {
-		Logger.getLogger(DatabasePlugin.class.getName()).log(Level.SEVERE, null, ex1);
+		logger.log(Level.SEVERE, null, ex1);
 	    }
-	    return;
+
 	}
     }
 	

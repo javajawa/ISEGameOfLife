@@ -728,6 +728,21 @@ public class TestPoliticalAgent extends AbstractAgent
 
             return newTrustValue;
         }
+    
+        @Override
+	protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
+        {
+            //return the current value, for now
+            return this.getDataModel().getSocialBelief();
+        }
+	
+        @Override
+        protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
+        {
+            //return the current value, for now
+            return this.getDataModel().getEconomicBelief();
+        }
+    
         //An agent which has been invited to a group must be tagged in order to process the invitation later
 	@Override
 	protected void onInvite(String group)
