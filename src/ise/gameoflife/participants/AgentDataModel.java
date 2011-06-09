@@ -396,4 +396,10 @@ class AgentDataModel extends APlayerDataModel
 	{
 		return agentType;
 	}
+
+	void setSocialBelief(double socialBelief)
+	{
+		this.socialBelief = socialBelief;
+	}
+
 }

@@ -161,4 +161,18 @@ public class TestGroupableAgent extends AbstractAgent
 		// Nothing to see here. Move along, citizen!
 	}
 
+	@Override
+	protected double updateSocialBeliefAfterVotes(Proposition proposition,
+					int votes, double overallMovement)
+	{
+		return 0.5;
+	}
+
+	@Override
+	protected double updateEconomicBeliefAfterVotes(Proposition proposition,
+					int votes, double overallMovement)
+	{
+		return 0.5;
+	}
+
 }
