@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import javax.imageio.ImageIO;
@@ -30,7 +29,7 @@ import presage.Simulation;
 import presage.annotations.PluginConstructor;
 
 /**
- * Draws a representation of the agents and groups on the political
+ * Draws a representation of the agents and connections with their groups on the political
  * compass, using information from the simulation and its history.
  *
  * @author The0s
@@ -42,22 +41,18 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	private final static String title = "Political Compass2";
         private final static String label = "Political Compass2";
 
-
 	private Simulation sim;
-	private Environment en;
-        private EnvDataModel dmodel;
+        private Environment en;
 
         // Set of political participants that are active
         private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
-        double correction = 1;
-
+        double correction = 1; //scale the agents
 
 	@Element(required=false)
 	private String outputdirectory;
-
         private int framecount = 0;
 
-	/**
+	/**constructors
 	 */
 	public PoliticalCompass2Plugin()
 	{
@@ -72,6 +67,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	{
 		"outputdirectory"
 	})
+
 	public PoliticalCompass2Plugin(String outputdirectory)
 	{
 		super();
@@ -79,9 +75,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	}
 
 	/**
-	 * Run per-step-in-simulation code that changes the plugin's state. In this
-	 * case, we use the information from the simulation's last step to update
-         * the the political view data of the agents.
+	 * Run per-step-in-simulation code that changes the plugin's state.
+         * Get new information from the alive agents of the simulation
 	 */
 	@Override
 	public void execute()
@@ -160,6 +155,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                  
         }
 
+
         /**
          * Draw everything to the screen
          * @param g Graphics object
@@ -167,9 +163,10 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         @Override
         public void paint(Graphics g)
         {
-                // Clear everything
+                // Clear everything and set the clip
                 g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, 0, getWidth(), getHeight());
+                g.setClip(3,3, getWidth()-3, getHeight()-3);
 
                 // Draw social and economic axis
                 Rectangle rect = g.getClipBounds();
@@ -179,7 +176,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
 
 
-                // Draw agents
+                // Draw all agents agents
           try{
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
@@ -187,9 +184,9 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                         drawAgent(g, entry.getValue(),2);
                 }
                 
-                 // Draw agents + agents
-
+                 // Draw agent connections + groupped agents
                 drawGroupLines(g);
+
             }
             catch (Exception e)
                 {
@@ -198,16 +195,15 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         }
 
         /**
-         * Draws a circle representing an agent's political views
+         * Draws a circle representing an agent's political views location and lines representing the groups
          * @param g Graphics objects
-         * @param p_player SimplifiedPoliticalPlayer object to draw
          */
         private void drawGroupLines(Graphics g){
                 double x1,y1,x2,y2;
                 Rectangle rect = g.getClipBounds();
-                g.setColor(Color.RED);
                 int size=0;
-                double x= 0.5;
+                double x = 0.5;
+
                 for(Map.Entry<String, TestPoliticalAgent> entry1 : p_players.entrySet())
                 {
                         for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
@@ -227,14 +223,19 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                                   drawAgent(g, entry1.getValue(),size+1);
                                   g.setColor(Color.getHSBColor( (float) x, 1, 1));
                                   drawAgent(g, entry2.getValue(),size+1);
-                                  
                               }
                             }
                         }
-                        x = x==1 ? 0.1: x + 0.1;
+                        x = x==1 ? 0.1: x + 0.1; //change Hue
                 }
         }
 
+            /**
+         * Draws a circle representing an agent's political views location
+         * @param g Graphics objects
+         * @param p_player TestPoliticalAgent object to draw
+         * @param size size of the group
+         */
         private void drawAgent(Graphics g, TestPoliticalAgent p_player,int size)
         {
                 Rectangle rect = g.getClipBounds();
@@ -244,12 +245,12 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                 x = p_player.getDataModel().getEconomicBelief() *(rect.width/correction);
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
-                
+                //draw the agents
                 g.fillOval((int)x-size,(int) y-size,size*2, size*2);
+
+                //print the names
                 g.setColor(Color.MAGENTA);
                 g.drawString(name,(int)x,(int)y);
-
-                //g.drawLine(0,0,1,1);
         }
 
 	/**
