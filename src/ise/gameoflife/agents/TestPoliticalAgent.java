@@ -496,18 +496,16 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             //'entitelment' denotes the amount of food an agent wants to get, at the least
             double entitlement = getDataModel().getEconomicBelief() * foodHunted;
-            double difference, ratio, newHappiness;
+            double difference, ratio;
             Double currentHappiness = getDataModel().getCurrentHappiness();
 
             if (currentHappiness == null)
-            {
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-                newHappiness = currentHappiness;
-            }
-            else 
-                newHappiness = currentHappiness;
+            
+            //copy over the initial happiness to update
+            double newHappiness = currentHappiness;
             
             if (foodReceived == entitlement)
             {
@@ -553,9 +551,55 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
     {
-            //loyalty after hunting refines from how happy you are after the hunt?        
+            //Loyalty after hunting refines from how much more happy you are after the hunt
+            //and from comparing your economic (sharing of food) belief with the group's belief.
             if (this.getDataModel().getGroupId() != null)
-                return updateHappinessAfterHunt(foodHunted, foodReceived);
+            {
+                //get change in economic beleifs
+                double myEconomic = getDataModel().getEconomicBelief();
+                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
+                
+                
+                //get change in happiness
+                Double currentHappiness = getDataModel().getCurrentHappiness();
+                if (currentHappiness == null)
+                {
+                    currentHappiness = 0.5 * myEconomic;
+                }
+                double newHappiness = updateHappinessAfterHunt(foodHunted, foodReceived);
+                double deltaHappiness = newHappiness - currentHappiness;//how much or less happy did you get               
+                
+                
+                //get new loyalty
+                Double currentLoyalty = getDataModel().getCurrentLoyalty();
+                if (currentLoyalty == null || currentLoyalty == 0)
+                    //as this if statement implies either entry to your first group or
+                    //entry to a new (but not necessarily your first) group then you're
+                    //loyal to the average sense (not too much and no too little)
+                    currentLoyalty = 0.5 * (currentHappiness + deltaEconomic);
+                
+                //copy over the initial happiness to update               
+                double newLoyalty = currentLoyalty;
+                
+                if (deltaHappiness > 0)
+                {
+                    //you gain loyalty to your group
+                    newLoyalty += ValueScaler.scale(deltaHappiness, deltaEconomic, 0.01);
+                    return newLoyalty;
+                }
+                
+                if (deltaHappiness < 0)
+                {
+                    //you lose loyalty to your group
+                    newLoyalty -= ValueScaler.scale(Math.abs(deltaHappiness), deltaEconomic, 0.01);
+                    return newLoyalty;
+                }
+                
+                //if you get here then you got what you wanted after the hunt and you increase your loyalty slightly
+                newLoyalty += ValueScaler.scale(0, deltaEconomic, 0.01);
+                return newLoyalty;     
+            }               
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
