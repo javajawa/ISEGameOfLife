@@ -50,11 +50,12 @@ public class DatabasePlugin implements Plugin {
     //database connection
     private Connection conn;
     private Statement stat;
-    private PreparedStatement prep;
     private PreparedStatement prep_newAgent;
     private PreparedStatement prep_dieAgent;
     private PreparedStatement prep_newGroup;
     private PreparedStatement prep_dieGroup;
+    private PreparedStatement prep_roundAgent;
+    private PreparedStatement prep_roundGroup;
     
 
 
@@ -205,6 +206,24 @@ public class DatabasePlugin implements Plugin {
 			logger.log(Level.WARNING, null, ex);
 		    }
 		}
+		else {
+		    try {
+			PublicAgentDataModel agent = entry.getValue();
+			prep_roundAgent.setInt(1,ec.getRoundsPassed());
+			prep_roundAgent.setString(2,id);
+			prep_roundAgent.setString(3,agent.getGroupId());
+			prep_roundAgent.setDouble(4,agent.getFoodAmount());
+			prep_roundAgent.setString(5,"Food unknown");
+			prep_roundAgent.setDouble(6,agent.getSocialBelief());
+			prep_roundAgent.setDouble(7,agent.getEconomicBelief());
+			prep_roundAgent.setDouble(8,0.0);
+			prep_roundAgent.setDouble(9,0.0);
+			prep_roundAgent.addBatch();
+		    } catch (SQLException ex) {
+			Logger.getLogger(DatabasePlugin.class.getName()).log(Level.WARNING, null, ex);
+		    }
+		}
+		
 	    }
 	    iter = ids_to_remove.iterator();
 	    while(iter.hasNext())
@@ -254,6 +273,19 @@ public class DatabasePlugin implements Plugin {
 			logger.log(Level.WARNING, null, ex);
 		    }
 		}
+		else{
+		    try {
+			PublicGroupDataModel group = entry.getValue();
+			prep_roundGroup.setInt(1,ec.getRoundsPassed());
+			prep_roundGroup.setString(2,id);
+			prep_roundGroup.setInt(3,group.getMemberList().size());
+			prep_roundGroup.setDouble(4,group.getEstimatedSocialLocation());
+			prep_roundGroup.setDouble(5,group.getCurrentEconomicPoisition());
+			prep_roundGroup.addBatch();
+		    } catch (SQLException ex) {
+			Logger.getLogger(DatabasePlugin.class.getName()).log(Level.WARNING, null, ex);
+		    }
+		}
 	    }
 	    iter = ids_to_remove.iterator();
 	    while(iter.hasNext())
@@ -273,8 +305,10 @@ public class DatabasePlugin implements Plugin {
 		if (ec.getRoundsPassed()%10 == 0) {
 		    prep_newAgent.executeBatch();
 		    prep_dieAgent.executeBatch();
+		    prep_roundAgent.executeBatch();
 		    prep_newGroup.executeBatch();
 		    prep_dieGroup.executeBatch();
+		    prep_roundGroup.executeBatch();
 		}
 		if (ec.getRoundsPassed()%50 == 0) {
 		    conn.commit();
@@ -353,8 +387,13 @@ public class DatabasePlugin implements Plugin {
 					+ "SET end=?\n"
 					+ "WHERE simid="+simid+"\n"
 					+ "AND g_uuid=?;");
-	    
-	    
+	    prep_roundGroup = conn.prepareStatement(
+		    "INSERT into [g_data] (simid,round,g_uuid,pop,socialPosition,economicPosition)"
+		    + " VALUES ("+simid+",?,?,?,?,?);");
+	    prep_roundAgent = conn.prepareStatement(
+		     "INSERT into [a_data] (simid,round,a_uuid,g_uuid,foodAmount,lastHunted,socialBelief,economicBelief,happiness,loyalty)"
+		    + " VALUES ("+simid+",?,?,?,?,?,?,?,?,?);");
+   
 	  
 	}
 	catch (SQLException x) {
@@ -392,8 +431,10 @@ public class DatabasePlugin implements Plugin {
 	    //sends left over data to DB
 	    prep_newAgent.executeBatch();
 	    prep_dieAgent.executeBatch();
+	    prep_roundAgent.executeBatch();
 	    prep_newGroup.executeBatch();
 	    prep_dieGroup.executeBatch();
+	    prep_roundGroup.executeBatch();
 	    stat = conn.createStatement();
 	    //Update agent and group end time to end of simulation, if still lives
 	    stat.executeUpdate("UPDATE [agents]\n"
