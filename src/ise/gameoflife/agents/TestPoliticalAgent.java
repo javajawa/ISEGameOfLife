@@ -6,7 +6,6 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
-import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -23,7 +22,6 @@ import ise.gameoflife.participants.AbstractGroupAgent;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import presage.Participant;
 
 /**
  *
@@ -115,10 +113,10 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //ONLY FOR DEBUGGING
         if (this.getDataModel().getGroupId() == null)
-            logger.log(Level.INFO, "I, agent "+ this.getDataModel().getName() + " am a free agent!");
+            logger.log(Level.INFO, "I, agent {0} am a free agent!", this.getDataModel().getName());
         else
-            logger.log(Level.INFO, "I, agent " + this.getDataModel().getName() + " with E belief: "+ this.getDataModel().getEconomicBelief() + " and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
-        logger.log(Level.INFO, "No of groups so far: " + getConn().availableGroups().size());
+            logger.log(Level.INFO, "I, agent {0} with E belief: {1} and I belong to group{2}", new Object[]{this.getDataModel().getName(), this.getDataModel().getEconomicBelief(), getConn().getGroupById(this.getDataModel().getGroupId()).getName()});
+        logger.log(Level.INFO, "No of groups so far: {0}", getConn().availableGroups().size());
         //ONLY FOR DEBUGGING END
 
         String chosenGroup = "";
@@ -147,9 +145,9 @@ public class TestPoliticalAgent extends AbstractAgent
             chosenGroup = agentGroupGrouping();
             //ONLY FOR DEBUGGING
             if (chosenGroup.equals(""))
-                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups with no success" );
+                logger.log(Level.INFO, "I, agent {0} tried groups with no success", this.getConn().getAgentById(this.getId()).getName());
             else
-                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups and joined one" );
+                logger.log(Level.INFO, "I, agent {0} tried groups and joined one", this.getConn().getAgentById(this.getId()).getName());
             //ONLY FOR DEBUGGING END
         }
 
@@ -159,9 +157,9 @@ public class TestPoliticalAgent extends AbstractAgent
            chosenGroup = freeAgentsGrouping();
            //ONLY FOR DEBUGGING
             if ((chosenGroup == null))
-                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents with no success" );
+                logger.log(Level.INFO, "I, agent {0} tried agents with no success", this.getConn().getAgentById(this.getId()).getName());
             else
-                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents and joined one" );
+                logger.log(Level.INFO, "I, agent {0} tried agents and joined one", this.getConn().getAgentById(this.getId()).getName());
            //ONLY FOR DEBUGGING END
         }
         return chosenGroup;
@@ -258,9 +256,9 @@ public class TestPoliticalAgent extends AbstractAgent
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
             groupFounders.add(this.getId());
             //ONLY FOR DEBUGGING
-            logger.log(Level.INFO, "I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
-            logger.log(Level.INFO, "HEURISTIC = " + previousHeuristic);
-            logger.log(Level.INFO, "Therefore I can form a group with "+ this.getConn().getAgentById(bestPartner).getName() );
+            logger.log(Level.INFO, "I have tried the heuristic with {0}", this.getConn().getAgentById(bestPartner).getName());
+            logger.log(Level.INFO, "HEURISTIC = {0}", previousHeuristic);
+            logger.log(Level.INFO, "Therefore I can form a group with {0}", this.getConn().getAgentById(bestPartner).getName());
             //ONLY FOR DEBUGGING END
             return chosenGroup;
         }        
@@ -496,18 +494,16 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             //'entitelment' denotes the amount of food an agent wants to get, at the least
             double entitlement = getDataModel().getEconomicBelief() * foodHunted;
-            double difference, ratio, newHappiness;
+            double difference, ratio;
             Double currentHappiness = getDataModel().getCurrentHappiness();
 
             if (currentHappiness == null)
-            {
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-                newHappiness = currentHappiness;
-            }
-            else 
-                newHappiness = currentHappiness;
+            
+            //copy over the initial happiness to update
+            double newHappiness = currentHappiness;
             
             if (foodReceived == entitlement)
             {
@@ -553,9 +549,55 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
     {
-            //loyalty after hunting refines from how happy you are after the hunt?        
+            //Loyalty after hunting refines from how much more happy you are after the hunt
+            //and from comparing your economic (sharing of food) belief with the group's belief.
             if (this.getDataModel().getGroupId() != null)
-                return updateHappinessAfterHunt(foodHunted, foodReceived);
+            {
+                //get change in economic beleifs
+                double myEconomic = getDataModel().getEconomicBelief();
+                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
+                
+                
+                //get change in happiness
+                Double currentHappiness = getDataModel().getCurrentHappiness();
+                if (currentHappiness == null)
+                {
+                    currentHappiness = 0.5 * myEconomic;
+                }
+                double newHappiness = updateHappinessAfterHunt(foodHunted, foodReceived);
+                double deltaHappiness = newHappiness - currentHappiness;//how much or less happy did you get               
+                
+                
+                //get new loyalty
+                Double currentLoyalty = getDataModel().getCurrentLoyalty();
+                if (currentLoyalty == null || currentLoyalty == 0)
+                    //as this if statement implies either entry to your first group or
+                    //entry to a new (but not necessarily your first) group then you're
+                    //loyal to the average sense (not too much and no too little)
+                    currentLoyalty = 0.5 * (currentHappiness + deltaEconomic);
+                
+                //copy over the initial happiness to update               
+                double newLoyalty = currentLoyalty;
+                
+                if (deltaHappiness > 0)
+                {
+                    //you gain loyalty to your group
+                    newLoyalty += ValueScaler.scale(deltaHappiness, deltaEconomic, 0.01);
+                    return newLoyalty;
+                }
+                
+                if (deltaHappiness < 0)
+                {
+                    //you lose loyalty to your group
+                    newLoyalty -= ValueScaler.scale(Math.abs(deltaHappiness), deltaEconomic, 0.01);
+                    return newLoyalty;
+                }
+                
+                //if you get here then you got what you wanted after the hunt and you increase your loyalty slightly
+                newLoyalty += ValueScaler.scale(0, deltaEconomic, 0.01);
+                return newLoyalty;     
+            }               
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
