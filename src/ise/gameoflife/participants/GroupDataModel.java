@@ -159,45 +159,46 @@ class GroupDataModel extends APlayerDataModel
 		 *  - The values used to find standard deviation will be the average of each
 		 *    agent's opinion of an agent
 		 */
-		List<Double> values = new ArrayList<Double>(memberList.size());
+		List<Double> avg_trusts = new ArrayList<Double>(memberList.size());
 		PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
 		if (ec == null) return 0.5;
 
-		double sigma_x = 0;
-		int n = 0;
-
+                // Find how trusted each agent is on average
 		for (String candidate : memberList)
 		{
-			n = 0;
-			sigma_x = 0;
+			int n = 0;
+			double sum = 0;
 			for (String truster : memberList)
 			{
 				PublicAgentDataModel dm = ec.getAgentById(truster);
 				Double t = (dm == null ? null : dm.getTrust(candidate));
 				if (t != null && !candidate.equals(truster))
 				{
-					sigma_x += t;
+					sum += t;
 					++n;
 				}
 			}
-			if (n > 0) values.add(sigma_x / n);
+			if (n > 0) avg_trusts.add(sum / n);
 		}
 
-		n = values.size();
+		int n = avg_trusts.size();
 
+                // No agents have any trust values for any other
 		if (n == 0) return 0.5;
 
-		sigma_x = 0;
-		for (Double v : values)	sigma_x += v;
+                // Calculate the average overall trust for an agent
+		double sum = 0;
+		for (Double v : avg_trusts) sum += v;
 
-		double mu = sigma_x / n;
+		double mu = sum / n;
 
-		sigma_x = 0;
-		for (Double v : values)	sigma_x += (v - mu)*(v - mu);
+                // Calculate the std deviation of overall trust in agents
+		double variance = 0;
+		for (Double v : avg_trusts) variance += (v - mu)*(v - mu);
 
-		sigma_x = 2 * Math.sqrt(sigma_x);
-                
-                return sigma_x;
+		double st_dev = 2 * Math.sqrt(variance / n);
+
+		return st_dev;
 	}
 
 	int size()

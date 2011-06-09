@@ -49,6 +49,7 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 			if (logger == null) throw new IllegalArgumentException("Logger " + loggerName + " not found");
 
 			lbl = new JLabel(loggerName);
+			lbl.setAlignmentX(RIGHT_ALIGNMENT);
 			box = new JComboBox(levels);
 
 			Level lvl = logger.getLevel();
@@ -202,7 +203,7 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 	{
 		loggers.setLayout(new BoxLayout(loggers, BoxLayout.PAGE_AXIS));
 		textArea.setEditable(false);
-		textArea.setRows(10000);
+		//textArea.setRows(10000);
 
 		this.setLayout(new BorderLayout());		
 		this.add(new JScrollPane(loggers), BorderLayout.NORTH);

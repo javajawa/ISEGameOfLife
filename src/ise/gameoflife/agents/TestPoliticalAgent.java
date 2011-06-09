@@ -115,7 +115,7 @@ public class TestPoliticalAgent extends AbstractAgent
         if (this.getDataModel().getGroupId() == null)
             logger.log(Level.INFO, "I, agent {0} am a free agent!", this.getDataModel().getName());
         else
-            logger.log(Level.INFO, "I, agent {0} with E belief: {1} and I belong to group{2}", new Object[]{this.getDataModel().getName(), this.getDataModel().getEconomicBelief(), getConn().getGroupById(this.getDataModel().getGroupId()).getName()});
+            logger.log(Level.INFO, "I, agent {0} with E belief: {1} and I belong to {2}", new Object[]{this.getDataModel().getName(), this.getDataModel().getEconomicBelief(), getConn().getGroupById(this.getDataModel().getGroupId()).getName()});
         logger.log(Level.INFO, "No of groups so far: {0}", getConn().availableGroups().size());
         //ONLY FOR DEBUGGING END
 
