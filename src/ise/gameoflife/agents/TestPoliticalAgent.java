@@ -414,7 +414,6 @@ public class TestPoliticalAgent extends AbstractAgent
                                 agentProposal = ProposalType.staySame;
                             }
                             //Compare proposals
-                            System.out.println("Proposal is " + p.getType());
                             if (p.getType().equals(agentProposal))
                             {
                                 vote = VoteType.For;
@@ -432,10 +431,6 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 vote =  VoteType.Abstain;
             }
-            //FOR DEBUGGING ONLY
-            System.out.println("Therefore I will vote " + vote);
-            System.out.println("----------------------------");
-            //FOR DEBUGGING ONLY END
             return vote;
     }
 
