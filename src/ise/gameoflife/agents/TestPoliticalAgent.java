@@ -14,6 +14,7 @@ import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.ValueScaler;
 import ise.gameoflife.tokens.AgentType;
+import ise.gameoflife.models.History;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +38,8 @@ public class TestPoliticalAgent extends AbstractAgent
 
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static TreeSet<String> groupFounders = new TreeSet<String>();
+	private History<Double> economicSatisfaction;
+        private History<Double> socialSatisfaction;
 
 				private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
@@ -61,7 +64,22 @@ public class TestPoliticalAgent extends AbstractAgent
          //Do nothing
     }
 
-    protected boolean SatisfiedInGroup() {//set loyalty = 0 if dissatisfied
+    protected boolean SatisfiedInGroup() {
+        
+        //compute current social satisfaction, based on your level of trust in the group
+        
+        //compare previous social satisfaction with current and update social belief accordingly
+        
+        //compute current economic satisfaction, based on happiness and loyalty in the group
+        
+        //compare previous economic satisfaction with current and update economic belief accordingly
+        
+        //combine social and economic satisfaction and decide if you're satisfied to be in the group
+        
+        
+        
+        
+        
         double loyalty, trust, socioEconomic, satisfaction = 0;
         
         //how loyal you are to the group (effectively, are you happy in the group)
@@ -555,19 +573,19 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
                 
-            //FOR DEBUGGING ONLY
-            System.out.println("--------------------------------");
-            System.out.println("My economic belief is: " + getDataModel().getEconomicBelief());
-            System.out.println("I hunted : " + foodHunted + "units of food");
-            System.out.println("Therefore I am entitled to receive: " + entitlement);
-            System.out.println("I received: " + foodReceived);
-            if (surplus == 0)
-                System.out.println("I got back exactly what I expected");
-            else if (surplus > 0)
-                System.out.println("I got back more than what I expected");
-            else
-                System.out.println("I got back less than what I expected");
-            //FOR DEBUGGING ONLY END
+//            //FOR DEBUGGING ONLY
+//            System.out.println("--------------------------------");
+//            System.out.println("My economic belief is: " + getDataModel().getEconomicBelief());
+//            System.out.println("I hunted : " + foodHunted + "units of food");
+//            System.out.println("Therefore I am entitled to receive: " + entitlement);
+//            System.out.println("I received: " + foodReceived);
+//            if (surplus == 0)
+//                System.out.println("I got back exactly what I expected");
+//            else if (surplus > 0)
+//                System.out.println("I got back more than what I expected");
+//            else
+//                System.out.println("I got back less than what I expected");
+//            //FOR DEBUGGING ONLY END
             
                 //get change in happiness
                 Double currentHappiness = getDataModel().getCurrentHappiness();
@@ -696,7 +714,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 
                 
                 //get change in happiness
-                Double previousHappiness = getDataModel().getHappinessHistory().getValue();
+                Double previousHappiness = getDataModel().getHappinessHistory().getValue(1);
                 if (previousHappiness == null)
                 {
                     previousHappiness = 0.5 * myEconomic;
