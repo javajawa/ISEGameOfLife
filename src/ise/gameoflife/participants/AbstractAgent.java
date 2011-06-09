@@ -182,6 +182,8 @@ abstract public class AbstractAgent implements Participant
 							in.getVotes(), in.getProposition().getType()});
 			dm.setCurrentHappiness(updateHappinessAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			dm.setCurrentLoyalty(updateLoyaltyAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
+			dm.setSocialBelief(updateSocialBeliefAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
+			dm.setEconomicBelief(updateEconomicBeliefAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			Map<String,Double> t = updateTrustAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement());
 			if (t==null) return;
 			for (String agent : t.keySet())
@@ -630,6 +632,8 @@ abstract public class AbstractAgent implements Participant
 	abstract protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
 	abstract protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,	int votes, double overallMovement);
 	/**
 	 * Notifies you when you have been invited to a new group.
