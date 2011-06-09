@@ -550,34 +550,23 @@ public class TestPoliticalAgent extends AbstractAgent
             //and from comparing your economic (sharing of food) belief with the group's belief.
             if (this.getDataModel().getGroupId() != null)
             {
-                //get change in economic beleifs
+                //get change in economic beliefs
                 double myEconomic = getDataModel().getEconomicBelief();
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
-                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
-                
-            //FOR DEBUGGING ONLY
-            System.out.println("--------------------------------");
-            System.out.println("My economic belief is: " + getDataModel().getEconomicBelief());
-            System.out.println("I hunted : " + foodHunted + "units of food");
-            System.out.println("Therefore I am entitled to receive: " + entitlement);
-            System.out.println("I received: " + foodReceived);
-            if (surplus == 0)
-                System.out.println("I got back exactly what I expected");
-            else if (surplus > 0)
-                System.out.println("I got back more than what I expected");
-            else
-                System.out.println("I got back less than what I expected");
-            //FOR DEBUGGING ONLY END
-            
+                //how close are you to the group's belief
+                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
+
                 //get change in happiness
                 Double currentHappiness = getDataModel().getCurrentHappiness();
+                //if there is no entry for happiness initialise it
                 if (currentHappiness == null)
                 {
                     currentHappiness = 0.5 * myEconomic;
                 }
-                double newHappiness = updateHappinessAfterHunt(foodHunted, foodReceived);
-                double deltaHappiness = newHappiness - currentHappiness;//how much or less happy did you get               
-                
+
+                //Calculate difference in happiness between the current and the previous round
+                Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
+                double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
                 
                 //get new loyalty
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
@@ -586,36 +575,21 @@ public class TestPoliticalAgent extends AbstractAgent
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
                     currentLoyalty = 0.5 * (currentHappiness + deltaEconomic);
-                
-                //copy over the initial (the current value) loyalty to update               
-                double newLoyalty = currentLoyalty;
-                
+
                 if (deltaHappiness > 0)
                 {
                     //you gain loyalty to your group
-                    newLoyalty += ValueScaler.scale(deltaHappiness, deltaEconomic, 0.01);
-                    if (newLoyalty >= 1)
-                        return 1;
-                    else
-                        return newLoyalty;
+                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
                 }
-                
-                if (deltaHappiness < 0)
+                else if(deltaHappiness < 0)
                 {
                     //you lose loyalty to your group
-                    newLoyalty -= ValueScaler.scale(Math.abs(deltaHappiness), deltaEconomic, 0.01);
-                    if (newLoyalty <= 0)
-                        return 0.001;//reserve 'loyalty = 0' to agents belonging to no group
-                    else
-                        return newLoyalty;
+                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
                 }
-                
-                //if you get here then you got what you wanted after the hunt, so, you increase your loyalty slightly
-                newLoyalty += ValueScaler.scale(0, deltaEconomic, 0.01);
-                if (newLoyalty >= 1)
-                    return 1;
                 else
-                    return newLoyalty;    
+                    currentLoyalty = ValueScaler.scale(currentLoyalty, 0, deltaEconomic);
+                
+                return currentLoyalty;
             }               
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
