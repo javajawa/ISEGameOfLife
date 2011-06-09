@@ -31,6 +31,7 @@ public class Politics extends GenericSimulation
 	protected void agents()
 	{
 
+
              Random randomGenerator = new Random();
 		for (int i = 0; i < 10; i++)
 		{
@@ -40,16 +41,21 @@ public class Politics extends GenericSimulation
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 1.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.5));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 1.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.5));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.5));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.0));
+
             addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 1.0));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.5));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.0));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 1.0));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.5));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.5));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.0));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.6));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.55));
+
 	}
 
 	@Override

@@ -716,14 +716,16 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
                 */
                     //increase the trust for proposer according to the number of votes
-                    proposerTrust = ValueScaler.scale(proposerTrust, votes, 0.1);
+                    proposerTrust += ValueScaler.scale(overallMovement, votes, 0.1);
+                    newTrustValue.put(proposer, proposerTrust);
             }
             else
             {
-                    proposerTrust = 1; //trust for himself
+                    //proposerTrust = 1; //trust for himself
+                    newTrustValue = null;
             }
 
-            newTrustValue.put(proposer, proposerTrust);
+            
 
             return newTrustValue;
         }
