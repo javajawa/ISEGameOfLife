@@ -6,7 +6,6 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
-import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -23,7 +22,6 @@ import ise.gameoflife.participants.AbstractGroupAgent;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import presage.Participant;
 
 /**
  *
@@ -115,10 +113,10 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //ONLY FOR DEBUGGING
         if (this.getDataModel().getGroupId() == null)
-            logger.log(Level.INFO, "I, agent "+ this.getDataModel().getName() + " am a free agent!");
+            logger.log(Level.INFO, "I, agent {0} am a free agent!", this.getDataModel().getName());
         else
-            logger.log(Level.INFO, "I, agent " + this.getDataModel().getName() + " with E belief: "+ this.getDataModel().getEconomicBelief() + " and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
-        logger.log(Level.INFO, "No of groups so far: " + getConn().availableGroups().size());
+            logger.log(Level.INFO, "I, agent {0} with E belief: {1} and I belong to group{2}", new Object[]{this.getDataModel().getName(), this.getDataModel().getEconomicBelief(), getConn().getGroupById(this.getDataModel().getGroupId()).getName()});
+        logger.log(Level.INFO, "No of groups so far: {0}", getConn().availableGroups().size());
         //ONLY FOR DEBUGGING END
 
         String chosenGroup = "";
@@ -147,9 +145,9 @@ public class TestPoliticalAgent extends AbstractAgent
             chosenGroup = agentGroupGrouping();
             //ONLY FOR DEBUGGING
             if (chosenGroup.equals(""))
-                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups with no success" );
+                logger.log(Level.INFO, "I, agent {0} tried groups with no success", this.getConn().getAgentById(this.getId()).getName());
             else
-                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried groups and joined one" );
+                logger.log(Level.INFO, "I, agent {0} tried groups and joined one", this.getConn().getAgentById(this.getId()).getName());
             //ONLY FOR DEBUGGING END
         }
 
@@ -159,9 +157,9 @@ public class TestPoliticalAgent extends AbstractAgent
            chosenGroup = freeAgentsGrouping();
            //ONLY FOR DEBUGGING
             if ((chosenGroup == null))
-                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents with no success" );
+                logger.log(Level.INFO, "I, agent {0} tried agents with no success", this.getConn().getAgentById(this.getId()).getName());
             else
-                logger.log(Level.INFO, "I, agent "+this.getConn().getAgentById(this.getId()).getName() + " tried agents and joined one" );
+                logger.log(Level.INFO, "I, agent {0} tried agents and joined one", this.getConn().getAgentById(this.getId()).getName());
            //ONLY FOR DEBUGGING END
         }
         return chosenGroup;
@@ -258,9 +256,9 @@ public class TestPoliticalAgent extends AbstractAgent
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
             groupFounders.add(this.getId());
             //ONLY FOR DEBUGGING
-            logger.log(Level.INFO, "I have tried the heuristic with "+this.getConn().getAgentById(bestPartner).getName());
-            logger.log(Level.INFO, "HEURISTIC = " + previousHeuristic);
-            logger.log(Level.INFO, "Therefore I can form a group with "+ this.getConn().getAgentById(bestPartner).getName() );
+            logger.log(Level.INFO, "I have tried the heuristic with {0}", this.getConn().getAgentById(bestPartner).getName());
+            logger.log(Level.INFO, "HEURISTIC = {0}", previousHeuristic);
+            logger.log(Level.INFO, "Therefore I can form a group with {0}", this.getConn().getAgentById(bestPartner).getName());
             //ONLY FOR DEBUGGING END
             return chosenGroup;
         }        
