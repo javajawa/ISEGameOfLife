@@ -519,26 +519,12 @@ public class TestPoliticalAgent extends AbstractAgent
             double entitlement = getDataModel().getEconomicBelief() * foodHunted;
             double surplus = foodReceived - entitlement;
             Double currentHappiness = getDataModel().getCurrentHappiness();
-
-            //FOR DEBUGGING ONLY
-            System.out.println("--------------------------------");
-            System.out.println("My economic belief is: " + getDataModel().getEconomicBelief());
-            System.out.println("I hunted : " + foodHunted + "units of food");
-            System.out.println("Therefore I am entitled to receive: " + entitlement);
-            System.out.println("I received: " + foodReceived);
-            if (surplus == 0)
-                System.out.println("I got back exactly what I expected");
-            else if (surplus > 0)
-                System.out.println("I got back more than what I expected");
-            else
-                System.out.println("I got back less than what I expected");
-            //FOR DEBUGGING ONLY END
             
             if (currentHappiness == null)
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-            System.out.println("My happiness before hunting was: " +currentHappiness);
+            
             if (surplus > 0)
             {
                 //you're overjoyed
@@ -553,7 +539,7 @@ public class TestPoliticalAgent extends AbstractAgent
             {   //surplus = 0
                 currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
             }
-            System.out.println("My new happiness is: " +currentHappiness);
+
             return currentHappiness;
     }
 
@@ -569,7 +555,20 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
                 
-                
+            //FOR DEBUGGING ONLY
+            System.out.println("--------------------------------");
+            System.out.println("My economic belief is: " + getDataModel().getEconomicBelief());
+            System.out.println("I hunted : " + foodHunted + "units of food");
+            System.out.println("Therefore I am entitled to receive: " + entitlement);
+            System.out.println("I received: " + foodReceived);
+            if (surplus == 0)
+                System.out.println("I got back exactly what I expected");
+            else if (surplus > 0)
+                System.out.println("I got back more than what I expected");
+            else
+                System.out.println("I got back less than what I expected");
+            //FOR DEBUGGING ONLY END
+            
                 //get change in happiness
                 Double currentHappiness = getDataModel().getCurrentHappiness();
                 if (currentHappiness == null)
