@@ -4,8 +4,9 @@ import ise.gameoflife.genetics.Evolution;
 import ise.gameoflife.genetics.EvolvableEntity;
 
 /**
- *
- * @author admko
+ * An example runnable evolution
+ * that evolves random strings into a Hello World string
+ * @author Xitong Gao
  */
 public class HelloWorldEvolution extends Evolution
 	<HelloWorldGenome, EvolvableEntity<HelloWorldGenome>>
