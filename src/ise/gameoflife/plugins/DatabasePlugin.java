@@ -39,13 +39,14 @@ public class DatabasePlugin implements Plugin {
     private final static String title = "DatabasePlugin";
     private final static String label = "DatabasePlugin";
     
-    public final static Logger logger = Logger.getLogger(DatabasePlugin.class.getName());
+    public final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
 
     private Simulation sim;
     private PublicEnvironmentConnection ec = null;
     
     private TreeMap<String, PublicAgentDataModel> agentMap = new TreeMap<String, PublicAgentDataModel>();
     private TreeMap<String, PublicGroupDataModel> groupMap = new TreeMap<String, PublicGroupDataModel>();
+    private int simid;
     
     //database connection
     private Connection conn;
@@ -61,7 +62,7 @@ public class DatabasePlugin implements Plugin {
 
 
     @Element
-    private int simid;
+    private Boolean clearDB = false;
     @Element
     private String sim_comment;
     @Element
@@ -78,84 +79,106 @@ public class DatabasePlugin implements Plugin {
 
     /**
      * Creates a new instance of the DatabasePlugin
-     * @param simid - Simulation ID inside lDB
-     * @param sim_comment - Comment inside DB
+     * 
+     * @param sim_comment - Comment for simulation
      * @param saveToRemote - uses remote DB instead of local
+     * @param clearDB - resets local db (only works when not saving to remote)
      */
     @PluginConstructor(
     {
-	    "simid","sim_comment","saveToRemote"
+	    "sim_comment","saveToRemote","clearDB"
     })
-    public DatabasePlugin(int simid, String sim_comment, Boolean saveToRemote)
+    public DatabasePlugin(String sim_comment, Boolean saveToRemote, Boolean clearDB)
     {
 	    super();
-	    this.simid = simid;
 	    this.sim_comment = sim_comment;
+	    this.clearDB = clearDB;
 	    this.saveToRemote = saveToRemote;
+   }
+
+       /**
+     * Creates a new instance of the DatabasePlugin
+     * 
+     * @param sim_comment - Comment for simulation
+     * @param saveToRemote - uses remote DB instead of local
+     * 
+     */
+    @PluginConstructor(
+    {
+	    "sim_comment","saveToRemote","clearDB"
+    })
+    public DatabasePlugin(String sim_comment, Boolean saveToRemote)
+    {
+	    super();
+	    this.sim_comment = sim_comment;
+	    this.clearDB = clearDB;
 	    
     }
-
     
     private void createDatabaseSchema() {
 	try {
-	    stat.addBatch(
-		"CREATE TABLE IF NOT EXISTS [simulations] (\n" +
-			"\t[simid] INTEGER NOT NULL PRIMARY KEY ASC, \n" +
-			"\t[sim_uuid] TEXT NOT NULL, \n" +
-			"\t[userid] TEXT, \n" +
-			"\t[comment] TEXT, \n" +
-			"\t[timestmp] TIMESTAMP DEFAULT (CURRENT_TIMESTAMP), \n" +
-			"\t[rounds] INTEGER,\n" +
-			"\t[done] INTEGER DEFAULT (0));\n");
-	    stat.addBatch(
-		"CREATE TABLE IF NOT EXISTS [agents]  (\n" +
-			"\t[simid] INTEGER NOT NULL REFERENCES [simulations]([simid]) ON DELETE CASCADE ON UPDATE CASCADE, \n" +
-			"\t[a_uuid] TEXT NOT NULL, \n" +
-			"\t[name] TEXT,\n" +
-			"\t[start] INTEGER NOT NULL,\n" +
-			"\t[end] INTEGER,\n" +
-			"\t[socialBelief] DOUBLE,\n" +
-			"\t[economicBelief] DOUBLE,\n" +
-			"\tPRIMARY KEY ([simid], [a_uuid]));\n");
-	    stat.addBatch(
-		"CREATE TABLE IF NOT EXISTS [groups]  (\n" +
-			"\t[simid] INTEGER NOT NULL REFERENCES [simulations]([simid]) ON DELETE CASCADE ON UPDATE CASCADE, \n" +
-			"\t[g_uuid] TEXT NOT NULL,\n" +
-			"\tPRIMARY KEY ([simid], [g_uuid]));\n");
-	    stat.addBatch(
-		"CREATE TABLE IF NOT EXISTS [g_data]  (\n" +
-			"\t[simid] INTEGER NOT NULL,\n" +
-			"\t[turn] INTEGER  NOT NULL,\n" +
-			"\t[g_uuid] TEXT NOT NULL,\n" +
-			"\t[pop] INTEGER,\n" +
-			"\t[x_value] DOUBLE,\n" +
-			"\t[y_value] DOUBLE,\n" +
-			"\tFOREIGN KEY([simid], [g_uuid]) REFERENCES [groups]([simid],[g_uuid]) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
-			"\tPRIMARY KEY ([simid],[turn],[g_uuid]));\n");
-	    stat.addBatch(
-		"CREATE TABLE IF NOT EXISTS [a_data]  (\n" +
-			"\t[simid] INTEGER NOT NULL,\n" +
-			"\t[turn] INTEGER  NOT NULL,\n" +
-			"\t[a_uuid] TEXT NOT NULL,\n" +
-			"\t[pop]  INTEGER,\n" +
-			"\t[x_value] DOUBLE,\n" +
-			"\t[y_value] DOUBLE,\n" +
-			"\tFOREIGN KEY([simid], [a_uuid]) REFERENCES [agents]([simid],[a_uuid]) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
-			"\tPRIMARY KEY ([simid],[turn],[a_uuid]));\n");
-	    stat.addBatch(
-		"CREATE TABLE IF NOT EXISTS [a_trust]  (\n" +
-			"\t[simid] INTEGER NOT NULL,\n" +
-			"\t[turn] INTEGER  NOT NULL,\n" +
-			"\t[a_uuid] TEXT NOT NULL,\n" +
-			"\t[other_uuid] TEXT NOT NULL,\n" +
-			"\t[trust]  INTEGER,\n" +
-			"\tFOREIGN KEY([simid], [a_uuid]) REFERENCES [agents]([simid],[a_uuid]) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
-			"\tFOREIGN KEY([simid], [other_uuid]) REFERENCES [agents]([simid],[a_uuid]) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
-			"\tPRIMARY KEY ([simid],[turn],[a_uuid],[other_uuid]));\n");
+	    stat.addBatch("CREATE TABLE [simulations] (\n" +
+		    "[simid] INTEGER NOT NULL PRIMARY KEY ASC, \n" +
+		    "[sim_uuid] TEXT NOT NULL, \n" +
+		    "[userid] TEXT, \n" +
+		    "[comment] TEXT, \n" +
+		    "[timestmp] TIMESTAMP DEFAULT (CURRENT_TIMESTAMP), \n" +
+		    "[rounds] INTEGER,\n" +
+		    "[done] INTEGER DEFAULT (0));");
+
+	    stat.addBatch("CREATE TABLE [agents] (\n" +
+		    "[simid] INTEGER NOT NULL REFERENCES [simulations]([simid]) ON DELETE CASCADE ON UPDATE CASCADE, \n" +
+		    "[a_uuid] TEXT NOT NULL, \n" +
+		    "[name] TEXT NOT NULL,\n" +
+		    "[start] INTEGER NOT NULL,\n" +
+		    "[end] INTEGER,\n" +
+		    "PRIMARY KEY ([simid], [a_uuid]));");
+
+	    stat.addBatch("CREATE TABLE [groups] (\n" +
+		    "[simid] INTEGER NOT NULL REFERENCES [simulations]([simid]) ON DELETE CASCADE ON UPDATE CASCADE, \n" +
+		    "[g_uuid] TEXT NOT NULL,\n" +
+		    "[start] INTEGER NOT NULL,\n" +
+		    "[end] INTEGER,\n" +
+		    "PRIMARY KEY ([simid], [g_uuid]));");
+
+	    stat.addBatch("CREATE TABLE [g_data] (\n" +
+		    "[simid] INTEGER NOT NULL,\n" +
+		    "[round] INTEGER  NOT NULL,\n" +
+		    "[g_uuid] TEXT NOT NULL,\n" +
+		    "[pop] INTEGER,\n" +
+		    "[socialPosition] DOUBLE,\n" +
+		    "[economicPosition] DOUBLE,\n" +
+		    "FOREIGN KEY([simid], [g_uuid]) REFERENCES [groups]([simid],[g_uuid]) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
+		    "PRIMARY KEY ([simid],[round],[g_uuid]));");
+
+	    stat.addBatch("CREATE TABLE [a_data] (\n" +
+		    "[simid] INTEGER NOT NULL,\n" +
+		    "[round] INTEGER  NOT NULL,\n" +
+		    "[a_uuid] TEXT NOT NULL,\n" +
+		    "[g_uuid] TEXT,\n" +
+		    "[foodAmount] DOUBLE NOT NULL,\n" +
+		    "[lastHunted] TEXT, \n" +
+		    "[socialBelief] DOUBLE,\n" +
+		    "[economicBelief] DOUBLE,\n" +
+		    "[happiness] DOUBLE,\n" +
+		    "[loyalty] DOUBLE,\n" +
+		    "FOREIGN KEY([simid], [g_uuid]) REFERENCES [groups]([simid],[g_uuid]) ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
+		    "FOREIGN KEY([simid], [a_uuid]) REFERENCES [agents]([simid],[a_uuid]) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
+		    "PRIMARY KEY ([simid],[round],[a_uuid]));");
+
+	    stat.addBatch("CREATE TABLE [a_trust] (\n" +
+		    "[simid] INTEGER NOT NULL,\n" +
+		    "[round] INTEGER  NOT NULL,\n" +
+		    "[a_uuid] TEXT NOT NULL,\n" +
+		    "[other_uuid] TEXT NOT NULL,\n" +
+		    "[trust]  DOUBLE NOT NULL,\n" +
+		    "FOREIGN KEY([simid], [a_uuid]) REFERENCES [agents]([simid],[a_uuid]) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
+		    "FOREIGN KEY([simid], [other_uuid]) REFERENCES [agents]([simid],[a_uuid]) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,\n" +
+		    "PRIMARY KEY ([simid],[round],[a_uuid],[other_uuid]));");
 	    stat.executeBatch();
 	    stat.close();
 	} catch (SQLException ex) {
-	    Logger.getLogger(DatabasePlugin.class.getName()).log(Level.SEVERE,"Error creating new DB schema", ex);
+	    logger.log(Level.SEVERE,"Error creating new DB schema", ex);
 	}
     }
     
@@ -220,7 +243,7 @@ public class DatabasePlugin implements Plugin {
 			prep_roundAgent.setDouble(9,0.0);
 			prep_roundAgent.addBatch();
 		    } catch (SQLException ex) {
-			Logger.getLogger(DatabasePlugin.class.getName()).log(Level.WARNING, null, ex);
+			logger.log(Level.WARNING, null, ex);
 		    }
 		}
 		
@@ -234,64 +257,62 @@ public class DatabasePlugin implements Plugin {
     
     private void updateGroups()
     {
-	   Set<String> active_group_ids = ec.availableGroups();
-	   
-	   Iterator<String> iter = active_group_ids.iterator();
-
-	    // Add any new groups
-	    while(iter.hasNext())
-	    {
-		String id = iter.next();
-		if(!groupMap.containsKey(id))
-		{
-		    try {
-			PublicGroupDataModel newGroup = ec.getGroupById(id);
-			groupMap.put(id, newGroup);
-			prep_newGroup.setString(1,id);
-			prep_newGroup.setInt(2,ec.getRoundsPassed());
-			prep_newGroup.addBatch();
-		    } catch (SQLException ex) {
-			logger.log(Level.WARNING, null, ex);
-		    }
-		}
-	    }
+	try {
+	    Set<String> active_group_ids = ec.availableGroups();
 	    
-	    // Delete groups which are no longer active
-	    List<String> ids_to_remove = new LinkedList<String>();
-	    for(Map.Entry<String, PublicGroupDataModel> entry : groupMap.entrySet())
-	    {
-		String id = entry.getKey();
-		if(!active_group_ids.contains(id))
-		{
-		    try {
-			ids_to_remove.add(id);
-			//write end time
-			prep_dieGroup.setInt(1,ec.getRoundsPassed());
-			prep_dieGroup.setString(2,id);
-			prep_dieGroup.addBatch();
-		    } catch (SQLException ex) {
-			logger.log(Level.WARNING, null, ex);
-		    }
-		}
-		else{
-		    try {
-			PublicGroupDataModel group = entry.getValue();
-			prep_roundGroup.setInt(1,ec.getRoundsPassed());
-			prep_roundGroup.setString(2,id);
-			prep_roundGroup.setInt(3,group.getMemberList().size());
-			prep_roundGroup.setDouble(4,group.getEstimatedSocialLocation());
-			prep_roundGroup.setDouble(5,group.getCurrentEconomicPoisition());
-			prep_roundGroup.addBatch();
-		    } catch (SQLException ex) {
-			Logger.getLogger(DatabasePlugin.class.getName()).log(Level.WARNING, null, ex);
-		    }
-		}
-	    }
-	    iter = ids_to_remove.iterator();
-	    while(iter.hasNext())
-	    {
-		    groupMap.remove(iter.next());
-	    }
+	    Iterator<String> iter = active_group_ids.iterator();
+
+	     // Add any new groups
+	     while(iter.hasNext())
+	     {
+		 String id = iter.next();
+		 if(!groupMap.containsKey(id))
+		 {
+			 PublicGroupDataModel newGroup = ec.getGroupById(id);
+			 groupMap.put(id, newGroup);
+			 prep_newGroup.setString(1,id);
+			 prep_newGroup.setInt(2,ec.getRoundsPassed());
+			 prep_newGroup.addBatch();
+		 }
+	     }
+	     // Delete groups which are no longer active
+	     List<String> ids_to_remove = new LinkedList<String>();
+	     for(Map.Entry<String, PublicGroupDataModel> entry : groupMap.entrySet())
+	     {
+		 String id = entry.getKey();
+		 if(!active_group_ids.contains(id))
+		 {
+			 ids_to_remove.add(id);
+			 //write end time
+			 prep_dieGroup.setInt(1,ec.getRoundsPassed());
+			 prep_dieGroup.setString(2,id);
+			 prep_dieGroup.addBatch();
+
+		 }
+		 else{
+			 PublicGroupDataModel group = entry.getValue();
+			 prep_roundGroup.setInt(1,ec.getRoundsPassed());
+			 prep_roundGroup.setString(2,id);
+			 prep_roundGroup.setInt(3,group.getMemberList().size());
+			 prep_roundGroup.setDouble(4,group.getEstimatedSocialLocation());
+			 prep_roundGroup.setDouble(5,group.getCurrentEconomicPoisition());
+			 prep_roundGroup.addBatch();
+		 }
+	     }
+	     prep_roundGroup.setInt(1,ec.getRoundsPassed());
+	     prep_roundGroup.setString(2,"noGroup");
+	     prep_roundGroup.setInt(3,ec.getUngroupedAgents().size());
+	     prep_roundGroup.setDouble(4,0.0);
+	     prep_roundGroup.setDouble(5,0.0);
+	     prep_roundGroup.addBatch();
+	     iter = ids_to_remove.iterator();
+	     while(iter.hasNext())
+	     {
+		     groupMap.remove(iter.next());
+	     }
+	} catch (SQLException ex) {
+	    logger.log(Level.SEVERE, null, ex);
+	}
     }
 	   
     @Override
@@ -302,19 +323,20 @@ public class DatabasePlugin implements Plugin {
 	    if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 		updateAgents();
 		updateGroups();
-		if (ec.getRoundsPassed()%10 == 0) {
-		    prep_newAgent.executeBatch();
-		    prep_dieAgent.executeBatch();
-		    prep_roundAgent.executeBatch();
-		    prep_newGroup.executeBatch();
-		    prep_dieGroup.executeBatch();
-		    prep_roundGroup.executeBatch();
-		}
+	    if (ec.getRoundsPassed()%10 == 0) {
+		prep_newAgent.executeBatch();
+		prep_newGroup.executeBatch();
+		prep_dieAgent.executeBatch();
+		prep_dieGroup.executeBatch();
+		prep_roundGroup.executeBatch();
+		prep_roundAgent.executeBatch();
 		if (ec.getRoundsPassed()%50 == 0) {
 		    conn.commit();
-		}
+		 }
+	    }
+
 	} catch (SQLException ex) {
-	    Logger.getLogger(DatabasePlugin.class.getName()).log(Level.SEVERE, null, ex);
+	    logger.log(Level.SEVERE, null, ex);
 	}
 
     }
@@ -343,16 +365,18 @@ public class DatabasePlugin implements Plugin {
 		String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
 		//create connection to local db
 		conn = DriverManager.getConnection("jdbc:sqlite:"+ configPath + "/Simulations.db");
-		DatabaseMetaData md = conn.getMetaData();
-		ResultSet rs = md.getTables(null, null, "data", null);
-		stat = conn.createStatement();
-		//if old table exists, drop database
-		if (rs.next()) {
-		  rs.close();
-		  stat.executeUpdate("DROP TABLE data; DROP TABLE simulations;");
-		  stat.executeUpdate("DROP TABLE simulations;");
+		if(clearDB) {
+		    DatabaseMetaData md = conn.getMetaData();
+		    ResultSet rs = md.getTables(null, null, "%", null);
+		    stat = conn.createStatement();
+		    //if old table exists, drop database
+		    while (rs.next()) {
+		      stat.addBatch("DROP TABLE "+ rs.getString(3)+";");
+		    }
+		    rs.close();
+		    stat.executeBatch();
+		    createDatabaseSchema();
 		}
-		createDatabaseSchema();
 	    }
 	    else {
 		conn = DriverManager.getConnection("jdbc:mysql://69.175.26.66:3306/stratra1_isegol",
@@ -360,41 +384,51 @@ public class DatabasePlugin implements Plugin {
 	    }
 	    
 	    stat = conn.createStatement();
-	    stat.executeUpdate("INSERT INTO [simulations] " +
+	    if (saveToRemote) {
+		stat.executeUpdate("INSERT INTO simulations " +
+		"(sim_uuid,userid,comment)" +
+		"VALUES ('"+ec.getId()+"',9,'"+sim_comment+"');"
+			    );
+	    }  else {
+		stat.executeUpdate("INSERT INTO simulations " +
 		"(sim_uuid,userid,comment)" +
 		"VALUES ('"+ec.getId()+"','"+System.getProperty("user.name")+"','"+sim_comment+"');"
 			    );
+	    }
 	    ResultSet rs = stat.getGeneratedKeys();         
 	    while (rs.next()) {
 		simid  = rs.getInt(1);    
 	    }
 	    rs.close();                           // Close ResultSet
-	    logger.log(Level.INFO, "This simulation is saved in DB with: simid = {0}", simid);
+	    logger.log(Level.INFO, "SimulationId in DB = {0}", simid);
 	    stat.close();                         // Close Statement
 
-	    conn.setAutoCommit(false);
+	    //if (!saveToRemote) 
+		conn.setAutoCommit(false);
 	    prep_newAgent = conn.prepareStatement(
-		    "INSERT into [agents] (simid,a_uuid,name,start)"
+		    "INSERT into agents (simid,a_uuid,name,start)"
 		    + " VALUES ("+simid+",?,?,?);");
 	    prep_newGroup = conn.prepareStatement(
-		    "INSERT into [groups] (simid,g_uuid,start)"
+		    "INSERT into groups (simid,g_uuid,start)"
 		    + " VALUES ("+simid+",?,?);");
-	    prep_dieAgent = conn.prepareStatement("UPDATE [agents]\n"
+	    prep_dieAgent = conn.prepareStatement("UPDATE agents\n"
 					+ "SET end=?\n"
 					+ "WHERE simid="+simid+"\n"
 					+ "AND a_uuid=?;");
-	    prep_dieGroup = conn.prepareStatement("UPDATE [groups]\n"
+	    prep_dieGroup = conn.prepareStatement("UPDATE groups\n"
 					+ "SET end=?\n"
 					+ "WHERE simid="+simid+"\n"
 					+ "AND g_uuid=?;");
 	    prep_roundGroup = conn.prepareStatement(
-		    "INSERT into [g_data] (simid,round,g_uuid,pop,socialPosition,economicPosition)"
+		    "INSERT into g_data (simid,round,g_uuid,pop,socialPosition,economicPosition)"
 		    + " VALUES ("+simid+",?,?,?,?,?);");
 	    prep_roundAgent = conn.prepareStatement(
-		     "INSERT into [a_data] (simid,round,a_uuid,g_uuid,foodAmount,lastHunted,socialBelief,economicBelief,happiness,loyalty)"
+		     "INSERT into a_data (simid,round,a_uuid,g_uuid,foodAmount,lastHunted,socialBelief,economicBelief,happiness,loyalty)"
 		    + " VALUES ("+simid+",?,?,?,?,?,?,?,?,?);");
+	    prep_newGroup.setString(1,"noGroup");
+	    prep_newGroup.setInt(2,0);
+	    prep_newGroup.addBatch();
    
-	  
 	}
 	catch (SQLException x) {
 	    logger.log(Level.WARNING, "Initialise DB Error", x);
@@ -430,22 +464,22 @@ public class DatabasePlugin implements Plugin {
 	try {
 	    //sends left over data to DB
 	    prep_newAgent.executeBatch();
-	    prep_dieAgent.executeBatch();
-	    prep_roundAgent.executeBatch();
 	    prep_newGroup.executeBatch();
+	    prep_dieAgent.executeBatch();
 	    prep_dieGroup.executeBatch();
 	    prep_roundGroup.executeBatch();
+	    prep_roundAgent.executeBatch();
 	    stat = conn.createStatement();
 	    //Update agent and group end time to end of simulation, if still lives
-	    stat.executeUpdate("UPDATE [agents]\n"
+	    stat.executeUpdate("UPDATE agents\n"
 					+ "SET end="+ec.getRoundsPassed()+"\n"
 					+ "WHERE simid="+simid+"\n"
 					+ "AND end IS NULL;");
-	    stat.executeUpdate("UPDATE [groups]\n"
+	    stat.executeUpdate("UPDATE groups\n"
 					+ "SET end="+ec.getRoundsPassed()+"\n"
 					+ "WHERE simid="+simid+"\n"
 					+ "AND end IS NULL;");
-	    stat.executeUpdate("UPDATE [simulations]\n"
+	    stat.executeUpdate("UPDATE simulations\n"
 					+ "SET done=1,rounds="+ec.getRoundsPassed()+"\n"
 					+ "WHERE simid="+simid+";");
 	    conn.commit();
