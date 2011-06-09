@@ -279,7 +279,7 @@ public abstract class AbstractGroupAgent implements Participant
                 change = dm.getCurrentEconomicPoisition() - change;
 		// Inform eahc agfent of how their vote went, and the overall group movement
 		for (String agent : props.keySet())
-		{
+                {
 			Proposition p = props.get(agent);
 			ec.act(new VoteResult(p, voteResult.get(p), change), getId(), authCode);
 		}

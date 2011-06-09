@@ -86,13 +86,22 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             return true;
 	}
 
+	private Comparator<String> c = new Comparator<String>() {
+		private Random r = new Random(0);
+		@Override
+		public int compare(String o1, String o2)
+		{
+			return (r.nextBoolean() ? -1 : 1);
+		}
+	};
+
 	@Override
 	public List<HuntingTeam> selectTeams()
         {
 		ArrayList<HuntingTeam> teams = new ArrayList <HuntingTeam>();
-		List<String> members = getDataModel().getMemberList();
-                
-		int agents = members.size();
+		List<String> members = new ArrayList<String>(getDataModel().getMemberList());
+                Collections.sort(members, c);
+                int agents = members.size();
 		for(int i=0; i < agents; i += 2){
 			int ubound = (i + 2 >= agents) ? agents : i + 2;
 			teams.add(new HuntingTeam(members.subList(i, ubound)));
