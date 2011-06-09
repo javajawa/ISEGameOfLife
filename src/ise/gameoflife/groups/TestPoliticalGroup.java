@@ -102,6 +102,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 		List<String> members = new ArrayList<String>(getDataModel().getMemberList());
                 Collections.sort(members, c);
                 int agents = members.size();
+                
 		for(int i=0; i < agents; i += 2){
 			int ubound = (i + 2 >= agents) ? agents : i + 2;
 			teams.add(new HuntingTeam(members.subList(i, ubound)));

@@ -298,7 +298,6 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			change = 0;
 		}
-
 		// Inform each agent of how their vote went, and the overall group movement
 		for (String agent : props.keySet())
                 {

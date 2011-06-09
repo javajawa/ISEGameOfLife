@@ -278,6 +278,12 @@ public class TestPoliticalAgent extends AbstractAgent
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
 
+            //FOR DEBUGGING ONLY
+            String agentID = this.getId();
+            String groupID = this.getDataModel().getGroupId();
+            List<String> members1 = this.getConn().getGroupById(groupID).getMemberList();
+            //FOR DEBUGGING ONLY END
+
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())
             {
@@ -439,16 +445,16 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             double MaxThreshold = 0.8;
             double MinThreshold = 0.2;
-            String opponent;
+            String opponentID;
 
             //find opponent
             if (agentsTeam.getMembers().get(0).equals(agent))
-                opponent = agentsTeam.getMembers().get(1);
+                opponentID = agentsTeam.getMembers().get(1);
             else
-                opponent = agentsTeam.getMembers().get(0);
+                opponentID = agentsTeam.getMembers().get(0);
 
-            //get opponent trust value from "this" agent
-            double opponentTrust = this.getDataModel().getTrust(opponent);
+            //get opponent's trust value from "this" agent
+            double opponentTrust = this.getDataModel().getTrust(opponentID);
 
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
