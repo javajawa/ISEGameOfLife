@@ -133,6 +133,9 @@ public class TestPoliticalAgent extends AbstractAgent
                 //return null;
             //else
                 //return leaveGroup;
+            
+            //This return statement must NEVER be removed!!!It can be the source of every possible bug!:P
+            return null;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -204,7 +207,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
             currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
 
-            if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
+            if ((currentHeuristic > 0.4) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
                 previousHeuristic = currentHeuristic;
             }
@@ -238,7 +241,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 esFaction = 1 - (vectorDistance / maxDistance);
 
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-                if ((currentHeuristic > 0.75) && (previousHeuristic < currentHeuristic))
+                if ((currentHeuristic > 0.6) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
@@ -364,8 +367,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //Get the economic beliefs of the agent and the group
             double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
             double agentEconomicBelief = this.getDataModel().getEconomicBelief();
-            System.out.println("My economic belief is " + agentEconomicBelief);
-            System.out.println("Group economic belief is " + groupEconomicPosition);
+
             //Three cases: -> Agent economic belief = Group economic belief -> agent proposes to stay there
             //             -> Agent economic belief > group economic belief -> agent prefers to move right (remember left is zero and right is one)
             //             -> Agent economic belief < group economic belief -> agent prefers to move left
@@ -387,46 +389,54 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected VoteType castVote(Proposition p)
     {
-//            String groupId = this.getDataModel().getGroupId();
-//            String proposerGroup = p.getOwnerGroup();
-//            ProposalType agentProposal;
-//            if (groupId != null){ //check if is in a group
-//                    if (groupId.equals(proposerGroup)){ //check if agent is in the same group as the proposal
-//                            double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
-//                            double agentEconomicBelief = this.getDataModel().getEconomicBelief();
-//                            if (agentEconomicBelief > groupEconomicPosition)
-//                            {
-//                                 agentProposal = ProposalType.moveRight;
-//                            }
-//                            else if (agentEconomicBelief < groupEconomicPosition)
-//                            {
-//                                agentProposal = ProposalType.moveLeft;
-//                            }
-//                            else
-//                            {
-//                                agentProposal = ProposalType.staySame;
-//                            }
-//                            //Compare proposals
-//                            if (p.getType().equals(agentProposal))
-//                            {
-//                                return VoteType.For;
-//                            }
-//                            else
-//                            {
-//                                return VoteType.Against;
-//                            }
-//                    }
-//                    else{ //must never happen!!
-//                        throw new UnsupportedOperationException("Agent cannot vote for other Groups ");
-//                    }
-//            }
-//            else //must never happen!!
-//            {
-//                return VoteType.Abstain;
-//            }
-            //throw new UnsupportedOperationException("Not supported yet.");
-return VoteType.For;
-             
+            String groupId = this.getDataModel().getGroupId();
+            String proposerGroup = p.getOwnerGroup();
+            ProposalType agentProposal;
+            VoteType vote;
+
+            if (groupId != null)
+            { //check if is in a group
+                    if (groupId.equals(proposerGroup))
+                    { //check if agent is in the same group as the proposal
+                            double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
+                            double agentEconomicBelief = this.getDataModel().getEconomicBelief();
+
+                            if (agentEconomicBelief > groupEconomicPosition)
+                            {
+                                 agentProposal = ProposalType.moveRight;
+                            }
+                            else if (agentEconomicBelief < groupEconomicPosition)
+                            {
+                                agentProposal = ProposalType.moveLeft;
+                            }
+                            else
+                            {
+                                agentProposal = ProposalType.staySame;
+                            }
+                            //Compare proposals
+                            System.out.println("Proposal is " + p.getType());
+                            if (p.getType().equals(agentProposal))
+                            {
+                                vote = VoteType.For;
+                            }
+                            else
+                            {
+                                vote =  VoteType.Against;
+                            }
+                    }
+                    else{ //must never happen!!
+                        throw new UnsupportedOperationException("Agent cannot vote for other Groups ");
+                    }
+            }
+            else //must never happen!!
+            {
+                vote =  VoteType.Abstain;
+            }
+            //FOR DEBUGGING ONLY
+            System.out.println("Therefore I will vote " + vote);
+            System.out.println("----------------------------");
+            //FOR DEBUGGING ONLY END
+            return vote;
     }
 
     @Override
@@ -561,6 +571,7 @@ return VoteType.For;
     {
             Food lastHunted = this.getDataModel().getLastHunted();
             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
             if ((lastHunted == null)||(members.size() <2)) return null;
 
             String opponentID;

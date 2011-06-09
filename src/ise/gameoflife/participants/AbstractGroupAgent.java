@@ -261,7 +261,7 @@ public abstract class AbstractGroupAgent implements Participant
 			{
 				movement += p.getType().getMovement();
 				motionsPassed ++;
-				logger.log(Level.FINE, "{0}''s {1} proposal was voted in (Vote={2})", new Object[]{p.getProposer(),
+                                logger.log(Level.FINE, "{0}''s {1} proposal was voted in (Vote={2})", new Object[]{p.getProposer(),
 								p.getType(), voteResult.get(p)});
 			}
 			else
@@ -276,7 +276,8 @@ public abstract class AbstractGroupAgent implements Participant
 		// Calculate the groups new position
 		double change = dm.getCurrentEconomicPoisition();
 		dm.setEconomicPosition(scale(change, movement/motionsPassed));
-		change = dm.getCurrentEconomicPoisition() - change;
+
+                change = dm.getCurrentEconomicPoisition() - change;
 
 		// Inform eahc agfent of how their vote went, and the overall group movement
 		for (String agent : props.keySet())
