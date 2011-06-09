@@ -494,7 +494,7 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             //'entitelment' denotes the amount of food an agent wants to get, at the least
             double entitlement = getDataModel().getEconomicBelief() * foodHunted;
-            double difference, ratio;
+            double surplus = foodReceived - entitlement;
             Double currentHappiness = getDataModel().getCurrentHappiness();
 
             if (currentHappiness == null)
@@ -502,47 +502,36 @@ public class TestPoliticalAgent extends AbstractAgent
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
             
-            //copy over the initial happiness to update
+            //copy over the initial (the current value) happiness to update
             double newHappiness = currentHappiness;
-            
-            if (foodReceived == entitlement)
-            {
-                //you're satisifed, but happy
-                newHappiness += 0.01;//a measure of your satisfaction
-
-                if (newHappiness >= 1) 
-                    return 1;
-                else                  
-                    return newHappiness;             
-            }
-            
-            if (foodReceived > entitlement)
+                        
+            if (surplus > 0)
             {
                 //you're overjoyed
-                difference = foodReceived - entitlement;
-                ratio = difference / entitlement;
-                newHappiness += ratio;//a measure of your happiness
-
-                if (newHappiness >= 1) 
+                newHappiness += ValueScaler.scale(surplus, entitlement, 0.01);
+                if (newHappiness >= 1)
                     return 1;
-                else                  
-                    return newHappiness;                
+                else
+                    return newHappiness;
             }
             
-            if (foodReceived < entitlement)
+            if (surplus < 0)
             {
                 //you're dissapointed
-                difference = entitlement - foodReceived;
-                ratio = difference / entitlement;
-                newHappiness -= ratio;//a measure of your dissapointment
-
-                if (newHappiness <= 0) 
-                    return 0;
-                else                  
-                    return newHappiness;                                 
+                 newHappiness -= ValueScaler.scale(Math.abs(surplus), entitlement, 0.01);
+                 if (newHappiness <= 0)
+                     return 0;
+                 else
+                    return newHappiness;
             }
-
-            return newHappiness;//if we got to this update here without hunting first then don't change anything
+            
+            //if you get here then you got what you wanted after the hunt, so, you increase your happiness slightly
+            newHappiness += ValueScaler.scale(0, entitlement, 0.01);
+            if (newHappiness >= 1)
+                return 1;
+            else
+                return newHappiness;      
+            
 //            return 0; //throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -572,31 +561,40 @@ public class TestPoliticalAgent extends AbstractAgent
                 //get new loyalty
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
                 if (currentLoyalty == null || currentLoyalty == 0)
-                    //as this if statement implies either entry to your first group or
+                    //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
                     currentLoyalty = 0.5 * (currentHappiness + deltaEconomic);
                 
-                //copy over the initial happiness to update               
+                //copy over the initial (the current value) loyalty to update               
                 double newLoyalty = currentLoyalty;
                 
                 if (deltaHappiness > 0)
                 {
                     //you gain loyalty to your group
                     newLoyalty += ValueScaler.scale(deltaHappiness, deltaEconomic, 0.01);
-                    return newLoyalty;
+                    if (newLoyalty >= 1)
+                        return 1;
+                    else
+                        return newLoyalty;
                 }
                 
                 if (deltaHappiness < 0)
                 {
                     //you lose loyalty to your group
                     newLoyalty -= ValueScaler.scale(Math.abs(deltaHappiness), deltaEconomic, 0.01);
-                    return newLoyalty;
+                    if (newLoyalty <= 0)
+                        return 0.001;//reserve 'loyalty = 0' to agents belonging to no group
+                    else
+                        return newLoyalty;
                 }
                 
-                //if you get here then you got what you wanted after the hunt and you increase your loyalty slightly
+                //if you get here then you got what you wanted after the hunt, so, you increase your loyalty slightly
                 newLoyalty += ValueScaler.scale(0, deltaEconomic, 0.01);
-                return newLoyalty;     
+                if (newLoyalty >= 1)
+                    return 1;
+                else
+                    return newLoyalty;    
             }               
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
