@@ -640,7 +640,6 @@ public class Environment extends AbstractEnvironment
 	Food seekAdvice(String agent, UUID authToken, String fromAgent,	HuntingTeam agentsTeam)
 	{
 		if (authenticator.get(agent) != authToken) throw new IllegalAccessError("Incorrect access credentials");
-
 		// TODO: Check we're asking a vaguely correct agent, ie one in the same group
 		AbstractAgent a = (AbstractAgent)sim.getPlayer(fromAgent);
 		return a.advise(agent, agentsTeam);

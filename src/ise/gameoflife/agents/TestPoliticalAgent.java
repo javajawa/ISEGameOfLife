@@ -278,11 +278,29 @@ public class TestPoliticalAgent extends AbstractAgent
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
 
-            //FOR DEBUGGING ONLY
-            String agentID = this.getId();
+            //WORK IN PROGRESS
             String groupID = this.getDataModel().getGroupId();
-            List<String> members1 = this.getConn().getGroupById(groupID).getMemberList();
-            //FOR DEBUGGING ONLY END
+            String advisor;
+            int maxHistory = 0;
+            int historySize;
+            if (groupID != null)
+            {
+                for (String possibleAdvisor:  getConn().getGroupById(groupID).getMemberList())
+                {
+                    if (getConn().getAgentById(possibleAdvisor) != null)
+                    {
+
+                        historySize = getConn().getAgentById(possibleAdvisor).getHuntingHistory().size();
+                        if (historySize > maxHistory)
+                        {
+                            advisor = possibleAdvisor;
+                            maxHistory = historySize;
+                        }
+                    }
+                }
+            }
+            
+            //WORK IN PROGRESS END
 
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())

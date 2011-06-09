@@ -23,7 +23,7 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 1000, 0, 0.1);
+		super("Basic Politics Testing Bed", 300, 0, 0.1);
 
 	}
 
@@ -38,23 +38,6 @@ public class Politics extends GenericSimulation
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
-
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 1.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.5));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 1.0));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.5));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.5));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.0));
-
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.6));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.55));
-
->>>>>>> 257967d7fdde326a5ef95d29230af756cbd46a2c
 	}
 
 	@Override
