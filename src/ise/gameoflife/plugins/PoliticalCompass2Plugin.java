@@ -9,6 +9,7 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -23,7 +24,6 @@ import java.util.TreeMap;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.simpleframework.xml.Element;
-import presage.EnvDataModel;
 import presage.Plugin;
 import presage.Simulation;
 import presage.annotations.PluginConstructor;
@@ -47,6 +47,10 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         // Set of political participants that are active
         private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
         double correction = 1; //scale the agents
+        
+        // Contains hues for each group on the compass
+        private TreeMap<String, Float> group_colors = new TreeMap<String, Float>();
+        private float last_colour_assigned = 0;
 
 	@Element(required=false)
 	private String outputdirectory;
@@ -202,32 +206,45 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 double x1,y1,x2,y2;
                 Rectangle rect = g.getClipBounds();
                 int size=0;
-                double x = 0.5;
 
                 for(Map.Entry<String, TestPoliticalAgent> entry1 : p_players.entrySet())
                 {
+                        PublicAgentDataModel agent1_dm = entry1.getValue().getDataModel();
+                        
                         for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
                         {
-                           if(entry1.getValue().getDataModel().getGroupId() != null && entry2.getValue().getDataModel().getGroupId() != null ){
-                              if( !entry1.getKey().equals(entry2.getKey()) && entry1.getValue().getDataModel().getGroupId().equals(entry2.getValue().getDataModel().getGroupId()))
+                           PublicAgentDataModel agent2_dm = entry2.getValue().getDataModel();
+                           
+                           if(agent1_dm.getGroupId() != null && agent2_dm.getGroupId() != null ){
+                              if( !entry1.getKey().equals(entry2.getKey()) && agent1_dm.getGroupId().equals(agent2_dm.getGroupId()))
                               {
                                   g.setColor(Color.RED);
-                                  x1 = entry1.getValue().getDataModel().getEconomicBelief()*(rect.width/correction);
-                                  x2 = entry2.getValue().getDataModel().getEconomicBelief()*(rect.width/correction);
-                                  y1 = entry1.getValue().getDataModel().getSocialBelief()*(rect.height/correction);
-                                  y2 = entry2.getValue().getDataModel().getSocialBelief()*(rect.height/correction);
+                                  x1 = agent1_dm.getEconomicBelief()*(rect.width/correction);
+                                  x2 = agent2_dm.getEconomicBelief()*(rect.width/correction);
+                                  y1 = agent1_dm.getSocialBelief()*(rect.height/correction);
+                                  y2 = agent2_dm.getSocialBelief()*(rect.height/correction);
                                   g.drawLine((int)x1+1,(int)y1+1,(int)x2+1,(int)y2+1);
-                                  size = PublicEnvironmentConnection.getInstance().getGroupById(entry1.getValue().getDataModel().getGroupId()).getMemberList().size();
+                                  size = PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getMemberList().size();
                                   
-                                  g.setColor(Color.getHSBColor( (float) x, 1, 1));
+                                  float hue = getGroupColour(agent1_dm.getGroupId());
+                                  g.setColor(Color.getHSBColor( hue, 1, 1));
                                   drawAgent(g, entry1.getValue(),size+1);
-                                  g.setColor(Color.getHSBColor( (float) x, 1, 1));
-                                  drawAgent(g, entry2.getValue(),size+1);
                               }
                             }
                         }
-                        x = x==1 ? 0.1: x + 0.1; //change Hue
                 }
+        }
+        
+        private float getGroupColour(String group_id) {
+            if(this.group_colors.containsKey(group_id)) 
+            {
+                return this.group_colors.get(group_id);
+            }
+            // Assign a colour
+            this.last_colour_assigned = (float) ((this.last_colour_assigned + 0.3) % 1.0);
+            this.group_colors.put(group_id, this.last_colour_assigned);
+            
+            return this.last_colour_assigned;
         }
 
             /**
