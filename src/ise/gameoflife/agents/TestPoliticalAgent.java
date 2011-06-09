@@ -390,7 +390,7 @@ public class TestPoliticalAgent extends AbstractAgent
             String groupId = this.getDataModel().getGroupId();
             String proposerGroup = p.getOwnerGroup();
             ProposalType agentProposal;
-            VoteType vote;
+            VoteType vote = null;
 
             if (groupId != null)
             { //check if is in a group
@@ -422,7 +422,8 @@ public class TestPoliticalAgent extends AbstractAgent
                             }
                     }
                     else{ //must never happen!!
-                        throw new UnsupportedOperationException("Agent cannot vote for other Groups ");
+                        //throw new UnsupportedOperationException("Agent cannot vote for other Groups ");
+                        vote =  VoteType.Abstain;
                     }
             }
             else //must never happen!!
