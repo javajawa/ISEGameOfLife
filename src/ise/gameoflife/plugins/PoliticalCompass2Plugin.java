@@ -8,6 +8,7 @@ package ise.gameoflife.plugins;
 import ise.gameoflife.agents.TestPoliticalAgent;
 
 import ise.gameoflife.environment.Environment;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -48,7 +49,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
         // Set of political participants that are active
         private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
-        double correction = 1.2;
+        double correction = 1;
 
 
 	@Element(required=false)
@@ -173,8 +174,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 // Draw social and economic axis
                 Rectangle rect = g.getClipBounds();
                 g.setColor(Color.DARK_GRAY);
-                g.drawLine(rect.width/2, 0, rect.width/2, rect.height);
-                g.drawLine(0,  rect.height/2, rect.width, rect.height/2);
+                g.drawLine((int)(rect.width / (correction*2)), 0, (int)(rect.width / (correction*2)), rect.height);
+                g.drawLine(0, (int) (rect.height / (correction*2)), rect.width, (int) (rect.height / (correction*2)));
 
 
 
@@ -183,7 +184,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
                         g.setColor(Color.BLUE);
-                        drawAgent(g, entry.getValue());
+                        drawAgent(g, entry.getValue(),2);
                 }
                 
                  // Draw agents + agents
@@ -205,7 +206,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 double x1,y1,x2,y2;
                 Rectangle rect = g.getClipBounds();
                 g.setColor(Color.RED);
-
+                int size=0;
+                double x= 0.5;
                 for(Map.Entry<String, TestPoliticalAgent> entry1 : p_players.entrySet())
                 {
                         for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
@@ -219,17 +221,21 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                                   y1 = entry1.getValue().getDataModel().getSocialBelief()*(rect.height/correction);
                                   y2 = entry2.getValue().getDataModel().getSocialBelief()*(rect.height/correction);
                                   g.drawLine((int)x1+1,(int)y1+1,(int)x2+1,(int)y2+1);
-                                  drawAgent(g, entry1.getValue());
-                                   g.setColor(Color.RED);
-                                  drawAgent(g, entry2.getValue());
+                                  size = PublicEnvironmentConnection.getInstance().getGroupById(entry1.getValue().getDataModel().getGroupId()).getMemberList().size();
+                                  
+                                  g.setColor(Color.getHSBColor( (float) x, 1, 1));
+                                  drawAgent(g, entry1.getValue(),size+1);
+                                  g.setColor(Color.getHSBColor( (float) x, 1, 1));
+                                  drawAgent(g, entry2.getValue(),size+1);
                                   
                               }
                             }
                         }
+                        x = x==1 ? 0.1: x + 0.1;
                 }
         }
 
-        private void drawAgent(Graphics g, TestPoliticalAgent p_player)
+        private void drawAgent(Graphics g, TestPoliticalAgent p_player,int size)
         {
                 Rectangle rect = g.getClipBounds();
                 double x,y;
@@ -239,7 +245,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 x = p_player.getDataModel().getEconomicBelief() *(rect.width/correction);
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
                 
-                g.fillOval((int)x,(int) y,10, 10);
+                g.fillOval((int)x-size,(int) y-size,size*2, size*2);
                 g.setColor(Color.MAGENTA);
                 g.drawString(name,(int)x,(int)y);
 

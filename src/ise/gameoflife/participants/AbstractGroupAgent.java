@@ -301,7 +301,7 @@ public abstract class AbstractGroupAgent implements Participant
 
 		// Inform each agent of how their vote went, and the overall group movement
 		for (String agent : props.keySet())
-		{
+                {
 			Proposition p = props.get(agent);
 			ec.act(new VoteResult(p, voteResult.get(p), change), getId(), authCode);
 		}

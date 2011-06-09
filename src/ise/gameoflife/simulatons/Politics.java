@@ -4,8 +4,9 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
-import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DatabasePlugin;
+import ise.gameoflife.plugins.HuntersAlivePlugin;
+//import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
@@ -23,24 +24,39 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
+		super("Basic Politics Testing Bed", 1000, 0, 0.1);
 
-		super("Basic Politics Testing Bed", 400, 0, 0.1);
 	}
 
 	@Override
 	protected void agents()
 	{
+
+
+             Random randomGenerator = new Random();
+		for (int i = 0; i < 10; i++)
+		{
+                        addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+		}
+
 //            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.6));
-//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.55));
-            Random randomGenerator = new Random();
-            for (int i = 0; i < 5; i++)
-	    {
-                addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-                addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-		addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-		addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-            }
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 1.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 1.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.5));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 1.0));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 1.0, 0.5));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.0, 0.5));
+//            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.0));
+
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.6));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.55));
+
 	}
 
 	@Override
