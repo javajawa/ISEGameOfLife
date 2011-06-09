@@ -566,14 +566,14 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             Food lastHunted = this.getDataModel().getLastHunted();
             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-
-            if ((lastHunted == null)||(members.size() <2)) return null;
-
             String opponentID;
-
             Map<String, Double> newTrustValue = new HashMap<String, Double>();
             double trust;
 
+            //If agent didn't go hunting or has no team pair then do nothing
+            if ((lastHunted == null)||(members.size() <2)) return null;
+
+            //Find out agent's opponent ID
             if (members.get(0).equals(this.getId()))
             {
                 opponentID = members.get(1);
@@ -585,18 +585,26 @@ public class TestPoliticalAgent extends AbstractAgent
     
             }
 
+            //Get agent's trust value for this particular opponent
+            //If there is no entry initialise it
             if (this.getDataModel().getTrust(opponentID) != null)
+            {
                 trust = this.getDataModel().getTrust(opponentID);
+            }
             else
+            {
                 trust = 0;
-            
+            }
+
+            //If agent hunted stag then check what the opponent did. If betrayed decrease trust
+            // otherwise increase it. If the agent hunted rabbit no change in trust
             if (lastHunted.getName().equals("Stag"))
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
                         trust = ValueScaler.scale(trust, -1, 0.5);
                     }
-                    else
+                    else //Opponent cooperated
                     {
                         trust = ValueScaler.scale(trust, 1, 0.5);
                     }
@@ -605,7 +613,7 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 trust = ValueScaler.scale(trust, 0, 0.5);
             }
-           
+            
             newTrustValue.put(opponentID, trust);
             return  newTrustValue;
     }
@@ -614,12 +622,11 @@ public class TestPoliticalAgent extends AbstractAgent
     protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
-            //loyalty after a vote refines from how happy you are after the vote?        
+            //Loyalty after a vote refines from how happy you are after the vote?
             if (this.getDataModel().getGroupId() != null)
                 return updateHappinessAfterVotes(proposition, votes, overallMovement);
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
-            //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -679,8 +686,10 @@ public class TestPoliticalAgent extends AbstractAgent
             Map<String, Double> newTrustValue = new HashMap<String, Double>();
             String proposer = proposition.getProposer();
             double proposerTrust;
+
+            //Check if proposer is not this agent. There is no point in increasing (or decreasing)
+            //the trust to yourself
             if (!this.getDataModel().getId().equals(proposer)){
-                //check for previous value
                 if (this.getDataModel().getTrust(proposer) != null)
                 {
                        proposerTrust = this.getDataModel().getTrust(proposer); //get current trust of proposer
@@ -705,7 +714,7 @@ public class TestPoliticalAgent extends AbstractAgent
                    //do nothing
                 }
                 */
-                    //increase the trust for proposer by number of votes
+                    //increase the trust for proposer according to the number of votes
                     proposerTrust = ValueScaler.scale(proposerTrust, votes, 0.1);
             }
             else
@@ -716,9 +725,8 @@ public class TestPoliticalAgent extends AbstractAgent
             newTrustValue.put(proposer, proposerTrust);
 
             return newTrustValue;
-            //throw new UnsupportedOperationException("Not supported yet.");
         }
-
+        //An agent which has been invited to a group must be tagged in order to process the invitation later
 	@Override
 	protected void onInvite(String group)
 	{
