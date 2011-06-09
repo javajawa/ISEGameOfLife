@@ -195,9 +195,9 @@ class GroupDataModel extends APlayerDataModel
 		sigma_x = 0;
 		for (Double v : values)	sigma_x += (v - mu)*(v - mu);
 
-		sigma_x = 2 * Math.sqrt(sigma_x);
-                
-                return sigma_x;
+		sigma_x = 2 * Math.sqrt(sigma_x / n);
+
+		return sigma_x;
 	}
 
 	int size()
