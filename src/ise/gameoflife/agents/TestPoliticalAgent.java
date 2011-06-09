@@ -508,7 +508,6 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 choice = null;  //!!!!!!! can be modified to use distribution for inbetween values
             }
-
             return choice;
     }
 
@@ -521,42 +520,41 @@ public class TestPoliticalAgent extends AbstractAgent
             double surplus = foodReceived - entitlement;
             Double currentHappiness = getDataModel().getCurrentHappiness();
 
+            //FOR DEBUGGING ONLY
+            System.out.println("--------------------------------");
+            System.out.println("My economic belief is: " + getDataModel().getEconomicBelief());
+            System.out.println("I hunted : " + foodHunted + "units of food");
+            System.out.println("Therefore I am entitled to receive: " + entitlement);
+            System.out.println("I received: " + foodReceived);
+            if (surplus == 0)
+                System.out.println("I got back exactly what I expected");
+            else if (surplus > 0)
+                System.out.println("I got back more than what I expected");
+            else
+                System.out.println("I got back less than what I expected");
+            //FOR DEBUGGING ONLY END
+            
             if (currentHappiness == null)
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-            
-            //copy over the initial (the current value) happiness to update
-            double newHappiness = currentHappiness;
-                        
+            System.out.println("My happiness before hunting was: " +currentHappiness);
             if (surplus > 0)
             {
                 //you're overjoyed
-                newHappiness += ValueScaler.scale(surplus, entitlement, 0.01);
-                if (newHappiness >= 1)
-                    return 1;
-                else
-                    return newHappiness;
+                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
             }
-            
-            if (surplus < 0)
+            else if(surplus < 0)
             {
                 //you're dissapointed
-                 newHappiness -= ValueScaler.scale(Math.abs(surplus), entitlement, 0.01);
-                 if (newHappiness <= 0)
-                     return 0;
-                 else
-                    return newHappiness;
+                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
             }
-            
-            //if you get here then you got what you wanted after the hunt, so, you increase your happiness slightly
-            newHappiness += ValueScaler.scale(0, entitlement, 0.01);
-            if (newHappiness >= 1)
-                return 1;
             else
-                return newHappiness;      
-            
-//            return 0; //throw new UnsupportedOperationException("Not supported yet.");
+            {   //surplus = 0
+                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
+            }
+            System.out.println("My new happiness is: " +currentHappiness);
+            return currentHappiness;
     }
 
     @Override
