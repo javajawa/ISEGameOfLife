@@ -2,83 +2,115 @@ package ise.gameoflife.plugins.database;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicGroupDataModel;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.File;
 import java.sql.SQLException;
+import org.simpleframework.xml.Element;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import presage.Plugin;
 import presage.Simulation;
+import presage.annotations.PluginConstructor;
 
 /**
- *
- * @author Benedict
+ * Updated version of DatabasePlugin that is more more more more... just better.
+ * @author Valdas
  */
 public class NewDatabasePlugin implements Plugin
 {
-	private final static String DB_URI;
-	private final static Logger logger = Logger.getLogger("ise.gameoflife.dbplugin");
+	private static final long serialVersionUID = 1L;
+	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
 	private final static String name = "Database v2";
-
-	static
+	
+	@Element
+	private final Boolean remote;
+	@Element
+	private final String comment;
+	
+	/**
+	 * Creates a new instance of the DatabasePlugin,
+	 * stores data in local db.
+	 * 
+	 */
+	NewDatabasePlugin()
 	{
-		String SCHEME = "jdbc:mysql";
-		String USER = "stratra1_isegol";
-		String PASSWORD = "stratra1_isegol";
-		String HOST = "69.175.26.66";
-		int PORT = 3306;
-		String PATH = "stratra1_isegol";
-
-		try
-		{
-			URI u = new URI(SCHEME, USER + ':' + PASSWORD, HOST, PORT, PATH, null,
-							null);
-			DB_URI = u.toASCIIString();
-		}
-		catch (URISyntaxException ex)
-		{
-			throw new Error(ex);
-		}
+	  //default parameters: local database
+	  this("No comment",false);
 	}
+	
+	 /**
+	 * Creates a new instance of the DatabasePlugin
+	 * 
+	 * @param comment Comment for simulation
+	 * @param remote Use remote db instead of local
+	 * 
+	 */
+	@PluginConstructor(
+	{
+		"comment","remote"
+	})
+	public NewDatabasePlugin(String comment,Boolean remote)
+	{
+	    this.remote = remote;
+	    this.comment = comment;
+	}
+	
 
 	private ConnectionWrapper wrap;
-	private PublicEnvironmentConnection conn;
+	private PublicEnvironmentConnection envConn;
 	private final TreeMap<String, PublicGroupDataModel> trackedGroups 
 					= new TreeMap<String, PublicGroupDataModel>();
 
 	@Override
 	public void execute()
 	{
-		findNewGroups();
+	    pruneOldGroups();
+	    findNewGroups();
+	    if(envConn.getRoundsPassed()%15==0) wrap.flush();
 	}
 
 	@Override
 	public void initialise(Simulation sim)
 	{
-		try
-		{
-			wrap = new ConnectionWrapper(DB_URI, sim);
+		try {
+		    String url;
+		    if(remote) {
+			//url to remote db
+			url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol?user=stratra1_isegol&password=ise4r3g00d";
+			logger.log(Level.INFO,"Using remote database");
+		    }
+		    else {
+			//path to /Simulations folder
+			String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
+			//url to local db
+			url = "jdbc:sqlite:"+ configPath + "/Simulations.db";
+			logger.log(Level.INFO,"Using local database");
+		    }
+		    wrap = new ConnectionWrapper(url,comment,remote);
+
 		}
 		catch (SQLException ex)
 		{
 			logger.log(Level.SEVERE, null, ex);
+		} catch (ClassNotFoundException ex) {
+			logger.log(Level.SEVERE,"SQLite JDBC class not found", ex);
 		}
-
-		conn = PublicEnvironmentConnection.getInstance();
+		envConn = PublicEnvironmentConnection.getInstance();
 	}
 
 	@Override
 	public void onDelete()
 	{
 		wrap.flush();
+		wrap.end();
 	}
 
 	@Override
 	public void onSimulationComplete()
 	{
 		wrap.flush();
+		wrap.end();
 	}
 
 	@Override
@@ -95,26 +127,30 @@ public class NewDatabasePlugin implements Plugin
 
 	private void findNewGroups()
 	{
-		// Add in any new groups
-		TreeSet<String> newGroups = new TreeSet<String>(conn.availableGroups());
+		// get all active groups in simulation
+		TreeSet<String> newGroups = new TreeSet<String>(envConn.availableGroups());
+		//remove already tracked groups
 		newGroups.removeAll(trackedGroups.keySet());
 
 		for (String g : newGroups)
 		{
+			//queue group addition sql statement
 			wrap.groupAdd(g);
-			trackedGroups.put(g, conn.getGroupById(g));
+			//add the group to tracked groups
+			trackedGroups.put(g, envConn.getGroupById(g));
 		}
 	}
 
 	
 	private void pruneOldGroups()
 	{
-		// Add in any new groups
+		//Stop tracking old groups
 		TreeSet<String> oldGroups = new TreeSet<String>(trackedGroups.keySet());
-		oldGroups.removeAll(conn.availableGroups());
+		oldGroups.removeAll(envConn.availableGroups());
 
 		for (String g : oldGroups)
 		{
+			//queue group death sql statement
 			wrap.groupDie(g);
 			trackedGroups.remove(g);
 		}

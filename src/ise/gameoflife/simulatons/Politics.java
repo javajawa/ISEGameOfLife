@@ -4,7 +4,7 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
-import ise.gameoflife.plugins.DatabasePlugin;
+import ise.gameoflife.plugins.database.NewDatabasePlugin;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 //import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
@@ -64,7 +64,8 @@ public class Politics extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin("Simulation comment",false));
+		//addPlugin(new NewDatabasePlugin("Simulation comment",false));
+		addPlugin(new NewDatabasePlugin(comment,true));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 //addPlugin(new TrustLogPlugin());

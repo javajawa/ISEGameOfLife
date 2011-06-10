@@ -111,7 +111,7 @@ public class DatabasePlugin implements Plugin {
     {
 	    super();
 	    this.sim_comment = sim_comment;
-	    this.clearDB = clearDB;
+
 	    
     }
     
