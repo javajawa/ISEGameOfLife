@@ -1,8 +1,12 @@
 package ise.gameoflife.plugins.database;
 
+import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import presage.Plugin;
@@ -38,12 +42,16 @@ public class NewDatabasePlugin implements Plugin
 			throw new Error(ex);
 		}
 	}
+
 	private ConnectionWrapper wrap;
+	private PublicEnvironmentConnection conn;
+	private final TreeMap<String, PublicGroupDataModel> trackedGroups 
+					= new TreeMap<String, PublicGroupDataModel>();
 
 	@Override
 	public void execute()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		findNewGroups();
 	}
 
 	@Override
@@ -51,24 +59,26 @@ public class NewDatabasePlugin implements Plugin
 	{
 		try
 		{
-			wrap = new ConnectionWrapper(DB_URI);
+			wrap = new ConnectionWrapper(DB_URI, sim);
 		}
 		catch (SQLException ex)
 		{
 			logger.log(Level.SEVERE, null, ex);
 		}
+
+		conn = PublicEnvironmentConnection.getInstance();
 	}
 
 	@Override
 	public void onDelete()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		wrap.flush();
 	}
 
 	@Override
 	public void onSimulationComplete()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		wrap.flush();
 	}
 
 	@Override
@@ -81,5 +91,32 @@ public class NewDatabasePlugin implements Plugin
 	public String getShortLabel()
 	{
 		return name;
+	}
+
+	private void findNewGroups()
+	{
+		// Add in any new groups
+		TreeSet<String> newGroups = new TreeSet<String>(conn.availableGroups());
+		newGroups.removeAll(trackedGroups.keySet());
+
+		for (String g : newGroups)
+		{
+			wrap.groupAdd(g);
+			trackedGroups.put(g, conn.getGroupById(g));
+		}
+	}
+
+	
+	private void pruneOldGroups()
+	{
+		// Add in any new groups
+		TreeSet<String> oldGroups = new TreeSet<String>(trackedGroups.keySet());
+		oldGroups.removeAll(conn.availableGroups());
+
+		for (String g : oldGroups)
+		{
+			wrap.groupDie(g);
+			trackedGroups.remove(g);
+		}
 	}
 }

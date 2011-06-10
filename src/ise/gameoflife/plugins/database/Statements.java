@@ -6,6 +6,7 @@ package ise.gameoflife.plugins.database;
  */
 enum Statements
 {
+	addSim("INSERT INTO simulations (sim_uuid,userid,comment) VALUES (?,?,?);"),
 	addAgent("INSERT INTO agents (simid, a_uuid, name, start) VALUES (?,?,?,?);"),
 	addGroup("INSERT INTO groups (simid, g_uuid, start) VALUES (?,?,?);"),
 	dieAgent("UPDATE agents SET end=? WHERE simid=? AND a_uuid=?;"),
