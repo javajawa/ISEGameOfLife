@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -274,32 +275,15 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
-            Food cooperateFood, defectFood, choice;
+            Food suggestedFood, cooperateFood, defectFood, choice;
 
-            //WORK IN PROGRESS
             String groupID = this.getDataModel().getGroupId();
-            String advisor;
-            int maxHistory = 0;
-            int historySize;
+            //If the agent belongs to a group can ask for advice
             if (groupID != null)
-            {
-                for (String possibleAdvisor:  getConn().getGroupById(groupID).getMemberList())
-                {
-                    if (getConn().getAgentById(possibleAdvisor) != null)
-                    {
-
-                        historySize = getConn().getAgentById(possibleAdvisor).getHuntingHistory().size();
-                        if (historySize > maxHistory)
-                        {
-                            advisor = possibleAdvisor;
-                            maxHistory = historySize;
-                        }
-                    }
-                }
+            {   
+                suggestedFood = this.askAdvice();
+                //TODO: Make use of advice when choosing food. 
             }
-            
-            //WORK IN PROGRESS END
-
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())
             {
@@ -460,18 +444,32 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
     {
-            double MaxThreshold = 0.8;
-            double MinThreshold = 0.2;
-            String opponentID;
-
+            double MaxThreshold = 0.85;
+            double MinThreshold = 0.15;
+            String opponentID = null;
+            
             //find opponent
             if (agentsTeam.getMembers().get(0).equals(agent))
-                opponentID = agentsTeam.getMembers().get(1);
+            {
+                    if (getConn().getAgentById(agentsTeam.getMembers().get(1)) != null)
+                    {
+                        opponentID = agentsTeam.getMembers().get(1);
+                    }
+            }
             else
-                opponentID = agentsTeam.getMembers().get(0);
+            {
+                    if (getConn().getAgentById(agentsTeam.getMembers().get(0)) != null)
+                    {
+                        opponentID = agentsTeam.getMembers().get(0);
+                    }
+            }
 
             //get opponent's trust value from "this" agent
-            double opponentTrust = this.getDataModel().getTrust(opponentID);
+            double opponentTrust;
+            if ((opponentID != null)&& (getDataModel().getTrust(opponentID)!= null))
+                opponentTrust = getDataModel().getTrust(opponentID);
+            else
+                return null;
 
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
@@ -844,4 +842,52 @@ public class TestPoliticalAgent extends AbstractAgent
 
 	}
 
+
+        private Food askAdvice() {
+            Food suggestedFood = null;
+            String opponentID = null;
+
+            //Get the members of the hunting team that this agent belongs to
+            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
+            //If the agent has no pair then no advice
+            if (members.size() == 1) return null;
+
+            //Find opponent's ID
+            if (members.get(0).equals(this.getId()))
+            {
+                    if (getConn().getAgentById(members.get(1)) != null)
+                    {
+                        opponentID = members.get(1);
+                    }
+            }
+            else
+            {
+                    if (getConn().getAgentById(members.get(0)) != null)
+                    {
+                        opponentID = members.get(0);
+                    }
+            }
+
+            //Get the hunting teams history of the opponent. Get the last hunting team of the opponent
+            //and find out which agent was its opponent at that time. This agent has the latest information
+            //about our opponent. Therefore this agent is the advisor.
+            if (opponentID != null)
+            {
+                HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
+                if (opponentPreviousTeam != null)
+                {
+                    for (String agent: opponentPreviousTeam.getMembers())
+                    {
+                        if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
+                        {
+                            return suggestedFood = seekAvice(agent);
+                        }
+                    }
+                }
+            }
+            
+            return suggestedFood;
+        }
 }
+
