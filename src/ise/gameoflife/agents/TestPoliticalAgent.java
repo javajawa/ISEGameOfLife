@@ -39,8 +39,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static TreeSet<String> groupFounders = new TreeSet<String>();
-	private History<Double> economicSatisfaction;
-        private History<Double> socialSatisfaction;
+	private History<Double> satisfaction = new History<Double>(1);
 
 				private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
@@ -66,64 +65,35 @@ public class TestPoliticalAgent extends AbstractAgent
     }
 
     protected boolean SatisfiedInGroup() {
+        if (satisfaction.isEmpty())
+            satisfaction.newEntry(0.0);
         
-        //compute current social satisfaction, based on your level of trust in the group
+        //get the previous satisfaction value
+        Double previousSatisfaction = satisfaction.getValue();        
+
+        //compute current satisfaction, based on your socio economic vector distance with the group        
+        double myEconomic = getDataModel().getEconomicBelief();
+        double mySocial = getDataModel().getSocialBelief();
+        double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+        double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
+
+        double economic = groupEconomic - myEconomic;//change in X
+        double social = groupSocial - mySocial;//change in Y
+        Double currentSatisfaction = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
         
-        //compare previous social satisfaction with current and update social belief accordingly
+        //store it in the history
+        satisfaction.newEntry(currentSatisfaction); 
         
-        //compute current economic satisfaction, based on happiness and loyalty in the group
-        
-        //compare previous economic satisfaction with current and update economic belief accordingly
-        
-        //combine social and economic satisfaction and decide if you're satisfied to be in the group
-        
-        
-        
-        
-        
-        double loyalty, trust, socioEconomic, satisfaction = 0;
-        
-        //how loyal you are to the group (effectively, are you happy in the group)
-        if (getDataModel().getCurrentLoyalty() == null)
-            loyalty = 0;
-        else
-            loyalty = getDataModel().getCurrentLoyalty();
-        
-        
-        //how much trust is there between you and the rest of the group
-        PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
-        double trustSum = 0;
-        Double trustValue;
-        int numKnownTrustValues = 0;
-        
-        for (String trustee : myGroup.getMemberList()) {
-                trustValue = getDataModel().getTrust(trustee);
-                if (trustValue != null) {
-                        trustSum += trustValue;
-                        numKnownTrustValues++;
-                }
-        }
-        if (numKnownTrustValues != 0)
-            trust = trustSum / numKnownTrustValues;
-        else
-            trust = 0;
-        
-        
-        //how much more or less does my group believe in the same beliefs as mine
-        double economic, social, vectorDistance, maxDistance = Math.sqrt(2);
-        
-        economic = myGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
-        social = myGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
-        vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-        socioEconomic = 1 - (vectorDistance / maxDistance);        
-        
-        
-        //how much are you satisifed with this group
-        satisfaction = 0.33*loyalty + 0.33*trust + 0.34*socioEconomic;
-        if (satisfaction > 0.66)
+        //compare with previous satisfaction and find out if agent should stay in the group        
+        Double deltaSatisfaction = currentSatisfaction - previousSatisfaction;        
+        if (deltaSatisfaction >= 0)        
+            //you're satisfied, so stay
             return true;
-        else
-            return false;
+        else if (deltaSatisfaction > -0.2)            
+                //you're not satisfied but you're willing to stay a bit longer
+                return true;
+            else
+                return false;
     }    
     
     @Override
@@ -146,10 +116,10 @@ public class TestPoliticalAgent extends AbstractAgent
                     groupFounders.remove(this.getId());
             if (invitationHolders.contains(this.getId()))
                     invitationHolders.remove(this.getId());
-            //if (SatisfiedInGroup())
-                //return null;
-            //else
-                //return leaveGroup;
+//            if (SatisfiedInGroup())
+//                return null;
+//            else
+//                return leaveGroup;
             
             //This return statement must NEVER be removed!!!It can be the source of every possible bug!:P
             return null;
@@ -786,7 +756,7 @@ public class TestPoliticalAgent extends AbstractAgent
     
         @Override
 	protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
-        {System.out.println(overallMovement);
+        {
             double currentSocial = getDataModel().getSocialBelief();
             //Your social belief refines from how much more/less trust there is in the group
             //after the vote. Whether or not your proposition passed reflects how much you
