@@ -821,15 +821,18 @@ public class TestPoliticalAgent extends AbstractAgent
                     {   //you're economic belief moves towards the group economic poistion
                         switch (position)
                         {
-                            case 'l':                                
+                            case 'l':
+                                //move more right
                                 currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, overallMovement);
                                 if (currentEconomic > groupEconomic)
                                     currentEconomic = groupEconomic;                                
                             case 'r':
+                                //move more left
                                 currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, overallMovement);
                                 if (currentEconomic < groupEconomic)
                                     currentEconomic = groupEconomic;
                             case 'c':
+                                //stay
                                 currentEconomic = groupEconomic;
                             default :
                                 throw new IllegalStateException("Agent economic belief not recognised");
@@ -840,11 +843,14 @@ public class TestPoliticalAgent extends AbstractAgent
                         //you're economic belief moves away from the group economic position
                         switch (position)
                         {
-                            case 'l':                                
+                            case 'l':
+                                //move more left
                                 currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, overallMovement);                                
                             case 'r':
+                                //move mor right
                                 currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, overallMovement);
                             case 'c':
+                                //any direction, for now
                                 boolean random = uniformRandBoolean();
                                 if (random)
                                     currentEconomic = ValueScaler.scale(currentEconomic, 0.05, overallMovement);
