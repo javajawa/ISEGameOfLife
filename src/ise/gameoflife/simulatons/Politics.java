@@ -23,7 +23,7 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 400, 0, 0.1);
+		super("Basic Politics Testing Bed", 200, 0, 0.1);
 
 	}
 
@@ -31,8 +31,15 @@ public class Politics extends GenericSimulation
 	protected void agents()
 	{
             addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.4));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.5));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.45));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.45, 0.55));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.55));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.35, 0.55));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.56, 0.55));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.58));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.7));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.65, 0.58));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.42));
 //                Random randomGenerator = new Random();
 //		for (int i = 0; i < 10; i++)
 //		{
