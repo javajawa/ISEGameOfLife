@@ -113,7 +113,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void onMemberLeave(String playerID, Reasons reason) {
-		// Do nothing
+		/**Change groups economic belief onMemberLeave HERE
+                 * !!!reset individual agent loyalty from agent NOT HERE
+                 * !!!change economic belief when a new member joins the group NOT HERE
+                 * */
 	}
 
 	@Override
