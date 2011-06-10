@@ -425,9 +425,6 @@ public class TestPoliticalAgent extends AbstractAgent
                             double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
                             double agentEconomicBelief = this.getDataModel().getEconomicBelief();
 
-                            System.out.println("My economic belief is: "+agentEconomicBelief);
-                            System.out.println("My group's belief is: "+groupEconomicPosition);
-
                             if (agentEconomicBelief > groupEconomicPosition)
                             {
                                  agentProposal = ProposalType.moveRight;
@@ -735,8 +732,6 @@ public class TestPoliticalAgent extends AbstractAgent
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
             }
-            if (votes <0)
-            System.out.println("My previous happiness was: "+ currentHappiness);
 
             //If this concerns you...
             if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
@@ -755,9 +750,6 @@ public class TestPoliticalAgent extends AbstractAgent
                     //votes = 0
                     currentHappiness = ValueScaler.scale(currentHappiness, 0, Math.abs(overallMovement));
              }
-            if (votes <0){
-            System.out.println("My proposition got : "+ votes);
-            System.out.println("My current happiness is: "+ currentHappiness);}
 
             return currentHappiness;
     }                     

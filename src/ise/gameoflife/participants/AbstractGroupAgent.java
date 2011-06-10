@@ -286,11 +286,11 @@ public abstract class AbstractGroupAgent implements Participant
 			// TODO: Store each proposition and result in history?
 			props.put(p.getProposer(), p);
 		}
-
+                
 		// Calculate the groups new position
 		double change = dm.getCurrentEconomicPoisition();
 		if (motionsPassed > 0)
-		{
+		{   
 			dm.setEconomicPosition(scale(change, movement / motionsPassed));
 			change = dm.getCurrentEconomicPoisition() - change;
 		}

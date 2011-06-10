@@ -32,7 +32,7 @@ public class Politics extends GenericSimulation
 	{
             addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.65));
             addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.6));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.45, 0.65));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.45, 0.64));
 
 //                Random randomGenerator = new Random();
 //		for (int i = 0; i < 10; i++)
