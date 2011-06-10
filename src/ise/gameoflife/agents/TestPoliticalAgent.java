@@ -14,6 +14,7 @@ import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.ValueScaler;
 import ise.gameoflife.tokens.AgentType;
+import ise.gameoflife.models.History;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class TestPoliticalAgent extends AbstractAgent
 
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static TreeSet<String> groupFounders = new TreeSet<String>();
+	private History<Double> economicSatisfaction;
+        private History<Double> socialSatisfaction;
 
 				private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
@@ -62,7 +65,22 @@ public class TestPoliticalAgent extends AbstractAgent
          //Do nothing
     }
 
-    protected boolean SatisfiedInGroup() {//set loyalty = 0 if dissatisfied
+    protected boolean SatisfiedInGroup() {
+        
+        //compute current social satisfaction, based on your level of trust in the group
+        
+        //compare previous social satisfaction with current and update social belief accordingly
+        
+        //compute current economic satisfaction, based on happiness and loyalty in the group
+        
+        //compare previous economic satisfaction with current and update economic belief accordingly
+        
+        //combine social and economic satisfaction and decide if you're satisfied to be in the group
+        
+        
+        
+        
+        
         double loyalty, trust, socioEconomic, satisfaction = 0;
         
         //how loyal you are to the group (effectively, are you happy in the group)
@@ -550,7 +568,21 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 //get change in economic beliefs
                 double myEconomic = getDataModel().getEconomicBelief();
-                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();                
+            //FOR DEBUGGING ONLY
+            System.out.println("--------------------------------");
+            System.out.println("My economic belief is: " + getDataModel().getEconomicBelief());
+            System.out.println("I hunted : " + foodHunted + "units of food");
+            System.out.println("Therefore I am entitled to receive: " + entitlement);
+            System.out.println("I received: " + foodReceived);
+            if (surplus == 0)
+                System.out.println("I got back exactly what I expected");
+            else if (surplus > 0)
+                System.out.println("I got back more than what I expected");
+            else
+                System.out.println("I got back less than what I expected");
+            //FOR DEBUGGING ONLY END
+            
                 //how close are you to the group's belief
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
 
@@ -561,19 +593,17 @@ public class TestPoliticalAgent extends AbstractAgent
                 {
                     currentHappiness = 0.5 * myEconomic;
                 }
-
                 //Calculate difference in happiness between the current and the previous round
                 Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
                 double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
-                
                 //get new loyalty
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
                 if (currentLoyalty == null || currentLoyalty == 0)
                     //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
-                    currentLoyalty = 0.5 * (currentHappiness + deltaEconomic);
-
+                    currentLoyalty = 0.5 * (currentHappiness + deltaEconomic); 
+                                      
                 if (deltaHappiness > 0)
                 {
                     //you gain loyalty to your group
@@ -583,8 +613,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 {
                     //you lose loyalty to your group
                     currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
-                }
-                else
+                } else
                     currentLoyalty = ValueScaler.scale(currentLoyalty, 0, deltaEconomic);
                 
                 return currentLoyalty;
@@ -668,7 +697,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 
                 
                 //get change in happiness
-                Double previousHappiness = getDataModel().getHappinessHistory().getValue();
+                Double previousHappiness = getDataModel().getHappinessHistory().getValue(1);
                 if (previousHappiness == null)
                 {
                     previousHappiness = 0.5 * myEconomic;
