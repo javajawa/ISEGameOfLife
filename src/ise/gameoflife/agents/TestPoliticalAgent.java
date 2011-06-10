@@ -788,8 +788,78 @@ public class TestPoliticalAgent extends AbstractAgent
         @Override
 	protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
         {
-            //return the current value, for now
-            return this.getDataModel().getSocialBelief();
+            double currentSocial = getDataModel().getSocialBelief();
+            //Your social belief refines from how much more/less trust there is in the group
+            //after the vote. Whether or not your proposition passed reflects how much you
+            //want to trust the group to make decisions or a single dictator to make decisions.
+            if (this.getDataModel().getGroupId() != null)
+            {                                                                                             
+               //If this concerns you...
+                if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+                {
+                    char position;
+                    double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
+                    double deltaSocial = groupSocial - currentSocial;//how close are you to the group's belief
+                    
+                    if (currentSocial < groupSocial)                    
+                        //your belief is more authoritorian
+                        position = 'a';//authoritorian
+                    else if (currentSocial > groupSocial)                  
+                        //your belief is more libertarian
+                        position = 'l';//libertarian                    
+                    else
+                        //your belief equates to group belief
+                        position = 'c';//center
+                                        
+                    if (votes > 0)
+                    {   //you're social belief moves towards the group social poistion
+                        switch (position)
+                        {
+                            case 'a':
+                                //move more libertarian
+                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, overallMovement);
+                                if (currentSocial > groupSocial)
+                                    currentSocial = groupSocial;                                
+                            case 'l':
+                                //move more authoritorian
+                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, overallMovement);
+                                if (currentSocial < groupSocial)
+                                    currentSocial = groupSocial;
+                            case 'c':
+                                //stay
+                                currentSocial = groupSocial;
+                            default :
+                                throw new IllegalStateException("Agent social belief not recognised");
+                        }
+                    }
+                    else if (votes < 0)
+                    {
+                        //you're economic belief moves away from the group economic position
+                        switch (position)
+                        {
+                            case 'a':
+                                //move more authoriatorian
+                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, overallMovement);                                
+                            case 'l':
+                                //move more libertarian
+                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, overallMovement);
+                            case 'c':
+                                //any direction, for now
+                                boolean random = uniformRandBoolean();
+                                if (random)
+                                    currentSocial = ValueScaler.scale(currentSocial, 0.05, overallMovement);
+                                else
+                                    currentSocial = ValueScaler.scale(currentSocial, -0.05, overallMovement);
+                            default :
+                                throw new IllegalStateException("Agent social belief not recognised");
+                        }
+                    }
+                    //otherwise your social belief remains the same
+                }
+                return currentSocial;                                      
+            }               
+            else
+                return currentSocial;//agent doesnt belong to a group and does not vote
         }
 	
         @Override
@@ -1008,6 +1078,6 @@ public class TestPoliticalAgent extends AbstractAgent
                 } else
                     //you're not overjoyed but you're satisfied
                     return true;                
-        }           
+        }
 }
 
