@@ -681,8 +681,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myEconomic = getDataModel().getEconomicBelief();
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
-                
-                
+                                
                 //get change in happiness
                 Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
                 if (oneTurnAgoHappiness == null)
@@ -691,49 +690,31 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
                 double currentHappiness = getDataModel().getCurrentHappiness();
                 double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less happy did you get               
-                
-                
+                                
                 //get new loyalty
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
                 if (currentLoyalty == null || currentLoyalty == 0)
                     //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
-                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
+                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);           
                 
-                //copy over the initial (the current value) loyalty to update               
-                double newLoyalty = currentLoyalty;
-                
-
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
-                    //if you got happier then you won
                     if (deltaHappiness > 0)
                     {
                         //you gain loyalty to your group
-                        newLoyalty += ValueScaler.scale(deltaHappiness, deltaEconomic, 0.01);
-                        if (newLoyalty >= 1)
-                            return 1;
-                        else
-                            return newLoyalty;
+                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
                     }
-                        
-                    //if you you got less happy then you lost
-                    if (deltaHappiness < 0)
+                    else if(deltaHappiness < 0)
                     {
                         //you lose loyalty to your group
-                        newLoyalty -= ValueScaler.scale(Math.abs(deltaHappiness), deltaEconomic, 0.01);
-                        if (newLoyalty <= 0)
-                            return 0.001;//reserve 'loyalty = 0' to agents belonging to no group
-                        else
-                            return newLoyalty;
-                    }                    
+                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
+                    } else
+                        currentLoyalty = ValueScaler.scale(currentLoyalty, 0, deltaEconomic);
                 }
-
-                //If this proposition doesn't concern you or if nothing happened, no decision
-                //was made, then you're not affected
-                return newLoyalty;  
+                return currentLoyalty;                                       
             }               
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
@@ -743,47 +724,32 @@ public class TestPoliticalAgent extends AbstractAgent
     protected double updateHappinessAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
-            double newHappiness;
             Double currentHappiness = getDataModel().getCurrentHappiness();            
-            
-            
+                        
             if (currentHappiness == null)
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-                newHappiness = currentHappiness;
                 
             //If this concerns you...
             if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
             {
-                //If you won...
-                if(votes > 0)
+                if (votes > 0)
                 {
                     //your happy your proposition was passed
-                    newHappiness += ValueScaler.scale(overallMovement, votes, 0.01);
-                    if (newHappiness >= 1)
-                        return 1;
-                    else
-                        return newHappiness;
+                    currentHappiness = ValueScaler.scale(currentHappiness, votes, overallMovement);
                 }
-
-                //If you lost...
-                if (votes < 0)
+                else if(votes < 0)
                 {
                     //your dissapointed your proposition didn't pass
-                    newHappiness -= ValueScaler.scale(overallMovement, votes, 0.01);
-                    if (newHappiness <= 0)
-                        return 0;
-                    else
-                        return newHappiness;
+                    currentHappiness = ValueScaler.scale(currentHappiness, votes, overallMovement);
                 }
+                else
+                    //votes = 0
+                    currentHappiness = ValueScaler.scale(currentHappiness, 0, overallMovement);                
             }
-            
-            //If this proposition doesn't concern you or if nothing happened, no decision
-            //was made, then you're not affected
-            return newHappiness;
-           
-    }
+            return currentHappiness;
+    }                     
 
     @Override
     protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
