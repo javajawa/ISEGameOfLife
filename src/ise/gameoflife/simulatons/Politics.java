@@ -30,14 +30,17 @@ public class Politics extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-                Random randomGenerator = new Random();
-		for (int i = 0; i < 10; i++)
-		{
-                        addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-		}
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.4));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.5));
+//                Random randomGenerator = new Random();
+//		for (int i = 0; i < 10; i++)
+//		{
+//                        addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//		}
 	}
 
 	@Override
@@ -64,7 +67,7 @@ public class Politics extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin("Simulation comment",false));
+		//addPlugin(new DatabasePlugin("Simulation comment",false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 //addPlugin(new TrustLogPlugin());
