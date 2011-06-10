@@ -1,6 +1,8 @@
 package ise.gameoflife.plugins;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,8 +23,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import presage.Plugin;
 import presage.Simulation;
 
@@ -33,7 +37,10 @@ import presage.Simulation;
 public class DebugSwitchPlugin extends JPanel implements Plugin
 {
 	private static final long serialVersionUID = 1L;
-	private final static String levels[] = {"INHERITED", "ALL", "SEVERE", "WARNING", "INFO", "FINE", "OFF"};
+	private final static String levels[] =
+	{
+		"INHERITED", "ALL", "SEVERE", "WARNING", "INFO", "FINE", "OFF"
+	};
 
 	private class LoggerPanel extends JPanel
 	{
@@ -46,17 +53,18 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 		private LoggerPanel(String loggerName)
 		{
 			logger = Logger.getLogger(loggerName);
-			if (logger == null) throw new IllegalArgumentException("Logger " + loggerName + " not found");
+			if (logger == null)
+				throw new IllegalArgumentException("Logger " + loggerName + " not found");
 
 			lbl = new JLabel(loggerName);
-			lbl.setAlignmentX(RIGHT_ALIGNMENT);
+			lbl.setAlignmentY(Component.RIGHT_ALIGNMENT);
 			box = new JComboBox(levels);
 
 			Level lvl = logger.getLevel();
 			box.setSelectedItem((lvl == null ? "INHERITED" : lvl.getName()));
 
-			box.addActionListener(new ActionListener() {
-
+			box.addActionListener(new ActionListener()
+			{
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
@@ -72,17 +80,18 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 				}
 			});
 
-			if (!Arrays.asList(logger.getHandlers()).contains(logDel)) logger.addHandler(logDel);
+			if (!Arrays.asList(logger.getHandlers()).contains(logDel))
+				logger.addHandler(logDel);
 
 			this.setLayout(new GridLayout(1, 2));
 			this.add(lbl);
 			this.add(box);
 		}
 	}
-	
+
 	final LogDelegate logDel = new LogDelegate();
 	final static DateFormat df = DateFormat.getTimeInstance();
-		
+
 	private class LogDelegate extends Handler
 	{
 		private final SimpleFormatter f = new SimpleFormatter();
@@ -99,6 +108,9 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 			b.append(df.format(new Date(record.getMillis())));
 			b.append("] ");
 			b.append(record.getLoggerName());
+			b.append(" [");
+			b.append(record.getLevel().getLocalizedName());
+			b.append("] ");
 			b.append(": ");
 			b.append(f.formatMessage(record));
 
@@ -127,7 +139,18 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 			}
 
 			b.append('\n');
-			SwingUtilities.invokeLater(new LogWriter(b.toString()));
+
+			Color c;
+			if (record.getLevel().intValue() > Level.INFO.intValue())
+			{
+				c = new Color((float)record.getLevel().intValue() / 1000, 0, 0);
+			}
+			else
+			{
+				c = Color.BLACK;
+			}
+
+			SwingUtilities.invokeLater(new LogWriter(b.toString(), c));
 		}
 
 		@Override
@@ -145,35 +168,40 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 
 	private class LogWriter implements Runnable
 	{
-		private String data;
+		private final String data;
+		private final Color c;
 
-		LogWriter(String data)
+		LogWriter(String data, Color c)
 		{
 			this.data = data;
+			this.c = c;
 		}
 
 		@Override
 		public void run()
 		{
-			synchronized(textArea)
+			synchronized (textArea)
 			{
-				textArea.append(data);
+				SimpleAttributeSet as = new SimpleAttributeSet();
+				StyleConstants.setForeground(as, c);
+				textArea.setCharacterAttributes(as, true);
+
 				textArea.setCaretPosition(textArea.getDocument().getLength());
-				// TODO: Make things colourful
-				// TODO: Clear up excess old data				
+				textArea.replaceSelection(data);
 			}
 		}
-
 	}
+
 	final JPanel loggers = new JPanel();
-	final JTextArea textArea = new JTextArea();
+	final JTextPane textArea = new JTextPane();
 
 	@Override
 	public void execute()
 	{
-		TreeMap<String, LoggerPanel> sortingTree = new TreeMap<String, LoggerPanel>(Collator.getInstance());
+		TreeMap<String, LoggerPanel> sortingTree = new TreeMap<String, LoggerPanel>(
+						Collator.getInstance());
 
-		LogManager root =	java.util.logging.LogManager.getLogManager();
+		LogManager root = java.util.logging.LogManager.getLogManager();
 		for (Enumeration<String> it = root.getLoggerNames(); it.hasMoreElements();)
 		{
 			String name = it.nextElement();
@@ -202,10 +230,8 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 	public void initialise(Simulation sim)
 	{
 		loggers.setLayout(new BoxLayout(loggers, BoxLayout.PAGE_AXIS));
-		textArea.setEditable(false);
-		//textArea.setRows(10000);
 
-		this.setLayout(new BorderLayout());		
+		this.setLayout(new BorderLayout());
 		this.add(new JScrollPane(loggers), BorderLayout.NORTH);
 		this.add(new JScrollPane(textArea), BorderLayout.CENTER);
 		execute();
@@ -234,5 +260,4 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 	{
 		return "Loggers";
 	}
-	
 }
