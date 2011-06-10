@@ -20,10 +20,10 @@ public class ValueScalerTest
 		double old = 0.5;
 		double amount = 1;
 
-		double expResult = 0.55;
+		double expResult = 0.95;
 		double result = ValueScaler.scale(old, amount);
 
-		assertEquals(expResult, result, 0.01);
+		assertEquals(expResult, result, 0.025);
 	}
 
 	@Test
@@ -36,7 +36,7 @@ public class ValueScalerTest
 		double expResult = 0.75;
 		double result = ValueScaler.scale(old, amount, step);
 
-		assertEquals(expResult, result, 0.0);
+		assertEquals(expResult, result, 0.025);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class ValueScalerTest
 		double expResult = 0.25;
 		double result = ValueScaler.scale(old, amount, step);
 
-		assertEquals(expResult, result, 0.0);
+		assertEquals(expResult, result, 0.025);
 	}
 
 	@Test
@@ -70,12 +70,40 @@ public class ValueScalerTest
 	{
 		double old = 0.5;
 		double amount = 2;
-		double step = 0.5;
+		double step = Math.E;
 
 		double expResult = old;
 		double result = ValueScaler.scale(old, amount, step);
 		result = ValueScaler.scale(result, -amount, step);
 
-		assertEquals(expResult, result, 0.0);
+		assertEquals(expResult, result, 0.025);
 	}
+
+	@Test
+	public void testScale_6()
+	{
+		double old = 0.5;
+		double amount = 1;
+		double step = 2;
+
+		double expResult = 0.75;
+		double result = ValueScaler.scale(old, amount, step);
+
+		assertEquals(expResult, result, 0.025);
+	}
+
+
+	@Test
+	public void testScale_7()
+	{
+		double old = 0.5;
+		double amount = 1;
+		double step = 10;
+
+		double expResult = 0.95;
+		double result = ValueScaler.scale(old, amount, step);
+
+		assertEquals(expResult, result, 0.025);
+	}
+
 }
