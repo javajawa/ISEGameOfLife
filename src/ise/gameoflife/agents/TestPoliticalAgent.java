@@ -299,7 +299,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //If the agent belongs to a group can ask for advice
             if (groupID != null)
             {   
-                suggestedFood = this.askAdvice();
+                //suggestedFood = this.askAdvice();
                 //TODO: Make use of advice when choosing food. 
             }
             //Stores the two sources in an array
