@@ -335,6 +335,11 @@ public abstract class AbstractGroupAgent implements Participant
 		return dm.getPublicVersion();
 	}
 
+	protected final void setEconomicPosition(double newPosition)
+	{
+		this.dm.setEconomicPosition(newPosition);
+	}
+
 	/**
 	 * This function puts the inputs into a queue to be processed at the end of
 	 * the cycle
