@@ -569,19 +569,6 @@ public class TestPoliticalAgent extends AbstractAgent
                 //get change in economic beliefs
                 double myEconomic = getDataModel().getEconomicBelief();
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();                
-            //FOR DEBUGGING ONLY
-            System.out.println("--------------------------------");
-            System.out.println("My economic belief is: " + getDataModel().getEconomicBelief());
-            System.out.println("I hunted : " + foodHunted + "units of food");
-            System.out.println("Therefore I am entitled to receive: " + entitlement);
-            System.out.println("I received: " + foodReceived);
-            if (surplus == 0)
-                System.out.println("I got back exactly what I expected");
-            else if (surplus > 0)
-                System.out.println("I got back more than what I expected");
-            else
-                System.out.println("I got back less than what I expected");
-            //FOR DEBUGGING ONLY END
             
                 //how close are you to the group's belief
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
