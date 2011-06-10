@@ -574,14 +574,14 @@ public class TestPoliticalAgent extends AbstractAgent
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
 
                 //get change in happiness
-                Double currentHappiness = getDataModel().getCurrentHappiness();
+                Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
                 //if there is no entry for happiness initialise it
-                if (currentHappiness == null)
+                if (oneTurnAgoHappiness == null)
                 {
-                    currentHappiness = 0.5 * myEconomic;
+                    oneTurnAgoHappiness = 0.5 * myEconomic;
                 }
                 //Calculate difference in happiness between the current and the previous round
-                Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
+                Double currentHappiness = getDataModel().getCurrentHappiness();
                 double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
                 //get new loyalty
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
@@ -589,7 +589,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
-                    currentLoyalty = 0.5 * (currentHappiness + deltaEconomic); 
+                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
                                       
                 if (deltaHappiness > 0)
                 {
@@ -684,13 +684,13 @@ public class TestPoliticalAgent extends AbstractAgent
                 
                 
                 //get change in happiness
-                Double previousHappiness = getDataModel().getHappinessHistory().getValue(1);
-                if (previousHappiness == null)
+                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
+                if (oneTurnAgoHappiness == null)
                 {
-                    previousHappiness = 0.5 * myEconomic;
+                    oneTurnAgoHappiness = 0.5 * myEconomic;
                 }
                 double currentHappiness = getDataModel().getCurrentHappiness();
-                double deltaHappiness = currentHappiness - previousHappiness;//how much or less happy did you get               
+                double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less happy did you get               
                 
                 
                 //get new loyalty
@@ -699,7 +699,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
-                    currentLoyalty = 0.5 * (previousHappiness + deltaEconomic);
+                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
                 
                 //copy over the initial (the current value) loyalty to update               
                 double newLoyalty = currentLoyalty;
