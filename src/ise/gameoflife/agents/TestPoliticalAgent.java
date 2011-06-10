@@ -786,7 +786,7 @@ public class TestPoliticalAgent extends AbstractAgent
     
         @Override
 	protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
-        {
+        {System.out.println(overallMovement);
             double currentSocial = getDataModel().getSocialBelief();
             //Your social belief refines from how much more/less trust there is in the group
             //after the vote. Whether or not your proposition passed reflects how much you
@@ -816,13 +816,13 @@ public class TestPoliticalAgent extends AbstractAgent
                         {
                             case 'a':
                                 //move more libertarian
-                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, overallMovement);
+                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
                                 if (currentSocial > groupSocial)
                                     currentSocial = groupSocial;
                                 break;
                             case 'l':
                                 //move more authoritorian
-                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, overallMovement);
+                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
                                 if (currentSocial < groupSocial)
                                     currentSocial = groupSocial;
                                 break;
@@ -841,19 +841,19 @@ public class TestPoliticalAgent extends AbstractAgent
                         {
                             case 'a':
                                 //move more authoriatorian
-                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, overallMovement);
+                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
                                 break;
                             case 'l':
                                 //move more libertarian
-                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, overallMovement);
+                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
                                 break;
                             case 'c':
                                 //any direction, for now
                                 boolean random = uniformRandBoolean();
                                 if (random)
-                                    currentSocial = ValueScaler.scale(currentSocial, 0.05, overallMovement);
+                                    currentSocial = ValueScaler.scale(currentSocial, 0.05, Math.abs(overallMovement));
                                 else
-                                    currentSocial = ValueScaler.scale(currentSocial, -0.05, overallMovement);
+                                    currentSocial = ValueScaler.scale(currentSocial, -0.05, Math.abs(overallMovement));
                                 break;
                             default :
                                 throw new IllegalStateException("Agent lost but social belief not recognised");
@@ -898,13 +898,13 @@ public class TestPoliticalAgent extends AbstractAgent
                         {
                             case 'r':
                                 //move more left
-                                currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, overallMovement);
+                                currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, Math.abs(overallMovement));
                                 if (currentEconomic > groupEconomic)
                                     currentEconomic = groupEconomic;
                                 break;
                             case 'l':
                                 //move more right
-                                currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, overallMovement);
+                                currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, Math.abs(overallMovement));
                                 if (currentEconomic < groupEconomic)
                                     currentEconomic = groupEconomic;
                                 break;
@@ -923,19 +923,19 @@ public class TestPoliticalAgent extends AbstractAgent
                         {
                             case 'r':
                                 //move more right
-                                currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, overallMovement);
+                                currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, Math.abs(overallMovement));
                                 break;
                             case 'l':
                                 //move mor left
-                                currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, overallMovement);
+                                currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, Math.abs(overallMovement));
                                 break;
                             case 'c':
                                 //any direction, for now
                                 boolean random = uniformRandBoolean();
                                 if (random)
-                                    currentEconomic = ValueScaler.scale(currentEconomic, 0.05, overallMovement);
+                                    currentEconomic = ValueScaler.scale(currentEconomic, 0.05, Math.abs(overallMovement));
                                 else
-                                    currentEconomic = ValueScaler.scale(currentEconomic, -0.05, overallMovement);
+                                    currentEconomic = ValueScaler.scale(currentEconomic, -0.05, Math.abs(overallMovement));
                                 break;
                             default :
                                 throw new IllegalStateException("Agent unhappy but economic belief not recognised");
