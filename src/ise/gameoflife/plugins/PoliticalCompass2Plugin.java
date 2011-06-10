@@ -47,6 +47,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         // Set of political participants that are active
         private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
         double correction = 1; //scale the agents
+        int shift = 5; //shift axes
         
         // Contains hues for each group on the compass
         private TreeMap<String, Float> group_colors = new TreeMap<String, Float>();
@@ -170,7 +171,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 // Clear everything and set the clip
                 g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, 0, getWidth(), getHeight());
-                g.setClip(3,3, getWidth()-3, getHeight()-3);
+                g.setClip(shift,shift, getWidth()-shift, getHeight()-shift);
 
                 // Draw social and economic axis
                 Rectangle rect = g.getClipBounds();
@@ -264,7 +265,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
                 //draw the agents
                 g.fillOval((int)x-size,(int) y-size,size*2, size*2);
-
+                
                 //print the names
                 g.setColor(Color.MAGENTA);
                 g.drawString(name,(int)x,(int)y);
