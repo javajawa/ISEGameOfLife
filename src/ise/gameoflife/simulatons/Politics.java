@@ -11,7 +11,6 @@ import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
-import ise.gameoflife.plugins.TrustLogPlugin;
 import ise.gameoflife.tokens.AgentType;
 import java.util.Random;
 
