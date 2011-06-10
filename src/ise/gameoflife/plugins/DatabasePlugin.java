@@ -355,7 +355,7 @@ public class DatabasePlugin implements Plugin {
 	    }
 	    catch (Exception e)
 		{
-			System.err.println("SQLite database library not available:" + e);
+			logger.log(Level.SEVERE, "SQLite database library not available", e);
 		}
 	}
 	try {
