@@ -1,6 +1,8 @@
 package ise.gameoflife.plugins.database;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.participants.PublicAgentDataModel;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -113,6 +115,8 @@ final class ConnectionWrapper
 		    dieGroup.executeBatch();
 		    newAgent.executeBatch();
 		    dieAgent.executeBatch();
+		    roundGroup.executeBatch();
+		    roundAgent.executeBatch();
 		    if (!conn.getAutoCommit()) conn.commit();
 		}
 		catch (SQLException ex)
@@ -183,15 +187,46 @@ final class ConnectionWrapper
 	
 	void agentDie(String id)
 	{
-		try
-		{
-			dieAgent.setString(3, id);
-			dieAgent.setInt(1, envConn.getRoundsPassed());
-			dieAgent.addBatch();
-		}
-		catch (SQLException ex)
-		{
-			logger.log(Level.WARNING, null, ex);
-		}
+	    try
+	    {
+		dieAgent.setString(3, id);
+		dieAgent.setInt(1, envConn.getRoundsPassed());
+		dieAgent.addBatch();
+	    }
+	    catch (SQLException ex)
+	    {
+		logger.log(Level.WARNING, null, ex);
+	    }
+	}
+
+	void groupRound(String id, PublicGroupDataModel group) {
+	     try {
+		 roundGroup.setInt(2,envConn.getRoundsPassed());
+		 roundGroup.setString(3,id);
+		 roundGroup.setInt(4,group.getMemberList().size());
+		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
+		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
+		 roundGroup.addBatch();
+	    } catch (SQLException ex) {
+		logger.log(Level.WARNING, null, ex);
+	    }
+	}
+
+	void agentRound(String id, PublicAgentDataModel agent) {
+	    try {
+		roundAgent.setInt(2,envConn.getRoundsPassed());
+		roundAgent.setString(3,id);
+		roundAgent.setString(4,agent.getGroupId());
+		roundAgent.setDouble(5,agent.getFoodAmount());
+		roundAgent.setString(6,"Food unknown");
+		roundAgent.setDouble(7,agent.getSocialBelief());
+		roundAgent.setDouble(8,agent.getEconomicBelief());
+		//TODO to implement the below variables
+		roundAgent.setDouble(9,0.0);
+		roundAgent.setDouble(10,0.0);
+		roundAgent.addBatch();
+	    } catch (SQLException ex) {
+		logger.log(Level.WARNING, null, ex);
+	    }
 	}
     }

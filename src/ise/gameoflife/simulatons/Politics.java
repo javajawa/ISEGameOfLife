@@ -65,7 +65,7 @@ public class Politics extends GenericSimulation
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//addPlugin(new NewDatabasePlugin("Simulation comment",false));
-		addPlugin(new NewDatabasePlugin(comment,true));
+		addPlugin(new NewDatabasePlugin(comment,false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 //addPlugin(new TrustLogPlugin());

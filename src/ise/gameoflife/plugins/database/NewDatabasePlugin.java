@@ -5,6 +5,7 @@ import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Map;
 import org.simpleframework.xml.Element;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -70,8 +71,10 @@ public class NewDatabasePlugin implements Plugin
 	{
 	    pruneOldGroups();
 	    findNewGroups();
+	    getGroupRoundData();
 	    pruneOldAgents();
 	    findNewAgents();
+	    getAgentRoundData();
 	    //writes to db every 15 rounds
 	    if(envConn.getRoundsPassed()%15==0) wrap.flush();
 	}
@@ -189,6 +192,21 @@ public class NewDatabasePlugin implements Plugin
 			//queue agent death sql statement
 			wrap.agentDie(a);
 			trackedAgents.remove(a);
+		}
+	}
+
+	private void getGroupRoundData() {
+	    for(Map.Entry<String, PublicGroupDataModel> entry : trackedGroups.entrySet())
+		{
+		    wrap.groupRound(entry.getKey(),entry.getValue());
+		}
+	}
+
+	private void getAgentRoundData() {
+	    
+	    for(Map.Entry<String, PublicAgentDataModel> entry : trackedAgents.entrySet())
+		{
+		    wrap.agentRound(entry.getKey(),entry.getValue());
 		}
 	}
 }
