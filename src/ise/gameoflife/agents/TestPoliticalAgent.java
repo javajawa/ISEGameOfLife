@@ -787,7 +787,7 @@ public class TestPoliticalAgent extends AbstractAgent
     
         @Override
 	protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
-        {System.out.println(overallMovement);
+        {
             double currentSocial = getDataModel().getSocialBelief();
             //Your social belief refines from how much more/less trust there is in the group
             //after the vote. Whether or not your proposition passed reflects how much you
