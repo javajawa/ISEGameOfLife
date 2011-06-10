@@ -594,14 +594,14 @@ public class TestPoliticalAgent extends AbstractAgent
                 if (deltaHappiness > 0)
                 {
                     //you gain loyalty to your group
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
+                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
                 }
                 else if(deltaHappiness < 0)
                 {
                     //you lose loyalty to your group
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
+                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
                 } else
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, 0, deltaEconomic);
+                    currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1 - deltaEconomic);
                 
                 return currentLoyalty;
             }               
@@ -705,14 +705,14 @@ public class TestPoliticalAgent extends AbstractAgent
                     if (deltaHappiness > 0)
                     {
                         //you gain loyalty to your group
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
+                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1-deltaEconomic);
                     }
                     else if(deltaHappiness < 0)
                     {
                         //you lose loyalty to your group
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, deltaEconomic);
+                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1-deltaEconomic);
                     } else
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, 0, deltaEconomic);
+                        currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1-deltaEconomic);
                 }
                 return currentLoyalty;                                       
             }               
@@ -727,10 +727,12 @@ public class TestPoliticalAgent extends AbstractAgent
             Double currentHappiness = getDataModel().getCurrentHappiness();            
                         
             if (currentHappiness == null)
+            {
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-                
+            }
+            System.out.println(votes);
             //If this concerns you...
             if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
             {
@@ -747,8 +749,8 @@ public class TestPoliticalAgent extends AbstractAgent
                 else
                     //votes = 0
                     currentHappiness = ValueScaler.scale(currentHappiness, 0, overallMovement);                
-            }
-            return currentHappiness;
+             }
+             return currentHappiness;
     }                     
 
     @Override
@@ -761,43 +763,25 @@ public class TestPoliticalAgent extends AbstractAgent
 
             //Check if proposer is not this agent. There is no point in increasing (or decreasing)
             //the trust to yourself
-            if (!this.getDataModel().getId().equals(proposer)){
+            if (!this.getDataModel().getId().equals(proposer))
+            {
                 if (this.getDataModel().getTrust(proposer) != null)
                 {
                        proposerTrust = this.getDataModel().getTrust(proposer); //get current trust of proposer
-                 }
+                }
                 else
-                 {
+                {
                        proposerTrust = 0;
                 }
-                //discuss... //increase or decrease trust according to what agent vote and what was the proposal
-                /*
-                //update the value
-                if (this.castVote(proposition).equals(VoteType.For))
-                {
-                       proposerTrust = ValueScaler.scale(proposerTrust, votes, 0.1);
-                }
-                else if(this.castVote(proposition).equals(VoteType.Against))
-                {
-                       proposerTrust = ValueScaler.scale(proposerTrust, -1, 0.1);
-                }
-                else
-                {
-                   //do nothing
-                }
-                */
-                    //increase the trust for proposer according to the number of votes
-                    proposerTrust += ValueScaler.scale(overallMovement, votes, 0.1);
-                    newTrustValue.put(proposer, proposerTrust);
-            }
-            else
-            {
+                //increase the trust for proposer according to the number of votes
+                proposerTrust += ValueScaler.scale(overallMovement, votes, overallMovement);
+                newTrustValue.put(proposer, proposerTrust);
+             }
+             else
+             {
                     //proposerTrust = 1; //trust for himself
                     newTrustValue = null;
-            }
-
-            
-
+             }
             return newTrustValue;
         }
     
