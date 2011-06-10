@@ -111,11 +111,13 @@ final class ConnectionWrapper
 		{
 		    newGroup.executeBatch();
 		    dieGroup.executeBatch();
+		    newAgent.executeBatch();
+		    dieAgent.executeBatch();
 		    if (!conn.getAutoCommit()) conn.commit();
 		}
 		catch (SQLException ex)
 		{
-		    logger.log(Level.SEVERE, null, ex);
+		    logger.log(Level.WARNING, null, ex);
 		}
 	}
 	
@@ -131,7 +133,7 @@ final class ConnectionWrapper
 		conn.close();
 		logger.log(Level.INFO,"Final writes to database complete.");
 	    } catch (SQLException ex) {
-		logger.log(Level.SEVERE, null, ex);
+		logger.log(Level.WARNING, null, ex);
 	    }
 	}
 
@@ -145,7 +147,7 @@ final class ConnectionWrapper
 		}
 		catch (SQLException ex)
 		{
-		    logger.log(Level.SEVERE, null, ex);
+		    logger.log(Level.WARNING, null, ex);
 		}
 	}
 
@@ -159,7 +161,37 @@ final class ConnectionWrapper
 		}
 		catch (SQLException ex)
 		{
-			logger.log(Level.SEVERE, null, ex);
+			logger.log(Level.WARNING, null, ex);
 		}
 	}
-}
+
+	void agentAdd(String id)
+	{
+		try
+		{
+		    newAgent.setString(2, id);
+		    //agent name
+		    newAgent.setString(3,envConn.getAgentById(id).getName());
+		    newAgent.setInt(4, envConn.getRoundsPassed());
+		    newAgent.addBatch();
+		}
+		catch (SQLException ex)
+		{
+		    logger.log(Level.WARNING, null, ex);
+		}
+	}
+	
+	void agentDie(String id)
+	{
+		try
+		{
+			dieAgent.setString(3, id);
+			dieAgent.setInt(1, envConn.getRoundsPassed());
+			dieAgent.addBatch();
+		}
+		catch (SQLException ex)
+		{
+			logger.log(Level.WARNING, null, ex);
+		}
+	}
+    }

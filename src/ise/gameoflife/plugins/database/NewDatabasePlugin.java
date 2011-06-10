@@ -1,6 +1,7 @@
 package ise.gameoflife.plugins.database;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import java.io.File;
 import java.sql.SQLException;
@@ -61,12 +62,17 @@ public class NewDatabasePlugin implements Plugin
 	private PublicEnvironmentConnection envConn;
 	private final TreeMap<String, PublicGroupDataModel> trackedGroups 
 					= new TreeMap<String, PublicGroupDataModel>();
+	private final TreeMap<String, PublicAgentDataModel> trackedAgents
+					= new TreeMap<String, PublicAgentDataModel>();
 
 	@Override
 	public void execute()
 	{
 	    pruneOldGroups();
 	    findNewGroups();
+	    pruneOldAgents();
+	    findNewAgents();
+	    //writes to db every 15 rounds
 	    if(envConn.getRoundsPassed()%15==0) wrap.flush();
 	}
 
@@ -85,7 +91,7 @@ public class NewDatabasePlugin implements Plugin
 			String configPath = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
 			//url to local db
 			url = "jdbc:sqlite:"+ configPath + "/Simulations.db";
-			logger.log(Level.INFO,"Using local database");
+			logger.log(Level.INFO,"Using local database:");
 		    }
 		    wrap = new ConnectionWrapper(url,comment,remote);
 
@@ -124,6 +130,22 @@ public class NewDatabasePlugin implements Plugin
 	{
 		return name;
 	}
+	
+	private void findNewAgents()
+	{
+		// get all active agentsin simulation
+		TreeSet<String> newAgents = new TreeSet<String>(envConn.getAgents());
+		//remove already tracked groups
+		newAgents.removeAll(trackedAgents.keySet());
+
+		for (String a : newAgents)
+		{
+			//queue agent addition sql statement
+			wrap.agentAdd(a);
+			//add the agent to tracked groups
+			trackedAgents.put(a, envConn.getAgentById(a));
+		}
+	}
 
 	private void findNewGroups()
 	{
@@ -153,6 +175,20 @@ public class NewDatabasePlugin implements Plugin
 			//queue group death sql statement
 			wrap.groupDie(g);
 			trackedGroups.remove(g);
+		}
+	}
+	
+	private void pruneOldAgents()
+	{
+		//Stop tracking dead agents
+		TreeSet<String> deadAgents = new TreeSet<String>(trackedAgents.keySet());
+		deadAgents.removeAll(envConn.getAgents());
+
+		for (String a : deadAgents)
+		{
+			//queue agent death sql statement
+			wrap.agentDie(a);
+			trackedAgents.remove(a);
 		}
 	}
 }
