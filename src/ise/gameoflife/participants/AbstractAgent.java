@@ -182,14 +182,14 @@ abstract public class AbstractAgent implements Participant
 							in.getVotes(), in.getProposition().getType()});
 			dm.setCurrentHappiness(updateHappinessAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			dm.setCurrentLoyalty(updateLoyaltyAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
+			dm.setSocialBelief(updateSocialBeliefAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
+			dm.setEconomicBelief(updateEconomicBeliefAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			Map<String,Double> t = updateTrustAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement());
 			if (t==null) return;
 			for (String agent : t.keySet())
 			{
 				dm.setTrust(agent, t.get(agent));
 			}
-			dm.setEconomicBelief(updateEconomicBeliefAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));                        
-			dm.setSocialBelief(updateSocialBeliefAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));                        
 		}
 	}
 
