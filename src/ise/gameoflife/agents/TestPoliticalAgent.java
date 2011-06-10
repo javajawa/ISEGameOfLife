@@ -224,7 +224,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
             currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
 
-            if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
+            if ((currentHeuristic > 0.4) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
                 previousHeuristic = currentHeuristic;
             }
@@ -657,7 +657,6 @@ public class TestPoliticalAgent extends AbstractAgent
                     else //Opponent cooperated
                     {
                         trust = ValueScaler.scale(trust, 1, 0.3);
-                        System.out.println(trust);
                     }
             }
             else    //Agent hunted rabbit so no trust issues
@@ -740,16 +739,16 @@ public class TestPoliticalAgent extends AbstractAgent
                 if (votes > 0)
                 {
                     //your happy your proposition was passed
-                    currentHappiness = ValueScaler.scale(currentHappiness, votes, overallMovement);
+                    currentHappiness = ValueScaler.scale(currentHappiness, votes, Math.abs(overallMovement));
                 }
                 else if(votes < 0)
                 {
                     //your dissapointed your proposition didn't pass
-                    currentHappiness = ValueScaler.scale(currentHappiness, votes, overallMovement);
+                    currentHappiness = ValueScaler.scale(currentHappiness, votes, Math.abs(overallMovement));
                 }
                 else
                     //votes = 0
-                    currentHappiness = ValueScaler.scale(currentHappiness, 0, overallMovement);                
+                    currentHappiness = ValueScaler.scale(currentHappiness, 0, Math.abs(overallMovement));
              }
              return currentHappiness;
     }                     
@@ -775,7 +774,7 @@ public class TestPoliticalAgent extends AbstractAgent
                        proposerTrust = 0;
                 }
                 //increase the trust for proposer according to the number of votes
-                proposerTrust = ValueScaler.scale(proposerTrust, votes, overallMovement);
+                proposerTrust = ValueScaler.scale(proposerTrust, votes, Math.abs(overallMovement));
                 newTrustValue.put(proposer, proposerTrust);
              }
              else
