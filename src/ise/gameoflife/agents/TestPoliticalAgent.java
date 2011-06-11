@@ -12,7 +12,6 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.models.GroupDataInitialiser;
-import ise.gameoflife.models.ValueScaler;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.models.History;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -504,7 +502,7 @@ public class TestPoliticalAgent extends AbstractAgent
     }
 
     @Override
-    protected double updateHappinessAfterHunt(double foodHunted,
+    protected int updateHappinessAfterHunt(double foodHunted,
                                     double foodReceived)
     {
             //'entitelment' denotes the amount of food an agent wants to get, at the least
@@ -517,26 +515,12 @@ public class TestPoliticalAgent extends AbstractAgent
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
             
-            if (surplus > 0)
-            {
-                //you're overjoyed
-                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
-            }
-            else if(surplus < 0)
-            {
-                //you're dissapointed
-                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
-            }
-            else
-            {   //surplus = 0
-                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
-            }
-
-            return currentHappiness;
+						// TODO: Check me
+            return (int)(surplus);
     }
 
     @Override
-    protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
+    protected int updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
     {
             //Loyalty after hunting refines from how much more happy you are after the hunt
             //and from comparing your economic (sharing of food) belief with the group's belief.
@@ -567,202 +551,115 @@ public class TestPoliticalAgent extends AbstractAgent
                     //loyal to the average sense (not too much and no too little)
                     currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
                                       
-                if (deltaHappiness > 0)
-                {
-                    //you gain loyalty to your group
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-                }
-                else if(deltaHappiness < 0)
-                {
-                    //you lose loyalty to your group
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-                } else
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1 - deltaEconomic);
                 
-                return currentLoyalty;
+                //    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
+								// TODO: Check me. I think that this value may alwasy be 0 :(
+                return (int)(deltaHappiness * (1-deltaEconomic));
             }               
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
-                                    double foodReceived)
-    {
-            Food lastHunted = this.getDataModel().getLastHunted();
-            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-            String opponentID;
-            Map<String, Double> newTrustValue = new HashMap<String, Double>();
-            double trust;
+	@Override
+	protected Map<String, Integer> updateTrustAfterHunt(double foodHunted, double foodReceived)
+	{
+		Food lastHunted = this.getDataModel().getLastHunted();
+		List<String> members = this.getDataModel().getHuntingTeam().getMembers();
 
-            //If agent didn't go hunting or has no team pair then do nothing
-            if ((lastHunted == null)||(members.size() <2)) return null;
+		//If agent didn't go hunting or has no team pair then do nothing
+		if ((lastHunted == null) || (members.size() < 2))
+		{
+			return null;
+		}
 
-            //Find out agent's opponent ID
-            if (members.get(0).equals(this.getId()))
-            {
-                opponentID = members.get(1);
+		//If agent hunted stag then check what the opponent did. If betrayed decrease trust
+		// otherwise increase it. If the agent hunted rabbit no change in trust
+		if (lastHunted.getName().equals("Stag"))
+		{
+			String opponentID;
 
-            }
-            else
-            {
-                opponentID = members.get(0);
-    
-            }
+			//Find out agent's opponent ID
+			opponentID = (members.get(0).equals(this.getId()) ? members.get(1) : members.get(0));
+			Map<String, Integer> newTrustValue = new HashMap<String, Integer>();
+			newTrustValue.put(opponentID, foodReceived == 0 ? -1 : 1);
+			return newTrustValue;
+		}
+		return null;
+	}
 
-            //Get agent's trust value for this particular opponent
-            //If there is no entry initialise it
-            if (this.getDataModel().getTrust(opponentID) != null)
-            {
-                trust = this.getDataModel().getTrust(opponentID);
-            }
-            else
-            {
-                trust = 0.1;
-            }
-            
-            //If agent hunted stag then check what the opponent did. If betrayed decrease trust
-            // otherwise increase it. If the agent hunted rabbit no change in trust
-            if (lastHunted.getName().equals("Stag"))
-            {
-                    if (foodHunted == 0) //Agent has been betrayed
-                    {
-                        trust = ValueScaler.scale(trust, -1, 0.3);
-                    }
-                    else //Opponent cooperated
-                    {
-                        trust = ValueScaler.scale(trust, 1, 0.3);
-                    }
-            }
-            else    //Agent hunted rabbit so no trust issues
-            {
-                trust = ValueScaler.scale(trust, 0, 0.3);
-            }
-            
-            newTrustValue.put(opponentID, trust);
-            return  newTrustValue;
-    }
+	@Override
+	protected int updateLoyaltyAfterVotes(Proposition proposition, int votes,
+																				double overallMovement)
+	{
+		if (this.getDataModel().getGroupId() == null)	return 0;
+		if (!this.getDataModel().getGroupId().equals(proposition.getOwnerGroup())) return 0;
 
-    @Override
-    protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
-                                    double overallMovement)
-    {
-            //Loyalty after voting refines from how much more happy you are after the vote
-            //and from comparing your economic (decision to deviate from your belief) belief
-            //with the group's belief.
-            if (this.getDataModel().getGroupId() != null)
-            {
-                //get change in economic beleifs
-                double myEconomic = getDataModel().getEconomicBelief();
-                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
-                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
-                                
-                //get change in happiness
-                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
-                if (oneTurnAgoHappiness == null)
-                {
-                    oneTurnAgoHappiness = 0.5 * myEconomic;
-                }
-                double currentHappiness = getDataModel().getCurrentHappiness();
-                double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less happy did you get               
-                                
-                //get new loyalty
-                Double currentLoyalty = getDataModel().getCurrentLoyalty();
-                if (currentLoyalty == null || currentLoyalty == 0)
-                    //As this if statement implies either entry to your first group or
-                    //entry to a new (but not necessarily your first) group then you're
-                    //loyal to the average sense (not too much and no too little)
-                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);           
-                
-               //If this concerns you...
-                if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
-                {
-                    if (deltaHappiness > 0)
-                    {
-                        //you gain loyalty to your group
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
-                    }
-                    else if(deltaHappiness < 0)
-                    {
-                        //you lose loyalty to your group
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
-                    } else
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1 - deltaEconomic);
-                }
-                return currentLoyalty;                                      
-            }               
-            else
-                return 0;//agent doesnt belong to a group and so is not loyal to anyone
-    }
+		//Loyalty after voting refines from how much more happy you are after the vote
+		//and from comparing your economic (decision to deviate from your belief) belief
+		//with the group's belief.
+
+		//get change in economic beleifs
+		double myEconomic = getDataModel().getEconomicBelief();
+		double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+		double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
+
+		//get change in happiness
+		Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
+		if (oneTurnAgoHappiness == null)
+		{
+			oneTurnAgoHappiness = 0.5 * myEconomic;
+		}
+		double currentHappiness = getDataModel().getCurrentHappiness();
+		double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less happy did you get               
+
+		//get new loyalty
+		Double currentLoyalty = getDataModel().getCurrentLoyalty();
+		if (currentLoyalty == null || currentLoyalty == 0)
+		//As this if statement implies either entry to your first group or
+		//entry to a new (but not necessarily your first) group then you're
+		//loyal to the average sense (not too much and no too little)
+		{
+			currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
+		}
+
+		// TODO: Check me
+		return (int) ((1 - deltaEconomic) * deltaHappiness);
+	}
+
+	@Override
+	protected int updateHappinessAfterVotes(Proposition proposition, int votes,
+																					double overallMovement)
+	{
+		//If this concerns you...
+		if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+		{
+			return votes;
+		}
+
+		return 0;
+	}
 
     @Override
-    protected double updateHappinessAfterVotes(Proposition proposition, int votes,
-                                    double overallMovement)
-    {
-            Double currentHappiness = getDataModel().getCurrentHappiness();            
-
-            if (currentHappiness == null)
-            {
-                //By default we are all satisfied with the economic position
-                //we start off in, unless you are always happy or just hate life
-                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-            }
-
-            //If this concerns you...
-            if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
-            {
-                if (votes > 0)
-                {
-                    //your happy your proposition was passed
-                    currentHappiness = ValueScaler.scale(currentHappiness, votes, Math.abs(overallMovement));
-                }
-                else if(votes < 0)
-                {
-                    //your dissapointed your proposition didn't pass
-                    currentHappiness = ValueScaler.scale(currentHappiness, votes, Math.abs(overallMovement));
-                }
-                else
-                    //votes = 0
-                    currentHappiness = ValueScaler.scale(currentHappiness, 0, Math.abs(overallMovement));
-             }
-
-            return currentHappiness;
-    }                     
-
-    @Override
-    protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
+    protected Map<String, Integer> updateTrustAfterVotes(Proposition proposition,
                                     int votes, double overallMovement)
     {
-            Map<String, Double> newTrustValue = new HashMap<String, Double>();
+            Map<String, Integer> newTrustValue = new HashMap<String, Integer>();
             String proposer = proposition.getProposer();
-            double proposerTrust;
 
             //Check if proposer is not this agent. There is no point in increasing (or decreasing)
             //the trust to yourself
             if (!this.getDataModel().getId().equals(proposer))
             {
-                if (this.getDataModel().getTrust(proposer) != null)
-                {
-                       proposerTrust = this.getDataModel().getTrust(proposer); //get current trust of proposer
-                }
-                else
-                {
-                       proposerTrust = 0;
-                }
                 //increase the trust for proposer according to the number of votes
-                proposerTrust = ValueScaler.scale(proposerTrust, votes, Math.abs(overallMovement));
-                newTrustValue.put(proposer, proposerTrust);
+                newTrustValue.put(proposer, (int)votes);
+								return newTrustValue;
              }
-             else
-             {
-                    newTrustValue = null;
-             }
-            return newTrustValue;
+            return null;
         }
     
         @Override
-	protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
+	protected int updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
         {
             double currentSocial = getDataModel().getSocialBelief();
             //Your social belief refines from how much more/less trust there is in the group
@@ -788,14 +685,15 @@ public class TestPoliticalAgent extends AbstractAgent
                     }
                     //otherwise your social belief remains the same
                 }
-                return currentSocial;                                      
+								// FIXME: TODO: FIXME: TODO: ARRGHHHH! Hullo :)
+                return 0;                                      
             }               
             else
-                return currentSocial;//agent doesnt belong to a group and does not vote
+                return 0; //agent doesnt belong to a group and does not vote
         }
 	
         @Override
-        protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
+        protected int updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
         {
             double currentEconomic = getDataModel().getEconomicBelief();
             //Your economic belief refines from how much more/less happy you are after the vote
@@ -835,10 +733,10 @@ public class TestPoliticalAgent extends AbstractAgent
                         }
                     }
                 }
-                return currentEconomic;
+                return 0;
             }
             else
-                return currentEconomic;//agent doesnt belong to a group and so is not loyal to anyone
+                return 0;//agent doesnt belong to a group and so is not loyal to anyone
         }
     
         //An agent which has been invited to a group must be tagged in order to process the invitation later
