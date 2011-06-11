@@ -22,11 +22,8 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-<<<<<<< HEAD
 		super("Basic Politics Testing Bed", 150, 0, 0.1);
-=======
-		super("Basic Politics Testing Bed", 2000, 0, 0.1);
->>>>>>> db
+
 
 	}
 
