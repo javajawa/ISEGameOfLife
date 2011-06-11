@@ -83,12 +83,12 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 //            else {
 //                return false;
 //            }
-            System.out.println("HEKKIIIIIII"+this.getDataModel().getCurrentEconomicPoisition());
+            //System.out.println("before economic"+this.getDataModel().getCurrentEconomicPoisition());
 
             //update economic belief of the group when agent joins (TRUE)
             double size = this.getDataModel().getMemberList().size();
              
-            System.out.println("SiZE:" + size);
+            //System.out.println("SiZE:" + size);
 
              double economic = 0;
             for (String members : this.getDataModel().getMemberList()){
@@ -98,7 +98,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             economic = economic / (size+1);
             this.setEconomicPosition(economic);
 
-            System.out.println("NEEEEEEEEEEEE"+this.getDataModel().getCurrentEconomicPoisition());
+            //System.out.println("after economic"+this.getDataModel().getCurrentEconomicPoisition());
             return true;
 	}
 
