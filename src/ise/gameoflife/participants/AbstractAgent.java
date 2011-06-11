@@ -89,7 +89,10 @@ abstract public class AbstractAgent implements Participant
 							in.getFoodReceived()});
 
 			dm.alterHappiness(updateHappinessAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
-			dm.alterLoyalty(updateLoyaltyAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
+			if (dm.getGroupId() != null)
+			{
+				dm.alterLoyalty(updateLoyaltyAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
+			}
 			Map<String,Integer> t = updateTrustAfterHunt(in.getFoodHunted(), in.getFoodReceived());
 			if (t==null) return;
 			for (String agent : t.keySet())
