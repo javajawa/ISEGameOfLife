@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +38,7 @@ final class ConnectionWrapper
 		conn = DriverManager.getConnection(url);
 		//remote db needs autocommiting so as not to break foreign key constraints
 		if (!remote) {
+		    //creates tables for database
 		    updateDatabaseStructure();
 		    conn.setAutoCommit(false);
 		}
@@ -251,7 +253,20 @@ final class ConnectionWrapper
 
 	private void updateDatabaseStructure() 
 	{
-
-
+	    try {
+		    //updates or creates local database tables
+		    Statement stat = conn.createStatement();
+		    stat.addBatch(Statements.createSim.getPrototype());
+		    stat.addBatch(Statements.createGroups.getPrototype());
+		    stat.addBatch(Statements.createAgents.getPrototype());
+		    stat.addBatch(Statements.createG_data.getPrototype());
+		    stat.addBatch(Statements.createA_data.getPrototype());
+		    stat.addBatch(Statements.createTrust.getPrototype());
+		    stat.executeBatch();
+		    stat.close();
+	    
+		} catch (SQLException ex) {
+		    logger.log(Level.WARNING,"Failed to create database tables", ex);
+		}
 	}
 }
