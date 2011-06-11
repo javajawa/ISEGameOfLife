@@ -4,6 +4,7 @@ import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.ScaledDouble;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import presage.PlayerDataModel;
@@ -156,7 +157,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	 * Gets the history of this agent's happiness
 	 * @return The history of this agent's happiness
 	 */
-	public History<Double> getHappinessHistory()
+	public History<ScaledDouble> getHappinessHistory()
 	{
 		return source.getHappinessHistory();
 	}
@@ -174,7 +175,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	 * Gets the history of this agent's loyalty
 	 * @return The history of this agent's loyalty
 	 */
-	public History<Double> getLoyaltyHistory()
+	public History<ScaledDouble> getLoyaltyHistory()
 	{
 		return source.getLoyaltyHistory();
 	}
