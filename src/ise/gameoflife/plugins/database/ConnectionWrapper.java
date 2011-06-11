@@ -37,7 +37,10 @@ final class ConnectionWrapper
 		if (!remote) Class.forName("org.sqlite.JDBC");
 		conn = DriverManager.getConnection(url);
 		//remote db needs autocommiting so as not to break foreign key constraints
-		if (!remote) conn.setAutoCommit(false);
+		if (!remote) {
+		    updateDatabaseStructure();
+		    conn.setAutoCommit(false);
+		}
 		
 		newAgent = conn.prepareStatement(Statements.addAgent.getPrototype());
 		dieAgent = conn.prepareStatement(Statements.dieAgent.getPrototype());
@@ -108,7 +111,7 @@ final class ConnectionWrapper
 		
 		return simulationId;
 	}
-
+	
 	void flush()
 	{
 		try
@@ -144,12 +147,14 @@ final class ConnectionWrapper
 		}
 	}
 
-	void groupAdd(String id, int round)
+	void groupAdd(String id,int groupid, int round)
 	{
 		try
 		{
-		    newGroup.setString(2, id);
-		    newGroup.setInt(3,  round);
+		    newGroup.setInt(1, simId);
+		    newGroup.setInt(2, groupid);
+		    newGroup.setString(3, id);
+		    newGroup.setInt(4, round);
 		    newGroup.addBatch();
 		}
 		catch (SQLException ex)
@@ -158,12 +163,12 @@ final class ConnectionWrapper
 		}
 	}
 
-	void groupDie(String id, int round)
+	void groupDie(int groupid, int round)
 	{
 		try
 		{
-			dieGroup.setString(3, id);
-			dieGroup.setInt(1,  round);
+			dieGroup.setInt(3, groupid);
+			dieGroup.setInt(1, round);
 			dieGroup.addBatch();
 		}
 		catch (SQLException ex)
@@ -172,14 +177,15 @@ final class ConnectionWrapper
 		}
 	}
 
-	void agentAdd(String id, int round, String name)
+	void agentAdd(String id,int agentid, int round, String name)
 	{
 		try
 		{
-		    newAgent.setString(2, id);
+		    newAgent.setInt(2, agentid);
+		    newAgent.setString(3, id);
 		    //agent name
-		    newAgent.setString(3,name);
-		    newAgent.setInt(4,  round);
+		    newAgent.setString(4,name);
+		    newAgent.setInt(5,  round);
 		    newAgent.addBatch();
 		}
 		catch (SQLException ex)
@@ -188,11 +194,11 @@ final class ConnectionWrapper
 		}
 	}
 	
-	void agentDie(String id, int round)
+	void agentDie(int agentid, int round)
 	{
 	    try
 	    {
-		dieAgent.setString(3, id);
+		dieAgent.setInt(3, agentid);
 		dieAgent.setInt(1,  round);
 		dieAgent.addBatch();
 	    }
@@ -202,12 +208,12 @@ final class ConnectionWrapper
 	    }
 	}
 
-	void groupRound(String id, int round, PublicGroupDataModel group) {
+	void groupRound(int groupid, int round, PublicGroupDataModel group) {
 	     try {
 		 //for some reason, needs simId reassigned or error
 		 roundGroup.setInt(1, simId);
 		 roundGroup.setInt(2, round);
-		 roundGroup.setString(3,id);
+		 roundGroup.setInt(3,groupid);
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
 		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
@@ -217,23 +223,36 @@ final class ConnectionWrapper
 	    }
 	}
 
-	void agentRound(String id, int round, PublicAgentDataModel agent) {
+	void agentRound(int agentid, int groupid, int round, PublicAgentDataModel agent) {
 	    try {
 		//for some reason, needs simId reassigned or error
 		roundAgent.setInt(1, simId);
 		roundAgent.setInt(2, round);
-		roundAgent.setString(3,id);
-		roundAgent.setString(4,agent.getGroupId());
+		roundAgent.setInt(3,agentid);
+		//sets the database id for group, 0 for no group
+		roundAgent.setInt(4,groupid);
 		roundAgent.setDouble(5,agent.getFoodAmount());
-		roundAgent.setString(6,"Food unknown");
+		//not available for first round
+		if(round!=0) 
+		{
+		    roundAgent.setString(6,agent.getLastHunted().getName());
+		    roundAgent.setDouble(9,agent.getCurrentHappiness());
+		    roundAgent.setDouble(10,agent.getCurrentLoyalty());
+		}
 		roundAgent.setDouble(7,agent.getSocialBelief());
 		roundAgent.setDouble(8,agent.getEconomicBelief());
-		//TODO to implement the below variables
-		roundAgent.setDouble(9,0.0);
-		roundAgent.setDouble(10,0.0);
 		roundAgent.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, null, ex);
+	    } catch (NullPointerException ex) {
+		logger.log(Level.WARNING, "Agent {0} misbehaved. Agent data for round {1}"
+			+ " not stored.", new Object[]{agent.getName(), round});
 	    }
 	}
-    }
+
+	private void updateDatabaseStructure() 
+	{
+
+
+	}
+}
