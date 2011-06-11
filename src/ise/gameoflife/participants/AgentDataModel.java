@@ -113,8 +113,8 @@ class AgentDataModel extends APlayerDataModel
 		this.foodConsumption = foodConsumption;
 		this.name = NameGenerator.getName();
 		this.agentType = type;
-                this.economicBelief = economicBelief;
-                this.socialBelief = socialBelief;
+		this.economicBelief = economicBelief;
+		this.socialBelief = socialBelief;
 		onInitialise();
 	}
 
@@ -215,6 +215,8 @@ class AgentDataModel extends APlayerDataModel
 		lastHunted = new History<Food>(50);
 		trust = new HashMap<String, History<ScaledDouble>>();
 		advice = new HashMap<String, History<Food>>();
+
+		happinessHistory.newEntry(new ScaledDouble(0.25));
 	}
 
 	/**
