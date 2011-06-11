@@ -678,7 +678,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
 	@Override
 	protected Map<String, Integer> updateTrustAfterVotes(Proposition proposition,
-																											 int votes, double overallMovement)
+                                                             int votes, double overallMovement)
 	{
 		Map<String, Integer> newTrustValue = new HashMap<String, Integer>();
 		String proposer = proposition.getProposer();
@@ -967,7 +967,8 @@ public class TestPoliticalAgent extends AbstractAgent
 	}
 
         private List<Food> getFoodTypes(){
-		List<Food> foodArray = new LinkedList<Food>();
+            
+                List<Food> foodArray = new LinkedList<Food>();
                 Food cooperateFood, defectFood;
                 
 		//Stores the two sources in an array
@@ -989,6 +990,43 @@ public class TestPoliticalAgent extends AbstractAgent
 		}
                 foodArray.add(defectFood);
                 foodArray.add(cooperateFood);
+           
                 return foodArray;
         }
+
+    //@param step = the size of jump we want to take away from the old value
+    //@param old = the value to scale from
+    //@param amount = how many times we should jump away from the old value
+    //@param max = the maximum side of teh range if we want to change the range
+    public static double newScale(double max, double old, double amount, double step)
+    {
+        if (max > 1 || max < 0)
+            throw new IllegalArgumentException("The 'max' value must fall within range of 0 and 1");
+        else
+        {
+            //make sure our jumps (step) is between 0 and 1.
+            //the closer 'step' is to 1 then the bigger the jump is from 'old'
+            //the closer 'step' is to 0 then the smaller the jump is from 'old'
+            step = Math.abs(step);
+            if (step >= 1)
+                step = 1/step;
+
+            //if amount > 0 then we want to jump towards the maximum value as many as 'amount' times
+            if (amount > 0)
+            {
+                double space = max-old;
+                space *= Math.pow(max-step, amount);
+                return max-space;
+            }
+            //otherwise, amount < 0, and we want to move away from the maximum value as many as 'amount' times
+            else if (amount < 0)
+            {
+                double space = old;
+                space *= Math.pow(max-step, -amount);
+                return space;
+            }
+            else
+                return old;//you dont want to move the value at all if 'amount' = 0
+        }
+    }
 }
