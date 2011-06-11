@@ -798,7 +798,7 @@ public class TestPoliticalAgent extends AbstractAgent
 							} 
 							catch (IndexOutOfBoundsException ex)
 							{
-								return suggestedFood = this.askAdvice();
+								return null;
 							}
             }
             
@@ -813,11 +813,16 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
 
-                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1).doubleValue();
-                if (oneTurnAgoHappiness == null)
+                ScaledDouble tmp = getDataModel().getHappinessHistory().getValue(1);
+								double oneTurnAgoHappiness;
+                if (tmp == null)
                 {
                     oneTurnAgoHappiness = 0.5 * myEconomic;
                 }
+								else
+								{
+									oneTurnAgoHappiness = tmp.doubleValue();
+								}
 
                 Double curretnHappiness = getDataModel().getCurrentHappiness();
                 if (curretnHappiness == null)
@@ -826,15 +831,18 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
 
                 //get your loyalty and loyalty history
-                ScaledDouble tmp = getDataModel().getLoyaltyHistory().getValue(1);
 								double oneTurnAgoLoyalty;
-                if (tmp == null)
-                {
-                    oneTurnAgoLoyalty = 0.5 * (oneTurnAgoHappiness * deltaEconomic);
-                }
-								else
+								try
 								{
-									oneTurnAgoLoyalty = tmp.doubleValue();
+									oneTurnAgoLoyalty = getDataModel().getLoyaltyHistory().getValue(1).doubleValue();
+								}
+								catch (Exception ex)
+								{
+									if (!(ex instanceof IndexOutOfBoundsException) && !(ex instanceof NullPointerException))
+									{
+										throw new Error(ex);
+									}
+									oneTurnAgoLoyalty = 0.5 * (oneTurnAgoHappiness * deltaEconomic);
 								}
 
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
