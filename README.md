@@ -1,7 +1,8 @@
 
 Support: bh308@imperial.ac.uk
 
-== Installation ==
+Installation
+============
 
  - Clone the repo from GitHub
  - Initialise the presage submodule
@@ -20,22 +21,26 @@ Support: bh308@imperial.ac.uk
  - Clean and Build GameOfLife
  - You should be set to build and run simulations (see below)
 
-== Building Simulations ==
+Building Simulations
+====================
 
  - Each simulation is a main-class in ise.gameoflife.simulations
  - Running any of these classes will build the simulation related to that class
 
-== Running Simulations ==
+Running Simulations
+===================
 
  - Used the ise.gameoflife.RunSimulation
  - This is the default main class in netbeans
  - Run using F6 or the run button
  - Simulations will be in the simulation folder
 
-== Running with Default Simulations ==
-  - Right click on GameOfLife
-  - Properties
-  - Run
-  - Change Arguments field to: simulations\doubleagent\sim.xml (or similar)
-  - Run using F6 or the run button
-  - The select simulation step skipped and simulation in Argument field is launched.
+Running with Default Simulations
+====================
+
+ - Right click on GameOfLife
+ - Properties
+ - Run
+ - Change Arguments field to: simulations\doubleagent\sim.xml (or similar)
+ - Run using F6 or the run button
+ - The select simulation step skipped and simulation in Argument field is launched.
