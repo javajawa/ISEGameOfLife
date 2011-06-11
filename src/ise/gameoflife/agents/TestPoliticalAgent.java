@@ -534,7 +534,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
 
                 //get change in happiness
-                Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
+                Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1).doubleValue();
                 //if there is no entry for happiness initialise it
                 if (oneTurnAgoHappiness == null)
                 {
@@ -605,7 +605,7 @@ public class TestPoliticalAgent extends AbstractAgent
 		double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
 
 		//get change in happiness
-		Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
+		Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1).doubleValue();
 		if (oneTurnAgoHappiness == null)
 		{
 			oneTurnAgoHappiness = 0.5 * myEconomic;
@@ -804,7 +804,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
 
-                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
+                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1).doubleValue();
                 if (oneTurnAgoHappiness == null)
                 {
                     oneTurnAgoHappiness = 0.5 * myEconomic;
@@ -817,7 +817,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
 
                 //get your loyalty and loyalty history
-                Double oneTurnAgoLoyalty = getDataModel().getLoyaltyHistory().getValue(1);
+                Double oneTurnAgoLoyalty = getDataModel().getLoyaltyHistory().getValue(1).doubleValue();
                 if (oneTurnAgoLoyalty == null)
                 {
                     oneTurnAgoLoyalty = 0.5 * (oneTurnAgoHappiness * deltaEconomic);
@@ -854,7 +854,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myEconomic = getDataModel().getEconomicBelief();
 
                 //get your loyalty and loyalty history
-                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
+                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1).doubleValue();
                 if (oneTurnAgoHappiness == null)
                 {
                     oneTurnAgoHappiness = 0.5 * myEconomic;
