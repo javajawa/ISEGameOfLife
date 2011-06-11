@@ -82,42 +82,49 @@ public class DemoAgent extends AbstractAgent
 	}
 
 	@Override
-	protected double updateHappinessAfterHunt(double foodHunted,
-					double foodReceived)
+	protected int updateHappinessAfterHunt(double foodHunted, double foodReceived)
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
+	protected int updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
-					double foodReceived)
+	protected Map<String, Integer> updateTrustAfterHunt(double foodHunted, double foodReceived)
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
-					double overallMovement)
+	protected int updateLoyaltyAfterVotes(Proposition proposition, int votes, double overallMovement)
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	protected double updateHappinessAfterVotes(Proposition proposition, int votes,
-					double overallMovement)
+	protected int updateHappinessAfterVotes(Proposition proposition, int votes, double overallMovement)
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
-					int votes, double overallMovement)
+	protected int updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected int updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	protected Map<String, Integer> updateTrustAfterVotes(Proposition proposition, int votes, double overallMovement)
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -128,17 +135,4 @@ public class DemoAgent extends AbstractAgent
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-	@Override
-	protected double updateSocialBeliefAfterVotes(Proposition proposition,
-					int votes, double overallMovement)
-	{
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Override
-	protected double updateEconomicBeliefAfterVotes(Proposition proposition,
-					int votes, double overallMovement)
-	{
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
 }
