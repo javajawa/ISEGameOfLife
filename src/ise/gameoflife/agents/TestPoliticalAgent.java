@@ -264,25 +264,12 @@ public class TestPoliticalAgent extends AbstractAgent
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food suggestedFood, cooperateFood, defectFood, choice;
-            
-            //Stores the two sources in an array
-            for (Food noms : getConn().availableFoods())
-            {
-                    foodArray.add(noms);
-            }
 
-            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
-            {
-                    cooperateFood = foodArray.get(0);
-                    defectFood = foodArray.get(1);
-            }
-            else
-            {
-                    cooperateFood = foodArray.get(1);
-                    defectFood = foodArray.get(0);
-            }
-            
+            //Distinguish between stags (cooperate) and rabbits (defect)
+            foodArray = this.getTypesOfFood();
+            cooperateFood = foodArray.get(1);
+            defectFood = foodArray.get(0);
+
             String groupID = this.getDataModel().getGroupId();
             //If the agent belongs to a group can ask for advice
             if (groupID != null)
@@ -469,23 +456,10 @@ public class TestPoliticalAgent extends AbstractAgent
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
 
-            //Stores the two sources in an array
-            for (Food noms : getConn().availableFoods())
-            {
-                    foodArray.add(noms);
-            }
-
-            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
-            {
-                    cooperateFood = foodArray.get(0);
-                    defectFood = foodArray.get(1);
-            }
-            else
-            {
-                    cooperateFood = foodArray.get(1);
-                    defectFood = foodArray.get(0);
-            }
+            //Distinguish between stags (cooperate) and rabbits (defect)
+            foodArray = this.getTypesOfFood();
+            cooperateFood = foodArray.get(1);
+            defectFood = foodArray.get(0);
 
             //Check for threshold values
             if(opponentTrust >= MaxThreshold)
@@ -877,7 +851,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     }
             }
 
-            //Get the hunting teams history of the opponent. Get the last hunting team of the opponent
+            //Get the hunting team history of the opponent. Get the last hunting team of the opponent
             //and find out which agent was its opponent at that time. This agent has the latest information
             //about our opponent. Therefore this agent is the advisor.
             if (opponentID != null)
@@ -982,5 +956,30 @@ public class TestPoliticalAgent extends AbstractAgent
                 } else
                     //you're not overjoyed but you're satisfied
                     return true;                
+        }
+
+        private List<Food> getTypesOfFood(){
+            List<Food> foodArray = new LinkedList<Food>();
+            Food cooperateFood, defectFood;
+            //Stores the two sources in an array
+            for (Food noms : getConn().availableFoods())
+            {
+                    foodArray.add(noms);
+            }
+
+            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
+            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
+            {
+                    cooperateFood = foodArray.get(0);
+                    defectFood = foodArray.get(1);
+            }
+            else
+            {
+                    cooperateFood = foodArray.get(1);
+                    defectFood = foodArray.get(0);
+            }
+            foodArray.add(cooperateFood);
+            foodArray.add(defectFood);
+            return foodArray;
         }
 }

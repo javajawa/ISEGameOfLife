@@ -252,7 +252,7 @@ public class DatabasePlugin implements Plugin
 	private void createFreeAgentGroup() 
 	{
 		int groupid = 0;
-		wrap.groupAdd("FreeAgentsGroup", groupid, round);
+//		wrap.groupAdd("FreeAgentsGroup", groupid, round);
 		//required to allow idMap to work for agents with no group
 		idMap.put(null,groupid);
 	}
