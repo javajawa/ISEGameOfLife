@@ -642,7 +642,11 @@ public class Environment extends AbstractEnvironment
 		if (authenticator.get(agent) != authToken) throw new IllegalAccessError("Incorrect access credentials");
 		AbstractAgent a = (AbstractAgent)sim.getPlayer(fromAgent);
 		AbstractAgent b = (AbstractAgent)sim.getPlayer(agent);
-		if (!a.getDataModel().getGroupId().equals(b.getDataModel().getGroupId())) return null;
+
+		String ga = a.getDataModel().getGroupId();
+		String gb = b.getDataModel().getGroupId();
+		if (ga == null ? gb != null : !ga.equals(gb))	return null;
+
 		return a.advise(agent, agentsTeam);
 	}
 
