@@ -10,6 +10,7 @@ public class ScaledDouble extends Number implements Comparable<Number>
 	private int value;
 	private int scaleFactor;
 	private transient Double scaledValue = null;
+	private transient ImmutableScaledDouble s = null;
 
 	public ScaledDouble()
 	{
@@ -97,6 +98,12 @@ public class ScaledDouble extends Number implements Comparable<Number>
 	{
 		this.value = value;
 		this.scaledValue = null;
+	}
+
+	public ScaledDouble safeClone()
+	{
+		if (s == null) s = new ImmutableScaledDouble(this);
+		return s;
 	}
 
 }
