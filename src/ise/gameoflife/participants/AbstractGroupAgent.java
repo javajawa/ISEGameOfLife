@@ -336,6 +336,7 @@ public abstract class AbstractGroupAgent implements Participant
 		return dm.getPublicVersion();
 	}
 
+	@Deprecated
 	protected final void setEconomicPosition(double newPosition)
 	{
 		this.dm.setEconomicPosition(newPosition);
