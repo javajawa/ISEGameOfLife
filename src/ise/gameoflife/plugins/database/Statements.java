@@ -20,7 +20,8 @@ enum Statements
 	"INSERT INTO g_data (simid,round,groupid,pop,socialPosition,economicPosition)"
 	    + " VALUES (?,?,?,?,?,?);"),
 	roundAgent(
-	"INSERT INTO a_data (simid,round,agentid,groupid,foodAmount,lastHunted,socialBelief,economicBelief,happiness,loyalty)"
+	"INSERT INTO a_data (simid,round,agentid,groupid,foodAmount,lastHunted,"
+		+ "socialBelief,economicBelief,happiness,loyalty)"
 	    + " VALUES (?,?,?,?,?,?,?,?,?,?);");
 	private String prototype;
 

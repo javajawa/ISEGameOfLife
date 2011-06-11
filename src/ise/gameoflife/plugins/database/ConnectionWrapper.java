@@ -1,6 +1,5 @@
 package ise.gameoflife.plugins.database;
 
-import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import java.sql.Connection;

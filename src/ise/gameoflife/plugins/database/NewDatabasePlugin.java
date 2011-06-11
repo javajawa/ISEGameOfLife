@@ -8,6 +8,7 @@ import org.simpleframework.xml.Element;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -205,7 +206,6 @@ public class NewDatabasePlugin implements Plugin
 		//Stop tracking old groups
 		TreeSet<String> oldGroups = new TreeSet<String>(trackedGroups.keySet());
 		oldGroups.removeAll(ec.availableGroups());
-
 		for (String g : oldGroups)
 		{
 			//queue group death sql statement
@@ -244,7 +244,7 @@ public class NewDatabasePlugin implements Plugin
 		    //if agent group is null, the map returns 0 groupid
 		    PublicAgentDataModel agent = entry.getValue();
 		    int groupid = idMap.get(agent.getGroupId());
-		    wrap.agentRound(idMap.get(entry.getKey()),groupid, round, agent);
+		    wrap.agentRound(idMap.get(entry.getKey()), groupid, round, agent);
 		}
 	}
 	/*
