@@ -11,7 +11,7 @@ public class GroupDataInitialiser
 	private static int counter = 0;
 
 	private long randomSeed;
-	private ScaledDouble initialEconomicBelief;
+	private double initialEconomicBelief;
 	private String name;
 	
 	/**
@@ -21,7 +21,7 @@ public class GroupDataInitialiser
 	 */
 	public GroupDataInitialiser(long randomSeed, double initialEconomicBelief)
 	{
-		this.initialEconomicBelief = new ScaledDouble(initialEconomicBelief);
+		this.initialEconomicBelief = initialEconomicBelief;
 		this.randomSeed = randomSeed;
 		synchronized(counterLock)
 		{
@@ -39,7 +39,7 @@ public class GroupDataInitialiser
 		return randomSeed;
 	}
 
-	public ScaledDouble getInitialEconomicBelief()
+	public double getInitialEconomicBelief()
 	{
 		return initialEconomicBelief;
 	}

@@ -5,7 +5,6 @@ import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.NameGenerator;
-import ise.gameoflife.models.ScaledDouble;
 import ise.gameoflife.tokens.AgentType;
 import java.util.HashMap;
 import org.simpleframework.xml.Element;
@@ -48,16 +47,16 @@ class AgentDataModel extends APlayerDataModel
 	private String groupId;
 	
 	@ElementMap(keyType=String.class,valueType=History.class)
-	private HashMap<String,History<ScaledDouble>> trust;
+	private HashMap<String,History<Double>> trust;
 
 	@ElementMap(keyType=String.class,valueType=History.class)
 	private HashMap<String,History<Food>> advice;
 
 	@Element
-	private History<ScaledDouble> happinessHistory;
+	private History<Double> happinessHistory;
 	
 	@Element
-	private History<ScaledDouble> loyaltyHistory;
+	private History<Double> loyaltyHistory;
 
 	@Element
 	private double economicBelief;
@@ -113,8 +112,8 @@ class AgentDataModel extends APlayerDataModel
 		this.foodConsumption = foodConsumption;
 		this.name = NameGenerator.getName();
 		this.agentType = type;
-		this.economicBelief = economicBelief;
-		this.socialBelief = socialBelief;
+                this.economicBelief = economicBelief;
+                this.socialBelief = socialBelief;
 		onInitialise();
 	}
 
@@ -209,14 +208,12 @@ class AgentDataModel extends APlayerDataModel
 	public final void onInitialise()
 	{
 		foodConsumedPerTurnHistory = new History<Double>(50);
-		happinessHistory = new History<ScaledDouble>(50);
+		happinessHistory = new History<Double>(50);
 		huntingTeam = new History<HuntingTeam>(50);
-		loyaltyHistory = new History<ScaledDouble>(50);
+		loyaltyHistory = new History<Double>(50);
 		lastHunted = new History<Food>(50);
-		trust = new HashMap<String, History<ScaledDouble>>();
+		trust = new HashMap<String, History<Double>>();
 		advice = new HashMap<String, History<Food>>();
-
-		happinessHistory.newEntry(new ScaledDouble(0.25));
 	}
 
 	/**
@@ -259,87 +256,67 @@ class AgentDataModel extends APlayerDataModel
 		return huntingTeam.getUnmodifableHistory();
 	}
 
-	public double getCurrentHappiness()
+	public Double getCurrentHappiness()
 	{
-		return happinessHistory.getValue().doubleValue();
+		return happinessHistory.getValue();
 	}
 
-	@Deprecated
-	public void setCurrentHappiness(double newHappiness)
+	public Double setCurrentHappiness(Double newHappiness)
 	{
-		happinessHistory.setValue(new ScaledDouble(newHappiness));
+		return happinessHistory.setValue(newHappiness);
 	}
 
-	public void alterHappiness(int amount)
-	{
-		happinessHistory.getValue().alterValue(amount);
-	}
-	public History<ScaledDouble> getHappinessHistory()
+	public History<Double> getHappinessHistory()
 	{
 		return happinessHistory.getUnmodifableHistory();
 	}
 
-	public double getCurrentLoyalty()
+	public Double getCurrentLoyalty()
 	{
-		return loyaltyHistory.getValue().doubleValue();
+		return loyaltyHistory.getValue();
 	}
 
-	@Deprecated
-	public void setCurrentLoyalty(double newLoyalty)
+	public Double setCurrentLoyalty(double newLoyalty)
 	{
-		loyaltyHistory.setValue(new ScaledDouble(newLoyalty));
+		return loyaltyHistory.setValue(newLoyalty);
 	}
 
-	public void clearLoyalty()
-	{
-		loyaltyHistory.setValue(new ScaledDouble(0));
-	}
-
-	public void alterLoyalty(int amount)
-	{
-		loyaltyHistory.getValue().alterValue(amount);
-	}
-
-	public History<ScaledDouble> getLoyaltyHistory()
+	public History<Double> getLoyaltyHistory()
 	{
 		return loyaltyHistory.getUnmodifableHistory();
 	}
 	
-	public History<ScaledDouble> getTrustHistory(String player)
+	public History<Double> getTrustHistory(String player)
 	{
 		if (trust.containsKey(player))
 		{
 			return trust.get(player).getUnmodifableHistory();
 		}
-		History<ScaledDouble> t = new History<ScaledDouble>(50);
-		t.newEntry(new ScaledDouble(0.25));
+		History<Double> t = new History<Double>(50);
+		t.newEntry(null);
 		trust.put(player, t);
 		return t.getUnmodifableHistory();
 	}
 
-	double getTrust(String player)
+	Double getTrust(String player)
 	{
-		return getTrustHistory(player).getValue().doubleValue();
+		Double t = getTrustHistory(player).getValue();
+		if (t==null) return null;
+		return new Double(t);
 	}
 
-	@Deprecated
 	void setTrust(String player, double t)
 	{
 		if (trust.containsKey(player))
 		{
-			trust.get(player).setValue(new ScaledDouble(t));
+			trust.get(player).setValue(t);
 			return;
 		}
-		History<ScaledDouble> h = new History<ScaledDouble>(50);
-		h.newEntry(new ScaledDouble(t));
+		History<Double> h = new History<Double>(50);
+		h.newEntry(t);
 		trust.put(player, h);
 	}
 
-	void alterTrust(String player, int amount)
-	{
-		History<ScaledDouble> h = getTrustHistory(player);
-		h.getValue().alterValue(amount);
-	}
 	/**
 	 * Returns a history of the advice given to this agent.
 	 * getValue() will return null unless advice has already been given this round
@@ -389,7 +366,7 @@ class AgentDataModel extends APlayerDataModel
 		huntingTeam.newEntry(false);
 		foodConsumedPerTurnHistory.newEntry(foodConsumption);
 		lastHunted.newEntry(false);
-		for (History<ScaledDouble> h : trust.values())
+		for (History<Double> h : trust.values())
 		{
 			h.newEntry(true);
 		}

@@ -12,6 +12,12 @@ public class ScaledDouble extends Number implements Comparable<Number>
 	private transient Double scaledValue = null;
 	private transient ImmutableScaledDouble s = null;
 
+	public static double scale(double old, double amount, double scale)
+	{
+		ScaledDouble d = new ScaledDouble(old, scale);
+		d.alterValue((int)amount);
+		return d.doubleValue();
+	}
 	public ScaledDouble()
 	{
 		this(10);
@@ -28,10 +34,16 @@ public class ScaledDouble extends Number implements Comparable<Number>
 		this(initialValue, 10);
 	}
 
+	public ScaledDouble(double initialValue, double scaleFactor)
+	{
+			this(initialValue, (int)(scaleFactor < 1 ? 1.0/scaleFactor : scaleFactor));
+	}
+
 	public ScaledDouble(double initialValue, int scaleFactor)
 	{
+		this(scaleFactor);
 		if (initialValue < 0 || initialValue > 1) throw new IllegalArgumentException("Value must be between 0 and 1");
-		this.scaleFactor = scaleFactor;
+
 		int mul = 1;
 
 		if (initialValue > 0.5)

@@ -14,6 +14,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.inputs.Vote;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
+import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -289,10 +290,8 @@ public abstract class AbstractGroupAgent implements Participant
 		// Calculate the groups new position
 		double change = dm.getCurrentEconomicPoisition();
 		if (motionsPassed > 0)
-		{ 
-			// TODO: Scale on motions passed without braking int contraints
-			// Possibly an arbitayr scaling factor?
-			dm.alterEconomicPosition((int)movement);
+		{  
+			//dm.setEconomicPosition(scale(change, movement / motionsPassed));
 			change = dm.getCurrentEconomicPoisition() - change;
 		}
 		else
@@ -301,7 +300,7 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 		// Inform each agent of how their vote went, and the overall group movement
 		for (String agent : props.keySet())
-		{
+                {
 			Proposition p = props.get(agent);
 			ec.act(new VoteResult(p, voteResult.get(p), change), getId(), authCode);
 		}
@@ -336,7 +335,6 @@ public abstract class AbstractGroupAgent implements Participant
 		return dm.getPublicVersion();
 	}
 
-	@Deprecated
 	protected final void setEconomicPosition(double newPosition)
 	{
 		this.dm.setEconomicPosition(newPosition);
