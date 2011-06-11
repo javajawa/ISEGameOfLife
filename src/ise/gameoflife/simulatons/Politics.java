@@ -30,9 +30,10 @@ public class Politics extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.4));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.5));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.1));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.2));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.3));
+            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.4));
 //                Random randomGenerator = new Random();
 //		for (int i = 0; i < 10; i++)
 //		{

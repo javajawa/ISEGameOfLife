@@ -83,6 +83,22 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 //            else {
 //                return false;
 //            }
+            System.out.println("HEKKIIIIIII"+this.getDataModel().getCurrentEconomicPoisition());
+
+            //update economic belief of the group when agent joins (TRUE)
+            double size = this.getDataModel().getMemberList().size();
+             
+            System.out.println("SiZE:" + size);
+
+             double economic = 0;
+            for (String members : this.getDataModel().getMemberList()){
+                economic += getConn().getAgentById(members).getEconomicBelief();
+            }
+            economic += getConn().getAgentById(playerID).getEconomicBelief();
+            economic = economic / (size+1);
+            this.setEconomicPosition(economic);
+
+            System.out.println("NEEEEEEEEEEEE"+this.getDataModel().getCurrentEconomicPoisition());
             return true;
 	}
 
@@ -117,6 +133,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                  * !!!reset individual agent loyalty from agent NOT HERE
                  * !!!change economic belief when a new member joins the group NOT HERE
                  * */
+
+                 //this.setEconomicPosition();
 	}
 
 	@Override

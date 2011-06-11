@@ -564,48 +564,48 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             //Loyalty after hunting refines from how much more happy you are after the hunt
             //and from comparing your economic (sharing of food) belief with the group's belief.
-            if (this.getDataModel().getGroupId() != null)
-            {
-                //get change in economic beliefs
-                double myEconomic = getDataModel().getEconomicBelief();
-                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();                
-            
-                //how close are you to the group's belief
-                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
-
-                //get change in happiness
-                Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
-                //if there is no entry for happiness initialise it
-                if (oneTurnAgoHappiness == null)
-                {
-                    oneTurnAgoHappiness = 0.5 * myEconomic;
-                }
-                //Calculate difference in happiness between the current and the previous round
-                Double currentHappiness = getDataModel().getCurrentHappiness();
-                double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
-                //get new loyalty
-                Double currentLoyalty = getDataModel().getCurrentLoyalty();
-                if (currentLoyalty == null || currentLoyalty == 0)
-                    //As this if statement implies either entry to your first group or
-                    //entry to a new (but not necessarily your first) group then you're
-                    //loyal to the average sense (not too much and no too little)
-                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
-                                      
-                if (deltaHappiness > 0)
-                {
-                    //you gain loyalty to your group
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-                }
-                else if(deltaHappiness < 0)
-                {
-                    //you lose loyalty to your group
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-                } else
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1 - deltaEconomic);
-                
-                return currentLoyalty;
-            }               
-            else
+//            if (this.getDataModel().getGroupId() != null)
+//            {
+//                //get change in economic beliefs
+//                double myEconomic = getDataModel().getEconomicBelief();
+//                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+//
+//                //how close are you to the group's belief
+//                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
+//
+//                //get change in happiness
+//                Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
+//                //if there is no entry for happiness initialise it
+//                if (oneTurnAgoHappiness == null)
+//                {
+//                    oneTurnAgoHappiness = 0.5 * myEconomic;
+//                }
+//                //Calculate difference in happiness between the current and the previous round
+//                Double currentHappiness = getDataModel().getCurrentHappiness();
+//                double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
+//                //get new loyalty
+//                Double currentLoyalty = getDataModel().getCurrentLoyalty();
+//                if (currentLoyalty == null || currentLoyalty == 0)
+//                    //As this if statement implies either entry to your first group or
+//                    //entry to a new (but not necessarily your first) group then you're
+//                    //loyal to the average sense (not too much and no too little)
+//                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
+//
+//                if (deltaHappiness > 0)
+//                {
+//                    //you gain loyalty to your group
+//                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
+//                }
+//                else if(deltaHappiness < 0)
+//                {
+//                    //you lose loyalty to your group
+//                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
+//                } else
+//                    currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1 - deltaEconomic);
+//
+//                return currentLoyalty;
+//            }
+//            else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -675,48 +675,48 @@ public class TestPoliticalAgent extends AbstractAgent
             //Loyalty after voting refines from how much more happy you are after the vote
             //and from comparing your economic (decision to deviate from your belief) belief
             //with the group's belief.
-            if (this.getDataModel().getGroupId() != null)
-            {
-                //get change in economic beleifs
-                double myEconomic = getDataModel().getEconomicBelief();
-                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
-                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
-                                
-                //get change in happiness
-                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
-                if (oneTurnAgoHappiness == null)
-                {
-                    oneTurnAgoHappiness = 0.5 * myEconomic;
-                }
-                double currentHappiness = getDataModel().getCurrentHappiness();
-                double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less happy did you get               
-                                
-                //get new loyalty
-                Double currentLoyalty = getDataModel().getCurrentLoyalty();
-                if (currentLoyalty == null || currentLoyalty == 0)
-                    //As this if statement implies either entry to your first group or
-                    //entry to a new (but not necessarily your first) group then you're
-                    //loyal to the average sense (not too much and no too little)
-                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);           
-                
-               //If this concerns you...
-                if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
-                {
-                    if (deltaHappiness > 0)
-                    {
-                        //you gain loyalty to your group
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1-deltaEconomic);
-                    }
-                    else if(deltaHappiness < 0)
-                    {
-                        //you lose loyalty to your group
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1-deltaEconomic);
-                    } else
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1-deltaEconomic);
-                }
-                return currentLoyalty;                                      
-            }               
-            else
+//            if (this.getDataModel().getGroupId() != null)
+//            {
+//                //get change in economic beleifs
+//                double myEconomic = getDataModel().getEconomicBelief();
+//                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+//                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
+//
+//                //get change in happiness
+//                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
+//                if (oneTurnAgoHappiness == null)
+//                {
+//                    oneTurnAgoHappiness = 0.5 * myEconomic;
+//                }
+//                double currentHappiness = getDataModel().getCurrentHappiness();
+//                double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less happy did you get
+//
+//                //get new loyalty
+//                Double currentLoyalty = getDataModel().getCurrentLoyalty();
+//                if (currentLoyalty == null || currentLoyalty == 0)
+//                    //As this if statement implies either entry to your first group or
+//                    //entry to a new (but not necessarily your first) group then you're
+//                    //loyal to the average sense (not too much and no too little)
+//                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
+//
+//               //If this concerns you...
+//                if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+//                {
+//                    if (deltaHappiness > 0)
+//                    {
+//                        //you gain loyalty to your group
+//                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1-deltaEconomic);
+//                    }
+//                    else if(deltaHappiness < 0)
+//                    {
+//                        //you lose loyalty to your group
+//                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1-deltaEconomic);
+//                    } else
+//                        currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1-deltaEconomic);
+//                }
+//                return currentLoyalty;
+//            }
+//            else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
     }
 
@@ -726,30 +726,30 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             Double currentHappiness = getDataModel().getCurrentHappiness();            
                         
-            if (currentHappiness == null)
-            {
-                //By default we are all satisfied with the economic position
-                //we start off in, unless you are always happy or just hate life
-                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-            }
-            System.out.println(votes);
-            //If this concerns you...
-            if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
-            {
-                if (votes > 0)
-                {
-                    //your happy your proposition was passed
-                    currentHappiness = ValueScaler.scale(currentHappiness, votes, overallMovement);
-                }
-                else if(votes < 0)
-                {
-                    //your dissapointed your proposition didn't pass
-                    currentHappiness = ValueScaler.scale(currentHappiness, votes, overallMovement);
-                }
-                else
-                    //votes = 0
-                    currentHappiness = ValueScaler.scale(currentHappiness, 0, overallMovement);                
-             }
+//            if (currentHappiness == null)
+//            {
+//                //By default we are all satisfied with the economic position
+//                //we start off in, unless you are always happy or just hate life
+//                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
+//            }
+//            System.out.println(votes);
+//            //If this concerns you...
+//            if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+//            {
+//                if (votes > 0)
+//                {
+//                    //your happy your proposition was passed
+//                    currentHappiness = ValueScaler.scale(currentHappiness, votes, overallMovement);
+//                }
+//                else if(votes < 0)
+//                {
+//                    //your dissapointed your proposition didn't pass
+//                    currentHappiness = ValueScaler.scale(currentHappiness, votes, overallMovement);
+//                }
+//                else
+//                    //votes = 0
+//                    currentHappiness = ValueScaler.scale(currentHappiness, 0, overallMovement);
+//             }
              return currentHappiness;
     }                     
 
@@ -835,7 +835,7 @@ public class TestPoliticalAgent extends AbstractAgent
                                 //stay
                                 currentEconomic = groupEconomic;
                             default :
-                                throw new IllegalStateException("Agent economic belief not recognised");
+                                //throw new IllegalStateException("Agent economic belief not recognised"); !!!!! PROBLEM
                         }
                     }
                     else
