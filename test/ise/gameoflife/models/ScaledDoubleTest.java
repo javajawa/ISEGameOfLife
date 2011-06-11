@@ -31,6 +31,45 @@ public class ScaledDoubleTest
 	 * Test of intValue method, of class ScaledDouble.
 	 */
 	@Test
+	public void testInit_1()
+	{
+		ScaledDouble instance = new ScaledDouble(0.54758);
+
+		int expResult = 1;
+		int result = instance.intValue();
+		assertEquals(expResult, result);
+	}
+
+	/**
+	 * Test of intValue method, of class ScaledDouble.
+	 */
+	@Test
+	public void testInit_14()
+	{
+		ScaledDouble instance = new ScaledDouble(0.87670);
+
+		int expResult = 14;
+		int result = instance.intValue();
+		assertEquals(expResult, result);
+	}
+
+	/**
+	 * Test of intValue method, of class ScaledDouble.
+	 */
+	@Test
+	public void testInit_m14()
+	{
+		ScaledDouble instance = new ScaledDouble(0.1233);
+
+		int expResult = -14;
+		int result = instance.intValue();
+		assertEquals(expResult, result);
+	}
+
+	/**
+	 * Test of intValue method, of class ScaledDouble.
+	 */
+	@Test
 	public void testScaling_2()
 	{
 		ScaledDouble instance = new ScaledDouble();

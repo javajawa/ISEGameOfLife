@@ -22,6 +22,25 @@ public class ScaledDouble extends Number implements Comparable<Number>
 		this.scaleFactor = scaleFactor;
 	}
 
+	public ScaledDouble(double initialValue)
+	{
+		this(initialValue, 10);
+	}
+
+	public ScaledDouble(double initialValue, int scaleFactor)
+	{
+		if (initialValue <= 0 || initialValue >= 1) throw new IllegalArgumentException("Value must be between 0 and 1");
+		this.scaleFactor = scaleFactor;
+		int mul = 1;
+
+		if (initialValue > 0.5)
+		{
+			initialValue = 1-initialValue;
+			mul = -1;
+		}
+		value = mul * (int)Math.round(scaleFactor * Math.log(2 * initialValue));
+	}
+
 	private void calculate()
 	{
 		if (value > 0)
