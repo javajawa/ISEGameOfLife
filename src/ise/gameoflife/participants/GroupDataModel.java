@@ -5,6 +5,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.models.ScaledDouble;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ class GroupDataModel extends APlayerDataModel
 	private ArrayList<String> memberList;
 
 	@Element
-	private History<Double> economicPosition;
+	private History<ScaledDouble> economicPosition;
 
 	@Element
 	private History<HashMap<Proposition,Integer>> propositionHistory;
@@ -59,7 +60,7 @@ class GroupDataModel extends APlayerDataModel
 		ret.myrolesString = "<group>";
 		ret.randomseed = init.getRandomSeed();
 		ret.name = init.getName();
-		ret.economicPosition = new History<Double>(50);
+		ret.economicPosition = new History<ScaledDouble>(50);
 		ret.propositionHistory = new History<HashMap<Proposition, Integer>>(50);
 		ret.economicPosition.newEntry(init.getInitialEconomicBelief());
 		return ret;
@@ -82,15 +83,21 @@ class GroupDataModel extends APlayerDataModel
 
 	double getCurrentEconomicPoisition()
 	{
-		return economicPosition.getValue();
+		return economicPosition.getValue().doubleValue();
 	}
 
+	ScaledDouble getCurrentEconomicPositionObject()
+	{
+		return economicPosition.getValue().safeClone();
+	}
+	@Deprecated
 	void setEconomicPosition(double pos)
 	{
-		economicPosition.setValue(pos);
+		economicPosition.setValue(new ScaledDouble(pos));
 	}
 
-	UnmodifiableHistory<Double> getEconomicPoisition()
+	
+	UnmodifiableHistory<ScaledDouble> getEconomicPoisition()
 	{
 		return economicPosition.getUnmodifableHistory();
 	}
