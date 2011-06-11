@@ -29,12 +29,14 @@ final class ConnectionWrapper
 	private final PreparedStatement roundGroup;
 	private final PreparedStatement endGroup;
 	private final PreparedStatement endSim;
-	private final PublicEnvironmentConnection envConn;
+	//private final PublicEnvironmentConnection envConn;
+	private final int simId;
 
-	ConnectionWrapper(String url, String comment, Boolean remote) throws SQLException, ClassNotFoundException
+	ConnectionWrapper(String url, String comment, String sim_uuid, Boolean remote) throws SQLException, ClassNotFoundException
 	{
 		if (!remote) Class.forName("org.sqlite.JDBC");
 		conn = DriverManager.getConnection(url);
+		//remote db needs autocommiting so as not to break foreign key constraints
 		if (!remote) conn.setAutoCommit(false);
 		
 		newAgent = conn.prepareStatement(Statements.addAgent.getPrototype());
@@ -46,23 +48,20 @@ final class ConnectionWrapper
 		roundGroup = conn.prepareStatement(Statements.roundGroup.getPrototype());
 		endGroup = conn.prepareStatement(Statements.endGroup.getPrototype());
 		endSim = conn.prepareStatement(Statements.endSim.getPrototype());
-
-		envConn = PublicEnvironmentConnection.getInstance();
-		if (envConn == null) throw new IllegalStateException(
-		    "Connection created before EnviromentConnection was accessible");
-		initialiseSimulation(comment,remote);
+	
+		simId = initialiseSimulation(comment, sim_uuid, remote);
 	}
 
-	private void initialiseSimulation(String comment, Boolean remote) throws SQLException
+	private int initialiseSimulation(String comment, String sim_uuid, Boolean remote) throws SQLException
 	{
 		PreparedStatement simAdd = conn.prepareStatement(
 		    Statements.addSim.getPrototype());
-		simAdd.setString(1, envConn.getId());
+		simAdd.setString(1,sim_uuid);
 		
 		//if connecting to remote database
-		int userId = 0;
+		
 		String userName = System.getProperty("user.name");
-		logger.log(Level.INFO, "Your userName = {0}.", userName);
+		logger.log(Level.INFO, "Your userName = {0}", userName);
 		if (remote) {
 		    //get a userid from username table
 		    PreparedStatement userAdd = conn.prepareStatement(
@@ -70,12 +69,14 @@ final class ConnectionWrapper
 		    userAdd.setString(1,userName);
 		    userAdd.setString(2,userName);
 		    userAdd.setString(3," ");
-		    userAdd.execute();
+		    userAdd.executeUpdate();
 		    ResultSet rs = userAdd.getGeneratedKeys();
-		    while (rs.next()) userId = rs.getInt(1);
+		    int userId = 0;
+		    if (rs.next()) userId = rs.getInt(1);
+		    else logger.log(Level.WARNING, "Acquiring userId failed. Using default");
 		    rs.close();
-		    logger.log(Level.INFO, "Your remote userId = {0}.",userId);
 		    userAdd.close();
+		    logger.log(Level.INFO, "Your remote userId = {0}",userId);
   		    simAdd.setInt(2,userId);
 		}
 		//in local db just use username instead of userId
@@ -84,27 +85,28 @@ final class ConnectionWrapper
 		}
 		
 		simAdd.setString(3,comment);
-		simAdd.execute();
+		simAdd.executeUpdate();
+		logger.log(Level.INFO, "Simulation comment: {0}", comment);
 		ResultSet rs = simAdd.getGeneratedKeys();
-		int simId = 0;
-		while (rs.next())
-		{
-			simId = rs.getInt(1);
-		}
+		int simulationId = 0;
+		if (rs.next()) simulationId = rs.getInt(1);
+		else logger.log(Level.WARNING, "Acquiring simulationId failed. Using default");
 		rs.close();
 		simAdd.close();
-		logger.log(Level.INFO, "Current SimulationId = {0}.", simId);
-
+		logger.log(Level.INFO, "Current simulationId = {0}", simulationId);
+		if (!conn.getAutoCommit()) conn.commit();
 		
-		newAgent.setInt(1, simId);
-		dieAgent.setInt(2, simId);
-		roundAgent.setInt(1, simId);
-		newGroup.setInt(1, simId);
-		dieGroup.setInt(2, simId);
-		roundGroup.setInt(1, simId);
-		endAgent.setInt(2, simId);
-		endGroup.setInt(2, simId);
-		endSim.setInt(2, simId);
+		newAgent.setInt(1, simulationId);
+		dieAgent.setInt(2, simulationId);
+		roundAgent.setInt(1, simulationId);
+		newGroup.setInt(1, simulationId);
+		dieGroup.setInt(2, simulationId);
+		roundGroup.setInt(1, simulationId);
+		endAgent.setInt(2, simulationId);
+		endGroup.setInt(2, simulationId);
+		endSim.setInt(2, simulationId);
+		
+		return simulationId;
 	}
 
 	void flush()
@@ -125,28 +127,29 @@ final class ConnectionWrapper
 		}
 	}
 	
-	void end() {
-	    try {
-		endAgent.setInt(1, envConn.getRoundsPassed());
-		endGroup.setInt(1, envConn.getRoundsPassed());
-		endSim.setInt(1, envConn.getRoundsPassed());
-		endAgent.execute();
-		endGroup.execute();
-		endSim.execute();
-		if (!conn.getAutoCommit()) conn.commit();
-		conn.close();
-		logger.log(Level.INFO,"Final writes to database complete.");
-	    } catch (SQLException ex) {
-		logger.log(Level.WARNING, null, ex);
-	    }
+	void end(int round) 
+	{
+		try {
+		    endAgent.setInt(1, round);
+		    endGroup.setInt(1, round);
+		    endSim.setInt(1, round);
+		    endAgent.execute();
+		    endGroup.execute();
+		    endSim.execute();
+		    if (!conn.getAutoCommit()) conn.commit();
+		    conn.close();
+		    logger.log(Level.INFO,"Database connection closed");
+		} catch (SQLException ex) {
+		    logger.log(Level.WARNING, null, ex);
+		}
 	}
 
-	void groupAdd(String id)
+	void groupAdd(String id, int round)
 	{
 		try
 		{
 		    newGroup.setString(2, id);
-		    newGroup.setInt(3, envConn.getRoundsPassed());
+		    newGroup.setInt(3,  round);
 		    newGroup.addBatch();
 		}
 		catch (SQLException ex)
@@ -155,12 +158,12 @@ final class ConnectionWrapper
 		}
 	}
 
-	void groupDie(String id)
+	void groupDie(String id, int round)
 	{
 		try
 		{
 			dieGroup.setString(3, id);
-			dieGroup.setInt(1, envConn.getRoundsPassed());
+			dieGroup.setInt(1,  round);
 			dieGroup.addBatch();
 		}
 		catch (SQLException ex)
@@ -169,14 +172,14 @@ final class ConnectionWrapper
 		}
 	}
 
-	void agentAdd(String id)
+	void agentAdd(String id, int round, String name)
 	{
 		try
 		{
 		    newAgent.setString(2, id);
 		    //agent name
-		    newAgent.setString(3,envConn.getAgentById(id).getName());
-		    newAgent.setInt(4, envConn.getRoundsPassed());
+		    newAgent.setString(3,name);
+		    newAgent.setInt(4,  round);
 		    newAgent.addBatch();
 		}
 		catch (SQLException ex)
@@ -185,12 +188,12 @@ final class ConnectionWrapper
 		}
 	}
 	
-	void agentDie(String id)
+	void agentDie(String id, int round)
 	{
 	    try
 	    {
 		dieAgent.setString(3, id);
-		dieAgent.setInt(1, envConn.getRoundsPassed());
+		dieAgent.setInt(1,  round);
 		dieAgent.addBatch();
 	    }
 	    catch (SQLException ex)
@@ -199,9 +202,11 @@ final class ConnectionWrapper
 	    }
 	}
 
-	void groupRound(String id, PublicGroupDataModel group) {
+	void groupRound(String id, int round, PublicGroupDataModel group) {
 	     try {
-		 roundGroup.setInt(2,envConn.getRoundsPassed());
+		 //for some reason, needs simId reassigned or error
+		 roundGroup.setInt(1, simId);
+		 roundGroup.setInt(2, round);
 		 roundGroup.setString(3,id);
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
@@ -212,9 +217,11 @@ final class ConnectionWrapper
 	    }
 	}
 
-	void agentRound(String id, PublicAgentDataModel agent) {
+	void agentRound(String id, int round, PublicAgentDataModel agent) {
 	    try {
-		roundAgent.setInt(2,envConn.getRoundsPassed());
+		//for some reason, needs simId reassigned or error
+		roundAgent.setInt(1, simId);
+		roundAgent.setInt(2, round);
 		roundAgent.setString(3,id);
 		roundAgent.setString(4,agent.getGroupId());
 		roundAgent.setDouble(5,agent.getFoodAmount());
