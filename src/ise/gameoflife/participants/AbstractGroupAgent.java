@@ -34,6 +34,7 @@ import presage.Participant;
 import presage.PlayerDataModel;
 import presage.environment.messages.ENVRegistrationResponse;
 // TODO: Make it clear that the contract calls for a public consturctor with one argument that takes in the datamodel.
+
 /**
  * Abstract Group agent describes form of a group. Implemented as an agent for
  * ease of compatibility with presage, since their functionalities overlap a lot
@@ -43,7 +44,6 @@ public abstract class AbstractGroupAgent implements Participant
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger("gameoflife.AbstractGroup");
-
 	/**
 	 * The DataModel used by this agent.
 	 */
@@ -60,7 +60,6 @@ public abstract class AbstractGroupAgent implements Participant
 	private PublicEnvironmentConnection conn;
 	private EnvConnector ec;
 	private EnvironmentConnector tmp_ec;
-	
 	private Map<String, Double> huntResult;
 	private Map<Proposition, Integer> voteResult;
 
@@ -101,28 +100,32 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public ArrayList<String> getRoles()
 	{
-		return new ArrayList<String>(Arrays.asList(new String[]{"group"}));
+		return new ArrayList<String>(Arrays.asList(new String[]
+						{
+							"group"
+						}));
 	}
 
 	/**
 	 * Initialises the group
 	 * @param environmentConnector 
 	 */
-@Override
+	@Override
 	public void initialise(EnvironmentConnector environmentConnector)
 	{
 		tmp_ec = environmentConnector;
 		dm.initialise(environmentConnector);
 	}
 
-/**
- * Function called when the group is activated, but has yet to be added to the 
- * environment
- */
+	/**
+	 * Function called when the group is activated, but has yet to be added to the 
+	 * environment
+	 */
 	@Override
 	public final void onActivation()
 	{
-		GroupRegistration request = new GroupRegistration(dm.getId(), dm.getPublicVersion());
+		GroupRegistration request = new GroupRegistration(dm.getId(),
+						dm.getPublicVersion());
 		ENVRegistrationResponse r = tmp_ec.register(request);
 		this.authCode = r.getAuthCode();
 		this.ec = ((RegistrationResponse)r).getEc();
@@ -188,7 +191,7 @@ public abstract class AbstractGroupAgent implements Participant
 		voteResult = new HashMap<Proposition, Integer>();
 		dm.clearRoundData();
 	}
-	
+
 	/**
 	 * Separates agents in the group into hunting teams
 	 */
@@ -201,13 +204,14 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			for (String agent : team.getMembers())
 			{
-				if (memberList.contains(agent)){
+				if (memberList.contains(agent))
+				{
 					ec.act(new GroupOrder(team, agent), getId(), authCode);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Once the hunters have gathered their winnings, it is processed and
 	 * distributed here
@@ -216,26 +220,28 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		double shared = 0;
 		double taxRate = 1 - dm.getCurrentEconomicPoisition();
-		for (Double value : huntResult.values()){
+		for (Double value : huntResult.values())
+		{
 			shared += value;
 		}
 
 		shared = shared * taxRate / dm.getMemberList().size();
 
 		Map<String, Double> result = new HashMap<String, Double>(huntResult.size());
-		
+
 		for (String agent : huntResult.keySet())
 		{
-			double value = shared + (1-taxRate) * huntResult.get(agent);
+			double value = shared + (1 - taxRate) * huntResult.get(agent);
 			result.put(agent, value);
 		}
-			
+
 		List<String> informedAgents = new ArrayList<String>();
 
 		for (String agent : result.keySet())
 		{
 			informedAgents.add(agent);
-			ec.act(new DistributeFood(agent, huntResult.get(agent), result.get(agent)), getId(), authCode);
+			ec.act(new DistributeFood(agent, huntResult.get(agent), result.get(agent)),
+							getId(), authCode);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -260,14 +266,22 @@ public abstract class AbstractGroupAgent implements Participant
 			if (voteResult.get(p) > 0)
 			{
 				movement += p.getType().getMovement();
-				motionsPassed ++;
-                                logger.log(Level.FINE, "{0}''s {1} proposal was voted in (Vote={2})", new Object[]{p.getProposer(),
-								p.getType(), voteResult.get(p)});
+				motionsPassed++;
+				logger.log(Level.FINE, "{0}''s {1} proposal was voted in (Vote={2})",
+								new Object[]
+								{
+									p.getProposer(),
+									p.getType(), voteResult.get(p)
+								});
 			}
 			else
 			{
-				logger.log(Level.FINE, "{0}''s {1} proposal was not voted in (Vote={2})", new Object[]{p.getProposer(),
-								p.getType(), voteResult.get(p)});
+				logger.log(Level.FINE, "{0}''s {1} proposal was not voted in (Vote={2})",
+								new Object[]
+								{
+									p.getProposer(),
+									p.getType(), voteResult.get(p)
+								});
 			}
 			// TODO: Store each proposition and result in history?
 			props.put(p.getProposer(), p);
@@ -275,15 +289,23 @@ public abstract class AbstractGroupAgent implements Participant
 
 		// Calculate the groups new position
 		double change = dm.getCurrentEconomicPoisition();
-		dm.setEconomicPosition(scale(change, movement/motionsPassed));
-                change = dm.getCurrentEconomicPoisition() - change;
-		// Inform eahc agfent of how their vote went, and the overall group movement
-		for (String agent : props.keySet())
+		if (motionsPassed > 0)
 		{
+			dm.setEconomicPosition(scale(change, movement / motionsPassed));
+			change = dm.getCurrentEconomicPoisition() - change;
+		}
+		else
+		{
+			change = 0;
+		}
+		// Inform each agent of how their vote went, and the overall group movement
+		for (String agent : props.keySet())
+                {
 			Proposition p = props.get(agent);
 			ec.act(new VoteResult(p, voteResult.get(p), change), getId(), authCode);
 		}
 	}
+
 	/**
 	 * Sets the number of cycles passed
 	 * @param cycle
@@ -313,6 +335,11 @@ public abstract class AbstractGroupAgent implements Participant
 		return dm.getPublicVersion();
 	}
 
+	protected final void setEconomicPosition(double newPosition)
+	{
+		this.dm.setEconomicPosition(newPosition);
+	}
+
 	/**
 	 * This function puts the inputs into a queue to be processed at the end of
 	 * the cycle
@@ -326,9 +353,13 @@ public abstract class AbstractGroupAgent implements Participant
 			final JoinRequest req = (JoinRequest)input;
 			boolean response = this.respondToJoinRequest(req.getAgent());
 			if (response) this.dm.addMember(req.getAgent());
-			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(), authCode);
-			logger.log(Level.FINE, "{0} got a join request from {1}", new Object[]{dm.getName(),
-							ec.nameof(((JoinRequest)input).getAgent())});
+			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(),
+							authCode);
+			logger.log(Level.FINE, "{0} got a join request from {1}", new Object[]
+							{
+								dm.getName(),
+								ec.nameof(((JoinRequest)input).getAgent())
+							});
 			return;
 		}
 
@@ -337,11 +368,15 @@ public abstract class AbstractGroupAgent implements Participant
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
-			logger.log(Level.FINE, "{0} lost memeber {1} because of {2}", new Object[]{dm.getName(),
-							ec.nameof(in.getAgent()), in.getReason()});
-			
-			if (dm.getMemberList().isEmpty()) ec.act(new Death(), dm.getId(), authCode);
-			
+			logger.log(Level.FINE, "{0} lost memeber {1} because of {2}", new Object[]
+							{
+								dm.getName(),
+								ec.nameof(in.getAgent()), in.getReason()
+							});
+
+			if (dm.getMemberList().isEmpty())
+				ec.act(new Death(), dm.getId(), authCode);
+
 			return;
 		}
 
@@ -349,8 +384,12 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			final HuntResult in = (HuntResult)input;
 			huntResult.put(in.getAgent(), in.getFoodHunted());
-			logger.log(Level.FINE, "Agent {0} has hunted food worth {1} for {2}", new Object[]{ec.nameof(in.getAgent()),
-							in.getFoodHunted(), dm.getName()});
+			logger.log(Level.FINE, "Agent {0} has hunted food worth {1} for {2}",
+							new Object[]
+							{
+								ec.nameof(in.getAgent()),
+								in.getFoodHunted(), dm.getName()
+							});
 			return;
 		}
 
@@ -362,14 +401,21 @@ public abstract class AbstractGroupAgent implements Participant
 				if (!v.getProposition().getOwnerGroup().equals(getId())) return;
 				voteResult.put(v.getProposition(), 0);
 			}
-			voteResult.put(v.getProposition(), voteResult.get(v.getProposition()) + v.getVote().getValue());
-			logger.log(Level.FINE, "Agent {0} has voted {1} on {2} by {3} as a member of {4}", new Object[]{ec.nameof(v.getAgent()),
-							v.getVote(), v.getProposition().getType(),
-							ec.nameof(v.getProposition().getProposer()), dm.getName()});
+			voteResult.put(v.getProposition(),
+							voteResult.get(v.getProposition()) + v.getVote().getValue());
+			logger.log(Level.FINE,
+							"Agent {0} has voted {1} on {2} by {3} as a member of {4}",
+							new Object[]
+							{
+								ec.nameof(v.getAgent()),
+								v.getVote(), v.getProposition().getType(),
+								ec.nameof(v.getProposition().getProposer()), dm.getName()
+							});
 			return;
 		}
 
-		logger.log(Level.SEVERE, "Group Unable to handle Input of type {0}", input.getClass().getCanonicalName());
+		logger.log(Level.SEVERE, "Group Unable to handle Input of type {0}",
+						input.getClass().getCanonicalName());
 	}
 
 	/**
@@ -399,13 +445,14 @@ public abstract class AbstractGroupAgent implements Participant
 	 * @see #getConn() 
 	 */
 	abstract protected void onActivate();
-	
+
 	/**
 	 * Allows the group to process and respond to a join request
 	 * @param playerID The player wishing to join
 	 * @return Whether the group wishes to let them join
 	 */
 	abstract protected boolean respondToJoinRequest(String playerID);
+
 	/**
 	 * Procedure to assign members to different teams, and get them to hunt food.
 	 * The list of different foods can be found using the {@link #getConn() 
@@ -416,6 +463,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 * hunt
 	 */
 	abstract protected List<HuntingTeam> selectTeams();
+
 	/**
 	 * Function that is called after a member leaves the group.
 	 * The member will not appear in the member list
@@ -423,7 +471,9 @@ public abstract class AbstractGroupAgent implements Participant
 	 * @param playerID The id of the leaving playing
 	 * @param reason The reason that the player left the group
 	 */
-	abstract protected void onMemberLeave(String playerID, LeaveNotification.Reasons reason);
+	abstract protected void onMemberLeave(String playerID,
+					LeaveNotification.Reasons reason);
+
 	/**
 	 * Here you implement any code concerning data storage about the events
 	 * of this round before it is all deleted for a new round to begin.
@@ -442,7 +492,6 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		return conn;
 	}
-	
 
 	/**
 	 * Get the next random number in the sequence as a double uniformly
@@ -453,7 +502,6 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		return this.dm.random.nextDouble();
 	}
-	
 
 	/**
 	 * Get the next random number in the sequence as a double uniformly

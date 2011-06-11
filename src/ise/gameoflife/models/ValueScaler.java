@@ -28,14 +28,25 @@ public class ValueScaler
 	 */
 	public static double scale(double old, double amount, double step)
 	{
-		if (step <= 0 || step >= 1) throw new IllegalArgumentException("Step must fall within the range 0 to 1, exlcusive");
-		if (amount < 0)
+		if (step <= 1) step = 1/step;
+		if (old < 0.5)
 		{
 			return 1-scale(1-old, -amount, step);
 		}
-		double space = 1-old;
-		space *= Math.pow(1-step, amount);
-		return 1-space;
+
+		// First Phase: Retrieve the equivilant amount from old with given step
+		double ls = Math.log(step);
+		double am = -Math.log(2-2*old)*ls;
+		am += amount;
+
+		if (am < 0)
+		{
+			return (Math.exp(am) / 2 / ls);
+		}
+		else
+		{
+			return 1 - (Math.exp(-am) / 2 / ls);
+		}
 	}
 
 	private ValueScaler()
