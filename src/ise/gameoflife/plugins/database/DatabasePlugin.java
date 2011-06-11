@@ -27,7 +27,7 @@ public class DatabasePlugin implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
-	private final static String name = "Database v2";
+	private final static String name = "Database Plugin v2.2";
 		
 	@Element
 	private final Boolean remote;
@@ -47,7 +47,7 @@ public class DatabasePlugin implements Plugin
 	
 	 /**
 	 * Creates a new instance of the DatabasePlugin
-	 * 
+	 * with specified parameters.
 	 * @param comment Comment for simulation
 	 * @param remote Use remote db instead of local
 	 * 
@@ -106,36 +106,36 @@ public class DatabasePlugin implements Plugin
 	@Override
 	public void initialise(Simulation sim)
 	{
-	    	ec = PublicEnvironmentConnection.getInstance();
-		if (ec == null) throw new IllegalStateException(
-		    "Connection created before EnviromentConnection was accessible");
-				
-		try {
-		    //selects database connection
-		    String url;
-		    if(remote) {
-			//url to remote db
-			url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol?user=stratra1_isegol&password=ise4r3g00d";
-			logger.log(Level.INFO,"Connecting to remote database:");
-		    }
-		    else {
-			//path to /Simulations folder
-			String simDir = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
-			//url to local db
-			url = "jdbc:sqlite:"+ simDir + "/Simulations.db";
-			logger.log(Level.INFO, "Connecting to local database at: {0}/Simulations.db", simDir);
-		    }
-		    //Establish connection to database
-		    wrap = new ConnectionWrapper(url, comment, ec.getId(), remote);
-		    		    		
-		}   catch (SQLException ex) {
-			logger.log(Level.SEVERE,"Initializing database error:", ex);
-		}   catch (ClassNotFoundException ex) {
-			logger.log(Level.SEVERE,"SQLite JDBC class not found", ex);
+	    ec = PublicEnvironmentConnection.getInstance();
+	    if (ec == null) throw new IllegalStateException(
+		"Connection created before EnviromentConnection was accessible");
+
+	    try {
+		//selects database connection
+		String url;
+		if(remote) {
+		    //url to remote db
+		    url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol?user=stratra1_isegol&password=ise4r3g00d";
+		    logger.log(Level.INFO,"Connecting to remote database:");
 		}
-		
-		//required to prevent null exception for agents without group
-		createFreeAgentGroup();
+		else {
+		    //path to /Simulations folder
+		    String simDir = new File(System.getProperty("user.dir"), "simulations").getAbsolutePath();
+		    //url to local db
+		    url = "jdbc:sqlite:"+ simDir + "/Simulations.db";
+		    logger.log(Level.INFO, "Connecting to local database at: {0}/Simulations.db", simDir);
+		}
+		//Establish connection to database
+		wrap = new ConnectionWrapper(url, comment, ec.getId(), remote);
+
+	    }   catch (SQLException ex) {
+		    logger.log(Level.SEVERE,"Initializing database error:", ex);
+	    }   catch (ClassNotFoundException ex) {
+		    logger.log(Level.SEVERE,"SQLite JDBC class not found", ex);
+	    }
+
+	    //required to prevent null exception for agents without group
+	    createFreeAgentGroup();
 
 	}
 
