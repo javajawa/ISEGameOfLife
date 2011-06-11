@@ -90,13 +90,18 @@ class GroupDataModel extends APlayerDataModel
 	{
 		return economicPosition.getValue().safeClone();
 	}
+
 	@Deprecated
 	void setEconomicPosition(double pos)
 	{
 		economicPosition.setValue(new ScaledDouble(pos));
 	}
 
-	
+	void alterEconomicPosition(int amount)
+	{
+		economicPosition.getValue().alterValue(amount);
+	}
+
 	UnmodifiableHistory<ScaledDouble> getEconomicPoisition()
 	{
 		return economicPosition.getUnmodifableHistory();
