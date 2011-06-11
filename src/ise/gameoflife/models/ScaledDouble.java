@@ -30,7 +30,7 @@ public class ScaledDouble extends Number implements Comparable<Number>
 
 	public ScaledDouble(double initialValue, int scaleFactor)
 	{
-		if (initialValue <= 0 || initialValue >= 1) throw new IllegalArgumentException("Value must be between 0 and 1");
+		if (initialValue < 0 || initialValue > 1) throw new IllegalArgumentException("Value must be between 0 and 1");
 		this.scaleFactor = scaleFactor;
 		int mul = 1;
 
