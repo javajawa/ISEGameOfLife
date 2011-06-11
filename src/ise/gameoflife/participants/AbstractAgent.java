@@ -189,7 +189,7 @@ abstract public class AbstractAgent implements Participant
 			if (t==null) return;
 			for (String agent : t.keySet())
 			{
-				dm.setTrust(agent, t.get(agent));
+				dm.alterTrust(agent, t.get(agent));
 			}
 		}
 	}
