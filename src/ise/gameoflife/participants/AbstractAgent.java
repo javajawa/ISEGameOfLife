@@ -134,6 +134,7 @@ abstract public class AbstractAgent implements Participant
 			if (in.wasAccepted())
 			{ 
 				dm.setGroup(in.getGroup());
+				dm.clearLoyalty();
 			}
 			groupApplicationResponse(in.wasAccepted());	
 			logger.log(Level.FINE, "I, agent {0} was {1}accepted into group {2}", new Object[]{dm.getName(),

@@ -290,6 +290,11 @@ class AgentDataModel extends APlayerDataModel
 		loyaltyHistory.setValue(new ScaledDouble(newLoyalty));
 	}
 
+	public void clearLoyalty()
+	{
+		loyaltyHistory.setValue(new ScaledDouble(0));
+	}
+
 	public void alterLoyalty(int amount)
 	{
 		loyaltyHistory.getValue().alterValue(amount);
