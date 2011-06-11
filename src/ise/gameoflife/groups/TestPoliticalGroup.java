@@ -83,22 +83,17 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 //            else {
 //                return false;
 //            }
-            //System.out.println("before economic"+this.getDataModel().getCurrentEconomicPoisition());
 
             //update economic belief of the group when agent joins (TRUE)
             double size = this.getDataModel().getMemberList().size();
-             
-            //System.out.println("SiZE:" + size);
-
-             double economic = 0;
+            double economic = 0;
             for (String members : this.getDataModel().getMemberList()){
                 economic += getConn().getAgentById(members).getEconomicBelief();
             }
             economic += getConn().getAgentById(playerID).getEconomicBelief();
             economic = economic / (size+1);
             this.setEconomicPosition(economic);
-
-            //System.out.println("after economic"+this.getDataModel().getCurrentEconomicPoisition());
+            System.out.println("enters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+this.getDataModel().getCurrentEconomicPoisition());
             return true;
 	}
 
@@ -134,12 +129,22 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                  * !!!change economic belief when a new member joins the group NOT HERE
                  * */
 
-                 //this.setEconomicPosition();
+                //update economic belief of the group when the agent leaves the group
+                double size = this.getDataModel().getMemberList().size();
+                double economic = 0;
+                for (String members : this.getDataModel().getMemberList()){
+                    economic += getConn().getAgentById(members).getEconomicBelief();
+                }
+                economic = economic / (size);
+                this.setEconomicPosition(economic);
+                for (int i= 1; i<10; i++)
+                System.out.println("leaves!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+this.getDataModel().getCurrentEconomicPoisition());
 	}
 
 	@Override
 	protected void beforeNewRound() {
 		// Do nothing
+            System.out.println("round!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+this.getDataModel().getCurrentEconomicPoisition());
 	}
 	
 }

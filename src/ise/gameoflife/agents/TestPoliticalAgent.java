@@ -239,7 +239,7 @@ public class TestPoliticalAgent extends AbstractAgent
         if (bestPartner.equals(""))
             return null;
         else
-        {
+        {               //REPLACE ECONOMIC INITIALISER OF GROUP with 0, Dont NEEDED Here
             GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
@@ -764,24 +764,24 @@ public class TestPoliticalAgent extends AbstractAgent
             //after the vote. Whether or not your proposition passed reflects how much you
             //want to trust the group to make decisions or a single dictator to make decisions.
             if (this.getDataModel().getGroupId() != null)
-            {                                                                                             
+            {
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
                     char position;
                     double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
                     double deltaSocial = groupSocial - currentSocial;//how close are you to the group's belief
-                    
-                    if (currentSocial < groupSocial)                    
+
+                    if (currentSocial < groupSocial)
                         //your belief is more authoritorian
                         position = 'a';//authoritorian
-                    else if (currentSocial > groupSocial)                  
+                    else if (currentSocial > groupSocial)
                         //your belief is more libertarian
-                        position = 'l';//libertarian                    
+                        position = 'l';//libertarian
                     else
                         //your belief equates to group belief
                         position = 'c';//center
-                                        
+
                     if (votes > 0)
                     {   //you're social belief moves towards the group social poistion
                         switch (position)
@@ -807,7 +807,7 @@ public class TestPoliticalAgent extends AbstractAgent
                         }
                     }
                     else if (votes < 0)
-                    {                     
+                    {
                         //you're economic belief moves away from the group economic position
                         switch (position)
                         {
@@ -833,8 +833,8 @@ public class TestPoliticalAgent extends AbstractAgent
                     }
                     //otherwise your social belief remains the same
                 }
-                return currentSocial;                                      
-            }               
+                return currentSocial;
+            }
             else
                 return currentSocial;//agent doesnt belong to a group and does not vote
         }
