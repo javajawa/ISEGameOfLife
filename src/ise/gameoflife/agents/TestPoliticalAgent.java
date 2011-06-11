@@ -264,14 +264,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food suggestedFood, cooperateFood, defectFood, choice;
-
-            String groupID = this.getDataModel().getGroupId();
-            //If the agent belongs to a group can ask for advice
-            if (groupID != null)
-            {   
-                //suggestedFood = this.askAdvice();
-                //TODO: Make use of advice when choosing food. 
-            }
+            
             //Stores the two sources in an array
             for (Food noms : getConn().availableFoods())
             {
@@ -290,6 +283,19 @@ public class TestPoliticalAgent extends AbstractAgent
                     defectFood = foodArray.get(0);
             }
             
+            String groupID = this.getDataModel().getGroupId();
+            //If the agent belongs to a group can ask for advice
+            if (groupID != null)
+            {   
+                suggestedFood = this.askAdvice();
+                if (suggestedFood != null)
+                {
+                    return suggestedFood;
+                }
+            }
+
+            //If the agent is not in a group or advisor didn't give a definitive answer hunt
+            //according to its type
             switch (this.getDataModel().getAgentType())
             {
                     //The choice is always to hunt stags
@@ -767,68 +773,18 @@ public class TestPoliticalAgent extends AbstractAgent
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
-                    char position;
                     double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
                     double deltaSocial = groupSocial - currentSocial;//how close are you to the group's belief
-                    
-                    if (currentSocial < groupSocial)                    
-                        //your belief is more authoritorian
-                        position = 'a';//authoritorian
-                    else if (currentSocial > groupSocial)                  
-                        //your belief is more libertarian
-                        position = 'l';//libertarian                    
-                    else
-                        //your belief equates to group belief
-                        position = 'c';//center
                                         
                     if (votes > 0)
                     {   //you're social belief moves towards the group social poistion
-                        switch (position)
-                        {
-                            case 'a':
-                                //move more libertarian
-                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
-                                if (currentSocial > groupSocial)
-                                    currentSocial = groupSocial;
-                                break;
-                            case 'l':
-                                //move more authoritorian
-                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
-                                if (currentSocial < groupSocial)
-                                    currentSocial = groupSocial;
-                                break;
-                            case 'c':
-                                //stay
-                                currentSocial = groupSocial;
-                                break;
-                            default :
-                                throw new IllegalStateException("Agent won but social belief not recognised");
-                        }
+                        //currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
+                        currentSocial += deltaSocial/100;
                     }
                     else if (votes < 0)
                     {                     
-                        //you're economic belief moves away from the group economic position
-                        switch (position)
-                        {
-                            case 'a':
-                                //move more authoriatorian
-                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
-                                break;
-                            case 'l':
-                                //move more libertarian
-                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
-                                break;
-                            case 'c':
-                                //any direction, for now
-                                boolean random = uniformRandBoolean();
-                                if (random)
-                                    currentSocial = ValueScaler.scale(currentSocial, 0.05, Math.abs(overallMovement));
-                                else
-                                    currentSocial = ValueScaler.scale(currentSocial, -0.05, Math.abs(overallMovement));
-                                break;
-                            default :
-                                throw new IllegalStateException("Agent lost but social belief not recognised");
-                        }
+                        //currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
+                        currentSocial -= deltaSocial/100;
                     }
                     //otherwise your social belief remains the same
                 }
@@ -849,67 +805,33 @@ public class TestPoliticalAgent extends AbstractAgent
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
-                    char position;
                     double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                     double deltaEconomic = groupEconomic - currentEconomic;//how close are you to the group's belief
 
-                    if (currentEconomic < groupEconomic)
-                        //your belief is more right
-                        position = 'r';//right
-                    else if (currentEconomic > groupEconomic)
-                        //your belief is more left
-                        position = 'l';//left
-                    else
-                        //your belief equates to group belief
-                        position = 'c';//center
-
                     if (moreLoyal() && moreHappy())
-                    {   //you're economic belief moves towards the group economic poistion
-                        switch (position)
-                        {
-                            case 'r':
-                                //move more left
-                                currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, Math.abs(overallMovement));
-                                if (currentEconomic > groupEconomic)
-                                    currentEconomic = groupEconomic;
-                                break;
-                            case 'l':
-                                //move more right
-                                currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, Math.abs(overallMovement));
-                                if (currentEconomic < groupEconomic)
-                                    currentEconomic = groupEconomic;
-                                break;
-                            case 'c':
-                                //stay
-                                currentEconomic = groupEconomic;
-                                break;
-                            default :
-                                throw new IllegalStateException("Agent happy but economic belief not recognised");
-                        }
+                    {
+                        //TODO: When we know how the new scale method works we will use it
+                        //IMPORTANT NOTE: The current implementation does not check if agents go out of bounds
+                        //                This will be fixed when we will use the scale method
+                        
+                        //currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic/100, 0.01);
+                        currentEconomic += deltaEconomic/100;
                     }
                     else
                     {
-                        //you're economic belief moves away from the group economic position
-                        switch (position)
+                        if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
                         {
-                            case 'r':
-                                //move more right
-                                currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, Math.abs(overallMovement));
-                                break;
-                            case 'l':
-                                //move mor left
-                                currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, Math.abs(overallMovement));
-                                break;
-                            case 'c':
-                                //any direction, for now
-                                boolean random = uniformRandBoolean();
-                                if (random)
-                                    currentEconomic = ValueScaler.scale(currentEconomic, 0.05, Math.abs(overallMovement));
-                                else
-                                    currentEconomic = ValueScaler.scale(currentEconomic, -0.05, Math.abs(overallMovement));
-                                break;
-                            default :
-                                throw new IllegalStateException("Agent unhappy but economic belief not recognised");
+                            //currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic/100, 0.01);
+                            currentEconomic -= deltaEconomic/100;
+                        }
+                        else //if your beliefs are exactly the same with the group's beliefs
+                        {
+                            //any direction, for now
+                            boolean random = uniformRandBoolean();
+                            if (random)
+                                currentEconomic += 0.001;
+                            else
+                                currentEconomic -= 0.001;
                         }
                     }
                 }
