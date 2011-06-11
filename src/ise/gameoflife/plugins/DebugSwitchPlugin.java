@@ -105,7 +105,7 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 			StringBuilder b = new StringBuilder();
 			b.append('[');
 			b.append(df.format(new Date(record.getMillis())));
-			b.append(':');
+			b.append('/');
 			synchronized (timeLock)
 			{
 				b.append(time);
