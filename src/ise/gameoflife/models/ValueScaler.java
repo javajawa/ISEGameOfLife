@@ -1,9 +1,10 @@
 package ise.gameoflife.models;
 
 /**
- * TODO: Add license documentation
  * @author Benedict
+ * @deprecated Use {@link ScaledDouble} instead
  */
+@Deprecated
 public class ValueScaler
 {
 	public static double scale(double old, double amount)
