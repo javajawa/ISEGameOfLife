@@ -4,9 +4,8 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
-import ise.gameoflife.plugins.DatabasePlugin;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
-//import ise.gameoflife.plugins.DatabasePlugin;
+import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
@@ -23,7 +22,11 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
+<<<<<<< HEAD
 		super("Basic Politics Testing Bed", 150, 0, 0.1);
+=======
+		super("Basic Politics Testing Bed", 2000, 0, 0.1);
+>>>>>>> db
 
 	}
 
@@ -64,7 +67,9 @@ public class Politics extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		//addPlugin(new DatabasePlugin("Simulation comment",false));
+		//simulation comment and whether to store to remote db
+		//if having errors, delete your Simulations.db file to recreate db
+		addPlugin(new DatabasePlugin(comment,false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 //addPlugin(new TrustLogPlugin());

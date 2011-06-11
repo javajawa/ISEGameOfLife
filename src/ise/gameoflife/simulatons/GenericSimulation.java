@@ -34,12 +34,14 @@ abstract public class GenericSimulation
 	private final EventScriptManager ms = new EventScriptManager();
 	private final PluginManager pm = new PluginManager();
 	private String configPath;
+	
+	protected final String comment;
 
 	@SuppressWarnings("OverridableMethodCallInConstructor")
 	GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice)
 	{
 		PresageConfig presageConfig = new PresageConfig();
-
+		this.comment = comment;
 		presageConfig.setComment(comment);
 		presageConfig.setIterations(iterations);
 		presageConfig.setRandomSeed(randomSeed);
