@@ -88,13 +88,13 @@ abstract public class AbstractAgent implements Participant
 			logger.log(Level.FINE, "I, agent {0}, recieved {1} units of food", new Object[]{dm.getName(),
 							in.getFoodReceived()});
 
-			dm.setCurrentHappiness(updateHappinessAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
-			dm.setCurrentLoyalty(updateLoyaltyAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
-			Map<String,Double> t = updateTrustAfterHunt(in.getFoodHunted(), in.getFoodReceived());
+			dm.alterHappiness(updateHappinessAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
+			dm.alterLoyalty(updateLoyaltyAfterHunt(in.getFoodHunted(), in.getFoodReceived()));
+			Map<String,Integer> t = updateTrustAfterHunt(in.getFoodHunted(), in.getFoodReceived());
 			if (t==null) return;
 			for (String agent : t.keySet())
 			{
-				dm.setTrust(agent, t.get(agent));
+				dm.alterTrust(agent, t.get(agent));
 			}
 		}
 	}
@@ -180,11 +180,11 @@ abstract public class AbstractAgent implements Participant
 			final VoteResult in = (VoteResult)input;
 			logger.log(Level.FINE, "I, agent {0} got {1} for my {2} proposal.", new Object[]{dm.getName(),
 							in.getVotes(), in.getProposition().getType()});
-			dm.setCurrentHappiness(updateHappinessAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
-			dm.setCurrentLoyalty(updateLoyaltyAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
+			dm.alterHappiness(updateHappinessAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
+			dm.alterLoyalty(updateLoyaltyAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			dm.setSocialBelief(updateSocialBeliefAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
 			dm.setEconomicBelief(updateEconomicBeliefAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement()));
-			Map<String,Double> t = updateTrustAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement());
+			Map<String,Integer> t = updateTrustAfterVotes(in.getProposition(), in.getVotes(), in.getOverallMovement());
 			if (t==null) return;
 			for (String agent : t.keySet())
 			{
