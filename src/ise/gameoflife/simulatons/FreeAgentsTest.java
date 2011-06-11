@@ -5,7 +5,7 @@ import ise.gameoflife.agents.TestGroupableAgent;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
-import ise.gameoflife.plugins.DatabasePlugin;
+import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
@@ -27,7 +27,7 @@ public class FreeAgentsTest extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin("Simulation comment",false));
+		addPlugin(new DatabasePlugin(comment,false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
 	}

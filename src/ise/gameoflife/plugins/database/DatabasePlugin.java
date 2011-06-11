@@ -23,7 +23,7 @@ import presage.annotations.PluginConstructor;
  * Updated version of DatabasePlugin that is more more more more... just better.
  * @author Valdas
  */
-public class NewDatabasePlugin implements Plugin
+public class DatabasePlugin implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
@@ -39,7 +39,7 @@ public class NewDatabasePlugin implements Plugin
 	 * stores data in local db.
 	 * 
 	 */
-	NewDatabasePlugin()
+	DatabasePlugin()
 	{
 	  //default parameters: local database
 	  this("No comment",false);
@@ -56,7 +56,7 @@ public class NewDatabasePlugin implements Plugin
 	{
 		"comment","remote"
 	})
-	public NewDatabasePlugin(String comment,Boolean remote)
+	public DatabasePlugin(String comment,Boolean remote)
 	{
 	    this.remote = remote;
 	    this.comment = comment;
