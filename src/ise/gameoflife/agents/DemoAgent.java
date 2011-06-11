@@ -87,7 +87,7 @@ public class DemoAgent extends AbstractAgent {
     protected Map<String, Double> updateTrustAfterVotes(Proposition proposition, int votes, double overallMovement) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     protected void onInvite(String group) {
         throw new UnsupportedOperationException("Not supported yet.");
