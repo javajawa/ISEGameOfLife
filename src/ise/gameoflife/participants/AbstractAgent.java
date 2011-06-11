@@ -611,7 +611,7 @@ abstract public class AbstractAgent implements Participant
 	 * @param foodReceived The amount of food that the agent was allowed to keep
 	 * @return The new happiness value of the agent, scaled between 0 and 1
 	 */
-	abstract protected double updateHappinessAfterHunt(double foodHunted,	double foodReceived);
+	abstract protected int updateHappinessAfterHunt(double foodHunted,	double foodReceived);
 	/**
 	 * Allows the loyalty value of the agent to be updated after the completion of
 	 * the hunt
@@ -619,7 +619,7 @@ abstract public class AbstractAgent implements Participant
 	 * @param foodReceived THe amount of food that the agent was allowed to keep
 	 * @return The new loyalty value of the agent, scaled between 0 and 1
 	 */
-	abstract protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived);
+	abstract protected int updateLoyaltyAfterHunt(double foodHunted, double foodReceived);
 	/**
 	 * Allows the trust values of the agent to be updated after the completion of
 	 * the hunt
@@ -629,12 +629,12 @@ abstract public class AbstractAgent implements Participant
 	 * rating. Agent ids which are to in the map will not be updated. The trust 
 	 * values should be scaled between 0 and 1.
 	 */
-	abstract protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
-	abstract protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
-	abstract protected double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
-	abstract protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes,	double overallMovement);
-	abstract protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes,	double overallMovement);
-	abstract protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,	int votes, double overallMovement);
+	abstract protected Map<String, Integer> updateTrustAfterHunt(double foodHunted, double foodReceived);
+	abstract protected int updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected int updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected int updateSocialBeliefAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected int updateEconomicBeliefAfterVotes(Proposition proposition, int votes,	double overallMovement);
+	abstract protected Map<String, Integer> updateTrustAfterVotes(Proposition proposition,	int votes, double overallMovement);
 	/**
 	 * Notifies you when you have been invited to a new group.
 	 * It is up to agent implementations to supply a place in their own class to
