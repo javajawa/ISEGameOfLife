@@ -104,41 +104,41 @@ public class TestAgent extends AbstractAgent
 	}
 
 	@Override
-	protected double updateHappinessAfterHunt(double foodHunted,
+	protected int updateHappinessAfterHunt(double foodHunted,
 					double foodReceived)
 	{
 		return 0;
 	}
 
 	@Override
-	protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
+	protected int updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
 	{
 		return 0;
 	}
 
 	@Override
-	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
+	protected Map<String, Integer> updateTrustAfterHunt(double foodHunted,
 					double foodReceived)
 	{
 		return null;
 	}
 
 	@Override
-	protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
+	protected int updateLoyaltyAfterVotes(Proposition proposition, int votes,
 					double overallMovement)
 	{
 		return 0;
 	}
 
 	@Override
-	protected double updateHappinessAfterVotes(Proposition proposition, int votes,
+	protected int updateHappinessAfterVotes(Proposition proposition, int votes,
 					double overallMovement)
 	{
 		return 0;
 	}
 
 	@Override
-	protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
+	protected Map<String, Integer> updateTrustAfterVotes(Proposition proposition,
 					int votes, double overallMovement)
 	{
 		return null;
@@ -151,17 +151,17 @@ public class TestAgent extends AbstractAgent
 	}
 
 	@Override
-	protected double updateSocialBeliefAfterVotes(Proposition proposition,
+	protected int updateSocialBeliefAfterVotes(Proposition proposition,
 					int votes, double overallMovement)
 	{
-		return 0.5;
+		return 0;
 	}
 
 	@Override
-	protected double updateEconomicBeliefAfterVotes(Proposition proposition,
+	protected int updateEconomicBeliefAfterVotes(Proposition proposition,
 					int votes, double overallMovement)
 	{
-		return 0.5;
+		return 0;
 	}
 
 }
