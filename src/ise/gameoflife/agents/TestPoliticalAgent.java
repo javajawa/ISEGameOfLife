@@ -14,6 +14,7 @@ import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.models.History;
+import ise.gameoflife.models.ScaledDouble;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -285,6 +286,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //If the agent belongs to a group can ask for advice
             if (groupID != null)
             {   
+							
                 suggestedFood = this.askAdvice();
                 if (suggestedFood != null)
                 {
@@ -780,6 +782,8 @@ public class TestPoliticalAgent extends AbstractAgent
             //about our opponent. Therefore this agent is the advisor.
             if (opponentID != null)
             {
+							try
+							{
                 HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
                 if (opponentPreviousTeam != null)
                 {
@@ -791,6 +795,11 @@ public class TestPoliticalAgent extends AbstractAgent
                         }
                     }
                 }
+							} 
+							catch (IndexOutOfBoundsException ex)
+							{
+								return suggestedFood = this.askAdvice();
+							}
             }
             
             return suggestedFood;
@@ -817,11 +826,16 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
 
                 //get your loyalty and loyalty history
-                Double oneTurnAgoLoyalty = getDataModel().getLoyaltyHistory().getValue(1).doubleValue();
-                if (oneTurnAgoLoyalty == null)
+                ScaledDouble tmp = getDataModel().getLoyaltyHistory().getValue(1);
+								double oneTurnAgoLoyalty;
+                if (tmp == null)
                 {
                     oneTurnAgoLoyalty = 0.5 * (oneTurnAgoHappiness * deltaEconomic);
                 }
+								else
+								{
+									oneTurnAgoLoyalty = tmp.doubleValue();
+								}
 
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
                 if (currentLoyalty == null)
@@ -854,11 +868,17 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myEconomic = getDataModel().getEconomicBelief();
 
                 //get your loyalty and loyalty history
-                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1).doubleValue();
-                if (oneTurnAgoHappiness == null)
+								
+                ScaledDouble tmp = getDataModel().getHappinessHistory().getValue(1);
+								double oneTurnAgoHappiness;
+                if (tmp == null)
                 {
                     oneTurnAgoHappiness = 0.5 * myEconomic;
                 }
+								else
+								{
+									oneTurnAgoHappiness = tmp.doubleValue();
+								}
 
                 Double currentHappiness = getDataModel().getCurrentHappiness();
                 if (currentHappiness == null)
