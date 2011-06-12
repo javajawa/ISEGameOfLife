@@ -7,6 +7,7 @@ package ise.gameoflife.neuralnetworks;
 public class Network
 {
 	private Layer layers[] = null;
+	private double weights[][][] = null;
 
 	public Network(Layer layers[])
 	{
@@ -32,6 +33,33 @@ public class Network
 	public Layer[] layers()
 	{
 		return this.layers;
+	}
+
+	public void setWeights(double weights[][][])
+	{
+		this.weights = weights;
+		this.checkConsistency();
+	}
+
+	public double[][][] weights()
+	{
+		if (null != weights)
+		{
+			return weights;
+		}
+
+		if (null == layers)
+		{
+			return null;
+		}
+
+		weights = new double[layers.length][][];
+		for (int i = 0; i < layers.length; i++)
+		{
+			weights[i] = layers[i].weights();
+		}
+
+		return weights;
 	}
 
 	private void checkConsistency()
