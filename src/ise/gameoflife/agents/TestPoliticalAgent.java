@@ -516,22 +516,12 @@ public class TestPoliticalAgent extends AbstractAgent
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-            
-            if (surplus > 0)
-            {
-                //you're overjoyed
-                currentHappiness = scale(currentHappiness, surplus, 0.1);
-            }
-            else if(surplus < 0)
-            {
-                //you're dissapointed
-                currentHappiness = scale(currentHappiness, surplus, 0.1);
-            }
-            else
-            {   //surplus = 0
-                currentHappiness = scale(currentHappiness, surplus, 0.1);
-            }
 
+            //If surplus is >0 you're overjoyed and increase happiness
+            //If surplus is <0 you are dissapointed and decrease your happiness
+            //If surplus is zero nothing really changed
+            currentHappiness = scale(currentHappiness, surplus, 0.1);
+            
             return currentHappiness;
     }
 
@@ -561,23 +551,16 @@ public class TestPoliticalAgent extends AbstractAgent
                 double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
                 //get new loyalty
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
+                
                 if (currentLoyalty == null || currentLoyalty == 0)
                     //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
                     currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
-                                      
-                if (deltaHappiness > 0)
-                {
-                    //you gain loyalty to your group
-                    currentLoyalty = scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-                }
-                else if(deltaHappiness < 0)
-                {
-                    //you lose loyalty to your group
-                    currentLoyalty = scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-                } else
-                    currentLoyalty = scale(currentLoyalty, 0, 1 - deltaEconomic);
+
+                //If deltaHappiness is < 0 you lose loyalty to the group. Otherwise if deltaHappiness is >0
+                //you gain loyalty. If deltaHappiness is zero you don't change your loyalty
+                currentLoyalty = scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
                 
                 return currentLoyalty;
             }               
@@ -678,17 +661,10 @@ public class TestPoliticalAgent extends AbstractAgent
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
-                    if (deltaHappiness > 0)
-                    {
-                        //you gain loyalty to your group
+                        //If deltaHappiness <0 you lose loyalty to your group
+                        //If deltaHappiness >0 you increase your loyalty to your group
+                        //If deltaHappiness = 0 you don't change at all
                         currentLoyalty = scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
-                    }
-                    else if(deltaHappiness < 0)
-                    {
-                        //you lose loyalty to your group
-                        currentLoyalty = scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
-                    } else
-                        currentLoyalty = scale(currentLoyalty, 0, 1 - deltaEconomic);
                 }
                 return currentLoyalty;                                      
             }               
@@ -712,19 +688,9 @@ public class TestPoliticalAgent extends AbstractAgent
             //If this concerns you...
             if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
             {
-                if (votes > 0)
-                {
-                    //your happy your proposition was passed
+                    //If votes > 0 you are happy your proposition was passed
+                    //If votes < 0 you are dissapointed your proposition was not passed
                     currentHappiness = scale(currentHappiness, votes, Math.abs(overallMovement));
-                }
-                else if(votes < 0)
-                {
-                    //your dissapointed your proposition didn't pass
-                    currentHappiness = scale(currentHappiness, votes, Math.abs(overallMovement));
-                }
-                else
-                    //votes = 0
-                    currentHappiness = scale(currentHappiness, 0, Math.abs(overallMovement));
              }
 
             return currentHappiness;
