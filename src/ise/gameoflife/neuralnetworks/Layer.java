@@ -52,6 +52,8 @@ public class Layer
 	public void setWeights(double weights[][])
 	{
 		this.weights = weights;
+
+		this.checkConsistency();
 	}
 
 	public double[][] weights()
@@ -62,11 +64,28 @@ public class Layer
 	public void setNeurons(Neuron neurons[])
 	{
 		this.neurons = neurons;
+
+		this.checkConsistency();
 	}
 
 	public Neuron[] neurons()
 	{
 		return neurons;
+	}
+
+	private void checkConsistency()
+	{
+
+		if (null == weights && null == neurons)
+		{
+			return;
+		}
+
+		// lengths
+		if (neurons.length != weights[0].length)
+		{
+			throw new RuntimeException("Number of neurons and length of weights mismatch.");
+		}
 	}
 
 }
