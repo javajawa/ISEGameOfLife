@@ -506,29 +506,13 @@ public class TestPoliticalAgent extends AbstractAgent
                     //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
-<<<<<<< HEAD
-                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
 
-                if (deltaHappiness > 0)
-                {
-                    //you gain loyalty to your group
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-                }
-                else if(deltaHappiness < 0)
-                {
-                    //you lose loyalty to your group
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-                } else
-                    currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1 - deltaEconomic);
-
-=======
                     currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
 
                 //If deltaHappiness is < 0 you lose loyalty to the group. Otherwise if deltaHappiness is >0
                 //you gain loyalty. If deltaHappiness is zero you don't change your loyalty
                 currentLoyalty = scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
                 
->>>>>>> be9e3a98920c358b495c326c30c689f78303fe25
                 return currentLoyalty;
             }
             else
@@ -709,7 +693,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
                     double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
-
+                    double deltaSocial = groupSocial - currentSocial;//how close are you to the group's belief
                                         
 
                     if (votes > 0)
