@@ -1,7 +1,6 @@
 package ise.gameoflife.participants;
 
 import ise.gameoflife.inputs.Proposition;
-import ise.gameoflife.models.ScaledDouble;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.tokens.TurnType;
 import java.io.Serializable;
@@ -97,7 +96,7 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
      * Gets the historical economic positions of the group
      * @return The historical economic positions of the group
      */
-    public UnmodifiableHistory<ScaledDouble> getEconomicPoisition() {
+    public UnmodifiableHistory<Double> getEconomicPoisition() {
         return source.getEconomicPoisition();
     }
 
