@@ -14,6 +14,7 @@ public abstract class Neuron
 		this(weights, 0);
 	}
 
+	// designated constructor
 	public Neuron(double weights[], double offset)
 	{
 		this.setWeights(weights);
@@ -24,7 +25,7 @@ public abstract class Neuron
 	{
 		if (in.length != weights.length)
 		{
-			throw new RuntimeException("Inputs and coefficients lengths mismatch:" +
+			throw new RuntimeException("Inputs and coefficients lengths mismatch: " +
 					"input (" + in.length + "), coefs (" + weights.length + ").");
 		}
 		
