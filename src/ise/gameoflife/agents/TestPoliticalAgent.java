@@ -111,11 +111,16 @@ public class TestPoliticalAgent extends AbstractAgent
         String chosenGroup = "";
         
         //If agent is already member of a group do nothing
-        if (this.getDataModel().getGroupId() != null) {
+        if (this.getDataModel().getGroupId() != null)
+        {
             if (groupFounders.contains(this.getId()))
+            {
                     groupFounders.remove(this.getId());
+            }
             if (invitationHolders.contains(this.getId()))
+            {
                     invitationHolders.remove(this.getId());
+            }
 //            if (SatisfiedInGroup())
 //                return null;
 //            else
@@ -126,30 +131,17 @@ public class TestPoliticalAgent extends AbstractAgent
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
-            logger.log(Level.INFO, "I was invited in a group so I will join it");
             return this.invitationToGroup;
         }
         else //If none of the above worked out then first try to find an optimal group to join with
         {
             chosenGroup = agentGroupGrouping();
-            //ONLY FOR DEBUGGING
-            if (chosenGroup.equals(""))
-                logger.log(Level.INFO, "I, agent {0} tried groups with no success", this.getConn().getAgentById(this.getId()).getName());
-            else
-                logger.log(Level.INFO, "I, agent {0} tried groups and joined one", this.getConn().getAgentById(this.getId()).getName());
-            //ONLY FOR DEBUGGING END
         }
 
         //And if the above line didn't work then try to group with other free agents
         if (chosenGroup.equals(""))
         {
            chosenGroup = freeAgentsGrouping();
-           //ONLY FOR DEBUGGING
-            if ((chosenGroup == null))
-                logger.log(Level.INFO, "I, agent {0} tried agents with no success", this.getConn().getAgentById(this.getId()).getName());
-            else
-                logger.log(Level.INFO, "I, agent {0} tried agents and joined one", this.getConn().getAgentById(this.getId()).getName());
-           //ONLY FOR DEBUGGING END
         }
         return chosenGroup;
     }
@@ -228,7 +220,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 esFaction = 1 - (vectorDistance / maxDistance);
 
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-                if ((currentHeuristic > 0.6) && (previousHeuristic < currentHeuristic))
+                if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
@@ -244,11 +236,6 @@ public class TestPoliticalAgent extends AbstractAgent
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
             groupFounders.add(this.getId());
-            //ONLY FOR DEBUGGING
-            logger.log(Level.INFO, "I have tried the heuristic with {0}", this.getConn().getAgentById(bestPartner).getName());
-            logger.log(Level.INFO, "HEURISTIC = {0}", previousHeuristic);
-            logger.log(Level.INFO, "Therefore I can form a group with {0}", this.getConn().getAgentById(bestPartner).getName());
-            //ONLY FOR DEBUGGING END
             return chosenGroup;
         }        
     }
@@ -265,23 +252,10 @@ public class TestPoliticalAgent extends AbstractAgent
             List<Food> foodArray = new LinkedList<Food>();
             Food suggestedFood, cooperateFood, defectFood, choice;
             
-            //Stores the two sources in an array
-            for (Food noms : getConn().availableFoods())
-            {
-                    foodArray.add(noms);
-            }
-
-            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
-            {
-                    cooperateFood = foodArray.get(0);
-                    defectFood = foodArray.get(1);
-            }
-            else
-            {
-                    cooperateFood = foodArray.get(1);
-                    defectFood = foodArray.get(0);
-            }
+            //Distinguish between stag (cooperate) and rabbit (defect)
+            foodArray = this.getFoodTypes();
+            cooperateFood = foodArray.get(0);
+            defectFood = foodArray.get(1);
             
             String groupID = this.getDataModel().getGroupId();
             //If the agent belongs to a group can ask for advice
@@ -469,23 +443,10 @@ public class TestPoliticalAgent extends AbstractAgent
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
 
-            //Stores the two sources in an array
-            for (Food noms : getConn().availableFoods())
-            {
-                    foodArray.add(noms);
-            }
-
-            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
-            {
-                    cooperateFood = foodArray.get(0);
-                    defectFood = foodArray.get(1);
-            }
-            else
-            {
-                    cooperateFood = foodArray.get(1);
-                    defectFood = foodArray.get(0);
-            }
+            //Distinguish between stag (cooperate) and rabbit (defect)
+            foodArray = this.getFoodTypes();
+            cooperateFood = foodArray.get(0);
+            defectFood = foodArray.get(1);
 
             //Check for threshold values
             if(opponentTrust >= MaxThreshold)
@@ -945,4 +906,32 @@ public class TestPoliticalAgent extends AbstractAgent
                     //you're not overjoyed but you're satisfied
                     return true;                
         }
+
+        private List<Food> getFoodTypes(){
+            List<Food> foodArray = new LinkedList<Food>();
+            List<Food> foodList = new LinkedList<Food>();
+            Food cooperateFood, defectFood;
+            
+            //Stores the two sources in an array
+            for (Food noms : getConn().availableFoods())
+            {
+                    foodArray.add(noms);
+            }
+
+            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
+            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
+            {
+                    cooperateFood = foodArray.get(0);
+                    defectFood = foodArray.get(1);
+            }
+            else
+            {
+                    cooperateFood = foodArray.get(1);
+                    defectFood = foodArray.get(0);
+            }
+
+            foodList.add(cooperateFood);
+            foodList.add(defectFood);
+            return foodList;
+       }
 }
