@@ -6,22 +6,22 @@ package ise.gameoflife.neuralnetworks;
  */
 public abstract class Neuron
 {
-	private double coefs[];
+	private double weights[];
 	
 	abstract public double activationFunction(double sum);
 	
 	private double weightedSum(double in[])
 	{
-		if (in.length != coefs.length)
+		if (in.length != weights.length)
 		{
 			throw new RuntimeException("Inputs and coefficients lengths mismatch:" +
-					"input (" + in.length + "), coefs (" + coefs.length + ").");
+					"input (" + in.length + "), coefs (" + weights.length + ").");
 		}
 		
 		double sum = 0;
 		for (int i = 0; i < in.length; i++)
 		{
-			sum += in[i]*coefs[i];
+			sum += in[i]*weights[i];
 		}
 		
 		return sum;
@@ -33,14 +33,14 @@ public abstract class Neuron
 		return this.activationFunction(sum);
 	}
 
-	public void setCoefs(double aCoefs[])
+	public void setWeights(double weights[])
 	{
-		this.coefs = aCoefs;
+		this.weights = weights;
 	}
 
-	public double[] coefs()
+	public double[] weights()
 	{
-		return this.coefs;
+		return this.weights;
 	}
 
 }
