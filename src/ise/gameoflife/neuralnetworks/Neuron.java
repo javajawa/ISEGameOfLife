@@ -1,12 +1,16 @@
 package ise.gameoflife.neuralnetworks;
 
+/**
+ * @author Xitong Gao
+ * TODO Neuron doc
+ */
 public abstract class Neuron
 {
 	private double coefs[];
 	
 	abstract public double activationFunction(double sum);
 	
-	double weightedSum(double in[])
+	private double weightedSum(double in[])
 	{
 		if (in.length != coefs.length)
 		{
@@ -21,6 +25,12 @@ public abstract class Neuron
 		}
 		
 		return sum;
+	}
+
+	public double out(double in[])
+	{
+		double sum = this.weightedSum(in);
+		return this.activationFunction(sum);
 	}
 
 	public void setCoefs(double aCoefs[])
