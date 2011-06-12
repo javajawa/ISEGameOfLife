@@ -697,7 +697,7 @@ public class TestPoliticalAgent extends AbstractAgent
                                         
 
                     if (votes > 0)
-                    {   //you're social belief moves towards the group social poistion
+                    {   //you're social belief moves towards the group social posistion
                         //currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
                         currentSocial = scale(currentSocial, (1-deltaSocial), 0.001);
                     }

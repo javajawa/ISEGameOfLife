@@ -88,12 +88,12 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             double size = this.getDataModel().getMemberList().size();
             double economic = 0;
             for (String members : this.getDataModel().getMemberList()){
-                economic += getConn().getAgentById(members).getEconomicBelief();
+                if (getConn().getAgentById(members) != null)   //GIVES PROBLEMS
+                    economic += getConn().getAgentById(members).getEconomicBelief();
             }
             economic += getConn().getAgentById(playerID).getEconomicBelief();
             economic = economic / (size+1);
             this.setEconomicPosition(economic);
-            System.out.println("enters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+this.getDataModel().getCurrentEconomicPoisition());
             return true;
 	}
 
@@ -137,13 +137,12 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 }
                 economic = economic / (size);
                 this.setEconomicPosition(economic);
-                System.out.println("leaves!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+this.getDataModel().getCurrentEconomicPoisition());
 	}
 
 	@Override
 	protected void beforeNewRound() {
 		// Do nothing
-            System.out.println("round!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+this.getDataModel().getCurrentEconomicPoisition());
+           
 	}
 	
 }
