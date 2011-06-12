@@ -174,5 +174,5 @@ public class TestGroupableAgent extends AbstractAgent
 	{
 		return 0.5;
 	}
-
+               
 }
