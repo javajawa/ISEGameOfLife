@@ -2,6 +2,11 @@ package ise.gameoflife.neuralnetworks;
 
 public final class StepNeuron extends Neuron
 {
+	public StepNeuron(double[] weights)
+	{
+		super(weights);
+	}
+
 	private double offset = 0;
 	
 	@Override

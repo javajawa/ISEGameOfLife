@@ -6,10 +6,14 @@ package ise.gameoflife.neuralnetworks;
  */
 public abstract class Neuron
 {
-	private double weights[];
-	
+
 	abstract public double activationFunction(double sum);
-	
+
+	public Neuron(double weights[])
+	{
+		this.setWeights(weights);
+	}
+
 	private double weightedSum(double in[])
 	{
 		if (in.length != weights.length)
@@ -32,6 +36,8 @@ public abstract class Neuron
 		double sum = this.weightedSum(in);
 		return this.activationFunction(sum);
 	}
+
+	private double weights[] = null;
 
 	public void setWeights(double weights[])
 	{
