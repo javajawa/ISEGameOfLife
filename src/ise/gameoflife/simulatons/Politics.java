@@ -22,32 +22,14 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 3000, 0, 0.1);
+		super("Basic Politics Testing Bed", 300, 0, 0.1);
 	}
 
 	@Override
 	protected void agents()
 	{
-
-
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.R, 0.5, 0.1));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.R, 0.5, 0.2));
-           addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.4, 0.3));
-           addAgent(new TestPoliticalAgent(20, 2, AgentType.R, 0.4, 0.4));
-
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.45));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.45, 0.55));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.55));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.35, 0.55));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.56, 0.55));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.58));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.7));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.65, 0.58));
-            addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.42));
-
                 Random randomGenerator = new Random();
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 10; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			//addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));

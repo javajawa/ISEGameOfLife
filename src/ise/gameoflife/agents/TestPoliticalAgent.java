@@ -20,9 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.TreeSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -41,7 +39,7 @@ public class TestPoliticalAgent extends AbstractAgent
         private final static TreeSet<String> groupFounders = new TreeSet<String>();
 	private History<Double> satisfaction = new History<Double>(1);
 
-				private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
+	private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -63,7 +61,12 @@ public class TestPoliticalAgent extends AbstractAgent
     protected void beforeNewRound() {
          //Do nothing
     }
-
+    /**
+    * This method assesses an agent's satisfaction in the group. If the agent is satisfied remains in the group
+    * otherwise it will request to leave the group.
+    * @param none
+    * @return Satisfied or not?
+    */
     protected boolean SatisfiedInGroup() {
         if (satisfaction.isEmpty())
             satisfaction.newEntry(0.0);
@@ -77,15 +80,16 @@ public class TestPoliticalAgent extends AbstractAgent
         double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
         double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
 
-        double economic = groupEconomic - myEconomic;//change in X
-        double social = groupSocial - mySocial;//change in Y
-        Double currentSatisfaction = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+        double deltaEconomic = groupEconomic - myEconomic;//change in X
+        double deltaSocial = groupSocial - mySocial;//change in Y
+        Double currentSatisfaction = Math.sqrt(Math.pow(deltaEconomic, 2) + Math.pow(deltaSocial, 2));
         
         //store it in the history
         satisfaction.newEntry(currentSatisfaction); 
         
         //compare with previous satisfaction and find out if agent should stay in the group        
-        Double deltaSatisfaction = currentSatisfaction - previousSatisfaction;        
+        Double deltaSatisfaction = currentSatisfaction - previousSatisfaction;
+
         if (deltaSatisfaction >= 0)        
             //you're satisfied, so stay
             return true;
@@ -94,14 +98,24 @@ public class TestPoliticalAgent extends AbstractAgent
                 return true;
             else
                 return false;
-    }    
+    }
     
+    /**
+    * This method enables agents to form groups. It uses a heuristic based on mutual trust and
+    * the socio-economic beliefs. The agent can either try the heuristic with another free agent or
+    * with an existing group. The priority is to find an existing group to join. If that fails then
+    * we check compatibility between two free agents.
+    * @param none
+    * @return The group ID that this agent has chosen to join. If null no group is chosen. 
+     *        If leaveGroup is returned the agent requested to leave the group
+    */
     @Override
     protected String chooseGroup() {
 
         String chosenGroup = "";
         
-        //If agent is already member of a group do nothing
+        //If agent is already member of a group remove it from the founders or invitation holders lists
+        //and check if it is satisfied. If not return leaveGroup request
         if (this.getDataModel().getGroupId() != null)
         {
             if (groupFounders.contains(this.getId()))
@@ -118,7 +132,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 return null;
             }
             else
-            { System.out.println("I left");
+            { 
                 return leaveGroup;
             }
         }
@@ -139,9 +153,15 @@ public class TestPoliticalAgent extends AbstractAgent
         return chosenGroup;
     }
 
+    /**
+    * This method enables agents to check their compatibility to already existing groups
+    * @param none
+    * @return The group ID that this agent has chosen to join. If null no group is chosen.
+    */
     private String agentGroupGrouping() {
         String chosenGroup = "";
         double currentHeuristic = 0, previousHeuristic = 0;
+
         //used for the socio-economic faction of heuristic
         double vectorDistance; 
         double maxDistance = Math.sqrt(2);
@@ -167,26 +187,43 @@ public class TestPoliticalAgent extends AbstractAgent
                             numKnownTrustValues++;
                     }
             }
-            if(numKnownTrustValues != 0)
-                trustFaction = trustSum / numKnownTrustValues;
-            else
-                trustFaction = 0;
 
+            if(numKnownTrustValues != 0)
+            {
+                trustFaction = trustSum / numKnownTrustValues;
+            }
+            else
+            {
+                trustFaction = 0;
+            }
+            
+            //calculates the vector distance between agent's and group's beliefs
             economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
             social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
             vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+
+            //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
+            //higher probability of joining this group
             esFaction = 1 - (vectorDistance / maxDistance);
 
+            //The actual heuristic value is calculated. Trust and political compatibility are given equal weight
             currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
 
+            //If the current heuristic value is above a certain threshold and better than a previous evaluation
+            // we have found a compatible group
             if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
                 previousHeuristic = currentHeuristic;
             }
         }
         return chosenGroup;
-    }    
+    }
     
+    /**
+    * This method enables agents to check their compatibility with other free agents
+    * @param none
+    * @return The group ID that this agent has chosen to join. If null no group is chosen.
+    */
     private String freeAgentsGrouping() {
         String chosenGroup = "";
         double currentHeuristic = 0, previousHeuristic = 0;
@@ -199,20 +236,29 @@ public class TestPoliticalAgent extends AbstractAgent
 
         String bestPartner = "";
 
+        //Iterate over the set of free agents
         for (String trustee : getConn().getUngroupedAgents())
         {
-            //if an agent is not comparing with itself and has not been invited
+            //if an agent is not comparing with itself and has not been invited or has not formed a group already 
             if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
             {
                 Double trustValue = this.getDataModel().getTrust(trustee);
                 if (trustValue != null) trustFaction = trustValue;
 
+                //Calculate the vector distance between these two agents socio-economic beliefs
                 economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
                 social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
                 vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-                esFaction = 1 - (vectorDistance / maxDistance);
 
+                //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
+                //higher probability of joining this group
+                esFaction = 1 - (vectorDistance / maxDistance);
+                
+                //The actual heuristic value is calculated. Trust and political compatibility are given equal weight
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+                
+                //If the current heuristic value is above a certain threshold and better than a previous evaluation
+                // we have found a compatible agent to form a new group
                 if ((currentHeuristic > 0.6) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;

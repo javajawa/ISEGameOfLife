@@ -124,6 +124,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void onMemberLeave(String playerID, Reasons reason) {
+
                 //update economic belief of the group when the agent leaves the group
                 double size = this.getDataModel().getMemberList().size();
                 double economic = 0;
