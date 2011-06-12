@@ -90,22 +90,27 @@ public class TestPoliticalAgent extends AbstractAgent
         //compare with previous satisfaction and find out if agent should stay in the group        
         Double deltaSatisfaction = currentSatisfaction - previousSatisfaction;
 
-        if (deltaSatisfaction >= 0)        
-            //you're growing more satisfied, so stay
+        if (deltaSatisfaction >= 0)//you're growing more satisfied, so stay
+        {
             return true;
-        else if (currentSatisfaction > 0.5)//if strictly greater than the weighting of 'esFaction' in the grouping heuristic          
+        }
+        else if (currentSatisfaction > 0.5)//if strictly greater than the weighting of 'esFaction' in the grouping heuristic
+        {
                 //you're very far apart on the political compass and you're not satisfied, so give up and leave
                 return false;
-            else
-                if (deltaSatisfaction < -0.2)
+        }
+        else if (deltaSatisfaction < -0.2)
+        {
                     //you may be quite close on the political compass, but you were very unsatisfied in the last turn,
                     //so give up and leave
                     return false;
-                else
+        }
+        else
+        {
                     //you're close on the political compass and you were unsatisfied in the last turn, but, you're
                     //willing to give the group another shot
                     return true;
-                    
+        }             
     }
     
     /**
