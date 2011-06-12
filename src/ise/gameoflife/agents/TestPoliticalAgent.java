@@ -98,15 +98,6 @@ public class TestPoliticalAgent extends AbstractAgent
     
     @Override
     protected String chooseGroup() {
-         logger.log(Level.INFO, "----------------------------------------------------");
-
-        //ONLY FOR DEBUGGING
-        if (this.getDataModel().getGroupId() == null)
-            logger.log(Level.INFO, "I, agent {0} am a free agent!", this.getDataModel().getName());
-        else
-            logger.log(Level.INFO, "I, agent {0} with E belief: {1} and I belong to {2}", new Object[]{this.getDataModel().getName(), this.getDataModel().getEconomicBelief(), getConn().getGroupById(this.getDataModel().getGroupId()).getName()});
-        logger.log(Level.INFO, "No of groups so far: {0}", getConn().availableGroups().size());
-        //ONLY FOR DEBUGGING END
 
         String chosenGroup = "";
         
@@ -121,13 +112,11 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     invitationHolders.remove(this.getId());
             }
-//            if (SatisfiedInGroup())
-//                return null;
-//            else
-//                return leaveGroup;
-            
-            //This return statement must NEVER be removed!!!It can be the source of every possible bug!:P
-            return null;
+
+            if (SatisfiedInGroup())
+                return null;
+            else
+                return leaveGroup;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -186,7 +175,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
             currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
 
-            if ((currentHeuristic > 0.4) && (previousHeuristic < currentHeuristic)) {
+            if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
                 previousHeuristic = currentHeuristic;
             }
@@ -220,7 +209,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 esFaction = 1 - (vectorDistance / maxDistance);
 
                 currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-                if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic))
+                if ((currentHeuristic > 0.6) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
