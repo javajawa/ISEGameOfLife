@@ -83,6 +83,17 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 //            else {
 //                return false;
 //            }
+
+            //update economic belief of the group when agent joins (TRUE)
+            double size = this.getDataModel().getMemberList().size();
+            double economic = 0;
+            for (String members : this.getDataModel().getMemberList()){
+                if (getConn().getAgentById(members) != null)   //GIVES PROBLEMS
+                    economic += getConn().getAgentById(members).getEconomicBelief();
+            }
+            economic += getConn().getAgentById(playerID).getEconomicBelief();
+            economic = economic / (size+1);
+            this.setEconomicPosition(economic);
             return true;
 	}
 
@@ -113,16 +124,20 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void onMemberLeave(String playerID, Reasons reason) {
-		/**Change groups economic belief onMemberLeave HERE
-                 * !!!reset individual agent loyalty from agent NOT HERE
-                 * !!!change economic belief when a new member joins the group NOT HERE
-                 * */
-            System.out.println("Member Leave");
+                //update economic belief of the group when the agent leaves the group
+                double size = this.getDataModel().getMemberList().size();
+                double economic = 0;
+                for (String members : this.getDataModel().getMemberList()){
+                    economic += getConn().getAgentById(members).getEconomicBelief();
+                }
+                economic = economic / (size);
+                this.setEconomicPosition(economic);
 	}
 
 	@Override
 	protected void beforeNewRound() {
 		// Do nothing
+           
 	}
 	
 }

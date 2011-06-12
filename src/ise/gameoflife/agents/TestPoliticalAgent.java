@@ -224,7 +224,7 @@ public class TestPoliticalAgent extends AbstractAgent
         if (bestPartner.equals(""))
             return null;
         else
-        {
+        {               //REPLACE ECONOMIC INITIALISER OF GROUP with 0, Dont NEEDED Here
             GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
@@ -488,8 +488,8 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 //get change in economic beliefs
                 double myEconomic = getDataModel().getEconomicBelief();
-                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();                
-            
+                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+
                 //how close are you to the group's belief
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
 
@@ -510,6 +510,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
+
                     currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
 
                 //If deltaHappiness is < 0 you lose loyalty to the group. Otherwise if deltaHappiness is >0
@@ -517,7 +518,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 currentLoyalty = scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
                 
                 return currentLoyalty;
-            }               
+            }
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
             //throw new UnsupportedOperationException("Not supported yet.");
@@ -588,6 +589,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //Loyalty after voting refines from how much more happy you are after the vote
             //and from comparing your economic (decision to deviate from your belief) belief
             //with the group's belief.
+
             if (this.getDataModel().getGroupId() != null)
             {
                 //get change in economic beleifs
@@ -631,6 +633,7 @@ public class TestPoliticalAgent extends AbstractAgent
                                     double overallMovement)
     {
             Double currentHappiness = getDataModel().getCurrentHappiness();            
+
 
             if (currentHappiness == null)
             {
@@ -689,27 +692,30 @@ public class TestPoliticalAgent extends AbstractAgent
             //after the vote. Whether or not your proposition passed reflects how much you
             //want to trust the group to make decisions or a single dictator to make decisions.
             if (this.getDataModel().getGroupId() != null)
-            {                                                                                             
+            {
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
                     double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
                     double deltaSocial = groupSocial - currentSocial;//how close are you to the group's belief
                                         
+
                     if (votes > 0)
-                    {   //you're social belief moves towards the group social poistion
+                    {   //you're social belief moves towards the group social posistion
                         //currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
                         currentSocial = scale(currentSocial, (1-deltaSocial), 0.001);
                     }
                     else if (votes < 0)
+
                     {                     
                         //currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
                         currentSocial = scale(currentSocial, -(1-deltaSocial), 0.001);
+
                     }
                     //otherwise your social belief remains the same
                 }
-                return currentSocial;                                      
-            }               
+                return currentSocial;
+            }
             else
                 return currentSocial;//agent doesnt belong to a group and does not vote
         }
@@ -731,8 +737,10 @@ public class TestPoliticalAgent extends AbstractAgent
                     //The reason for (1 - deltaEconomic) is to allow agents that are closer to the
                     //group's beliefs to move faster towards the group than agents that are far away!
                     if (moreLoyal() && moreHappy())
+
                     {
                         currentEconomic = scale(currentEconomic, (1-deltaEconomic), 0.001);
+
                     }
                     else
                     {

@@ -259,8 +259,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 Rectangle rect = g.getClipBounds();
                 double x,y;
                 String name;
-                name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
-
+                //name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
+                name = "[" + p_player.getDataModel().getAgentType().name() + "]";
                 x = p_player.getDataModel().getEconomicBelief() *(rect.width/correction);
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
                 //draw the agents
