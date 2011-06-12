@@ -291,7 +291,7 @@ public abstract class AbstractGroupAgent implements Participant
 		double change = dm.getCurrentEconomicPoisition();
 		if (motionsPassed > 0)
 		{  
-			//dm.setEconomicPosition(scale(change, movement / motionsPassed));
+			dm.setEconomicPosition(scale(change, movement / motionsPassed, 0.1));
 			change = dm.getCurrentEconomicPoisition() - change;
 		}
 		else

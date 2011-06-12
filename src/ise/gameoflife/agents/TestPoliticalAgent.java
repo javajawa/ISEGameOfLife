@@ -657,7 +657,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myEconomic = getDataModel().getEconomicBelief();
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
-                                
+
                 //get change in happiness
                 Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
                 if (oneTurnAgoHappiness == null)
@@ -779,12 +779,12 @@ public class TestPoliticalAgent extends AbstractAgent
                     if (votes > 0)
                     {   //you're social belief moves towards the group social poistion
                         //currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
-                        currentSocial += deltaSocial/100;
+                        currentSocial = scale(currentSocial, (1-deltaSocial), 0.001);
                     }
                     else if (votes < 0)
                     {                     
                         //currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
-                        currentSocial -= deltaSocial/100;
+                        currentSocial = scale(currentSocial, -(1-deltaSocial), 0.001);
                     }
                     //otherwise your social belief remains the same
                 }
@@ -808,30 +808,26 @@ public class TestPoliticalAgent extends AbstractAgent
                     double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                     double deltaEconomic = groupEconomic - currentEconomic;//how close are you to the group's belief
 
+                    //The reason for (1 - deltaEconomic) is to allow agents that are closer to the
+                    //group's beliefs to move faster towards the group than agents that are far away!
                     if (moreLoyal() && moreHappy())
                     {
-                        //TODO: When we know how the new scale method works we will use it
-                        //IMPORTANT NOTE: The current implementation does not check if agents go out of bounds
-                        //                This will be fixed when we will use the scale method
-                        
-                        //currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic/100, 0.01);
-                        currentEconomic += deltaEconomic/100;
+                        currentEconomic = scale(currentEconomic, (1-deltaEconomic), 0.001);
                     }
                     else
                     {
                         if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
                         {
-                            //currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic/100, 0.01);
-                            currentEconomic -= deltaEconomic/100;
+                            currentEconomic = scale(currentEconomic, -(1-deltaEconomic), 0.001);
                         }
                         else //if your beliefs are exactly the same with the group's beliefs
                         {
                             //any direction, for now
                             boolean random = uniformRandBoolean();
                             if (random)
-                                currentEconomic += 0.001;
+                                currentEconomic = scale(currentEconomic, 1, 0.001);
                             else
-                                currentEconomic -= 0.001;
+                                currentEconomic = scale(currentEconomic, -1, 0.001);
                         }
                     }
                 }
