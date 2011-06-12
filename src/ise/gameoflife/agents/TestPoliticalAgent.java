@@ -541,7 +541,7 @@ public class TestPoliticalAgent extends AbstractAgent
 		{
 			currentHappiness = 0.5 * getDataModel().getEconomicBelief();
 		}
-
+System.out.println(surplus);
 		// TODO: Check me
 		return (int) (surplus);
 	}
@@ -581,8 +581,7 @@ public class TestPoliticalAgent extends AbstractAgent
 			}
 
 
-			//    currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
-			// TODO: Check me. I think that this value may alwasy be 0 :(
+			// currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
 			return (int) (deltaHappiness * (1 - deltaEconomic));
 		}
 		else
@@ -1029,4 +1028,6 @@ public class TestPoliticalAgent extends AbstractAgent
                 return old;//you dont want to move the value at all if 'amount' = 0
         }
     }
+
+
 }
