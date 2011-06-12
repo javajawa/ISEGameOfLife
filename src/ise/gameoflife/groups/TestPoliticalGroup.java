@@ -117,6 +117,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                  * !!!reset individual agent loyalty from agent NOT HERE
                  * !!!change economic belief when a new member joins the group NOT HERE
                  * */
+            System.out.println("Member Leave");
 	}
 
 	@Override

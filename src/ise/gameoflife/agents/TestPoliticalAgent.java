@@ -114,9 +114,13 @@ public class TestPoliticalAgent extends AbstractAgent
             }
 
             if (SatisfiedInGroup())
+            {
                 return null;
+            }
             else
+            { System.out.println("I left");
                 return leaveGroup;
+            }
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -401,8 +405,8 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
     {
-            double MaxThreshold = 0.85;
-            double MinThreshold = 0.15;
+            double MaxThreshold = 0.9;
+            double MinThreshold = 0.1;
             String opponentID = null;
             
             //find opponent
