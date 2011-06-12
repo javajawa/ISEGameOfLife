@@ -23,7 +23,6 @@ public class Layer
 		double out[] = new double[neurons.length];
 		for (int i = 0; i < out.length; i++)
 		{
-			neurons[i].setCoefs(weights[i]);
 			out[i] = neurons[i].out(in);
 		}
 		return out;
@@ -52,7 +51,11 @@ public class Layer
 	public void setWeights(double weights[][])
 	{
 		this.weights = weights;
-
+		// cascade set neuron weights
+		for (int i = 0; i < weights.length; i++)
+		{
+			neurons[i].setWeights(weights[i]);
+		}
 		this.checkConsistency();
 	}
 
