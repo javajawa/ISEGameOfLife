@@ -140,5 +140,5 @@ public class DemoAgent extends AbstractAgent
 					int votes, double overallMovement)
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
-	}
+	}     
 }
