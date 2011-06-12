@@ -12,7 +12,7 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.models.GroupDataInitialiser;
-import ise.gameoflife.models.ValueScaler;
+import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.models.History;
 import java.util.HashMap;
@@ -98,58 +98,39 @@ public class TestPoliticalAgent extends AbstractAgent
     
     @Override
     protected String chooseGroup() {
-         logger.log(Level.INFO, "----------------------------------------------------");
-
-        //ONLY FOR DEBUGGING
-        if (this.getDataModel().getGroupId() == null)
-            logger.log(Level.INFO, "I, agent {0} am a free agent!", this.getDataModel().getName());
-        else
-            logger.log(Level.INFO, "I, agent {0} with E belief: {1} and I belong to {2}", new Object[]{this.getDataModel().getName(), this.getDataModel().getEconomicBelief(), getConn().getGroupById(this.getDataModel().getGroupId()).getName()});
-        logger.log(Level.INFO, "No of groups so far: {0}", getConn().availableGroups().size());
-        //ONLY FOR DEBUGGING END
 
         String chosenGroup = "";
         
         //If agent is already member of a group do nothing
-        if (this.getDataModel().getGroupId() != null) {
+        if (this.getDataModel().getGroupId() != null)
+        {
             if (groupFounders.contains(this.getId()))
+            {
                     groupFounders.remove(this.getId());
+            }
             if (invitationHolders.contains(this.getId()))
+            {
                     invitationHolders.remove(this.getId());
-//            if (SatisfiedInGroup())
-//                return null;
-//            else
-//                return leaveGroup;
-            
-            //This return statement must NEVER be removed!!!It can be the source of every possible bug!:P
-            return null;
+            }
+
+            if (SatisfiedInGroup())
+                return null;
+            else
+                return leaveGroup;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
-            logger.log(Level.INFO, "I was invited in a group so I will join it");
             return this.invitationToGroup;
         }
         else //If none of the above worked out then first try to find an optimal group to join with
         {
             chosenGroup = agentGroupGrouping();
-            //ONLY FOR DEBUGGING
-            if (chosenGroup.equals(""))
-                logger.log(Level.INFO, "I, agent {0} tried groups with no success", this.getConn().getAgentById(this.getId()).getName());
-            else
-                logger.log(Level.INFO, "I, agent {0} tried groups and joined one", this.getConn().getAgentById(this.getId()).getName());
-            //ONLY FOR DEBUGGING END
         }
 
         //And if the above line didn't work then try to group with other free agents
         if (chosenGroup.equals(""))
         {
            chosenGroup = freeAgentsGrouping();
-           //ONLY FOR DEBUGGING
-            if ((chosenGroup == null))
-                logger.log(Level.INFO, "I, agent {0} tried agents with no success", this.getConn().getAgentById(this.getId()).getName());
-            else
-                logger.log(Level.INFO, "I, agent {0} tried agents and joined one", this.getConn().getAgentById(this.getId()).getName());
-           //ONLY FOR DEBUGGING END
         }
         return chosenGroup;
     }
@@ -194,7 +175,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
             currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
 
-            if ((currentHeuristic > 0.4) && (previousHeuristic < currentHeuristic)) {
+            if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
                 previousHeuristic = currentHeuristic;
             }
@@ -244,11 +225,6 @@ public class TestPoliticalAgent extends AbstractAgent
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
             groupFounders.add(this.getId());
-            //ONLY FOR DEBUGGING
-            logger.log(Level.INFO, "I have tried the heuristic with {0}", this.getConn().getAgentById(bestPartner).getName());
-            logger.log(Level.INFO, "HEURISTIC = {0}", previousHeuristic);
-            logger.log(Level.INFO, "Therefore I can form a group with {0}", this.getConn().getAgentById(bestPartner).getName());
-            //ONLY FOR DEBUGGING END
             return chosenGroup;
         }        
     }
@@ -264,32 +240,25 @@ public class TestPoliticalAgent extends AbstractAgent
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food suggestedFood, cooperateFood, defectFood, choice;
-
+            
+            //Distinguish between stag (cooperate) and rabbit (defect)
+            foodArray = this.getFoodTypes();
+            cooperateFood = foodArray.get(0);
+            defectFood = foodArray.get(1);
+            
             String groupID = this.getDataModel().getGroupId();
             //If the agent belongs to a group can ask for advice
             if (groupID != null)
             {   
-                //suggestedFood = this.askAdvice();
-                //TODO: Make use of advice when choosing food. 
-            }
-            //Stores the two sources in an array
-            for (Food noms : getConn().availableFoods())
-            {
-                    foodArray.add(noms);
+                suggestedFood = this.askAdvice();
+                if (suggestedFood != null)
+                {
+                    return suggestedFood;
+                }
             }
 
-            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
-            {
-                    cooperateFood = foodArray.get(0);
-                    defectFood = foodArray.get(1);
-            }
-            else
-            {
-                    cooperateFood = foodArray.get(1);
-                    defectFood = foodArray.get(0);
-            }
-            
+            //If the agent is not in a group or advisor didn't give a definitive answer hunt
+            //according to its type
             switch (this.getDataModel().getAgentType())
             {
                     //The choice is always to hunt stags
@@ -463,23 +432,10 @@ public class TestPoliticalAgent extends AbstractAgent
             List<Food> foodArray = new LinkedList<Food>();
             Food cooperateFood, defectFood, choice;
 
-            //Stores the two sources in an array
-            for (Food noms : getConn().availableFoods())
-            {
-                    foodArray.add(noms);
-            }
-
-            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
-            {
-                    cooperateFood = foodArray.get(0);
-                    defectFood = foodArray.get(1);
-            }
-            else
-            {
-                    cooperateFood = foodArray.get(1);
-                    defectFood = foodArray.get(0);
-            }
+            //Distinguish between stag (cooperate) and rabbit (defect)
+            foodArray = this.getFoodTypes();
+            cooperateFood = foodArray.get(0);
+            defectFood = foodArray.get(1);
 
             //Check for threshold values
             if(opponentTrust >= MaxThreshold)
@@ -510,22 +466,12 @@ public class TestPoliticalAgent extends AbstractAgent
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
                 currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-            
-            if (surplus > 0)
-            {
-                //you're overjoyed
-                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
-            }
-            else if(surplus < 0)
-            {
-                //you're dissapointed
-                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
-            }
-            else
-            {   //surplus = 0
-                currentHappiness = ValueScaler.scale(currentHappiness, surplus, 0.1);
-            }
 
+            //If surplus is >0 you're overjoyed and increase happiness
+            //If surplus is <0 you are dissapointed and decrease your happiness
+            //If surplus is zero nothing really changed
+            currentHappiness = scale(currentHappiness, surplus, 0.1);
+            
             return currentHappiness;
     }
 
@@ -555,10 +501,12 @@ public class TestPoliticalAgent extends AbstractAgent
                 double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
                 //get new loyalty
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
+                
                 if (currentLoyalty == null || currentLoyalty == 0)
                     //As this if statement implies either entry to your first group or
                     //entry to a new (but not necessarily your first) group then you're
                     //loyal to the average sense (not too much and no too little)
+<<<<<<< HEAD
                     currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
 
                 if (deltaHappiness > 0)
@@ -573,6 +521,14 @@ public class TestPoliticalAgent extends AbstractAgent
                 } else
                     currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1 - deltaEconomic);
 
+=======
+                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
+
+                //If deltaHappiness is < 0 you lose loyalty to the group. Otherwise if deltaHappiness is >0
+                //you gain loyalty. If deltaHappiness is zero you don't change your loyalty
+                currentLoyalty = scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
+                
+>>>>>>> be9e3a98920c358b495c326c30c689f78303fe25
                 return currentLoyalty;
             }
             else
@@ -622,16 +578,16 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                        trust = ValueScaler.scale(trust, -1, 0.3);
+                        trust = scale(trust, -1, 0.3);
                     }
                     else //Opponent cooperated
                     {
-                        trust = ValueScaler.scale(trust, 1, 0.3);
+                        trust = scale(trust, 1, 0.3);
                     }
             }
             else    //Agent hunted rabbit so no trust issues
             {
-                trust = ValueScaler.scale(trust, 0, 0.3);
+                trust = scale(trust, 0, 0.3);
             }
             
             newTrustValue.put(opponentID, trust);
@@ -652,7 +608,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 double myEconomic = getDataModel().getEconomicBelief();
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
-                                
+
                 //get change in happiness
                 Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
                 if (oneTurnAgoHappiness == null)
@@ -673,17 +629,10 @@ public class TestPoliticalAgent extends AbstractAgent
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
-                    if (deltaHappiness > 0)
-                    {
-                        //you gain loyalty to your group
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
-                    }
-                    else if(deltaHappiness < 0)
-                    {
-                        //you lose loyalty to your group
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
-                    } else
-                        currentLoyalty = ValueScaler.scale(currentLoyalty, 0, 1- deltaEconomic);
+                        //If deltaHappiness <0 you lose loyalty to your group
+                        //If deltaHappiness >0 you increase your loyalty to your group
+                        //If deltaHappiness = 0 you don't change at all
+                        currentLoyalty = scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
                 }
                 return currentLoyalty;                                      
             }               
@@ -708,21 +657,12 @@ public class TestPoliticalAgent extends AbstractAgent
             //If this concerns you...
             if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
             {
-                if (votes > 0)
-                {
-                    //your happy your proposition was passed
-                    currentHappiness = ValueScaler.scale(currentHappiness, votes, Math.abs(overallMovement));
-                }
-                else if(votes < 0)
-                {
-                    //your dissapointed your proposition didn't pass
-                    currentHappiness = ValueScaler.scale(currentHappiness, votes, Math.abs(overallMovement));
-                }
-                else
-                    //votes = 0
-                    currentHappiness = ValueScaler.scale(currentHappiness, 0, Math.abs(overallMovement));
+                    //If votes > 0 you are happy your proposition was passed
+                    //If votes < 0 you are dissapointed your proposition was not passed
+                    currentHappiness = scale(currentHappiness, votes, Math.abs(overallMovement));
              }
-             return currentHappiness;
+
+            return currentHappiness;
     }                     
 
     @Override
@@ -746,7 +686,7 @@ public class TestPoliticalAgent extends AbstractAgent
                        proposerTrust = 0;
                 }
                 //increase the trust for proposer according to the number of votes
-                proposerTrust = ValueScaler.scale(proposerTrust, votes, Math.abs(overallMovement));
+                proposerTrust = scale(proposerTrust, votes, Math.abs(overallMovement));
                 newTrustValue.put(proposer, proposerTrust);
              }
              else
@@ -768,68 +708,21 @@ public class TestPoliticalAgent extends AbstractAgent
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
-                    char position;
                     double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
-                    double deltaSocial = groupSocial - currentSocial;//how close are you to the group's belief
 
-                    if (currentSocial < groupSocial)
-                        //your belief is more authoritorian
-                        position = 'a';//authoritorian
-                    else if (currentSocial > groupSocial)
-                        //your belief is more libertarian
-                        position = 'l';//libertarian
-                    else
-                        //your belief equates to group belief
-                        position = 'c';//center
+                                        
 
                     if (votes > 0)
                     {   //you're social belief moves towards the group social poistion
-                        switch (position)
-                        {
-                            case 'a':
-                                //move more libertarian
-                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
-                                if (currentSocial > groupSocial)
-                                    currentSocial = groupSocial;
-                                break;
-                            case 'l':
-                                //move more authoritorian
-                                currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
-                                if (currentSocial < groupSocial)
-                                    currentSocial = groupSocial;
-                                break;
-                            case 'c':
-                                //stay
-                                currentSocial = groupSocial;
-                                break;
-                            default :
-                                throw new IllegalStateException("Agent won but social belief not recognised");
-                        }
+                        //currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
+                        currentSocial = scale(currentSocial, (1-deltaSocial), 0.001);
                     }
                     else if (votes < 0)
-                    {
-                        //you're economic belief moves away from the group economic position
-                        switch (position)
-                        {
-                            case 'a':
-                                //move more authoriatorian
-                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
-                                break;
-                            case 'l':
-                                //move more libertarian
-                                currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
-                                break;
-                            case 'c':
-                                //any direction, for now
-                                boolean random = uniformRandBoolean();
-                                if (random)
-                                    currentSocial = ValueScaler.scale(currentSocial, 0.05, Math.abs(overallMovement));
-                                else
-                                    currentSocial = ValueScaler.scale(currentSocial, -0.05, Math.abs(overallMovement));
-                                break;
-                            default :
-                                throw new IllegalStateException("Agent lost but social belief not recognised");
-                        }
+
+                    {                     
+                        //currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
+                        currentSocial = scale(currentSocial, -(1-deltaSocial), 0.001);
+
                     }
                     //otherwise your social belief remains the same
                 }
@@ -850,68 +743,31 @@ public class TestPoliticalAgent extends AbstractAgent
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
                 {
-                    char position;
                     double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                     double deltaEconomic = groupEconomic - currentEconomic;//how close are you to the group's belief
 
-                    if (currentEconomic < groupEconomic)
-                        //your belief is more right
-                        position = 'r';//right
-                    else if (currentEconomic > groupEconomic)
-                        //your belief is more left
-                        position = 'l';//left
-                    else
-                        //your belief equates to group belief
-                        position = 'c';//center
-
+                    //The reason for (1 - deltaEconomic) is to allow agents that are closer to the
+                    //group's beliefs to move faster towards the group than agents that are far away!
                     if (moreLoyal() && moreHappy())
-                    {   //you're economic belief moves towards the group economic poistion
-                        switch (position)
-                        {
-                            case 'r':
-                                //move more left
-                                currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, Math.abs(overallMovement));
-                                if (currentEconomic > groupEconomic)
-                                    currentEconomic = groupEconomic;
-                                break;
-                            case 'l':
-                                //move more right
-                                currentEconomic = ValueScaler.scale(currentEconomic, deltaEconomic, Math.abs(overallMovement));
-                                if (currentEconomic < groupEconomic)
-                                    currentEconomic = groupEconomic;
-                                break;
-                            case 'c':
-                                //stay
-                                currentEconomic = groupEconomic;
-                                break;
-                            default :
-                                throw new IllegalStateException("Agent happy but economic belief not recognised");
 
-                        }
+                    {
+                        currentEconomic = scale(currentEconomic, (1-deltaEconomic), 0.001);
+
                     }
                     else
                     {
-                        //you're economic belief moves away from the group economic position
-                        switch (position)
+                        if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
                         {
-                            case 'r':
-                                //move more right
-                                currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, Math.abs(overallMovement));
-                                break;
-                            case 'l':
-                                //move mor left
-                                currentEconomic = ValueScaler.scale(currentEconomic, -deltaEconomic, Math.abs(overallMovement));
-                                break;
-                            case 'c':
-                                //any direction, for now
-                                boolean random = uniformRandBoolean();
-                                if (random)
-                                    currentEconomic = ValueScaler.scale(currentEconomic, 0.05, Math.abs(overallMovement));
-                                else
-                                    currentEconomic = ValueScaler.scale(currentEconomic, -0.05, Math.abs(overallMovement));
-                                break;
-                            default :
-                                throw new IllegalStateException("Agent unhappy but economic belief not recognised");
+                            currentEconomic = scale(currentEconomic, -(1-deltaEconomic), 0.001);
+                        }
+                        else //if your beliefs are exactly the same with the group's beliefs
+                        {
+                            //any direction, for now
+                            boolean random = uniformRandBoolean();
+                            if (random)
+                                currentEconomic = scale(currentEconomic, 1, 0.001);
+                            else
+                                currentEconomic = scale(currentEconomic, -1, 0.001);
                         }
                     }
                 }
@@ -1063,4 +919,32 @@ public class TestPoliticalAgent extends AbstractAgent
                     //you're not overjoyed but you're satisfied
                     return true;                
         }
+
+        private List<Food> getFoodTypes(){
+            List<Food> foodArray = new LinkedList<Food>();
+            List<Food> foodList = new LinkedList<Food>();
+            Food cooperateFood, defectFood;
+            
+            //Stores the two sources in an array
+            for (Food noms : getConn().availableFoods())
+            {
+                    foodArray.add(noms);
+            }
+
+            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
+            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
+            {
+                    cooperateFood = foodArray.get(0);
+                    defectFood = foodArray.get(1);
+            }
+            else
+            {
+                    cooperateFood = foodArray.get(1);
+                    defectFood = foodArray.get(0);
+            }
+
+            foodList.add(cooperateFood);
+            foodList.add(defectFood);
+            return foodList;
+       }
 }

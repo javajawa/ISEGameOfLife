@@ -14,7 +14,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.inputs.Vote;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
-import static ise.gameoflife.models.ValueScaler.scale;
+import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -286,12 +286,12 @@ public abstract class AbstractGroupAgent implements Participant
 			// TODO: Store each proposition and result in history?
 			props.put(p.getProposer(), p);
 		}
-
+                
 		// Calculate the groups new position
 		double change = dm.getCurrentEconomicPoisition();
 		if (motionsPassed > 0)
-		{
-			dm.setEconomicPosition(scale(change, movement / motionsPassed));
+		{  
+			dm.setEconomicPosition(scale(change, movement / motionsPassed, 0.1));
 			change = dm.getCurrentEconomicPoisition() - change;
 		}
 		else

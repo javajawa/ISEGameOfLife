@@ -5,7 +5,7 @@ import ise.gameoflife.agents.TestGroupableAgent;
 import ise.gameoflife.groups.TestGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
-import ise.gameoflife.plugins.DatabasePlugin;
+import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;

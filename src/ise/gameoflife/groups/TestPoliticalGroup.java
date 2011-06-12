@@ -137,7 +137,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 }
                 economic = economic / (size);
                 this.setEconomicPosition(economic);
-                for (int i= 1; i<10; i++)
                 System.out.println("leaves!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+this.getDataModel().getCurrentEconomicPoisition());
 	}
 

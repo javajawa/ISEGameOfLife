@@ -1,5 +1,6 @@
 package ise.gameoflife.plugins;
 
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -11,6 +12,7 @@ import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -89,9 +91,6 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 		}
 	}
 
-	final LogDelegate logDel = new LogDelegate();
-	final static DateFormat df = DateFormat.getTimeInstance();
-
 	private class LogDelegate extends Handler
 	{
 		private final SimpleFormatter f = new SimpleFormatter();
@@ -106,6 +105,11 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 			StringBuilder b = new StringBuilder();
 			b.append('[');
 			b.append(df.format(new Date(record.getMillis())));
+			b.append('/');
+			synchronized (timeLock)
+			{
+				b.append(time);
+			}
 			b.append("] ");
 			b.append(record.getLoggerName());
 			b.append(" [");
@@ -192,19 +196,31 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 		}
 	}
 
-	final JPanel loggers = new JPanel();
-	final JTextPane textArea = new JTextPane();
+	private final JPanel loggers = new JPanel();
+	private final TreeMap<String, LoggerPanel> sortingTree = new TreeMap<String, LoggerPanel>(Collator.getInstance());	
+	private final LogManager root = java.util.logging.LogManager.getLogManager();
+	private final JTextPane textArea = new JTextPane();
+	private final LogDelegate logDel = new LogDelegate();
+	private final static DateFormat df = DateFormat.getTimeInstance();
+	private final Object timeLock = new Object();
+	private Simulation sim;
+	private long time = 0;
 
 	@Override
 	public void execute()
 	{
-		TreeMap<String, LoggerPanel> sortingTree = new TreeMap<String, LoggerPanel>(
-						Collator.getInstance());
-
-		LogManager root = java.util.logging.LogManager.getLogManager();
-		for (Enumeration<String> it = root.getLoggerNames(); it.hasMoreElements();)
+		synchronized (timeLock)
 		{
-			String name = it.nextElement();
+			time = sim.getTime();
+		}
+
+		Enumeration<String> logs = root.getLoggerNames();
+		boolean areNew = false;
+
+		while (logs.hasMoreElements())
+		{
+			String name = logs.nextElement();
+			if (sortingTree.containsKey(name)) continue;
 
 			if (name.indexOf('.') > -1)
 			{
@@ -217,18 +233,23 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 			}
 
 			sortingTree.put(name, new LoggerPanel(name));
+			areNew = true;
 		}
 
-		loggers.removeAll();
-		for (String it : sortingTree.keySet())
+		if (areNew)
 		{
-			loggers.add(sortingTree.get(it));
+			loggers.removeAll();
+			for (String it : sortingTree.keySet())
+			{
+				loggers.add(sortingTree.get(it));
+			}
 		}
 	}
 
 	@Override
 	public void initialise(Simulation sim)
 	{
+		this.sim = sim;
 		loggers.setLayout(new BoxLayout(loggers, BoxLayout.PAGE_AXIS));
 
 		this.setLayout(new BorderLayout());
