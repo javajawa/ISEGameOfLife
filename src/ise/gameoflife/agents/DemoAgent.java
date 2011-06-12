@@ -92,5 +92,15 @@ public class DemoAgent extends AbstractAgent {
     protected void onInvite(String group) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }
