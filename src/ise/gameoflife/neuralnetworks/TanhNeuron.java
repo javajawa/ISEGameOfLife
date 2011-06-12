@@ -11,22 +11,10 @@ public final class TanhNeuron extends Neuron
 		super(weights);
 	}
 
-	private double offset = 0;
-
 	@Override
-	public double activationFunction(double sum)
+	public double activationFunction(double sum, double offset)
 	{
 		return Math.tanh(sum + offset);
-	}
-
-	public void setOffset(double offset)
-	{
-		this.offset = offset;
-	}
-
-	public double offset()
-	{
-		return this.offset;
 	}
 
 }

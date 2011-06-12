@@ -6,27 +6,15 @@ public final class StepNeuron extends Neuron
 	{
 		super(weights);
 	}
-
-	private double offset = 0;
 	
 	@Override
-	public double activationFunction(double sum)
+	public double activationFunction(double sum, double offset)
 	{
 		if (sum > offset)
 		{
 			return 1.0f;
 		}
 		return 0.0f;
-	}
-
-	public void setOffset(double offset)
-	{
-		this.offset = offset;
-	}
-
-	public double offset()
-	{
-		return this.offset;
 	}
 
 }
