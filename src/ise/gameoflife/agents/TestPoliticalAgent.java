@@ -148,6 +148,7 @@ public class TestPoliticalAgent extends AbstractAgent
             { 
                 return leaveGroup;
             }
+//            return null;
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
