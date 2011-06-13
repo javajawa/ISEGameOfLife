@@ -51,7 +51,7 @@ public class Politics extends GenericSimulation
             addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.55, 0.42));
 
                 Random randomGenerator = new Random();
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 10; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
