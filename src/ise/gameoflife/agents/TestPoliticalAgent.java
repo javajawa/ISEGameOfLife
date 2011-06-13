@@ -147,6 +147,7 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 return leaveGroup;
             }
+
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -624,10 +625,10 @@ public class TestPoliticalAgent extends AbstractAgent
                 {
                     currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
                 }
-                
+
                 //If deltaHappiness is < 0 you lose loyalty to the group. Otherwise if deltaHappiness is >0
                 //you gain loyalty. If deltaHappiness is zero you don't change your loyalty
-                currentLoyalty = scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
+                currentLoyalty = scale(currentLoyalty, deltaHappiness, deltaEconomic);
                 
                 return currentLoyalty;
             }
@@ -750,7 +751,7 @@ public class TestPoliticalAgent extends AbstractAgent
                         //If deltaHappiness <0 you lose loyalty to your group
                         //If deltaHappiness >0 you increase your loyalty to your group
                         //If deltaHappiness = 0 you don't change at all
-                        currentLoyalty = scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
+                        currentLoyalty = scale(currentLoyalty, deltaHappiness, deltaEconomic);
                 }
                 return currentLoyalty;                                      
             }               
@@ -855,13 +856,13 @@ public class TestPoliticalAgent extends AbstractAgent
 
                     if (votes > 0)
                     {   //you're social belief moves towards the group's social posistion
-                        currentSocial = scale(currentSocial, (1-deltaSocial), 0.001);
+                        currentSocial = scale(currentSocial, deltaSocial, Math.abs(overallMovement));
                     }
                     else if (votes < 0)
 
                     {
                         //you're social belief moves away from the group's social posistion
-                        currentSocial = scale(currentSocial, -(1-deltaSocial), 0.001);
+                        currentSocial = scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
 
                     }
                     //otherwise your social belief remains the same
@@ -895,28 +896,26 @@ public class TestPoliticalAgent extends AbstractAgent
                     double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                     double deltaEconomic = groupEconomic - currentEconomic;//how close are you to the group's belief
 
-                    //The reason for (1 - deltaEconomic) is to allow agents that are closer to the
-                    //group's beliefs to move faster towards the group than agents that are far away!
                     if (moreLoyal() && moreHappy())
 
                     {
-                        currentEconomic = scale(currentEconomic, (1-deltaEconomic), 0.001);
+                        currentEconomic = scale(currentEconomic, deltaEconomic, Math.abs(overallMovement));
 
                     }
                     else
                     {
                         if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
                         {
-                            currentEconomic = scale(currentEconomic, -(1-deltaEconomic), 0.001);
+                            currentEconomic = scale(currentEconomic, -deltaEconomic, Math.abs(overallMovement));
                         }
                         else //if your beliefs are exactly the same with the group's beliefs
                         {
                             //move in any direction, for now
                             boolean random = uniformRandBoolean();
                             if (random)
-                                currentEconomic = scale(currentEconomic, 1, 0.001);
+                                currentEconomic = scale(currentEconomic, 1, Math.abs(overallMovement));
                             else
-                                currentEconomic = scale(currentEconomic, -1, 0.001);
+                                currentEconomic = scale(currentEconomic, -1, Math.abs(overallMovement));
                         }
                     }
                 }

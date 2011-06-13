@@ -22,7 +22,7 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 600, 0, 0.1);
+		super("Basic Politics Testing Bed", 800, 0, 0.1);
 	}
 
 	@Override
@@ -42,8 +42,8 @@ public class Politics extends GenericSimulation
 	@Override
 	protected void foods()
 	{
-		addFood("Rabbit", 2, 1);
-		addFood("Stag", 5, 2);
+		addFood("Rabbit", 5, 1);
+		addFood("Stag", 20, 2);
 	}
 
 	@Override
