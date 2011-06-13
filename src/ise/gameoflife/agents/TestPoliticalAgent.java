@@ -124,7 +124,6 @@ public class TestPoliticalAgent extends AbstractAgent
     */
     @Override
     protected String chooseGroup() {
-
         String chosenGroup = "";
         
         //If agent is already member of a group remove it from the founders or invitation holders lists
@@ -145,7 +144,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 return null;
             }
             else
-            { 
+            {
                 return leaveGroup;
             }
 //            return null;
