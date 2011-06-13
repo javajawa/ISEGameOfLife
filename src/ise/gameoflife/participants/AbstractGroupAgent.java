@@ -4,6 +4,7 @@ import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.RespondToApplication;
+import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.actions.VoteResult;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
@@ -373,7 +374,10 @@ public abstract class AbstractGroupAgent implements Participant
 								dm.getName(),
 								ec.nameof(in.getAgent()), in.getReason()
 							});
-
+			if (dm.getMemberList().size() == 1)
+                            for(String member : getDataModel().getMemberList())
+				ec.act(new ApplyToGroup(AbstractAgent.leaveGroup), member, authCode);
+                        
 			if (dm.getMemberList().isEmpty())
 				ec.act(new Death(), dm.getId(), authCode);
 
