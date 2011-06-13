@@ -37,6 +37,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static TreeSet<String> groupFounders = new TreeSet<String>();
+        private final static TreeSet<String> membersToKickOut = new TreeSet<String>();        
 	private History<Double> satisfaction = new History<Double>(1);
 
 	private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
@@ -113,6 +114,15 @@ public class TestPoliticalAgent extends AbstractAgent
         }             
     }
     
+    protected void checkBeforeLeave() {
+        PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
+        if(myGroup.getMemberList().size() == 2)
+            for(String member : myGroup.getMemberList())
+                //look for the other member of this group to kick out into free agent mode
+                if(!member.equals(getDataModel().getId()))
+                    membersToKickOut.add(member);            
+    }
+    
     /**
     * This method enables agents to form groups. It uses a heuristic based on mutual trust and
     * the socio-economic beliefs. The agent can either try the heuristic with another free agent or
@@ -138,6 +148,11 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     invitationHolders.remove(this.getId());
             }
+            if (membersToKickOut.contains(this.getId()))
+            {
+                    membersToKickOut.remove(this.getId());
+                    return leaveGroup;
+            }            
 
             if (SatisfiedInGroup())
             {
@@ -145,6 +160,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
             else
             {
+                checkBeforeLeave();
                 return leaveGroup;
             }
 //            return null;
@@ -301,7 +317,7 @@ public class TestPoliticalAgent extends AbstractAgent
     /**
     * This method enables agents to pick their preferred choice of food
     * The choice is based on several factors. First of all if we deal with a free agent
-    * its choice is based only on its type (TFF, AD, AC or R). Otherwise of the agent belongs
+    * its choice is based only on its type (TFT, AD, AC or R). Otherwise, the agent belongs
     * to a group it can also ask for advice. If the advice is not good enough then the agent just
     * follows its type.
     * @param none
@@ -321,7 +337,7 @@ public class TestPoliticalAgent extends AbstractAgent
             
             String groupID = this.getDataModel().getGroupId();
             //If the agent belongs to a group then it can ask for advice
-            if (groupID != null)
+            if (groupID != null && getConn().getGroupById(groupID).getMemberList().size() > 1)
             {   
                 suggestedFood = this.askAdvice();
                 if (suggestedFood != null)
@@ -443,7 +459,7 @@ public class TestPoliticalAgent extends AbstractAgent
             ProposalType agentProposal;
             VoteType vote = null;
 
-            if (groupId != null)//check if is in a group
+            if (groupId != null && getConn().getGroupById(groupId).getMemberList().size() > 1)//check if is in a group
             { 
                     if (groupId.equals(proposerGroup))  //check if agent is in the same group as the proposal
                     {
@@ -593,7 +609,8 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             //Loyalty after hunting refines from how much more happy you are after the hunt
             //and from comparing your economic (sharing of food) belief with the group's belief.
-            if (this.getDataModel().getGroupId() != null)
+            String groupId = getDataModel().getGroupId();
+            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
             {
                 //get change in economic beliefs
                 double myEconomic = getDataModel().getEconomicBelief();
@@ -720,8 +737,8 @@ public class TestPoliticalAgent extends AbstractAgent
             //Loyalty after voting refines from how much more happy you are after the vote
             //and from comparing your economic (decision to deviate from your belief) belief
             //with the group's belief.
-
-            if (this.getDataModel().getGroupId() != null)
+            String groupId = getDataModel().getGroupId();
+            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
             {
                 //get change in economic beliefs
                 double myEconomic = getDataModel().getEconomicBelief();
@@ -845,7 +862,8 @@ public class TestPoliticalAgent extends AbstractAgent
             //Your social belief refines from how much more/less trust there is in the group
             //after the vote. Whether or not your proposition passed reflects how much you
             //want to trust the group to make decisions or a single dictator to make decisions.
-            if (this.getDataModel().getGroupId() != null)
+            String groupId = getDataModel().getGroupId();
+            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
             {
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
@@ -888,7 +906,8 @@ public class TestPoliticalAgent extends AbstractAgent
             double currentEconomic = getDataModel().getEconomicBelief();
             //Your economic belief refines from how much more/less happy you are after the vote
             //and from how loyal you are after the group made their decision after the vote.
-            if (this.getDataModel().getGroupId() != null)
+            String groupId = getDataModel().getGroupId();
+            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
             {
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
@@ -998,7 +1017,8 @@ public class TestPoliticalAgent extends AbstractAgent
     * @return True for becoming more loyal and false otherwise
     */
     private boolean moreLoyal() {
-        if (this.getDataModel().getGroupId() != null)
+        String groupId = getDataModel().getGroupId();
+        if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
         {
             //get change in economic beliefs
             double myEconomic = getDataModel().getEconomicBelief();
