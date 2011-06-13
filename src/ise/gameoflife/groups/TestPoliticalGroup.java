@@ -7,18 +7,25 @@ package ise.gameoflife.groups;
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeSet;
 /**
  *
  * @author Aadil
  */
 public class TestPoliticalGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;
+
+        private TreeSet<String> panel = new TreeSet<String>();
 
 	@Deprecated
 	public TestPoliticalGroup() {
@@ -137,8 +144,115 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void beforeNewRound() {
-		// Do nothing
-           
+            if (getDataModel().getMemberList().size() != 1)
+            {
+		this.panel = updatePanel();
+            }
 	}
-	
+        
+    /**
+    * This method updates the panel for this group. The panel is the set of leaders in this group
+    * The size of the panel depends on the social position of the group. If it is at the very top
+    * it has a single leader (dictator). If it is at the bottom then every member belongs to the panel (anarchism).
+    * @param none
+    * @return The new panel members.
+    */
+        private TreeSet<String> updatePanel(){
+            double groupSocialPosition;
+            int population, panelSize;
+
+            //TODO: a)When panelSize = 0 (top of y-axis) force it to become 1 (dictatorship)
+            //      b)Have a threshold for trust values. If below that an agent cannot become leader ->emerging leadership
+            
+            //STEP 1:
+            //Find the size of the panel. It is the proportion of the total population that
+            // can be in the panel. It is calculated using the social position of the group.
+            population = this.getDataModel().getMemberList().size();
+            groupSocialPosition = this.getDataModel().getEstimatedSocialLocation();
+
+            //Round to the closest integer
+            panelSize = (int) Math.ceil(population*groupSocialPosition - 0.5);
+            //STEP 1 END
+
+            //STEP 2: Get the average trust of each agent in the group
+            List< Tuple<String, Double> > panelCandidates = new LinkedList< Tuple<String, Double> >();
+            List<String> groupMembers = getDataModel().getMemberList();
+
+            for (String candidate: groupMembers )
+            { 
+                double sum = 0;
+                int numKnownTrustValues = 0;
+                for (String member: groupMembers )
+                {
+                    if ((getConn().getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
+                    {
+                        sum += getConn().getAgentById(member).getTrust(candidate);
+                        numKnownTrustValues++;
+                    }
+                }
+                
+                Tuple<String, Double> tuple;
+                if (numKnownTrustValues != 0)
+                {
+                    tuple = new Tuple<String, Double>(candidate, sum/numKnownTrustValues);
+                    panelCandidates.add(tuple);
+                }
+            }
+            //STEP 2 END
+            
+            //STEP 3: Sort the agents in descending order of trust values
+            Collections.sort(panelCandidates, d);
+            //STEP 3 END
+
+            //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
+            TreeSet<String> newPanel = new TreeSet<String>();
+            if (!panelCandidates.isEmpty())
+            {
+                for (int i = 0; i < panelSize; i++)
+                {
+                    newPanel.add(panelCandidates.get(i).getKey());
+                }
+            }
+            else
+            {
+                newPanel = null;
+            }
+            //STEP 4 END
+
+            //FOR DEBUGGING ONLY
+            Iterator< Tuple<String, Double> > i = panelCandidates.iterator();
+            System.out.println("-------------------------------");
+            System.out.println(getDataModel().getName());
+            System.out.println(panelSize);
+            while (i.hasNext()){
+                Tuple<String, Double> agent = i.next();
+                System.out.println("Agent "+ getConn().getAgentById(agent.getKey()).getName() + " has overall trust " + agent.getValue());
+            }
+            System.out.println("Therefore panel consists of: ");
+            if (newPanel != null)
+            {
+                Iterator< String > j = newPanel.iterator();
+                while (j.hasNext()){
+                    String agentID = j.next();
+                    System.out.println(getConn().getAgentById(agentID).getName());
+                }
+            }
+             else
+            {
+                System.out.println("No leader/leaders yet");
+            }
+            //FOR DEBUGGING ONLY END
+
+            return newPanel;
+        }
+
+        private Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
+            @Override
+            public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
+            {
+                Double v1 = o1.getValue();
+                Double v2 = o2.getValue();
+            	return (v1>v2 ? -1 : 1);
+            }
+	};	
 }

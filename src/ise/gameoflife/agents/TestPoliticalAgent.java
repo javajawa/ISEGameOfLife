@@ -135,7 +135,7 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected String chooseGroup() {
         String chosenGroup = "";
-        
+
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
         if (this.getDataModel().getGroupId() != null)
@@ -154,17 +154,15 @@ public class TestPoliticalAgent extends AbstractAgent
                     return leaveGroup;
             }            
 
-            if (SatisfiedInGroup())
-            {
-                return null;
-            }
-            else
-            {
-                checkBeforeLeave();
-                return leaveGroup;
-            }
-
-//            return null;
+//            if (SatisfiedInGroup())
+//            {
+//                return null;
+//            }
+//            else
+//            {
+//                checkBeforeLeave();
+//                return leaveGroup;
+//            }
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -864,7 +862,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //after the vote. Whether or not your proposition passed reflects how much you
             //want to trust the group to make decisions or a single dictator to make decisions.
             String groupId = getDataModel().getGroupId();
-            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
+            if ((groupId != null)  && (getConn().getGroupById(groupId).getMemberList().size() > 1))
             {
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
@@ -908,7 +906,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //Your economic belief refines from how much more/less happy you are after the vote
             //and from how loyal you are after the group made their decision after the vote.
             String groupId = getDataModel().getGroupId();
-            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
+            if ((groupId != null)  && (getConn().getGroupById(groupId).getMemberList().size() > 1))
             {
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
