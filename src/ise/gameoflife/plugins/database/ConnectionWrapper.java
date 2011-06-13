@@ -113,7 +113,7 @@ final class ConnectionWrapper
 		return simulationId;
 	}
 	
-	void flush()
+	void flush(int round)
 	{
 		try
 		{
@@ -234,8 +234,13 @@ final class ConnectionWrapper
 		roundAgent.setInt(4,groupid);
 		roundAgent.setDouble(5,agent.getFoodAmount());
 		//not available for first round
-		if(round!=0) 
+		if(round==0) 
 		{
+		    roundAgent.setString(6,null);
+		    roundAgent.setDouble(9,0);
+		    roundAgent.setDouble(10,0);
+		} 
+		else {
 		    roundAgent.setString(6,agent.getLastHunted().getName());
 		    roundAgent.setDouble(9,agent.getCurrentHappiness());
 		    roundAgent.setDouble(10,agent.getCurrentLoyalty());

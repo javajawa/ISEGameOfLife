@@ -95,10 +95,12 @@ public class DatabasePlugin implements Plugin
 	    getAgentRoundData();
 	    
 	    //writes to db every 25 rounds (or 150 cycles)
-	    if(round%25==0) {
+	    if(round%50==0) 
+	    {
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
 		else logger.log(Level.INFO,"Writing data to remote database (could be slow)");
-		wrap.flush();
+		wrap.flush(round);
+		logger.log(Level.INFO,"Database write complete");
 	    }
 	    
 	}
@@ -142,14 +144,14 @@ public class DatabasePlugin implements Plugin
 	@Override
 	public void onDelete()
 	{
-		wrap.flush();
+		wrap.flush(round);
 		wrap.end(round);
 	}
 
 	@Override
 	public void onSimulationComplete()
 	{
-		wrap.flush();
+		wrap.flush(round);
 		wrap.end(round);
 	}
 
