@@ -211,26 +211,30 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 for(Map.Entry<String, TestPoliticalAgent> entry1 : p_players.entrySet())
                 {
                         PublicAgentDataModel agent1_dm = entry1.getValue().getDataModel();
-                        
-                        for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
+
+                        if(agent1_dm.getGroupId() != null && PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getMemberList().size() > 1)
                         {
-                           PublicAgentDataModel agent2_dm = entry2.getValue().getDataModel();
-                           
-                           if(agent1_dm.getGroupId() != null && agent2_dm.getGroupId() != null ){
-                              if( !entry1.getKey().equals(entry2.getKey()) && agent1_dm.getGroupId().equals(agent2_dm.getGroupId()))
-                              {
-                                  g.setColor(Color.RED);
-                                  x1 = agent1_dm.getEconomicBelief()*(rect.width/correction);
-                                  x2 = agent2_dm.getEconomicBelief()*(rect.width/correction);
-                                  y1 = agent1_dm.getSocialBelief()*(rect.height/correction);
-                                  y2 = agent2_dm.getSocialBelief()*(rect.height/correction);
-                                  g.drawLine((int)x1+1,(int)y1+1,(int)x2+1,(int)y2+1);
-                                  size = PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getMemberList().size();
-                                  
-                                  float hue = getGroupColour(agent1_dm.getGroupId());
-                                  g.setColor(Color.getHSBColor( hue, 1, 1));
-                                  drawAgent(g, entry1.getValue(),size+1);
-                              }
+                                                    
+                            for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
+                            {
+                               PublicAgentDataModel agent2_dm = entry2.getValue().getDataModel();
+
+                               if(agent2_dm.getGroupId() != null ){
+                                  if( !entry1.getKey().equals(entry2.getKey()) && agent1_dm.getGroupId().equals(agent2_dm.getGroupId()))
+                                  {
+                                      g.setColor(Color.RED);
+                                      x1 = agent1_dm.getEconomicBelief()*(rect.width/correction);
+                                      x2 = agent2_dm.getEconomicBelief()*(rect.width/correction);
+                                      y1 = agent1_dm.getSocialBelief()*(rect.height/correction);
+                                      y2 = agent2_dm.getSocialBelief()*(rect.height/correction);
+                                      g.drawLine((int)x1+1,(int)y1+1,(int)x2+1,(int)y2+1);
+                                      size = PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getMemberList().size();
+
+                                      float hue = getGroupColour(agent1_dm.getGroupId());
+                                      g.setColor(Color.getHSBColor( hue, 1, 1));
+                                      drawAgent(g, entry1.getValue(),size+1);
+                                  }
+                                }
                             }
                         }
                 }
@@ -259,7 +263,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 Rectangle rect = g.getClipBounds();
                 double x,y;
                 String name;
-                //name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
+                name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
                 name = "[" + p_player.getDataModel().getAgentType().name() + "]";
                 x = p_player.getDataModel().getEconomicBelief() *(rect.width/correction);
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
