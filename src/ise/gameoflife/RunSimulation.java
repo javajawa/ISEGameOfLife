@@ -1,5 +1,8 @@
 package ise.gameoflife;
 
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import javax.swing.UIManager;
 import presage.gui.ControlCenter;
 
@@ -23,9 +26,17 @@ public class RunSimulation
 	 */
 	public static void main(String args[]) throws Exception
 	{
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		BuildSimulations.main(args);
-		ControlCenter.main(args);
+		if (args.length == 0)
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			BuildSimulations.main(args);
+			ControlCenter.main(args);
+		}
+		else
+		{
+			Logger.getLogger("").setLevel(Level.WARNING);
+			presage.Presage.main(args);
+		}
 	}
 
 }
