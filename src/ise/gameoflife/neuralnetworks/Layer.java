@@ -44,24 +44,6 @@ public class Layer
 		return out;
 	}
 
-	public int inLength()
-	{
-		if (null == weights || null == neurons)
-		{
-			return -1;
-		}
-		return weights[0].length;
-	}
-
-	public int outLength()
-	{
-		if (null == weights || null == neurons)
-		{
-			return -2;
-		}
-		return weights.length;
-	}
-
 	private double weights[][] = null;
 
 	public void setWeights(double weights[][])
