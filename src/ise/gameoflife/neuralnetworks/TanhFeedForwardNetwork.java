@@ -51,6 +51,7 @@ public class TanhFeedForwardNetwork extends Network
 					weights[k] = rand.nextDouble();
 				}
 				neuron.setWeights(weights);
+				neuron.setOffset(rand.nextDouble());
 			}
 		}
 
@@ -59,6 +60,7 @@ public class TanhFeedForwardNetwork extends Network
 		for (int i = 0; i < net.inputs(); i++)
 		{
 			in[i] = rand.nextDouble();
+			// in[i] = 0;
 		}
 		// show test values
 		for (double val : in)
