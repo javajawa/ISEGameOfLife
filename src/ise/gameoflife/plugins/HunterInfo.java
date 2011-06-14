@@ -73,6 +73,13 @@ public class HunterInfo extends JPanel implements Plugin
                         if (!sim.isParticipantActive(dm.getId()) ){
                             current = "Dead";
                         }
+                        else if(dm.getGroupId() != null)
+                        {
+                            current = "Alive - " + ec.getGroupById(dm.getGroupId()).getName();
+                        }
+                        else{
+                            current = "Alive - Free";
+                        }
 			//this.foodHistorySeries = new XYSeries(dm.getId());
 
 			//JFreeChart chart = ChartFactory.createXYLineChart(null, null, null,

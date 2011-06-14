@@ -15,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.lang.String;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -44,10 +46,10 @@ public class GroupInfo extends JPanel implements Plugin
 	private class GroupPanel extends JPanel
 	{
 		private static final long serialVersionUID = 1L;
-		//private final XYSeries foodHistorySeries;
+//		private final XYSeries foodHistorySeries;
 		private final PublicGroupDataModel gm;
-		//private final ValueAxis domainAxis;
-		//private final ValueAxis rangeAxis;
+//		private final ValueAxis domainAxis;
+//		private final ValueAxis rangeAxis;
 
 		private JLabel labelise(String s)
 		{
@@ -68,37 +70,52 @@ public class GroupInfo extends JPanel implements Plugin
 		GroupPanel(PublicGroupDataModel gm)
 		{
                         this.gm = gm;
-			//this.foodHistorySeries = new XYSeries(dm.getId());
-
-			//JFreeChart chart = ChartFactory.createXYLineChart(null, null, null,
-						//	new XYSeriesCollection(foodHistorySeries),
-						//	PlotOrientation.VERTICAL, false, false, false);
+//			this.foodHistorySeries = new XYSeries(gm.getId());
+//
+//			JFreeChart chart = ChartFactory.createXYLineChart(null, null, null,
+//							new XYSeriesCollection(foodHistorySeries),
+//							PlotOrientation.VERTICAL, false, false, false);
 			//ChartPanel chartPanel = new ChartPanel(chart);
 
-			//chart.getXYPlot().setBackgroundAlpha(1);
-			//domainAxis = chart.getXYPlot().getDomainAxis();
-			//rangeAxis = chart.getXYPlot().getRangeAxis();
+//			chart.getXYPlot().setBackgroundAlpha(1);
+//			domainAxis = chart.getXYPlot().getDomainAxis();
+//			rangeAxis = chart.getXYPlot().getRangeAxis();
 
 
                         String Social = Double.toString(this.gm.getEstimatedSocialLocation());
                         String Economic = Double.toString(this.gm.getCurrentEconomicPoisition());
 
+                        double Happiness = 0;
+                        double Loyalty = 0;
+                        double Food = 0;
 
-                        JPanel dataPanel = new JPanel(new GridLayout(2, 2, 1, -1));
+                        List<String> members = this.gm.getMemberList();
+                        double size = this.gm.getMemberList().size();
+                        Iterator<String> iter = members.iterator();
+                        while (iter.hasNext()) //iterate through available Groups
+                        {
+                            String memberId =  iter.next();
+                            Happiness += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness();
+                            Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty();
+                            Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
+                        }
+                        Happiness= Happiness/size;
+                        Loyalty = Loyalty/size;
+                        Food = Food/size;
+
+                        JPanel dataPanel = new JPanel(new GridLayout(4, 2, 1, -1));
 
                         dataPanel.add(labelise(this.gm.getName(),8));
 			dataPanel.add(labelise("Size: "+ this.gm.getMemberList().size()));
-                        //dataPanel.add(labelise(gm.));
 
                         dataPanel.add(labelise("Economic: "+Economic));
                         dataPanel.add(labelise("Social: "+Social));
 
-//			dataPanel.add(labelise("Food: "+food));
-//			dataPanel.add(labelise("Loyalty: "+Loyalty));
-//			dataPanel.add(labelise("Happiness: "+Happiness));
-//
+			dataPanel.add(labelise("Average Loyalty: "+Loyalty));
+			dataPanel.add(labelise("Average Happiness: "+Happiness));
 
-//                        dataPanel.add(labelise("LastHunted: "+LastHunted));
+                        dataPanel.add(labelise("Average Food: "+Food));
+
 
 
 
@@ -114,10 +131,10 @@ public class GroupInfo extends JPanel implements Plugin
 
 		void updateData()
 		{
-			//if (dm.getFoodAmount() > graphHeight) graphHeight += 25;
-			//foodHistorySeries.addOrUpdate(ec.getRoundsPassed(), dm.getFoodAmount());
-			//domainAxis.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
-			//rangeAxis.setRange(0, graphHeight);
+//			if (gm.getCurrentEconomicPoisition() > graphHeight) graphHeight += 25;
+//			foodHistorySeries.addOrUpdate(ec.getRoundsPassed(), gm.getCurrentEconomicPoisition());
+//			domainAxis.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
+//			rangeAxis.setRange(0, graphHeight);
 
 
                 }

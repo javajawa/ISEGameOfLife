@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.simpleframework.xml.Element;
@@ -55,6 +56,9 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         // Contains hues for each group on the compass
         private TreeMap<String, Float> group_colors = new TreeMap<String, Float>();
         private float last_colour_assigned = 0;
+
+        //contains the leaders of each group
+        private TreeSet<String> panel = new TreeSet<String>();
 
 	@Element(required=false)
 	private String outputdirectory;
@@ -236,7 +240,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                                       float hue = getGroupColour(agent1_dm.getGroupId());
                                       g.setColor(Color.getHSBColor( hue, 1, 1));
-                                      drawAgent(g, entry1.getValue(),4);
+                                      drawAgent(g, entry1.getValue(),3);
                                   }
                                 }
                             }
@@ -246,18 +250,42 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
 
         private void drawLeaders(Graphics g){
+         try{
+          if (PublicEnvironmentConnection.getInstance().availableGroups() != null){
             Set<String> Groups = PublicEnvironmentConnection.getInstance().availableGroups();
             Iterator<String> iter = Groups.iterator();
-
 
             while (iter.hasNext()) //iterate through available Groups
                 {
                      String GroupId =  iter.next();
                      PublicGroupDataModel Group = PublicEnvironmentConnection.getInstance().getGroupById(GroupId);
 
-                }
-        }
+                     panel = TestPoliticalGroup.updatePanel(Group);
+                     if (!panel.isEmpty()){
+                         Iterator<String> leader = panel.iterator();
 
+                        //iterate through pannel
+                         while (leader.hasNext()) //iterate through available Groups
+                        {
+                            String LeaderId = leader.next();
+                            //drawLeader
+                            float hue = getGroupColour(GroupId);
+                            g.setColor(Color.getHSBColor( hue, 1, 1));
+                            drawRect(g, p_players.get(LeaderId),4);
+
+                        }
+                    }
+                     panel.clear();
+
+                }
+            }
+         }
+            catch (Exception e)
+                {
+                        System.out.println("Error in leaders: " + e.getMessage());
+                }
+
+        }
         private float getGroupColour(String group_id) {
             if(this.group_colors.containsKey(group_id)) 
             {
@@ -287,12 +315,26 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
                 //draw the agents
                 g.fillOval((int)x-size,(int) y-size,size*2, size*2);
-                
                 //print the names
                 g.setColor(Color.MAGENTA);
                 g.drawString(name,(int)x,(int)y);
         }
 
+        private void drawRect(Graphics g, TestPoliticalAgent p_player,int size)
+        {
+                Rectangle rect = g.getClipBounds();
+                double x,y;
+                String name;
+                name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
+                name = "[" + p_player.getDataModel().getAgentType().name() + "]";
+                x = p_player.getDataModel().getEconomicBelief() *(rect.width/correction);
+                y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
+                //draw the agents
+                g.fillRect((int)x-size,(int) y-size,size*2, size*2);
+                //print the names
+                g.setColor(Color.BLACK);
+                g.drawString(name,(int)x,(int)y);
+        }
 	/**
 	 * Returns the label of this plugin
 	 * @return The label of this plugin

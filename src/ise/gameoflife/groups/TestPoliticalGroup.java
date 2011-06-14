@@ -4,11 +4,14 @@
  */
 package ise.gameoflife.groups;
 
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicGroupDataModel;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -144,7 +147,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 	protected void beforeNewRound() {
             if (getDataModel().getMemberList().size() != 1)
             {
-		this.panel = updatePanel();
+		//this.panel = updatePanel();
+                this.panel = updatePanel(getDataModel());
             }
 	}
         
@@ -155,14 +159,19 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     * @param none
     * @return The new panel members.
     */
-        private TreeSet<String> updatePanel(){
+        //private TreeSet<String> updatePanel(){
+        public static TreeSet<String> updatePanel(PublicGroupDataModel dm){
             double groupSocialPosition;
             int population, panelSize;
+            final PublicEnvironmentConnection conn = PublicEnvironmentConnection.getInstance(); //added
 
             //STEP 1:Find the size of the panel. It is the proportion of the total population that
             // can be in the panel. It is calculated using the social position of the group.
-            population = this.getDataModel().getMemberList().size();
-            groupSocialPosition = this.getDataModel().getEstimatedSocialLocation();
+            
+            //population = this.getDataModel().getMemberList().size();
+            //groupSocialPosition = this.getDataModel().getEstimatedSocialLocation();
+            population = dm.getMemberList().size();
+            groupSocialPosition = dm.getEstimatedSocialLocation();
 
             //Round to the closest integer
             panelSize = (int) Math.ceil(population*groupSocialPosition - 0.5);
@@ -175,7 +184,9 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
             //STEP 2: Get the average trust of each agent in the group
             List< Tuple<String, Double> > panelCandidates = new LinkedList< Tuple<String, Double> >();
-            List<String> groupMembers = getDataModel().getMemberList();
+            
+            //List<String> groupMembers = getDataModel().getMemberList();
+            List<String> groupMembers = dm.getMemberList();
 
             for (String candidate: groupMembers )
             { 
@@ -183,9 +194,11 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 int numKnownTrustValues = 0;
                 for (String member: groupMembers )
                 {
-                    if ((getConn().getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
+                    //if ((getConn().getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
+                    if ((conn.getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
                     {
-                        sum += getConn().getAgentById(member).getTrust(candidate);
+                        //sum += getConn().getAgentById(member).getTrust(candidate);
+                        sum += conn.getAgentById(member).getTrust(candidate);
                         numKnownTrustValues++;
                     }
                 }
@@ -221,7 +234,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             return newPanel;
         }
 
-        private Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
+        //private Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
+        private static Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
             @Override
             public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
             {
@@ -231,8 +245,5 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             }
 	};	
 
-        public TreeSet<String> getPanel(){
-            return panel;
-        }
 }
 
