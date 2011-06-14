@@ -9,7 +9,6 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -131,7 +130,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void onMemberLeave(String playerID, Reasons reason) {
-
                 //update economic belief of the group when the agent leaves the group
                 double size = this.getDataModel().getMemberList().size();
                 double economic = 0;

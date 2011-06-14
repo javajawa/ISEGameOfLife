@@ -154,15 +154,15 @@ public class TestPoliticalAgent extends AbstractAgent
                     return leaveGroup;
             }            
 
-//            if (SatisfiedInGroup())
-//            {
-//                return null;
-//            }
-//            else
-//            {
-//                checkBeforeLeave();
-//                return leaveGroup;
-//            }
+            if (SatisfiedInGroup())
+            {
+                return null;
+            }
+            else
+            {
+                checkBeforeLeave();
+                return leaveGroup;
+            }
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -310,7 +310,6 @@ public class TestPoliticalAgent extends AbstractAgent
        
     @Override
     protected void groupApplicationResponse(boolean accepted) {
-        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
@@ -325,10 +324,12 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected Food chooseFood()
     {
+            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food suggestedFood, cooperateFood, defectFood, choice;
-            
+
             //Distinguish between stag (cooperate) and rabbit (defect)
             foodArray = this.getFoodTypes();
             cooperateFood = foodArray.get(0);
@@ -338,7 +339,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //If the agent belongs to a group then it can ask for advice
             if (groupID != null && getConn().getGroupById(groupID).getMemberList().size() > 1)
             {   
-                suggestedFood = this.askAdvice();
+                suggestedFood = this.askAdvice(members);
                 if (suggestedFood != null)
                 {
                     return suggestedFood;
@@ -368,7 +369,6 @@ public class TestPoliticalAgent extends AbstractAgent
                     case TFT:
                             //Get last hunting choice of opponent and act accordingly
                             Food opponentPreviousChoice = cooperateFood;
-                            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
 
                             // TFT makes no sense in a team of 1...
                             if (members.size() == 1)
@@ -961,13 +961,10 @@ public class TestPoliticalAgent extends AbstractAgent
     * @param none
     * @return The suggested food type
     */
-    private Food askAdvice() {
+    private Food askAdvice(List<String> members) {
         Food suggestedFood = null;
         String opponentID = null;
-
-        //Get the members of the hunting team that this agent belongs to
-        List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-
+        
         //If the agent has no pair then no advice
         if (members.size() == 1) return null;
 
