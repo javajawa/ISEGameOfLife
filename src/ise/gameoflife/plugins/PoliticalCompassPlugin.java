@@ -1,6 +1,7 @@
 package ise.gameoflife.plugins;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -38,7 +39,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 	 */
 	public PoliticalCompassPlugin()
 	{
-		this.outputdirectory = null;
+		this.outputdirectory = null; 
 	}
 
 	/**

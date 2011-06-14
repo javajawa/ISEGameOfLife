@@ -9,6 +9,7 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -214,7 +215,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             }
             else
             {
-                newPanel = null;
+                //return old panel. No change in leadership
+                newPanel = this.panel;
             }
             //STEP 4 END
 
@@ -229,5 +231,64 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 Double v2 = o2.getValue();
             	return (v1>v2 ? -1 : 1);
             }
-	};	
+	};
+
+    @Override
+    protected AgentType decideGroupStrategy() {
+        //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
+        if (panel.isEmpty())  return null;
+
+        Tuple<AgentType, Integer> tftTypes = new Tuple<AgentType, Integer>(AgentType.TFT, 0);
+        Tuple<AgentType, Integer> acTypes = new Tuple<AgentType, Integer>(AgentType.AC, 0);
+        Tuple<AgentType, Integer> adTypes = new Tuple<AgentType, Integer>(AgentType.AD, 0);
+        Tuple<AgentType, Integer> rTypes = new Tuple<AgentType, Integer>(AgentType.R, 0);
+
+        //Count followers types
+        for (String followerID : getDataModel().getMemberList())
+        {
+            switch(getConn().getAgentById(followerID).getAgentType())
+            {
+                case AC:
+                    int oldCountAC = acTypes.getValue();
+                    acTypes.setValue(oldCountAC+1);
+                    break;
+                case AD:
+                    int oldCountAD = adTypes.getValue();
+                    adTypes.setValue(oldCountAD+1);
+                    break;
+                case TFT:
+                    int oldCountTFT = tftTypes.getValue();
+                    tftTypes.setValue(oldCountTFT+1);
+                    break;
+                case R:
+                    int oldCountR = rTypes.getValue();
+                    rTypes.setValue(oldCountR+1);
+                    break;
+            }
+        }
+        
+        List<Tuple<AgentType, Integer> > typesCounterList = new LinkedList<Tuple<AgentType, Integer> >();
+        typesCounterList.add(acTypes);
+        typesCounterList.add(adTypes);
+        typesCounterList.add(tftTypes);
+        typesCounterList.add(rTypes);
+
+        //FOR DEBUGGING ONLY
+        Iterator<Tuple<AgentType, Integer> > i = typesCounterList.iterator();
+        System.out.println("---------------");
+//        System.out.println(getDataModel().getName());
+//        while(i.hasNext())
+//        {
+//            Tuple<AgentType, Integer> counter = i.next();
+//            System.out.println(counter.getKey() + ": " + counter.getValue());
+//        }
+//        System.out.println(getConn().availableGroups().size());
+//        for (String a: getConn().availableGroups())
+//        {
+//            System.out.println(getConn().getGroupById(a).getName() + " of size: " + getConn().getGroupById(a).getMemberList().size());
+//        }
+        //FOR DEBUGGING ONLY END
+
+        return null;
+    }
 }
