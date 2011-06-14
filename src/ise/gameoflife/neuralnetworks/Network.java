@@ -11,6 +11,11 @@ public class Network
 	private Layer layers[] = null;
 	private double weights[][][] = null;
 
+	public Network()
+	{
+
+	}
+
 	public Network(Layer layers[])
 	{
 		this.setLayers(layers);

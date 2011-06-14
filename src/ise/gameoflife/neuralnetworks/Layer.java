@@ -10,6 +10,11 @@ public class Layer
 	private int inputs;
 	private int outputs;
 
+	public Layer()
+	{
+
+	}
+
 	public Layer(int inputs, int outputs)
 	{
 		this.setInputs(inputs);
