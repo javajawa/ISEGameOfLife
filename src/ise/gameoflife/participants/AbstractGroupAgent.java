@@ -351,7 +351,7 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		if (input.getClass().equals(JoinRequest.class))
 		{
-			final JoinRequest req = (JoinRequest)input;
+		        final JoinRequest req = (JoinRequest)input;
 			boolean response = this.respondToJoinRequest(req.getAgent());
 			if (response) this.dm.addMember(req.getAgent());
 			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(),
@@ -365,15 +365,20 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 
 		if (input.getClass().equals(LeaveNotification.class))
-		{    
+		{   
 			final LeaveNotification in = (LeaveNotification)input;
 			dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
+                        //Bug fix
+                        ec.act(new RespondToApplication(in.getAgent(), false), this.getId(), authCode);
+                        //Bug fix end
 			logger.log(Level.FINE, "{0} lost memeber {1} because of {2}", new Object[]
 							{
 								dm.getName(),
 								ec.nameof(in.getAgent()), in.getReason()
+
 							});                        
+
 			if (dm.getMemberList().isEmpty())
 				ec.act(new Death(), dm.getId(), authCode);
 

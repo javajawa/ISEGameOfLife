@@ -75,6 +75,7 @@ public class Environment extends AbstractEnvironment
 			if (app.getGroup().equals(AbstractAgent.leaveGroup))
 			{
 				String old_group = dmodel.getAgentById(actorID).getGroupId();
+                                
 				if (old_group != null)
 				{
 					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, actorID));

@@ -23,7 +23,7 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 600, 0, 0.1);
+		super("Basic Politics Testing Bed", 500, 0, 0.1);
 	}
 
 	@Override
@@ -33,9 +33,9 @@ public class Politics extends GenericSimulation
 		for (int i = 0; i < 10; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			//addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			//addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			//addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
@@ -43,8 +43,8 @@ public class Politics extends GenericSimulation
 	@Override
 	protected void foods()
 	{
-		addFood("Rabbit", 2, 1);
-		addFood("Stag", 5, 2);
+		addFood("Rabbit", 5, 1);
+		addFood("Stag", 20, 2);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class Politics extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
-		//addPlugin(new DatabasePlugin(comment,false));
+		addPlugin(new DatabasePlugin(comment,true));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());

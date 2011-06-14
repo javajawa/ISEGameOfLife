@@ -120,7 +120,6 @@ abstract public class AbstractAgent implements Participant
 
 	private class ApplicationResponseHandler implements InputHandler
 	{
-
 		@Override
 		public boolean canHandle(Input input)
 		{
@@ -135,6 +134,11 @@ abstract public class AbstractAgent implements Participant
 			{ 
 				dm.setGroup(in.getGroup());
 			}
+                        else
+                        {
+                                 dm.setGroup(null);
+                        }
+
 			groupApplicationResponse(in.wasAccepted());	
 			logger.log(Level.FINE, "I, agent {0} was {1}accepted into group {2}", new Object[]{dm.getName(),
 							in.wasAccepted() ? "" : "not ", ec.nameof(in.getGroup())});
@@ -394,9 +398,11 @@ abstract public class AbstractAgent implements Participant
 		String gid = chooseGroup();
 		if (gid == null ? true : gid.equals(dm.getGroupId())) return;
 		if (gid.equals(leaveGroup))
-		{
+		{  
 			ec.act(new ApplyToGroup(gid), getId(), authCode);
-			this.dm.setGroup(null);
+                        //Bug source
+			//this.dm.setGroup(null);
+                        //Bug source end
 			return;
 		}
 		if (getConn().isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
