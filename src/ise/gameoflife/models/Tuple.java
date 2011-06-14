@@ -29,4 +29,8 @@ public class Tuple<K, V> {
     public V getValue(){
         return this.value;
     }
+
+    public void setValue(V newValue){
+        this.value = newValue;
+    }
 }
