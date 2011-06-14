@@ -50,6 +50,12 @@ public class Network
 		}
 
 		this.weights = weights;
+
+		// cascade set neuron weights
+		for (int i = 0; i < layers.length; i++)
+		{
+			layers[i].setWeights(weights[i]);
+		}
 		this.checkConsistency();
 	}
 
