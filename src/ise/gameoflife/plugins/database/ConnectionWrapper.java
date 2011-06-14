@@ -42,7 +42,7 @@ final class ConnectionWrapper
 		    updateDatabaseStructure();
 		    conn.setAutoCommit(false);
 		}
-		
+		conn.setAutoCommit(false);
 		newAgent = conn.prepareStatement(Statements.addAgent.getPrototype());
 		dieAgent = conn.prepareStatement(Statements.dieAgent.getPrototype());
 		roundAgent = conn.prepareStatement(Statements.roundAgent.getPrototype());

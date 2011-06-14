@@ -98,7 +98,7 @@ public class DatabasePlugin implements Plugin
 	    if(round%50==0) 
 	    {
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
-		else logger.log(Level.INFO,"Writing data to remote database (could be slow)");
+		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
 		wrap.flush(round);
 		logger.log(Level.INFO,"Database write complete");
 	    }
@@ -151,6 +151,8 @@ public class DatabasePlugin implements Plugin
 	@Override
 	public void onSimulationComplete()
 	{
+		if (!remote) logger.log(Level.INFO,"Writing data to local database");
+		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
 		wrap.flush(round);
 		wrap.end(round);
 	}
