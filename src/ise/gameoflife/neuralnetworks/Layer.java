@@ -7,10 +7,21 @@ package ise.gameoflife.neuralnetworks;
 public class Layer
 {
 	private Neuron neurons[] = null;
+	private int inputs;
+	private int outputs;
+
+	public Layer(int inputs, int outputs)
+	{
+		this.setInputs(inputs);
+		this.setOutputs(outputs);
+	}
 
 	public Layer(Neuron neurons[])
 	{
 		this.setNeurons(neurons);
+		this.setOutputs(neurons.length);
+		this.setInputs(neurons[0].inputs());
+		this.checkConsistency();
 	}
 
 	public double[] out(double in[])
@@ -78,8 +89,24 @@ public class Layer
 
 	private void checkConsistency()
 	{
+		if (null == neurons)
+		{
+			return;
+		}
 
-		if (null == weights && null == neurons)
+		// input size check for all neurons
+		int prevLen = neurons[0].inputs();
+		for (int i = 0; i < neurons.length; i++)
+		{
+			int currLen = neurons[i].inputs();
+			if (prevLen != currLen)
+			{
+				throw new RuntimeException("Input size mismatch between neurons.");
+			}
+			prevLen = currLen;
+		}
+
+		if (null == weights)
 		{
 			return;
 		}
@@ -89,6 +116,26 @@ public class Layer
 		{
 			throw new RuntimeException("Number of neurons and length of weights mismatch.");
 		}
+	}
+
+	public void setInputs(int inputs)
+	{
+		this.inputs = inputs;
+	}
+
+	public int inputs()
+	{
+		return inputs;
+	}
+
+	public void setOutputs(int outputs)
+	{
+		this.outputs = outputs;
+	}
+
+	public int outputs()
+	{
+		return outputs;
 	}
 
 }

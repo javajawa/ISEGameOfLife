@@ -6,6 +6,8 @@ package ise.gameoflife.neuralnetworks;
  */
 public class Network
 {
+	private int inputs;
+	private int outputs;
 	private Layer layers[] = null;
 	private double weights[][][] = null;
 
@@ -60,6 +62,26 @@ public class Network
 		}
 
 		return weights;
+	}
+
+	public void setInputs(int inputs)
+	{
+		this.inputs = inputs;
+	}
+
+	public int inputs()
+	{
+		return inputs;
+	}
+
+	public void setOutputs(int outputs)
+	{
+		this.outputs = outputs;
+	}
+
+	public int outputs()
+	{
+		return outputs;
 	}
 
 	private void checkConsistency()

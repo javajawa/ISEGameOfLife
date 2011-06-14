@@ -6,6 +6,11 @@ package ise.gameoflife.neuralnetworks;
  */
 public final class TanhNeuron extends Neuron
 {
+	public TanhNeuron(int inputs)
+	{
+		super(inputs);
+	}
+
 	public TanhNeuron(double[] weights)
 	{
 		super(weights);

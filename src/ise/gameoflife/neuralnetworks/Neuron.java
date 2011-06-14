@@ -9,6 +9,13 @@ public abstract class Neuron
 
 	abstract public double activationFunction(double sum, double offset);
 
+	private int inputs = 0;
+
+	public Neuron(int inputs)
+	{
+		this.setInputs(inputs);
+	}
+
 	public Neuron(double weights[])
 	{
 		this(weights, 0);
@@ -17,6 +24,7 @@ public abstract class Neuron
 	// designated constructor
 	public Neuron(double weights[], double offset)
 	{
+		this.setInputs(weights.length);
 		this.setWeights(weights);
 		this.setOffset(offset);
 	}
@@ -66,6 +74,16 @@ public abstract class Neuron
 	public double offset()
 	{
 		return this.offset;
+	}
+
+	public void setInputs(int inputs)
+	{
+		this.inputs = inputs;
+	}
+
+	public int inputs()
+	{
+		return inputs;
 	}
 
 }
