@@ -15,11 +15,15 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.models.History;
+import ise.gameoflife.models.Tuple;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
@@ -168,7 +172,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
             else
             {
-                checkBeforeLeave();
+                //checkBeforeLeave();
                 return leaveGroup;
             }
 
@@ -177,7 +181,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             return this.invitationToGroup;
         }
-        else //If none of the above worked out then first try to find an optimal group to join with
+        else if(!getConn().availableGroups().isEmpty()) //If none of the above worked out then first try to find an optimal group to join with
         {
             chosenGroup = agentGroupGrouping();
         }
@@ -197,61 +201,60 @@ public class TestPoliticalAgent extends AbstractAgent
     */
     private String agentGroupGrouping() {
         String chosenGroup = "";
-        double currentHeuristic = 0, previousHeuristic = 0;
-
-        //used for the socio-economic faction of heuristic
-        double vectorDistance; 
         double maxDistance = Math.sqrt(2);
-        double economic, social, esFaction=0;
-        //used for the trust faction of heuristic
-        double trustFaction=0, trustSum;
-        int numKnownTrustValues;
+        List< Tuple<String, Double> > partnershipCandidates = new LinkedList< Tuple<String, Double> >();
         
-        PublicGroupDataModel aGroup;
-
         //Assess each group in turn
-        for (String groupID : getConn().availableGroups()) {
-            aGroup = getConn().getGroupById(groupID);
-
-            //Obtain how much trust there is between this agent and the members of the group
-            numKnownTrustValues = 0;
-            trustSum = 0;
-            for (String trustee : aGroup.getMemberList()) {
-                    Double trustValue = this.getDataModel().getTrust(trustee);
-
-                    if (trustValue != null) {
-                            trustSum += trustValue;
-                            numKnownTrustValues++;
-                    }
-            }
-
-            if(numKnownTrustValues != 0)
-            {
-                trustFaction = trustSum / numKnownTrustValues;
-            }
-            else
-            {
-                trustFaction = 0;
-            }
+        for (String groupID: getConn().availableGroups())
+        {
+            int numKnownTrustValues = 0;
+            double trustSum = 0;
             
-            //calculates the vector distance between agent's and group's beliefs
-            economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
-            social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
-            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+            for (String trustee : getConn().getGroupById(groupID).getMemberList())
+            {
+                //Obtain how much trust there is between this agent and the members of the group
+                if (getDataModel().getTrust(trustee) != null)
+                {
+                    trustSum += getDataModel().getTrust(trustee);
+                    numKnownTrustValues++;
+                }
 
-            //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
-            //higher probability of joining this group
-            esFaction = 1 - (vectorDistance / maxDistance);
+                //calculates the vector distance between agent's and group's beliefs
+                double economic = getConn().getGroupById(groupID).getCurrentEconomicPoisition() - getDataModel().getEconomicBelief();//change in X
+                double social = getConn().getGroupById(groupID).getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
+                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
 
-            //The actual heuristic value is calculated. The politics is more important for compatibility than
-            //trust when a free agent tries to enter a group
-            currentHeuristic = 0.3*trustFaction + 0.7*esFaction;
+                //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
+               //higher probability of joining this group
+                double esFaction = 1 - (vectorDistance / maxDistance);
 
-            //If the current heuristic value is above a certain threshold and better than a previous evaluation
-            //we have found a compatible group
-            if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic)) {
-                chosenGroup = aGroup.getId();
-                previousHeuristic = currentHeuristic;
+                Tuple<String, Double> tuple;
+                if (numKnownTrustValues != 0)
+                {
+                    //The actual heuristic value is calculated. The politics is more important for compatibility than
+                    //trust when a free agent tries to enter a group
+                    double heuristicValue = 0.3*(trustSum/numKnownTrustValues) + 0.7*esFaction;
+                    tuple = new Tuple<String , Double>(groupID, heuristicValue);
+                    partnershipCandidates.add(tuple);
+                }
+            }
+        }
+
+        //We sort candidate groups in descending order based on the heuristic value
+        Collections.sort(partnershipCandidates, c);
+
+        //Then simply check if the top candidate has a heuristic evaluation above a certain threshold
+        //If top candidate has a value less than the threshold no need to check anyone else since
+        //they are in descending order.
+        if (!partnershipCandidates.isEmpty())
+        { 
+            double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
+
+            //If top candidate has evaluation above the threshold then choose that group
+            if (topCandidateHeuristicValue > 0.7)
+            { 
+                chosenGroup = partnershipCandidates.get(0).getKey();
+                return chosenGroup;
             }
         }
         return chosenGroup;
@@ -1145,4 +1148,14 @@ public class TestPoliticalAgent extends AbstractAgent
             foodList.add(defectFood);
             return foodList;
        }
+
+        private Comparator< Tuple<String, Double> > c = new Comparator< Tuple<String, Double> >() {
+            @Override
+            public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
+            {
+                Double v1 = o1.getValue();
+                Double v2 = o2.getValue();
+            	return (v1>v2 ? -1 : 1);
+            }
+	};
 }
