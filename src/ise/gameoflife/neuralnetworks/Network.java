@@ -114,9 +114,11 @@ public class Network
 
 		for (int i = 0; i < layers.length - 1; i++)
 		{
-			if (layers[i].outLength() != layers[i+1].inLength())
+			if (layers[i].outputs() != layers[i+1].inputs())
 			{
-				throw new RuntimeException("In/out lengths between layers mismatch.");
+				throw new RuntimeException("In/out lengths between layers mismatch:" +
+						"layer " + i + " out (" + layers[i].outputs() + "), " +
+						"layer " + (i+1) + "in (" + layers[i+1].inputs() + ").");
 			}
 		}
 	}
