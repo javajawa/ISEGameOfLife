@@ -1,10 +1,11 @@
 package ise.gameoflife;
 
-import ise.gameoflife.simulatons.AgentsAndGroup;
-import ise.gameoflife.simulatons.DoubleAgent;
-import ise.gameoflife.simulatons.FreeAgentsTest;
-import ise.gameoflife.simulatons.SingleAgent;
-import ise.gameoflife.simulatons.Politics;
+import ise.gameoflife.simulations.AgentsAndGroup;
+import ise.gameoflife.simulations.CLIPolitics;
+import ise.gameoflife.simulations.DoubleAgent;
+import ise.gameoflife.simulations.FreeAgentsTest;
+import ise.gameoflife.simulations.SingleAgent;
+import ise.gameoflife.simulations.Politics;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ final class BuildSimulations
 		DoubleAgent.class,
 		AgentsAndGroup.class,
 		Politics.class,
+		CLIPolitics.class,
 		FreeAgentsTest.class
 	};
 
