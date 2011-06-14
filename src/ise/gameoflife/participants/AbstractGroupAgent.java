@@ -251,7 +251,7 @@ public abstract class AbstractGroupAgent implements Participant
 
 		for (String agent : uninformedAgents)
 		{
-			ec.act(new DistributeFood(agent, 0, 0), getId(), authCode);
+			ec.act(new DistributeFood(agent, 0, shared), getId(), authCode);
 		}
 	}
 
