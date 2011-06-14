@@ -9,7 +9,6 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -131,7 +130,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void onMemberLeave(String playerID, Reasons reason) {
-
                 //update economic belief of the group when the agent leaves the group
                 double size = this.getDataModel().getMemberList().size();
                 double economic = 0;
@@ -161,17 +159,18 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             double groupSocialPosition;
             int population, panelSize;
 
-            //TODO: a)When panelSize = 0 (top of y-axis) force it to become 1 (dictatorship)
-            //      b)Have a threshold for trust values. If below that an agent cannot become leader ->emerging leadership
-            
-            //STEP 1:
-            //Find the size of the panel. It is the proportion of the total population that
+            //STEP 1:Find the size of the panel. It is the proportion of the total population that
             // can be in the panel. It is calculated using the social position of the group.
             population = this.getDataModel().getMemberList().size();
             groupSocialPosition = this.getDataModel().getEstimatedSocialLocation();
 
             //Round to the closest integer
             panelSize = (int) Math.ceil(population*groupSocialPosition - 0.5);
+            if (panelSize == 0) //The group is on the very top of the axis. Dictatorship
+            {
+                //Force panelSize to be at least one (dictator)
+                panelSize = 1;
+            }
             //STEP 1 END
 
             //STEP 2: Get the average trust of each agent in the group
@@ -218,30 +217,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 newPanel = null;
             }
             //STEP 4 END
-
-            //FOR DEBUGGING ONLY
-            Iterator< Tuple<String, Double> > i = panelCandidates.iterator();
-            System.out.println("-------------------------------");
-            System.out.println(getDataModel().getName());
-            System.out.println(panelSize);
-            while (i.hasNext()){
-                Tuple<String, Double> agent = i.next();
-                System.out.println("Agent "+ getConn().getAgentById(agent.getKey()).getName() + " has overall trust " + agent.getValue());
-            }
-            System.out.println("Therefore panel consists of: ");
-            if (newPanel != null)
-            {
-                Iterator< String > j = newPanel.iterator();
-                while (j.hasNext()){
-                    String agentID = j.next();
-                    System.out.println(getConn().getAgentById(agentID).getName());
-                }
-            }
-             else
-            {
-                System.out.println("No leader/leaders yet");
-            }
-            //FOR DEBUGGING ONLY END
 
             return newPanel;
         }
