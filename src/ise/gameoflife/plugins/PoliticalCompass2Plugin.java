@@ -9,7 +9,9 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.participants.PublicAgentDataModel;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -19,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import javax.imageio.ImageIO;
@@ -191,6 +194,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 
                  // Draw agent connections + groupped agents
                 drawGroupLines(g);
+                drawLeaders(g);
 
             }
             catch (Exception e)
@@ -232,14 +236,28 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                                       float hue = getGroupColour(agent1_dm.getGroupId());
                                       g.setColor(Color.getHSBColor( hue, 1, 1));
-                                      drawAgent(g, entry1.getValue(),size+1);
+                                      drawAgent(g, entry1.getValue(),4);
                                   }
                                 }
                             }
                         }
                 }
         }
-        
+
+
+        private void drawLeaders(Graphics g){
+            Set<String> Groups = PublicEnvironmentConnection.getInstance().availableGroups();
+            Iterator<String> iter = Groups.iterator();
+
+
+            while (iter.hasNext()) //iterate through available Groups
+                {
+                     String GroupId =  iter.next();
+                     PublicGroupDataModel Group = PublicEnvironmentConnection.getInstance().getGroupById(GroupId);
+
+                }
+        }
+
         private float getGroupColour(String group_id) {
             if(this.group_colors.containsKey(group_id)) 
             {

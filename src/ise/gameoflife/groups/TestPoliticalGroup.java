@@ -291,4 +291,11 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
         return null;
     }
+	
+
+        public TreeSet<String> getPanel(){
+            return panel;
+        }
+
 }
+
