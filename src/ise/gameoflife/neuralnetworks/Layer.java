@@ -82,6 +82,22 @@ public class Layer
 
 	public double[][] weights()
 	{
+		if (null != weights)
+		{
+			return weights;
+		}
+
+		if (null == neurons)
+		{
+			return null;
+		}
+
+		weights = new double[neurons.length][];
+		for (int i = 0; i < neurons.length; i++)
+		{
+			weights[i] = neurons[i].weights();
+		}
+
 		return weights;
 	}
 
