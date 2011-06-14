@@ -218,26 +218,31 @@ public class TestPoliticalAgent extends AbstractAgent
                     trustSum += getDataModel().getTrust(trustee);
                     numKnownTrustValues++;
                 }
-
-                //calculates the vector distance between agent's and group's beliefs
-                double economic = getConn().getGroupById(groupID).getCurrentEconomicPoisition() - getDataModel().getEconomicBelief();//change in X
-                double social = getConn().getGroupById(groupID).getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
-                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-
-                //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
-               //higher probability of joining this group
-                double esFaction = 1 - (vectorDistance / maxDistance);
-
-                Tuple<String, Double> tuple;
-                if (numKnownTrustValues != 0)
-                {
-                    //The actual heuristic value is calculated. The politics is more important for compatibility than
-                    //trust when a free agent tries to enter a group
-                    double heuristicValue = 0.3*(trustSum/numKnownTrustValues) + 0.7*esFaction;
-                    tuple = new Tuple<String , Double>(groupID, heuristicValue);
-                    partnershipCandidates.add(tuple);
-                }
             }
+            //calculates the vector distance between agent's and group's beliefs
+            double economic = getConn().getGroupById(groupID).getCurrentEconomicPoisition() - getDataModel().getEconomicBelief();//change in X
+            double social = getConn().getGroupById(groupID).getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
+            double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+
+            //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
+            //higher probability of joining this group
+            double esFaction = 1 - (vectorDistance / maxDistance);
+
+            Tuple<String, Double> tuple;
+            double heuristicValue;
+            if (numKnownTrustValues != 0)
+            {
+                //The actual heuristic value is calculated. The politics is more important for compatibility than
+                //trust when a free agent tries to enter a group
+                heuristicValue = 0.3*(trustSum/numKnownTrustValues) + 0.7*esFaction;
+            }
+            else
+            {
+                heuristicValue = 0.7*esFaction;                
+            }
+            tuple = new Tuple<String , Double>(groupID, heuristicValue);
+            partnershipCandidates.add(tuple);            
+            
         }
 
         //We sort candidate groups in descending order based on the heuristic value
@@ -266,16 +271,9 @@ public class TestPoliticalAgent extends AbstractAgent
     * @return The group ID that this agent has chosen to join. If null no group is chosen.
     */
     private String freeAgentsGrouping() {
-        String chosenGroup = "";
-        double currentHeuristic = 0, previousHeuristic = 0;
-        //used for the socio-economic faction of heuristic
-        double vectorDistance; 
+        String chosenGroup = null;
         double maxDistance = Math.sqrt(2);
-        double economic, social, esFaction=0;
-        //used for the trust faction of heuristic
-        double trustFaction=0;
-
-        String bestPartner = "";
+        List< Tuple<String, Double> > partnershipCandidates = new LinkedList< Tuple<String, Double> >();
 
         //Iterate over the set of free agents
         for (String trustee : getConn().getUngroupedAgents())
@@ -284,42 +282,55 @@ public class TestPoliticalAgent extends AbstractAgent
             if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
             {
                 Double trustValue = this.getDataModel().getTrust(trustee);
-                if (trustValue != null) trustFaction = trustValue;
 
                 //Calculate the vector distance between these two agents socio-economic beliefs
-                economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
-                social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
-                vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+                double economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
+                double social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
+                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
 
                 //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
                 //higher probability of joining this group
-                esFaction = 1 - (vectorDistance / maxDistance);
-                
-                //The actual heuristic value is calculated. Trust is more important for compatibility than the politics
-                //when free agents try to group with each other
-                currentHeuristic = 0.7*trustFaction + 0.3*esFaction;
-                
-                //If the current heuristic value is above a certain threshold and better than a previous evaluation
-                //we have found a compatible agent to form a new group
-                if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic))
+                double esFaction = 1 - (vectorDistance / maxDistance);                             
+
+                Tuple<String, Double> tuple;
+                double heuristicValue;
+                if (trustValue != null)
                 {
-                    bestPartner = trustee;
-                    previousHeuristic = currentHeuristic;
+                    //The actual heuristic value is calculated. Trust is more important for compatibility than the politics
+                    //when free agents try to group with each other
+                    heuristicValue = 0.7*trustValue + 0.3*esFaction;
                 }
+                else
+                {
+                    heuristicValue = 0.3*esFaction;                
+                }
+                tuple = new Tuple<String , Double>(trustee, heuristicValue);
+                partnershipCandidates.add(tuple);                    
             }
         }
-        
-        if (bestPartner.equals(""))
-            return null;
-        else
-        {
-            //Create a new group and invite your partner to join it
-            GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
-            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-            chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
-            groupFounders.add(this.getId());
-            return chosenGroup;
-        }        
+ 
+        //We sort candidate groups in descending order based on the heuristic value
+        Collections.sort(partnershipCandidates, c);
+
+        //Then simply check if the top candidate has a heuristic evaluation above a certain threshold
+        //If top candidate has a value less than the threshold no need to check anyone else since
+        //they are in descending order.
+        if (!partnershipCandidates.isEmpty())
+        { 
+            double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
+
+            //If top candidate has evaluation above the threshold then choose that group
+            if (topCandidateHeuristicValue > 0.7)
+            { 
+                //Create a new group and invite your partner to join it
+                GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(partnershipCandidates.get(0).getKey()).getEconomicBelief())/2);
+                Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+                chosenGroup = getConn().createGroup(gtype, myGroup, partnershipCandidates.get(0).getKey());
+                groupFounders.add(this.getId());
+                return chosenGroup;
+            }
+        }
+        return chosenGroup;
     }
        
     @Override
