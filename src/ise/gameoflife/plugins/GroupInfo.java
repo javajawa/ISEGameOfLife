@@ -89,14 +89,18 @@ public class GroupInfo extends JPanel implements Plugin
                         double Loyalty = 0;
                         double Food = 0;
 
-                        List<String> members = this.gm.getMemberList();
-                        double size = this.gm.getMemberList().size();
-                        Iterator<String> iter = members.iterator();
-                        while (iter.hasNext()) //iterate through available Groups
+//                        List<String> members = this.gm.getMemberList();
+                          double size = this.gm.getMemberList().size();
+//                        Iterator<String> iter = members.iterator();
+//                        while (iter.hasNext()) //iterate through available Groups
+//                        {
+//                            //String memberId =  iter.next();
+                        for( String memberId : this.gm.getMemberList())
                         {
-                            String memberId =  iter.next();
-                            Happiness += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness();
-                            Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty();
+                            if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness() != null)
+                                Happiness += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness();
+                            if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty() != null)
+                                Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty();
                             Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
                         }
                         Happiness= Happiness/size;

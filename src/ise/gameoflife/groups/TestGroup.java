@@ -5,6 +5,7 @@ import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,5 +74,11 @@ public class TestGroup extends AbstractGroupAgent
 	{
 		// Do nothing
 	}
+
+    @Override
+    protected AgentType decideGroupStrategy() {
+        return null;
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
 	
 }

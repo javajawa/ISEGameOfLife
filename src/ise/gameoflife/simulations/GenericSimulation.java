@@ -1,4 +1,4 @@
-package ise.gameoflife.simulatons;
+package ise.gameoflife.simulations;
 
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.EnvironmentDataModel;
