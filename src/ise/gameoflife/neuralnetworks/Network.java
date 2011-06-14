@@ -44,6 +44,11 @@ public class Network
 
 	public void setWeights(double weights[][][])
 	{
+		if (null == layers)
+		{
+			System.out.println("Must have layers before setting weights.");
+		}
+
 		this.weights = weights;
 		this.checkConsistency();
 	}

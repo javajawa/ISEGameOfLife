@@ -31,10 +31,10 @@ public abstract class Neuron
 
 	private double weightedSum(double in[])
 	{
-		if (in.length != weights.length)
+		if (in.length != inputs)
 		{
-			throw new RuntimeException("Inputs and coefficients lengths mismatch: " +
-					"input (" + in.length + "), coefs (" + weights.length + ").");
+			throw new RuntimeException("Inputs and in array lengths mismatch: " +
+					"inputs (" + inputs + "), in array (" + in.length + ").");
 		}
 		
 		double sum = 0;
@@ -48,6 +48,11 @@ public abstract class Neuron
 
 	public double out(double in[])
 	{
+		if (null == weights)
+		{
+			throw new NullPointerException("Weights cannot be null.");
+		}
+
 		double sum = this.weightedSum(in);
 		return this.activationFunction(sum, offset);
 	}
@@ -56,6 +61,11 @@ public abstract class Neuron
 
 	public void setWeights(double weights[])
 	{
+		if (inputs != weights.length)
+		{
+			throw new RuntimeException("Inputs and coefficients lengths mismatch: " +
+					"input (" + inputs + "), coefs (" + weights.length + ").");
+		}
 		this.weights = weights;
 	}
 

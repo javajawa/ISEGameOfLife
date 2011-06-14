@@ -66,6 +66,11 @@ public class Layer
 
 	public void setWeights(double weights[][])
 	{
+		if (null == neurons)
+		{
+			System.out.println("Must have neurons before setting weights.");
+		}
+
 		this.weights = weights;
 		// cascade set neuron weights
 		for (int i = 0; i < weights.length; i++)
@@ -116,8 +121,8 @@ public class Layer
 			return;
 		}
 
-		// lengths
-		if (neurons.length != weights[0].length)
+		// output size check for weights
+		if (neurons.length != weights.length)
 		{
 			throw new RuntimeException("Number of neurons and length of weights mismatch.");
 		}
