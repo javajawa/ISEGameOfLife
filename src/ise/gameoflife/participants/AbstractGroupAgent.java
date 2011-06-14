@@ -388,8 +388,9 @@ public abstract class AbstractGroupAgent implements Participant
 							});                        
 
 			if (dm.getMemberList().isEmpty())
+                        {
 				ec.act(new Death(), dm.getId(), authCode);
-
+                        }
 			return;
 		}
 

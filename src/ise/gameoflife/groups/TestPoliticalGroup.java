@@ -238,10 +238,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
         if (panel.isEmpty())  return null;
 
-        Tuple<AgentType, Integer> tftTypes = new Tuple<AgentType, Integer>(AgentType.TFT, 0);
-        Tuple<AgentType, Integer> acTypes = new Tuple<AgentType, Integer>(AgentType.AC, 0);
-        Tuple<AgentType, Integer> adTypes = new Tuple<AgentType, Integer>(AgentType.AD, 0);
-        Tuple<AgentType, Integer> rTypes = new Tuple<AgentType, Integer>(AgentType.R, 0);
+        Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
+        Tuple<AgentType, Double> acTypes = new Tuple<AgentType, Double>(AgentType.AC, 0.0);
+        Tuple<AgentType, Double> adTypes = new Tuple<AgentType, Double>(AgentType.AD, 0.0);
+        Tuple<AgentType, Double> rTypes = new Tuple<AgentType, Double>(AgentType.R, 0.0);
 
         //Count followers types
         for (String followerID : getDataModel().getMemberList())
@@ -249,53 +249,79 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             switch(getConn().getAgentById(followerID).getAgentType())
             {
                 case AC:
-                    int oldCountAC = acTypes.getValue();
+                    double oldCountAC = acTypes.getValue();
                     acTypes.setValue(oldCountAC+1);
                     break;
                 case AD:
-                    int oldCountAD = adTypes.getValue();
+                    double oldCountAD = adTypes.getValue();
                     adTypes.setValue(oldCountAD+1);
                     break;
                 case TFT:
-                    int oldCountTFT = tftTypes.getValue();
+                    double oldCountTFT = tftTypes.getValue();
                     tftTypes.setValue(oldCountTFT+1);
                     break;
                 case R:
-                    int oldCountR = rTypes.getValue();
+                    double oldCountR = rTypes.getValue();
                     rTypes.setValue(oldCountR+1);
                     break;
             }
         }
         
-        List<Tuple<AgentType, Integer> > typesCounterList = new LinkedList<Tuple<AgentType, Integer> >();
+        List<Tuple<AgentType, Double> > typesCounterList = new LinkedList<Tuple<AgentType, Double> >();
+
+        int population = getDataModel().getMemberList().size();
+
+        //Find the average of each type
+        acTypes.setValue(acTypes.getValue()/population);
+        adTypes.setValue(adTypes.getValue()/population);
+        tftTypes.setValue(tftTypes.getValue()/population);
+        rTypes.setValue(rTypes.getValue()/population);
+
+        //Add the ratios to the list
         typesCounterList.add(acTypes);
         typesCounterList.add(adTypes);
         typesCounterList.add(tftTypes);
         typesCounterList.add(rTypes);
 
-        //FOR DEBUGGING ONLY
-        Iterator<Tuple<AgentType, Integer> > i = typesCounterList.iterator();
-        System.out.println("---------------");
+        int followers = population - panel.size();
+        double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
+
+          //FOR DEBUGGING ONLY
+//        Iterator<Tuple<AgentType, Double> > j = typesCounterList.iterator();
+//        System.out.println("---------------");
 //        System.out.println(getDataModel().getName());
-//        while(i.hasNext())
+//        System.out.println("Population: "+ population);
+//        System.out.println("Followers: "+ followers);
+//        System.out.println("Social belief: "+ getDataModel().getEstimatedSocialLocation());
+//        System.out.println("Quotum: "+quotum);
+//        while(j.hasNext())
 //        {
-//            Tuple<AgentType, Integer> counter = i.next();
+//            Tuple<AgentType, Double> counter = j.next();
 //            System.out.println(counter.getKey() + ": " + counter.getValue());
 //        }
 //        System.out.println(getConn().availableGroups().size());
 //        for (String a: getConn().availableGroups())
 //        {
-//            System.out.println(getConn().getGroupById(a).getName() + " of size: " + getConn().getGroupById(a).getMemberList().size());
+//            int size = getConn().getGroupById(a).getMemberList().size();
+//            System.out.println(getConn().getGroupById(a).getId() + " of size: " + size );
 //        }
         //FOR DEBUGGING ONLY END
 
+        Iterator<Tuple<AgentType, Double> > i = typesCounterList.iterator();
+        while(i.hasNext())
+        {
+            Tuple<AgentType, Double> typeRatio = i.next();
+            if (typeRatio.getValue()>quotum)
+            {
+                return typeRatio.getKey();
+            }
+        }
         return null;
     }
-	
 
-        public TreeSet<String> getPanel(){
-            return panel;
-        }
+    public TreeSet<String> getPanel(){
+        return panel;
+    }
 
 }
 

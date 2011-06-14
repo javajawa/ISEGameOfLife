@@ -166,7 +166,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     return leaveGroup;
             }            
             
-            if (SatisfiedInGroup())
+            if (SatisfiedInGroup()&&(getConn().getGroupById(getDataModel().getGroupId()).getMemberList().size() != 1))
             { 
                 return null;
             }
