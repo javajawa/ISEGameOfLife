@@ -1,7 +1,5 @@
 package ise.gameoflife.neuralnetworks;
 
-import java.util.ArrayList;
-
 /**
  * @author Xitong
  * TODO TFFN doc
@@ -26,13 +24,14 @@ public class TanhFeedForwardNetwork extends Network
 		this.setInputs(nodeCounts[0]);
 		this.setOutputs(nodeCounts[layerCount - 1]);
 
-		ArrayList<TanhLayer> layers = new ArrayList<TanhLayer>();
-		for (int i = 1; i < layerCount; i++)
+		TanhLayer layers[] = new TanhLayer[layerCount - 1];
+		for (int i = 0; i < layerCount - 1; i++)
 		{
-			layers.add(new TanhLayer(nodeCounts[i], nodeCounts[i+1]));
+			layers[i] = new TanhLayer(nodeCounts[i], nodeCounts[i+1]);
 		}
 
-		this.setLayers((TanhLayer[])layers.toArray());
+		this.setLayers(layers);
+	}
 	}
 
 }
