@@ -7,6 +7,7 @@ import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
+import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
@@ -66,11 +67,12 @@ public class Politics extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
-		addPlugin(new DatabasePlugin(comment,true));
+		//addPlugin(new DatabasePlugin(comment,true));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
                 addPlugin(new HunterInfo());
+                addPlugin(new GroupInfo());
 
 	}
 
