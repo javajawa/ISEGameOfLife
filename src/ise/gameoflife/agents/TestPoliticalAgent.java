@@ -95,7 +95,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             return true;
         }
-        else if (currentSatisfaction > 0.5)//if strictly greater than the weighting of 'esFaction' in the grouping heuristic
+        else if (currentSatisfaction > 0.7)//if strictly greater than the weighting of 'esFaction' in the grouping heuristic
         {
                 //you're very far apart on the political compass and you're not satisfied, so give up and leave
                 return false;
@@ -114,6 +114,14 @@ public class TestPoliticalAgent extends AbstractAgent
         }             
     }
     
+    /**
+     * This procedure is primarily used right before an agent issues the choice to leave the group it
+     * is currently in. If the group it is leaving had only one other member then that member is stored
+     * in a dedicated tree structure 'membersToKickOut' so that it is known that this member will have
+     * to leave in the next turn. This is necessary as you cannot have a group characterised by only one member.
+     * @param none
+     * @return none
+    */   
     protected void checkBeforeLeave() {
         PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
         if(myGroup.getMemberList().size() == 2)
@@ -163,6 +171,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 checkBeforeLeave();
                 return leaveGroup;
             }
+
         }
         else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
         {
@@ -234,12 +243,13 @@ public class TestPoliticalAgent extends AbstractAgent
             //higher probability of joining this group
             esFaction = 1 - (vectorDistance / maxDistance);
 
-            //The actual heuristic value is calculated. Trust and political compatibility are given equal weight
-            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+            //The actual heuristic value is calculated. The politics is more important for compatibility than
+            //trust when a free agent tries to enter a group
+            currentHeuristic = 0.3*trustFaction + 0.7*esFaction;
 
             //If the current heuristic value is above a certain threshold and better than a previous evaluation
-            // we have found a compatible group
-            if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
+            //we have found a compatible group
+            if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic)) {
                 chosenGroup = aGroup.getId();
                 previousHeuristic = currentHeuristic;
             }
@@ -282,12 +292,13 @@ public class TestPoliticalAgent extends AbstractAgent
                 //higher probability of joining this group
                 esFaction = 1 - (vectorDistance / maxDistance);
                 
-                //The actual heuristic value is calculated. Trust and political compatibility are given equal weight
-                currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+                //The actual heuristic value is calculated. Trust is more important for compatibility than the politics
+                //when free agents try to group with each other
+                currentHeuristic = 0.7*trustFaction + 0.3*esFaction;
                 
                 //If the current heuristic value is above a certain threshold and better than a previous evaluation
-                // we have found a compatible agent to form a new group
-                if ((currentHeuristic > 0.6) && (previousHeuristic < currentHeuristic))
+                //we have found a compatible agent to form a new group
+                if ((currentHeuristic > 0.7) && (previousHeuristic < currentHeuristic))
                 {
                     bestPartner = trustee;
                     previousHeuristic = currentHeuristic;
@@ -873,13 +884,13 @@ public class TestPoliticalAgent extends AbstractAgent
 
                     if (votes > 0)
                     {   //you're social belief moves towards the group's social posistion
-                        currentSocial = scale(currentSocial, deltaSocial, Math.abs(overallMovement));
+                        currentSocial = scale(currentSocial, 1 / deltaSocial, Math.abs(overallMovement));
                     }
                     else if (votes < 0)
 
                     {
                         //you're social belief moves away from the group's social posistion
-                        currentSocial = scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
+                        currentSocial = scale(currentSocial, 1 / -deltaSocial, Math.abs(overallMovement));
 
                     }
                     //otherwise your social belief remains the same
@@ -917,14 +928,14 @@ public class TestPoliticalAgent extends AbstractAgent
                     if (moreLoyal() && moreHappy())
 
                     {
-                        currentEconomic = scale(currentEconomic, deltaEconomic, Math.abs(overallMovement));
+                        currentEconomic = scale(currentEconomic, 1 / deltaEconomic, Math.abs(overallMovement));
 
                     }
                     else
                     {
                         if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
                         {
-                            currentEconomic = scale(currentEconomic, -deltaEconomic, Math.abs(overallMovement));
+                            currentEconomic = scale(currentEconomic, 1 / -deltaEconomic, Math.abs(overallMovement));
                         }
                         else //if your beliefs are exactly the same with the group's beliefs
                         {
