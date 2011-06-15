@@ -169,16 +169,14 @@ public class GroupInfo extends JPanel implements Plugin
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
               panels.clear();
-              //this.removeAll();
               this.window.removeAll();
 		for (String aid : ec.availableGroups())
-		{       if (!panels.containsKey(aid))
+		{       if (!panels.containsKey(aid) && ec.getGroupById(aid).getMemberList().size() > 0 )
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));
+                        
+                                panels.get(aid).updateData();
                         }
-			panels.get(aid).updateData();
-                        //this.add(panels.get(aid));
-
 		}
 		validate();
 

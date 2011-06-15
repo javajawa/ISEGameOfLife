@@ -185,9 +185,10 @@ public class HunterInfo extends JPanel implements Plugin
                         String aid = entry.getValue();
                         if (!panels.containsKey(aid))
 			{
-				panels.put(aid, new HunterPanel(ec.getAgentById(aid))); 
+				panels.put(aid, new HunterPanel(ec.getAgentById(aid)));
+                                panels.get(aid).updateData();
                         }
-			panels.get(aid).updateData();
+			
                 }
 		validate();
 
