@@ -299,8 +299,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
         int followers = population - currentPanel.size();
         double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
-        System.out.println("----------");
-        System.out.println(followers);
+        
         Iterator<Tuple<AgentType, Double> > i = typesCounterList.iterator();
         while(i.hasNext())
         {
