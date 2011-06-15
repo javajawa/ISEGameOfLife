@@ -7,6 +7,8 @@ package ise.gameoflife.neuralnetworks;
 public class Layer
 {
 	private Neuron neurons[] = null;
+	private double weights[][] = null;
+	private double offsets[] = null;
 	private int inputs;
 	private int outputs;
 
@@ -43,8 +45,6 @@ public class Layer
 		}
 		return out;
 	}
-
-	private double weights[][] = null;
 
 	public void setWeights(double weights[][])
 	{
@@ -124,6 +124,53 @@ public class Layer
 		{
 			throw new RuntimeException("Number of neurons and length of weights mismatch.");
 		}
+
+		if (null == offsets)
+		{
+			return;
+		}
+
+		// offsets size check
+		if (offsets.length != neurons.length)
+		{
+			throw new RuntimeException("Number of offsets and number of neurons mismatch.");
+		}
+	}
+
+	public void setOffsets(double offsets[])
+	{
+		this.offsets = offsets;
+
+		// cascade set offset values
+		for (int i = 0; i < offsets.length; i++)
+		{
+			neurons[i].setOffset(offsets[i]);
+		}
+
+		this.checkConsistency();
+	}
+
+	public double[] offsets()
+	{
+		if (null != offsets)
+		{
+			return offsets;
+		}
+
+		if (null == neurons)
+		{
+			return null;
+		}
+
+		// get offset values from neurons
+		double aOffsets[] = new double[neurons.length];
+		for (int i = 0; i < neurons.length; i++)
+		{
+			aOffsets[i] = neurons[i].offset();
+		}
+		offsets = aOffsets;
+
+		return offsets;
 	}
 
 	public void setInputs(int inputs)
