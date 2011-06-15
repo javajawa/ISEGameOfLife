@@ -116,6 +116,7 @@ final class ConnectionWrapper
 	{
 		try
 		{
+		    
 		    newGroup.executeBatch();
 		    dieGroup.executeBatch();
 		    newAgent.executeBatch();
@@ -216,13 +217,9 @@ final class ConnectionWrapper
 		 roundGroup.setInt(3,groupid);
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
-		 //doesnt seem to work....
-		 if(group.getCurrentEconomicPoisition()==Double.NaN) {
-		     roundGroup.setDouble(6,0);
-		     logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to 0 instead",
-			     new Object[]{group.getId(), round});
-			}
-		 else roundGroup.setDouble(6,0);
+		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
+		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
+			//     new Object[]{group.getId(), round});
 		 roundGroup.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, null, ex);
@@ -238,25 +235,25 @@ final class ConnectionWrapper
 		//sets the database id for group, 0 for no group
 		roundAgent.setInt(4,groupid);
 		roundAgent.setDouble(5,agent.getFoodAmount());
-		//not available for first round
-		if(round==0) 
-		{
+		if (round==0) {
 		    roundAgent.setString(6,null);
-		    roundAgent.setDouble(9,0);
-		    roundAgent.setDouble(10,0);
-		} 
+		    roundAgent.setDouble(9,-1);
+		    roundAgent.setDouble(10,-1);
+		}
 		else {
-		    roundAgent.setString(6,agent.getLastHunted().getName());
+		    if(agent.getLastHunted()==null) roundAgent.setString(6,null);
+			else roundAgent.setString(6,agent.getLastHunted().getName());
 		    roundAgent.setDouble(9,agent.getCurrentHappiness());
 		    roundAgent.setDouble(10,agent.getCurrentLoyalty());
 		}
+		
 		roundAgent.setDouble(7,agent.getSocialBelief());
 		roundAgent.setDouble(8,agent.getEconomicBelief());
 		roundAgent.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, null, ex);
 	    } catch (NullPointerException ex) {
-		logger.log(Level.WARNING, "Agent {0} misbehaved. Agent data for round {1}"
+		logger.log(Level.WARNING, "Null Exception: Agent {0} data for round {1}"
 			+ " not stored.", new Object[]{agent.getName(), round});
 	    }
 	}
