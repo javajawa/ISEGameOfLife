@@ -6,17 +6,12 @@
 package ise.gameoflife.plugins;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.lang.String;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -30,7 +25,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.Range;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import presage.Plugin;
@@ -166,9 +160,9 @@ public class GroupGraphs extends JPanel implements Plugin
                         dataPanel.add(labelise(this.gm.getName(),8));
                         dataPanel.add(labelise("1.Economic Belief Graph"));
                         dataPanel.add(labelise("2.Social Belief Graph"));
-                        dataPanel.add(labelise("2.Average Food Graph"));
-                        dataPanel.add(labelise("3.Average Loyalty Graph"));
-                        dataPanel.add(labelise("4.Average Happiness Graph"));
+                        dataPanel.add(labelise("3.Average Food Graph"));
+                        dataPanel.add(labelise("4.Average Loyalty Graph"));
+                        dataPanel.add(labelise("5.Average Happiness Graph"));
 			//dataPanel.add(labelise("Size: "+ this.gm.getMemberList().size()));
 
                         //dataPanel.add(labelise("Economic: "+Economic));

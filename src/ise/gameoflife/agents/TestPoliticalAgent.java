@@ -6,7 +6,6 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
-import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -21,12 +20,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.TreeSet;
 import java.util.HashMap;
 import java.util.ListIterator;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +47,8 @@ public class TestPoliticalAgent extends AbstractAgent
         private final static TreeSet<String> freeToGroup = new TreeSet<String>();                
 	private History<Double> satisfaction = new History<Double>(1);
 
+        private static int count = 1;
+
 	private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
 	public TestPoliticalAgent()
@@ -68,7 +69,35 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected void beforeNewRound() {
-         //Do nothing
+        TreeSet<String> theLiving = new TreeSet<String>();
+        for(String activeAgent : getConn().getAgents())
+        {
+            theLiving.add(activeAgent);
+        }
+        
+        if(!theLiving.isEmpty())
+        {
+            TreeSet<String> theDead = new TreeSet<String>();            
+            for(String agent : freeToGroup)
+            {
+                if(!theLiving.contains(agent))
+                {
+                    theDead.add(agent);
+                }
+            }
+            for(String agent : theDead)
+            {
+                if(freeToGroup.contains(agent))
+                {
+                    freeToGroup.remove(agent);
+                }
+            }           
+        }
+        else
+        {
+            freeToGroup.clear();
+        }
+    
     }
     /**
     * This method assesses an agent's satisfaction in the group. If the agent is satisfied remains in the group
@@ -172,7 +201,7 @@ public class TestPoliticalAgent extends AbstractAgent
         System.out.println();
         System.out.println();
         
- 
+
         System.out.println("-------------START-GROUP---------------------------");        
         for (String groupID : getConn().availableGroups())
         {
@@ -375,7 +404,8 @@ public class TestPoliticalAgent extends AbstractAgent
                 Double topCandidateESFaction = null;
                 while(itr.hasNext())
                 {
-                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();                    
+                    @SuppressWarnings("unchecked")
+                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();
                     if(listTuple.getKey().equals(invitee))
                         topCandidateESFaction = listTuple.getValue();
                 }
@@ -390,7 +420,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     freeToGroup.remove(this.getId());
                 }
             }
-        }
+        }     
         return chosenGroup;
     }
 
@@ -415,7 +445,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             heuristicValue = 0.3*esFaction;                                   
         }
-            
+        
         System.out.println("-------------START-INVITATION-ASSESSMENT--------------------");
         System.out.println("My name is " + getConn().getAgentById(invitee).getName());
         System.out.println("I was invited by " + getDataModel().getName());
@@ -1267,7 +1297,7 @@ public class TestPoliticalAgent extends AbstractAgent
     /**
     * This is a helper method and distinguishes what is the food type for cooperation and defection
     * @param none
-    * @return A list containing the food for cooperation and defrction
+    * @return A list containing the food for cooperation and defection
     */
         private List<Food> getFoodTypes(){
             List<Food> foodArray = new LinkedList<Food>();
@@ -1306,9 +1336,4 @@ public class TestPoliticalAgent extends AbstractAgent
             	return (v1>v2 ? -1 : 1);
             }
 	};
-
-        private void ratePanel(){
-            AgentType groupStrategy = getConn().getGroupById(getDataModel().getGroupId()).getGroupStrategy();
-            System.out.println(groupStrategy);
-        }
 }

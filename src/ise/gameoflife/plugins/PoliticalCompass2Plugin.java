@@ -253,21 +253,23 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
          try{
           if (PublicEnvironmentConnection.getInstance().availableGroups() != null){
             Set<String> Groups = PublicEnvironmentConnection.getInstance().availableGroups();
-            Iterator<String> iter = Groups.iterator();
+            //Iterator<String> iter = Groups.iterator();
 
-            while (iter.hasNext()) //iterate through available Groups
+            //while (iter.hasNext()) //iterate through available Groups
+            for (String GroupId : Groups)
                 {
-                     String GroupId =  iter.next();
+                     //String GroupId =  iter.next();
                      PublicGroupDataModel Group = PublicEnvironmentConnection.getInstance().getGroupById(GroupId);
 
-                     panel = TestPoliticalGroup.updatePanel(Group);
+                     panel = Group.getPanel();
                      if (!panel.isEmpty()){
-                         Iterator<String> leader = panel.iterator();
+                         //Iterator<String> leader = panel.iterator();
 
                         //iterate through pannel
-                         while (leader.hasNext()) //iterate through available Groups
-                        {
-                            String LeaderId = leader.next();
+                         //while (leader.hasNext()) //iterate through available Groups
+                        for(String LeaderId : panel)
+                         {
+                            //String LeaderId = leader.next();
                             //drawLeader
                             float hue = getGroupColour(GroupId);
                             g.setColor(Color.getHSBColor( hue, 1, 1));
@@ -309,7 +311,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 Rectangle rect = g.getClipBounds();
                 double x,y;
                 String name;
-                name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
+                //name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
                 name = "[" + p_player.getDataModel().getAgentType().name() + "]";
                 x = p_player.getDataModel().getEconomicBelief() *(rect.width/correction);
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
@@ -325,8 +327,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 Rectangle rect = g.getClipBounds();
                 double x,y;
                 String name;
-                name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
-                name = "[" + p_player.getDataModel().getAgentType().name() + "]";
+                //name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
+                name = "[" + p_player.getDataModel().getAgentType().name() + "]" + " - " + PublicEnvironmentConnection.getInstance().getGroupById(p_player.getDataModel().getGroupId()).getName();
                 x = p_player.getDataModel().getEconomicBelief() *(rect.width/correction);
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
                 //draw the agents
