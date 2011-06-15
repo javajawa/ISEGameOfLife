@@ -6,7 +6,6 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
-import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -21,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.TreeSet;
@@ -163,17 +161,6 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
-        logger.log(Level.FINE, "---------------------------------");
-        for (String groupID : getConn().availableGroups())
-        {
-            int size = getConn().getGroupById(groupID).getMemberList().size();
-            logger.log(Level.FINE, "{0} with size: {1}", new Object[]{getConn().getGroupById(groupID).getName(), size});
-            for (String a: getConn().getGroupById(groupID).getMemberList())
-            {
-                logger.log(Level.FINE, "    {0}", getConn().getAgentById(a).getName());
-            }
-        }        
-        
  
         System.out.println("-------------START-GROUP---------------------------");        
         for (String groupID : getConn().availableGroups())
@@ -222,7 +209,6 @@ public class TestPoliticalAgent extends AbstractAgent
             else
             {
                 checkToEvict();
-                //System.out.println("I am not satisfied with " + getConn().getGroupById(getDataModel().getGroupId()).getName()+ " so I will leave!");
                 return leaveGroup;
             }
         }

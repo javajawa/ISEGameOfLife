@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import presage.PlayerDataModel;
 
 /**
@@ -109,6 +110,13 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
         return source.getGroupStrategy();
     }
 
+    public double getGroupSocialLocation() {
+        return source.getGroupSocialLocation();
+    }
+
+    public TreeSet<String> getPanel() {
+        return source.getPanel();
+    }
     /**
      * Gets the proposals made this turn, and the results
      * The value will be null except on the {@link TurnType#Voting Voting} turn

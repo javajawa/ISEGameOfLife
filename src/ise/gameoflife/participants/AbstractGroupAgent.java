@@ -4,7 +4,6 @@ import ise.gameoflife.actions.Death;
 import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.RespondToApplication;
-import ise.gameoflife.actions.ApplyToGroup;
 import ise.gameoflife.actions.VoteResult;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
@@ -26,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -351,6 +351,11 @@ public abstract class AbstractGroupAgent implements Participant
         protected final void setGroupStrategy(AgentType strategy)
 	{
 		this.dm.setGroupStrategy(strategy);
+	}
+
+	protected final void setPanel(TreeSet<String> newPanel)
+	{
+		this.dm.setPanel(newPanel);
 	}
 
 	/**
