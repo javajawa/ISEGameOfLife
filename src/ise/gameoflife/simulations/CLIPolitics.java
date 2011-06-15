@@ -4,14 +4,7 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
-import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.database.DatabasePlugin;
-import ise.gameoflife.plugins.DebugSwitchPlugin;
-import ise.gameoflife.plugins.GroupInfo;
-import ise.gameoflife.plugins.HunterInfo;
-import ise.gameoflife.plugins.HunterListPlugin;
-import ise.gameoflife.plugins.PoliticalCompass2Plugin;
-import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import ise.gameoflife.tokens.AgentType;
 import java.util.Random;
 

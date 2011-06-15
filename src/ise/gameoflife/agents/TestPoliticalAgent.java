@@ -6,7 +6,6 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
-import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -21,11 +20,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.TreeSet;
 import java.util.HashMap;
+import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,7 +43,10 @@ public class TestPoliticalAgent extends AbstractAgent
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static HashMap<String, String> groupFounders = new HashMap<String, String>();
         private final static TreeSet<String> membersToKickOut = new TreeSet<String>();        
+        private final static TreeSet<String> freeToGroup = new TreeSet<String>();                
 	private History<Double> satisfaction = new History<Double>(1);
+
+        private static int count = 1;
 
 	private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
@@ -61,7 +63,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected void onActivate() {
-        //Do nothing
+        freeToGroup.add(this.getId());
     }
 
     @Override
@@ -159,23 +161,34 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
-        
-        logger.log(Level.FINE, "---------------------------------");
+ 
+        System.out.println("-------------START-GROUP---------------------------");        
         for (String groupID : getConn().availableGroups())
         {
             int size = getConn().getGroupById(groupID).getMemberList().size();
-            logger.log(Level.FINE, "{0} with size: {1}", new Object[]{getConn().getGroupById(groupID).getName(), size});
+            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
             for (String a: getConn().getGroupById(groupID).getMemberList())
             {
-                logger.log(Level.FINE, "    {0}", getConn().getAgentById(a).getName());
+                System.out.println("    "+getConn().getAgentById(a).getName());
             }
         }
+        System.out.println("--------------END-GROUP---------------------------");
+        System.out.println();
+        System.out.println();
 
+         //ONLY FOR DEBUGGING
+//         System.out.println("-------------------------"+count+"------------------------");
+//         if (count%7 != 0) count++; else System.out.println("END OF ROUND - END OF ROUND") ;
+//        if (this.getDataModel().getGroupId() == null)
+//            System.out.println("I, agent "+ this.getDataModel().getName() + " am a free agent!");
+//        else
+//            System.out.println("I, agent " + this.getDataModel().getName() +  " and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
+        //ONLY FOR DEBUGGING END
 
         if (this.getDataModel().getGroupId() != null)
         {
             if (groupFounders.containsKey(this.getId()))
-            {
+            {  
                     groupFounders.remove(this.getId());
             }
             if (invitationHolders.contains(this.getId()))
@@ -201,7 +214,7 @@ public class TestPoliticalAgent extends AbstractAgent
         }
         else if(this.invitationToGroup != null && invitationHolders.contains(this.getId())) //If this agent has a pending invitation to a group, return the invitation
         {
-            return founderInviteeGrouping();
+            return invitationToGroup; //founderInviteeGrouping();
         }
         else if(!getConn().availableGroups().isEmpty()) //If none of the above worked out then first try to find an optimal group to join with
         {
@@ -213,6 +226,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
            chosenGroup = freeAgentsGrouping();
         }
+
         return chosenGroup;
     }
 
@@ -283,9 +297,13 @@ public class TestPoliticalAgent extends AbstractAgent
             if (topCandidateHeuristicValue > 0.6)
             { 
                 chosenGroup = partnershipCandidates.get(0).getKey();
+                //System.out.println("I have tried groups and I will join" + getConn().getGroupById(chosenGroup).getName());
                 return chosenGroup;
             }
         }
+
+            //System.out.println("I have tried groups with no success!");
+        
         return chosenGroup;
     }
     
@@ -298,6 +316,7 @@ public class TestPoliticalAgent extends AbstractAgent
         String chosenGroup = null;
         double maxDistance = Math.sqrt(2);
         List< Tuple<String, Double> > partnershipCandidates = new LinkedList< Tuple<String, Double> >();
+        List< Tuple<String, Double> > partnershipESFactions = new LinkedList< Tuple<String, Double> >();        
 
         //Iterate over the set of free agents
         for (String trustee : getConn().getUngroupedAgents())
@@ -329,7 +348,10 @@ public class TestPoliticalAgent extends AbstractAgent
                     heuristicValue = 0.3*esFaction;                
                 }
                 tuple = new Tuple<String , Double>(trustee, heuristicValue);
-                partnershipCandidates.add(tuple);                    
+                partnershipCandidates.add(tuple);
+                
+                Tuple<String, Double> esTuple = new Tuple<String, Double>(trustee, esFaction);
+                partnershipESFactions.add(esTuple);
             }
         }
  
@@ -345,15 +367,32 @@ public class TestPoliticalAgent extends AbstractAgent
 
             //If top candidate has evaluation above the threshold then choose that group
             if (topCandidateHeuristicValue > 0.6)
-            { 
-                //Create a new group and invite your partner to join it
-                GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(partnershipCandidates.get(0).getKey()).getEconomicBelief())/2);
-                Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-                chosenGroup = getConn().createGroup(gtype, myGroup, partnershipCandidates.get(0).getKey());
-                groupFounders.put(this.getId(), chosenGroup); 
-                return chosenGroup;
+            {
+                String invitee = partnershipCandidates.get(0).getKey();
+                
+                ListIterator itr = partnershipESFactions.listIterator();
+                Double topCandidateESFaction = null;
+                while(itr.hasNext())
+                {
+                    @SuppressWarnings("unchecked")
+                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();
+                    if(listTuple.getKey().equals(invitee))
+                        topCandidateESFaction = listTuple.getValue();
+                }
+                
+                if (inviteeAccepts(invitee, topCandidateESFaction))
+                {
+                    //Create a new group and invite your partner to join it
+                    GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(invitee).getEconomicBelief())/2);
+                    Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+                    chosenGroup = getConn().createGroup(gtype, myGroup, invitee);
+                    groupFounders.put(this.getId(), chosenGroup);
+                }
             }
         }
+
+        //System.out.println("I have tried agents with no success!");
+        
         return chosenGroup;
     }
 
@@ -362,22 +401,10 @@ public class TestPoliticalAgent extends AbstractAgent
     * @param none
     * @return The group ID held in the invitation. If null, the agent has rejected the invitation.
     */
-    private String founderInviteeGrouping() {
-        double maxDistance = Math.sqrt(2);        
-        
-        String founder = getFounderOfGroup();
+    private boolean inviteeAccepts(String invitee, Double esFaction) {
         
         //Retieve the trust value between founder and invitee
-        Double trustValue = this.getDataModel().getTrust(founder);
-
-        //Calculate the vector distance between these two agents socio-economic beliefs
-        double economic = getConn().getAgentById(founder).getEconomicBelief();// - getDataModel().getEconomicBelief();//change in X
-        double social = getConn().getAgentById(founder).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
-        double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));  
-
-        //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
-        //higher probability of joining this group
-        double esFaction = 1 - (vectorDistance / maxDistance);
+        Double trustValue =  getConn().getAgentById(invitee).getTrust(getDataModel().getId());
 
         double heuristicValue;
         if (trustValue != null)  
@@ -390,20 +417,26 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             heuristicValue = 0.3*esFaction;                                   
         }
-            
+        
+        System.out.println("-------------START-INVITATION-ASSESSMENT--------------------");
+        System.out.println("My name is " + getConn().getAgentById(invitee).getName());
+        System.out.println("I was invited by " + getDataModel().getName());
+        System.out.println("My heuristic is " + heuristicValue);
+        System.out.println("--------------END-INVITATION-ASSESSMENT------------------");
+        System.out.println();
+        System.out.println();
+        
+        
         if (heuristicValue > 0.6)
         {
-            return invitationToGroup;   
+            //you accept the invitation
+            invitationHolders.add(invitee);            
+            return true;   
         }
         else
-        {   
-            //tell the founder to become free
-            membersToKickOut.add(founder);
-            //get rid of your invitation
-            invitationHolders.remove(this.getId());
-            invitationToGroup = null;
-            //stay free
-            return null;
+        {
+            //you reject the invitation
+            return false;
         }                               
     }
     
@@ -1260,9 +1293,4 @@ public class TestPoliticalAgent extends AbstractAgent
             	return (v1>v2 ? -1 : 1);
             }
 	};
-
-        private void ratePanel(){
-            AgentType groupStrategy = getConn().getGroupById(getDataModel().getGroupId()).getGroupStrategy();
-            System.out.println(groupStrategy);
-        }
 }

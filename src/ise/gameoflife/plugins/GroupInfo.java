@@ -6,17 +6,11 @@
 package ise.gameoflife.plugins;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
-import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.lang.String;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -25,14 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.Range;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import presage.Plugin;
 import presage.Simulation;
 /**
@@ -169,16 +155,14 @@ public class GroupInfo extends JPanel implements Plugin
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
               panels.clear();
-              //this.removeAll();
               this.window.removeAll();
 		for (String aid : ec.availableGroups())
-		{       if (!panels.containsKey(aid))
+		{       if (!panels.containsKey(aid) && ec.getGroupById(aid).getMemberList().size() > 0 )
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));
+                        
+                                panels.get(aid).updateData();
                         }
-			panels.get(aid).updateData();
-                        //this.add(panels.get(aid));
-
 		}
 		validate();
 
