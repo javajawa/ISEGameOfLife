@@ -110,7 +110,8 @@ class AgentDataModel extends APlayerDataModel
 		super(myId, roles, playerClass.getSimpleName() + (type == null ? "" : " [" + type + ']'), randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
-		this.name = NameGenerator.getName();
+                this.name = NameGenerator.getName();
+                this.myId = this.name + this.myId;
 		this.agentType = type;
                 this.economicBelief = economicBelief;
                 this.socialBelief = socialBelief;
