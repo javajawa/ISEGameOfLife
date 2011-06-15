@@ -191,30 +191,30 @@ public class TestPoliticalAgent extends AbstractAgent
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
 
-        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
-        for (String agent : freeToGroup.descendingSet())
-        {
-            System.out.println(getConn().getAgentById(agent).getName());
-        }
-        System.out.println(freeToGroup.size());
-        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
-        System.out.println();
-        System.out.println();
-        
-
-        System.out.println("-------------START-GROUP---------------------------");        
-        for (String groupID : getConn().availableGroups())
-        {
-            int size = getConn().getGroupById(groupID).getMemberList().size();
-            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-            for (String a: getConn().getGroupById(groupID).getMemberList())
-            {
-                System.out.println("    "+getConn().getAgentById(a).getName());
-            }
-        }
-        System.out.println("--------------END-GROUP---------------------------");
-        System.out.println();
-        System.out.println();
+//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
+//        for (String agent : freeToGroup.descendingSet())
+//        {
+//            System.out.println(getConn().getAgentById(agent).getName());
+//        }
+//        System.out.println(freeToGroup.size());
+//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
+//        System.out.println();
+//        System.out.println();
+//
+//
+//        System.out.println("-------------START-GROUP---------------------------");
+//        for (String groupID : getConn().availableGroups())
+//        {
+//            int size = getConn().getGroupById(groupID).getMemberList().size();
+//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+//            for (String a: getConn().getGroupById(groupID).getMemberList())
+//            {
+//                System.out.println("    "+getConn().getAgentById(a).getName());
+//            }
+//        }
+//        System.out.println("--------------END-GROUP---------------------------");
+//        System.out.println();
+//        System.out.println();
 
 
         

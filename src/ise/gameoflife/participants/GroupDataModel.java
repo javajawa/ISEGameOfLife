@@ -42,7 +42,7 @@ class GroupDataModel extends APlayerDataModel
 
         private AgentType groupStrategy;
 
-        private TreeSet<String> panel;
+        private TreeSet<String> panel = new TreeSet<String>();
         
 	@Deprecated
 	GroupDataModel()

@@ -169,8 +169,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     * @param none
     * @return The new panel members.
     */
-        //private TreeSet<String> updatePanel(){
-        public TreeSet<String> updatePanel(){
+        private TreeSet<String> updatePanel(){
             
             double groupSocialPosition;
             int population, panelSize;
@@ -256,7 +255,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         Tuple<AgentType, Double> adTypes = new Tuple<AgentType, Double>(AgentType.AD, 0.0);
         Tuple<AgentType, Double> rTypes = new Tuple<AgentType, Double>(AgentType.R, 0.0);
 
-
         //Count followers types
         for (String followerID : getDataModel().getMemberList())
         {
@@ -297,9 +295,9 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         typesCounterList.add(tftTypes);
         typesCounterList.add(rTypes);
 
-        int followers = population - currentPanel.size();
+        int followers = (int) Math.round(population*(1 - getDataModel().getEstimatedSocialLocation()));
         double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
-        
+
         Iterator<Tuple<AgentType, Double> > i = typesCounterList.iterator();
         while(i.hasNext())
         {
