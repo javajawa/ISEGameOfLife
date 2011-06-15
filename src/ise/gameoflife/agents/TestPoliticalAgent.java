@@ -158,23 +158,12 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
-        
-        System.out.println("---------------------------------");
-        for (String groupID : getConn().availableGroups())
-        {
-            int size = getConn().getGroupById(groupID).getMemberList().size();
-            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-            for (String a: getConn().getGroupById(groupID).getMemberList())
-            {
-                System.out.println("    "+getConn().getAgentById(a).getName());
-            }
-        }
 
-
+        //System.out.println("Hi I am agent "+getDataModel().getName() + " and my group id is " + getDataModel().getGroupId() );
         if (this.getDataModel().getGroupId() != null)
         {
             if (groupFounders.containsKey(this.getId()))
-            {
+            {  
                     groupFounders.remove(this.getId());
             }
             if (invitationHolders.contains(this.getId()))
@@ -188,13 +177,13 @@ public class TestPoliticalAgent extends AbstractAgent
                     return leaveGroup;
             }            
             
-            if (SatisfiedInGroup()&&(getConn().getGroupById(getDataModel().getGroupId()).getMemberList().size() != 1))
-            { 
+            if (SatisfiedInGroup())
+            {
                 return null;
             }
             else
             {
-                //checkToEvict();
+                checkToEvict();
                 return leaveGroup;
             }
         }
@@ -212,6 +201,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
            chosenGroup = freeAgentsGrouping();
         }
+
         return chosenGroup;
     }
 
@@ -349,7 +339,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(partnershipCandidates.get(0).getKey()).getEconomicBelief())/2);
                 Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                 chosenGroup = getConn().createGroup(gtype, myGroup, partnershipCandidates.get(0).getKey());
-                groupFounders.put(this.getId(), chosenGroup); 
+                groupFounders.put(this.getId(), chosenGroup);
                 return chosenGroup;
             }
         }
@@ -370,7 +360,7 @@ public class TestPoliticalAgent extends AbstractAgent
         Double trustValue = this.getDataModel().getTrust(founder);
 
         //Calculate the vector distance between these two agents socio-economic beliefs
-        double economic = getConn().getAgentById(founder).getEconomicBelief();// - getDataModel().getEconomicBelief();//change in X
+        double economic = getConn().getAgentById(founder).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
         double social = getConn().getAgentById(founder).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
         double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));  
 
