@@ -25,19 +25,19 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 5000, 0, 0.1);
+		super("Basic Politics Testing Bed", 400, 0, 0.1);
 	}
 
 	@Override
 	protected void agents()
 	{
                 Random randomGenerator = new Random();
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 30; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			//addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			//addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			//addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
@@ -65,16 +65,16 @@ public class Politics extends GenericSimulation
 	protected void plugins()
 	{
 		addPlugin(new DebugSwitchPlugin());
-		//addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
+		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
 		//addPlugin(new DatabasePlugin(comment,true));
-		addPlugin(new HunterListPlugin());
+		//addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
-                addPlugin(new HunterInfo());
-                addPlugin(new GroupInfo());
-                addPlugin(new GroupGraphs());
+                //addPlugin(new HunterInfo());
+                //addPlugin(new GroupInfo());
+                //addPlugin(new GroupGraphs());
 	}
 
 	@Override
