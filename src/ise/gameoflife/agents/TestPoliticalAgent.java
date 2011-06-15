@@ -188,13 +188,13 @@ public class TestPoliticalAgent extends AbstractAgent
                     return leaveGroup;
             }            
             
-            if (SatisfiedInGroup()&&(getConn().getGroupById(getDataModel().getGroupId()).getMemberList().size() != 1))
+            if (SatisfiedInGroup())
             { 
                 return null;
             }
             else
             {
-                //checkToEvict();
+                checkToEvict();
                 return leaveGroup;
             }
         }
