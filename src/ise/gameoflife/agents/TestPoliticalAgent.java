@@ -174,9 +174,9 @@ public class TestPoliticalAgent extends AbstractAgent
                     membersToKickOut.remove(this.getId());
                     return leaveGroup;
             }            
-
-            if (SatisfiedInGroup())
-            {
+            
+            if (SatisfiedInGroup()&&(getConn().getGroupById(getDataModel().getGroupId()).getMemberList().size() != 1))
+            { 
                 return null;
             }
             else
@@ -425,6 +425,7 @@ public class TestPoliticalAgent extends AbstractAgent
     @Override
     protected Food chooseFood()
     {
+            if (getDataModel().getHuntingTeam() == null) return null;
             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
 
             //We assume there will only be two food sources (stags/rabbits)

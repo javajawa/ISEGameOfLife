@@ -205,4 +205,6 @@ class GroupDataModel extends APlayerDataModel
 	{
 		return memberList.size();
 	}
+
+
 }

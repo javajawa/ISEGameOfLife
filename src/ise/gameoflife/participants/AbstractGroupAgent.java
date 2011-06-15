@@ -16,6 +16,7 @@ import ise.gameoflife.inputs.Vote;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import static ise.gameoflife.models.ScaledDouble.scale;
+import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -63,6 +64,7 @@ public abstract class AbstractGroupAgent implements Participant
 	private EnvironmentConnector tmp_ec;
 	private Map<String, Double> huntResult;
 	private Map<Proposition, Integer> voteResult;
+        private AgentType groupStrategy;
 
 	/**
 	 * 
@@ -170,7 +172,8 @@ public abstract class AbstractGroupAgent implements Participant
 				break;
 			case GoHunt:
 				// Nothing to do here - agents are off hunting!
-				break;
+                                doLeadersHunt();
+                                break;
 			case HuntResults:
 				doHandleHuntResults();
 				break;
@@ -251,7 +254,7 @@ public abstract class AbstractGroupAgent implements Participant
 
 		for (String agent : uninformedAgents)
 		{
-			ec.act(new DistributeFood(agent, 0, 0), getId(), authCode);
+			ec.act(new DistributeFood(agent, 0, shared), getId(), authCode);
 		}
 	}
 
@@ -306,6 +309,11 @@ public abstract class AbstractGroupAgent implements Participant
 			ec.act(new VoteResult(p, voteResult.get(p), change), getId(), authCode);
 		}
 	}
+
+        private void doLeadersHunt(){
+                AgentType strategy = decideGroupStrategy();
+                this.groupStrategy = strategy;
+        }
 
 	/**
 	 * Sets the number of cycles passed
@@ -380,8 +388,9 @@ public abstract class AbstractGroupAgent implements Participant
 							});                        
 
 			if (dm.getMemberList().isEmpty())
+                        {
 				ec.act(new Death(), dm.getId(), authCode);
-
+                        }
 			return;
 		}
 
@@ -488,6 +497,8 @@ public abstract class AbstractGroupAgent implements Participant
 	 * Alternatively, use of the unit "Harcourt" may also be used. 
 	 * 1 Round = 1 Harcourt
 	 */
+        
+        abstract protected AgentType decideGroupStrategy();
 	abstract protected void beforeNewRound();
 
 	/**
