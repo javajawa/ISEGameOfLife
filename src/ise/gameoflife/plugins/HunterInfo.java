@@ -14,6 +14,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.lang.String;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -138,7 +140,7 @@ public class HunterInfo extends JPanel implements Plugin
 			//domainAxis.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
 			//rangeAxis.setRange(0, graphHeight);
 
-                        
+
                 }
 	}
 
@@ -166,26 +168,34 @@ public class HunterInfo extends JPanel implements Plugin
 		if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
-              panels.clear();
-              //this.removeAll();
-               this.window.removeAll();
+                panels.clear();
+                //this.removeAll();
+                this.window.removeAll();
+                
+                TreeMap<String, String> name_id_map = new TreeMap<String, String>();
+
+                // Create a set sorted alphabetically by human readable name
 		for (String aid : sim.getactiveParticipantIdSet("hunter"))
 		{
-			if (!panels.containsKey(aid))
+                        name_id_map.put(ec.getAgentById(aid).getName(), aid);
+		}
+
+                // Add panels in alphabetical order
+                for (Map.Entry<String, String> entry : name_id_map.entrySet()) {
+                        String aid = entry.getValue();
+                        if (!panels.containsKey(aid))
 			{
 				panels.put(aid, new HunterPanel(ec.getAgentById(aid))); 
                         }
 			panels.get(aid).updateData();
-                        //this.add(panels.get(aid));
-                        
-		}
+                }
 		validate();
 
 
                 this.repaint();
 
                 //panels.clear();
-                
+
 
 
 

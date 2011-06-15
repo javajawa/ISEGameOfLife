@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -114,15 +116,23 @@ public class HunterListPlugin extends JPanel implements Plugin
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
 
+		 TreeMap<String, String> name_id_map = new TreeMap<String, String>();
+
+                // Create a set sorted alphabetically by human readable name
 		for (String aid : sim.getactiveParticipantIdSet("hunter"))
 		{
-			if (!panels.containsKey(aid))
-			{
-				panels.put(aid, new HunterPanel(ec.getAgentById(aid)));
-			}
-			panels.get(aid).updateData();
+                        name_id_map.put(ec.getAgentById(aid).getName(), aid);
 		}
-		validate();
+
+                // Add panels in alphabetical order
+                for (Map.Entry<String, String> entry : name_id_map.entrySet()) {
+                        String aid = entry.getValue();
+                        if (!panels.containsKey(aid))
+			{
+				panels.put(aid, new HunterPanel(ec.getAgentById(aid))); 
+                        }
+			panels.get(aid).updateData();
+                }
 	}
 
 	@Override
