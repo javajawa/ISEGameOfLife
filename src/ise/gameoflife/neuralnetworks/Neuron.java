@@ -61,12 +61,17 @@ public abstract class Neuron
 
 	public void setWeights(double weights[])
 	{
+		this.weights = weights;
+
+		if (null == weights)
+		{
+			return;
+		}
 		if (inputs != weights.length)
 		{
 			throw new RuntimeException("Inputs and coefficients lengths mismatch: " +
 					"input (" + inputs + "), coefs (" + weights.length + ").");
 		}
-		this.weights = weights;
 	}
 
 	public double[] weights()
