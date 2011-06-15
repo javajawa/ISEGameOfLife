@@ -216,6 +216,7 @@ public class TestPoliticalAgent extends AbstractAgent
         System.out.println();
         System.out.println();
 
+
         
         if (!freeToGroup.contains(this.getId()) && getDataModel().getGroupId() != null)
         {
@@ -445,16 +446,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             heuristicValue = 0.3*esFaction;                                   
         }
-        
-        System.out.println("-------------START-INVITATION-ASSESSMENT--------------------");
-        System.out.println("My name is " + getConn().getAgentById(invitee).getName());
-        System.out.println("I was invited by " + getDataModel().getName());
-        System.out.println("My heuristic is " + heuristicValue);
-        System.out.println("--------------END-INVITATION-ASSESSMENT------------------");
-        System.out.println();
-        System.out.println();
-        
-        
+                
         if (heuristicValue > 0.6)
         {
             //you accept the invitation and are no longer free to group with anyone else

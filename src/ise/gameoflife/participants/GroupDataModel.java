@@ -205,7 +205,7 @@ class GroupDataModel extends APlayerDataModel
 
 		double st_dev = 2 * Math.sqrt(variance / n);
 
-		return st_dev;
+		return 1-st_dev;
 	}
 
         double getGroupSocialLocation(){
