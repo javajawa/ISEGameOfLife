@@ -159,6 +159,18 @@ public class TestPoliticalAgent extends AbstractAgent
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
         
+        System.out.println("---------------------------------");
+        for (String groupID : getConn().availableGroups())
+        {
+            int size = getConn().getGroupById(groupID).getMemberList().size();
+            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+            for (String a: getConn().getGroupById(groupID).getMemberList())
+            {
+                System.out.println("    "+getConn().getAgentById(a).getName());
+            }
+        }
+
+
         if (this.getDataModel().getGroupId() != null)
         {
             if (groupFounders.containsKey(this.getId()))
@@ -358,7 +370,7 @@ public class TestPoliticalAgent extends AbstractAgent
         Double trustValue = this.getDataModel().getTrust(founder);
 
         //Calculate the vector distance between these two agents socio-economic beliefs
-        double economic = getConn().getAgentById(founder).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
+        double economic = getConn().getAgentById(founder).getEconomicBelief();// - getDataModel().getEconomicBelief();//change in X
         double social = getConn().getAgentById(founder).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
         double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));  
 
