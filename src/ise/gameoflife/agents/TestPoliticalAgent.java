@@ -6,6 +6,7 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -16,16 +17,16 @@ import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.Tuple;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -159,14 +160,14 @@ public class TestPoliticalAgent extends AbstractAgent
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
         
-        System.out.println("---------------------------------");
+        logger.log(Level.FINE, "---------------------------------");
         for (String groupID : getConn().availableGroups())
         {
             int size = getConn().getGroupById(groupID).getMemberList().size();
-            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+            logger.log(Level.FINE, "{0} with size: {1}", new Object[]{getConn().getGroupById(groupID).getName(), size});
             for (String a: getConn().getGroupById(groupID).getMemberList())
             {
-                System.out.println("    "+getConn().getAgentById(a).getName());
+                logger.log(Level.FINE, "    {0}", getConn().getAgentById(a).getName());
             }
         }
 
