@@ -34,6 +34,8 @@ abstract public class GenericSimulation
 	private final EventScriptManager ms = new EventScriptManager();
 	private final PluginManager pm = new PluginManager();
 	private String configPath;
+        
+        protected final long randomSeed;
 	
 	protected final String comment;
 
@@ -42,6 +44,7 @@ abstract public class GenericSimulation
 	{
 		PresageConfig presageConfig = new PresageConfig();
 		this.comment = comment;
+                this.randomSeed = randomSeed;
 		presageConfig.setComment(comment);
 		presageConfig.setIterations(iterations);
 		presageConfig.setRandomSeed(randomSeed);

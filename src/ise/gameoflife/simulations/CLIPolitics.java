@@ -21,17 +21,16 @@ import java.util.Random;
  */
 public class CLIPolitics extends GenericSimulation
 {
-        int seed = 500;
         
 	public CLIPolitics()
 	{
-		super("Basic Politics Testing Bed", seed, 0, 0.1);
+		super("Basic Politics Testing Bed", 500, 0, 0.1);
 	}
 
 	@Override
 	protected void agents()
 	{
-                Random randomGenerator = new Random(seed);
+                Random randomGenerator = new Random(this.randomSeed);
 		for (int i = 0; i < 10; i++)
 		{
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
