@@ -171,6 +171,7 @@ public class HunterInfo extends JPanel implements Plugin
                 panels.clear();
                 //this.removeAll();
                 this.window.removeAll();
+                
                 TreeMap<String, String> name_id_map = new TreeMap<String, String>();
 
                 // Create a set sorted alphabetically by human readable name
