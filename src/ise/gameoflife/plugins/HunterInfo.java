@@ -101,7 +101,7 @@ public class HunterInfo extends JPanel implements Plugin
                         String Social = Double.toString(this.dm.getSocialBelief());
                         String Economic = Double.toString(this.dm.getEconomicBelief());
                         String LastHunted = "Null";
-                        if (this.dm.getTime() > 4 && current.equals("Alive") && this.dm.getLastHunted() != null ){
+                        if (this.dm.getTime() > 4 && this.dm.getLastHunted() != null ){
                             LastHunted = this.dm.getLastHunted().getName();
                         }
 

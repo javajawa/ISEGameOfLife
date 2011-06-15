@@ -97,9 +97,9 @@ public class GroupInfo extends JPanel implements Plugin
 //                            //String memberId =  iter.next();
                         for( String memberId : this.gm.getMemberList())
                         {
-                            if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness() != null)
+                           //if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness() != null)
                                 Happiness += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness();
-                            if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty() != null)
+                          //  if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty() != null)
                                 Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty();
                             Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
                         }
