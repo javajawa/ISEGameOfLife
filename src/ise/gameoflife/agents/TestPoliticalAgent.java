@@ -158,20 +158,6 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
-
-        //Debugging only
-        System.out.println("-----------------------------------");
-//        System.out.println("Available groups: "+getConn().availableGroups().size());
-//        for (String a: getConn().availableGroups())
-//        {
-//            int size = getConn().getGroupById(a).getMemberList().size();
-//            System.out.println(getConn().getGroupById(a).getId() + " of size: " + size );
-//            for (String agent: getConn().getGroupById(a).getMemberList() )
-//            {
-//                System.out.println("    "+getConn().getAgentById(agent).getName());
-//            }
-//        }
-        //Debugging only end
         
         if (this.getDataModel().getGroupId() != null)
         {
