@@ -101,7 +101,7 @@ public class HunterInfo extends JPanel implements Plugin
                         String Social = Double.toString(this.dm.getSocialBelief());
                         String Economic = Double.toString(this.dm.getEconomicBelief());
                         String LastHunted = "Null";
-                        if (this.dm.getTime() > 4 && current.equals("Alive") && this.dm.getLastHunted() != null ){
+                        if (this.dm.getTime() > 4 && this.dm.getLastHunted() != null ){
                             LastHunted = this.dm.getLastHunted().getName();
                         }
 
@@ -112,11 +112,11 @@ public class HunterInfo extends JPanel implements Plugin
                         dataPanel.add(labelise(current));
 
 			dataPanel.add(labelise("Food: "+food));
-			dataPanel.add(labelise("Loyalty: "+Loyalty));
-			dataPanel.add(labelise("Happiness: "+Happiness));
-
-			dataPanel.add(labelise("Economic: "+Economic));
+                        dataPanel.add(labelise("Economic: "+Economic));
                         dataPanel.add(labelise("Social: "+Social));
+
+                        dataPanel.add(labelise("Loyalty: "+Loyalty));
+			dataPanel.add(labelise("Happiness: "+Happiness));
                         dataPanel.add(labelise("LastHunted: "+LastHunted));
 
 

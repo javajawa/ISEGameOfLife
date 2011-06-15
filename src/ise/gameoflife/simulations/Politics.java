@@ -7,6 +7,7 @@ import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
+import ise.gameoflife.plugins.GroupGraphs;
 import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
 import ise.gameoflife.plugins.HunterListPlugin;
@@ -24,7 +25,7 @@ public class Politics extends GenericSimulation
 
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 300, 0, 0.1);
+		super("Basic Politics Testing Bed", 5000, 0, 0.1);
 	}
 
 	@Override
@@ -71,9 +72,9 @@ public class Politics extends GenericSimulation
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
-                //addPlugin(new HunterInfo());
-                //addPlugin(new GroupInfo());
-
+                addPlugin(new HunterInfo());
+                addPlugin(new GroupInfo());
+                addPlugin(new GroupGraphs());
 	}
 
 	@Override

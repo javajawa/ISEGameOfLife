@@ -178,7 +178,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }            
             
             if (SatisfiedInGroup())
-            {
+            { 
                 return null;
             }
             else
