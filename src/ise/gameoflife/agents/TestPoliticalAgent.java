@@ -162,7 +162,7 @@ public class TestPoliticalAgent extends AbstractAgent
     protected void checkToEvict() {
         PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
         
-        //used when agent is about to issue the command to leave the group of only himself and another,
+        //Used when agent is about to issue the command to leave the group of only himself and another,
         //it searches for the other agent and tells it leave the group as well
         if(myGroup.getMemberList().size() == 2)
         {
@@ -186,11 +186,6 @@ public class TestPoliticalAgent extends AbstractAgent
     */
     @Override
     protected String chooseGroup() {
-        String chosenGroup = "";
-
-        //If agent is already member of a group remove it from the founders or invitation holders lists
-        //and check if it is satisfied. If not return leaveGroup request
-
         System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
         for (String agent : freeToGroup.descendingSet())
         {
@@ -216,36 +211,40 @@ public class TestPoliticalAgent extends AbstractAgent
         System.out.println();
         System.out.println();
 
-
         
+        String chosenGroup = "";
+
+        //If you're not available to group and you are part of a group already
+        //Note: an agent is allowed to not be free to group and not be part of a group,
+        //      this agent would be waiting to receive an invitation or wants to return one
         if (!freeToGroup.contains(this.getId()) && getDataModel().getGroupId() != null)
         {
-
-//            if (membersToKickOut.contains(this.getId()))
-//            {
-//                    membersToKickOut.remove(this.getId());
-//                    return leaveGroup;
-//            }            
-//            
-//            if (SatisfiedInGroup())
-//            { 
-//                return null;
-//            }
-//            else
-//            {
-//                checkToEvict();
-//                return leaveGroup;
-//            }
-            return null;
+            //If you have been told to leave this group then do so
+            if (membersToKickOut.contains(this.getId()))
+            {
+                    membersToKickOut.remove(this.getId());
+                    return leaveGroup;
+            }            
+          
+            //If you're satisfied in the group, nothing changes for you, you remain not free to group with others
+            if (SatisfiedInGroup())
+            { 
+                return null;
+            }
+            else//Otherwise, you need to leave the group and tell the other guy to leave if its just you and him in the group
+            {
+                checkToEvict();
+                return leaveGroup;
+            }
         }
-        else 
-        {
-            //If this agent has a pending invitation to a group, return the invitation
+        else//Otherwise, you are not yet part of a group:  
+        {           
+            //If you have a pending invitation to a group then return the invitation
             if(invitationToGroup != null && invitationHolders.contains(this.getId()))
             {
                 return invitationToGroup;
             }
-            else
+            else//Otherwise, you have to look for a grouping:
             {
                 //If you're here then you're still a free agent, so, firstly try to find an optimal group to join with            
                 if(freeToGroup.contains(this.getId()) && !getConn().availableGroups().isEmpty())
@@ -458,23 +457,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //you reject the invitation
             return false;
         }                               
-    }
-    
-    private String getFounderOfGroup()
-    {
-        String founder = "";
-        if(!groupFounders.isEmpty())
-        {                                          
-            for(String agent : groupFounders.keySet())
-            {                          
-                if(groupFounders.get(agent).equals(invitationToGroup))
-                {
-                    founder = agent;
-                }
-            }
-        }        
-        return founder;
-    }
+    }    
     
     @Override
     protected void groupApplicationResponse(boolean accepted) {        
