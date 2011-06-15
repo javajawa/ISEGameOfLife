@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 /**
@@ -40,7 +41,7 @@ public class TestPoliticalAgent extends AbstractAgent
         private String invitationToGroup = null;
 
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
-        private final static TreeSet<String> groupFounders = new TreeSet<String>();
+        private final static HashMap<String, String> groupFounders = new HashMap<String, String>();
         private final static TreeSet<String> membersToKickOut = new TreeSet<String>();        
 	private History<Double> satisfaction = new History<Double>(1);
 
@@ -126,13 +127,20 @@ public class TestPoliticalAgent extends AbstractAgent
      * @param none
      * @return none
     */   
-    protected void checkBeforeLeave() {
+    protected void checkToEvict() {
         PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
+        
+        //used when agent is about to issue the command to leave the group of only himself and another,
+        //it searches for the other agent and tells it leave the group as well
         if(myGroup.getMemberList().size() == 2)
-            for(String member : myGroup.getMemberList())
+        {
+             for(String member : myGroup.getMemberList())
+             {
                 //look for the other member of this group to kick out into free agent mode
                 if(!member.equals(getDataModel().getId()))
-                    membersToKickOut.add(member);            
+                    membersToKickOut.add(member);                 
+             }
+        }
     }
     
     /**
@@ -152,13 +160,14 @@ public class TestPoliticalAgent extends AbstractAgent
         //and check if it is satisfied. If not return leaveGroup request
         if (this.getDataModel().getGroupId() != null)
         {
-            if (groupFounders.contains(this.getId()))
+            if (groupFounders.containsKey(this.getId()))
             {
                     groupFounders.remove(this.getId());
             }
             if (invitationHolders.contains(this.getId()))
-            {
+            {                
                     invitationHolders.remove(this.getId());
+                    invitationToGroup = null;
             }
             if (membersToKickOut.contains(this.getId()))
             {
@@ -172,14 +181,13 @@ public class TestPoliticalAgent extends AbstractAgent
             }
             else
             {
-                //checkBeforeLeave();
+                //checkToEvict();
                 return leaveGroup;
             }
-
         }
-        else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
+        else if(this.invitationToGroup != null && invitationHolders.contains(this.getId())) //If this agent has a pending invitation to a group, return the invitation
         {
-            return this.invitationToGroup;
+            return founderInviteeGrouping();
         }
         else if(!getConn().availableGroups().isEmpty()) //If none of the above worked out then first try to find an optimal group to join with
         {
@@ -207,42 +215,44 @@ public class TestPoliticalAgent extends AbstractAgent
         //Assess each group in turn
         for (String groupID: getConn().availableGroups())
         {
-            int numKnownTrustValues = 0;
-            double trustSum = 0;
-            
-            for (String trustee : getConn().getGroupById(groupID).getMemberList())
+            if (getConn().getGroupById(groupID).getMemberList().size() > 1)
             {
-                //Obtain how much trust there is between this agent and the members of the group
-                if (getDataModel().getTrust(trustee) != null)
+                int numKnownTrustValues = 0;
+                double trustSum = 0;
+
+                for (String trustee : getConn().getGroupById(groupID).getMemberList())
                 {
-                    trustSum += getDataModel().getTrust(trustee);
-                    numKnownTrustValues++;
+                    //Obtain how much trust there is between this agent and the members of the group
+                    if (getDataModel().getTrust(trustee) != null)
+                    {
+                        trustSum += getDataModel().getTrust(trustee);
+                        numKnownTrustValues++;
+                    }
                 }
-            }
-            //calculates the vector distance between agent's and group's beliefs
-            double economic = getConn().getGroupById(groupID).getCurrentEconomicPoisition() - getDataModel().getEconomicBelief();//change in X
-            double social = getConn().getGroupById(groupID).getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
-            double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+                //calculates the vector distance between agent's and group's beliefs
+                double economic = getConn().getGroupById(groupID).getCurrentEconomicPoisition() - getDataModel().getEconomicBelief();//change in X
+                double social = getConn().getGroupById(groupID).getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
+                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
 
-            //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
-            //higher probability of joining this group
-            double esFaction = 1 - (vectorDistance / maxDistance);
+                //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
+                //higher probability of joining this group
+                double esFaction = 1 - (vectorDistance / maxDistance);
 
-            Tuple<String, Double> tuple;
-            double heuristicValue;
-            if (numKnownTrustValues != 0)
-            {
-                //The actual heuristic value is calculated. The politics is more important for compatibility than
-                //trust when a free agent tries to enter a group
-                heuristicValue = 0.3*(trustSum/numKnownTrustValues) + 0.7*esFaction;
-            }
-            else
-            {
-                heuristicValue = 0.7*esFaction;                
-            }
-            tuple = new Tuple<String , Double>(groupID, heuristicValue);
-            partnershipCandidates.add(tuple);            
-            
+                Tuple<String, Double> tuple;
+                double heuristicValue;
+                if (numKnownTrustValues != 0)
+                {
+                    //The actual heuristic value is calculated. The politics is more important for compatibility than
+                    //trust when a free agent tries to enter a group
+                    heuristicValue = 0.3*(trustSum/numKnownTrustValues) + 0.7*esFaction;
+                }
+                else
+                {
+                    heuristicValue = 0.7*esFaction;                
+                }
+                tuple = new Tuple<String , Double>(groupID, heuristicValue);
+                partnershipCandidates.add(tuple);                 
+            }                       
         }
 
         //We sort candidate groups in descending order based on the heuristic value
@@ -279,7 +289,7 @@ public class TestPoliticalAgent extends AbstractAgent
         for (String trustee : getConn().getUngroupedAgents())
         {
             //if an agent is not comparing with itself and has not been invited or has not formed a group already 
-            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
+            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.containsKey(trustee)))
             {
                 Double trustValue = this.getDataModel().getTrust(trustee);
 
@@ -288,7 +298,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 double social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
                 double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
 
-                //The longer the distance the lower esFaction is. Therefore, agents close to group's beliefs have
+                //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
                 //higher probability of joining this group
                 double esFaction = 1 - (vectorDistance / maxDistance);                             
 
@@ -326,13 +336,79 @@ public class TestPoliticalAgent extends AbstractAgent
                 GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(partnershipCandidates.get(0).getKey()).getEconomicBelief())/2);
                 Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                 chosenGroup = getConn().createGroup(gtype, myGroup, partnershipCandidates.get(0).getKey());
-                groupFounders.add(this.getId());
+                groupFounders.put(this.getId(), chosenGroup); 
                 return chosenGroup;
             }
         }
         return chosenGroup;
     }
-       
+
+    /**
+    * This method enables agents who received an invitation to check if they want to accept that invitation
+    * @param none
+    * @return The group ID held in the invitation. If null, the agent has rejected the invitation.
+    */
+    private String founderInviteeGrouping() {
+        double maxDistance = Math.sqrt(2);        
+        
+        String founder = getFounderOfGroup();
+        
+        //Retieve the trust value between founder and invitee
+        Double trustValue = this.getDataModel().getTrust(founder);
+
+        //Calculate the vector distance between these two agents socio-economic beliefs
+        double economic = getConn().getAgentById(founder).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
+        double social = getConn().getAgentById(founder).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
+        double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));  
+
+        //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
+        //higher probability of joining this group
+        double esFaction = 1 - (vectorDistance / maxDistance);
+
+        double heuristicValue;
+        if (trustValue != null)  
+        {
+            //The actual heuristic value is calculated. Trust is more important for compatibility than the politics
+            //when free agents try to group with each other
+            heuristicValue = 0.7*trustValue + 0.3*esFaction;
+        }
+        else
+        {
+            heuristicValue = 0.3*esFaction;                                   
+        }
+            
+        if (heuristicValue > 0.6)
+        {
+            return invitationToGroup;   
+        }
+        else
+        {   
+            //tell the founder to become free
+            membersToKickOut.add(founder);
+            //get rid of your invitation
+            invitationHolders.remove(this.getId());
+            invitationToGroup = null;
+            //stay free
+            return null;
+        }                               
+    }
+    
+    private String getFounderOfGroup()
+    {
+        String founder = "";
+        if(!groupFounders.isEmpty())
+        {                                          
+            for(String agent : groupFounders.keySet())
+            {                          
+                if(groupFounders.get(agent).equals(invitationToGroup))
+                {
+                    founder = agent;
+                }
+            }
+        }        
+        return founder;
+    }
+    
     @Override
     protected void groupApplicationResponse(boolean accepted) {
     }
@@ -977,7 +1053,12 @@ public class TestPoliticalAgent extends AbstractAgent
     protected void onInvite(String group)
     {
     	invitationHolders.add(this.getId());
-        this.invitationToGroup = group;
+        this.invitationToGroup = group; 
+                System.out.println();
+                System.out.println("From the onInvite function, my name is: " + getDataModel().getName());                
+                System.out.println("And this is the group that is returned: " + getConn().getGroupById(invitationToGroup).getName());
+                System.out.println();
+
     }
 
     /**

@@ -9,6 +9,7 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.agents.TestPoliticalAgent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,66 +42,75 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 	}
 
 	@Override
-	protected boolean respondToJoinRequest(String playerID) {            
-//            //find out if the agent itself has just created this group
-//            //if so then there is no need to compute a heuristic
-//            if (getDataModel().getMemberList().isEmpty())
-//                return true;
-//
-//            //find out if the agent was invited into a newly created group
-//            //if so then there is no need to to compute a heuristic
-//            if (getDataModel().getMemberList().size() == 1)
-//                return true;
-//
-//            //otherwise we have the usual agent requesting entry to this group
-//            double heuristic = 0;
-//
-//            //used for the socio-economic faction of heuristic
-//            double vectorDistance;
-//            double maxDistance = Math.sqrt(2);
-//            double economic, social, esFaction = 0;
-//
-//            //used for the trust faction of heuristic
-//            double trustFaction = 0, trustSum = 0;
-//            int numKnownTrustValues = 0;
-//
-//            //Obtain how much trust there is between the members of the group and the agent
-//            for (String trustor : this.getDataModel().getMemberList()) {
-//                    Double trustValue = this.getConn().getAgentById(trustor).getTrust(playerID);
-//                    if (trustValue != null) {
-//                            trustSum += trustValue;
-//                            numKnownTrustValues++;
-//                    }
-//            }
-//            if (numKnownTrustValues != 0) {
-//                trustFaction = trustSum / numKnownTrustValues;
-//            }
-//
-//            economic = this.getConn().getAgentById(playerID).getEconomicBelief() - this.getDataModel().getCurrentEconomicPoisition();//change in X
-//            social = this.getConn().getAgentById(playerID).getSocialBelief() - this.getDataModel().getEstimatedSocialLocation();//change in Y
-//            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-//            esFaction = 1 - (vectorDistance / maxDistance);
-//
-//            heuristic = 0.5*trustFaction + 0.5*esFaction;
-//
-//            if (heuristic > 0.5) {
-//                return true;
-//            }
-//            else {
-//                return false;
-//            }
-
-            //update economic belief of the group when agent joins (TRUE)
-            double size = this.getDataModel().getMemberList().size();
-            double economic = 0;
-            for (String members : this.getDataModel().getMemberList()){
-                if (getConn().getAgentById(members) != null)   //GIVES PROBLEMS
-                    economic += getConn().getAgentById(members).getEconomicBelief();
+	protected boolean respondToJoinRequest(String playerID) {    
+                       
+            if (getDataModel().getMemberList().isEmpty())
+            {   
+                //if empty then 'playerID' created the group so there is no need to compute a heuristic
+                return true;
             }
-            economic += getConn().getAgentById(playerID).getEconomicBelief();
-            economic = economic / (size+1);
-            this.setEconomicPosition(economic);
-            return true;
+            else if (getDataModel().getMemberList().size() == 1)
+            {
+                //if there is only one member then 'playerID' was invited and wants to accept the invitation
+                //so there is no need to compute a heuristic
+                return true;
+            }
+            else
+            {
+                double maxDistance = Math.sqrt(2);        
+                int numKnownTrustValues = 0;
+                double trustSum = 0;
+                
+                //Retieve the trust value between requester and the group
+                for (String trustor : this.getDataModel().getMemberList())
+                {
+                        if (getConn().getAgentById(trustor).getTrust(playerID) != null)
+                        {
+                                trustSum += getConn().getAgentById(trustor).getTrust(playerID);
+                                numKnownTrustValues++;
+                        }
+                }
+
+                //Calculate the vector distance between these two agents socio-economic beliefs
+                double economic = getConn().getAgentById(playerID).getEconomicBelief() - getDataModel().getCurrentEconomicPoisition();//change in X
+                double social = getConn().getAgentById(playerID).getSocialBelief() - getDataModel().getEstimatedSocialLocation();//change in Y
+                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+
+                //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
+                //higher probability of joining this group
+                double esFaction = 1 - (vectorDistance / maxDistance);
+
+                double heuristicValue;
+                if (numKnownTrustValues != 0)
+                {
+                    //The actual heuristic value is calculated. The politics is more important for compatibility than
+                    //trust when a group decides on the request, but trust does contribute signicantly
+                    heuristicValue = 0.4*(trustSum/numKnownTrustValues) + 0.6*esFaction;
+                }
+                else
+                {
+                    heuristicValue = 0.6*esFaction;                
+                }                                  
+
+                if (heuristicValue > 0.5)
+                {
+                    //agent can join, so update economic beliefs
+                    double size = this.getDataModel().getMemberList().size();
+                    economic = 0;
+                    for (String members : getDataModel().getMemberList()){
+                        if (getConn().getAgentById(members) != null)   //GIVES PROBLEMS
+                            economic += getConn().getAgentById(members).getEconomicBelief();
+                    }
+                    economic += getConn().getAgentById(playerID).getEconomicBelief();
+                    economic = economic / (size+1);
+                    setEconomicPosition(economic);                    
+                    return true; 
+                }
+                else
+                {   
+                    return false;
+                }         
+            }
 	}
 
 	private Comparator<String> c = new Comparator<String>() {
