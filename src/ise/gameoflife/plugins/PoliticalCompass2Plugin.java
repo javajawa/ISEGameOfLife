@@ -245,7 +245,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                                       for(String LeaderId : PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getPanel()) //draw if not a leader
                                       {
                                           if (LeaderId.equals(entry1.getValue().getId())){
-                                            //ldr = true;
+                                            ldr = true;
                                             }
                                       }
                                       if (!ldr){
@@ -275,13 +275,12 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                             float hue = getGroupColour(GroupId);
                             g.setColor(Color.getHSBColor( hue, 1, 1));
                             drawRect(g, p_players.get(LeaderId),4);
-
                         }
                     }
                 }
             }
          }
-            catch (Exception e)
+         catch (Exception e)
                 {
                         System.out.println("Error in leaders: " + e.getMessage());
                 }
