@@ -97,9 +97,12 @@ public class GroupInfo extends JPanel implements Plugin
 
                         //Leaders
                         for (String ldr : this.gm.getPanel()){
-                            if (Leader.equals("Null") && !this.gm.getPanel().isEmpty()) Leader= "";
+                            if (Leader.equals("Null") && !this.gm.getPanel().isEmpty()) 
+                                Leader= "";
 
-                            Leader = Leader + ec.getAgentById(ldr).getName() + "  ";
+                            if (ec.getAgentById(ldr) != null)
+                                Leader = Leader + ec.getAgentById(ldr).getName() + "  ";
+                            
                         }
 
                         JPanel dataPanel = new JPanel(new GridLayout(4, 2, 1, -1));

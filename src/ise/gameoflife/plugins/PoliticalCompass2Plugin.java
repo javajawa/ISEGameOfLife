@@ -9,7 +9,6 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
-import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import java.awt.Color;
@@ -190,10 +189,12 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                 // Draw all agents agents
           try{
+
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
                         g.setColor(Color.BLUE);
-                        drawAgent(g, entry.getValue(),2);
+                        if (entry.getValue().getDataModel().getGroupId() == null)
+                            drawAgent(g, entry.getValue(),2);
                 }
                 
                  // Draw agent connections + groupped agents
@@ -240,7 +241,16 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                                       float hue = getGroupColour(agent1_dm.getGroupId());
                                       g.setColor(Color.getHSBColor( hue, 1, 1));
-                                      drawAgent(g, entry1.getValue(),3);
+                                      boolean ldr = false;
+                                      for(String LeaderId : PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getPanel()) //draw if not a leader
+                                      {
+                                          if (LeaderId.equals(entry1.getValue().getId())){
+                                            //ldr = true;
+                                            }
+                                      }
+                                      if (!ldr){
+                                            drawAgent(g, entry1.getValue(),3);
+                                      }
                                   }
                                 }
                             }
@@ -253,23 +263,14 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
          try{
           if (PublicEnvironmentConnection.getInstance().availableGroups() != null){
             Set<String> Groups = PublicEnvironmentConnection.getInstance().availableGroups();
-            //Iterator<String> iter = Groups.iterator();
 
-            //while (iter.hasNext()) //iterate through available Groups
             for (String GroupId : Groups)
                 {
-                     //String GroupId =  iter.next();
                      PublicGroupDataModel Group = PublicEnvironmentConnection.getInstance().getGroupById(GroupId);
 
-                     panel = Group.getPanel();
-                     if (!panel.isEmpty()){
-                         //Iterator<String> leader = panel.iterator();
-
-                        //iterate through pannel
-                         //while (leader.hasNext()) //iterate through available Groups
-                        for(String LeaderId : panel)
+                     if (!Group.getPanel().isEmpty()){
+                        for(String LeaderId : Group.getPanel())
                          {
-                            //String LeaderId = leader.next();
                             //drawLeader
                             float hue = getGroupColour(GroupId);
                             g.setColor(Color.getHSBColor( hue, 1, 1));
@@ -277,8 +278,6 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                         }
                     }
-                     panel.clear();
-
                 }
             }
          }
@@ -322,6 +321,12 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 g.drawString(name,(int)x,(int)y);
         }
 
+         /**
+         * Draws a rectangle representing an leaders's political views location
+         * @param g Graphics objects
+         * @param p_player TestPoliticalAgent object to draw
+         * @param size size of the group
+         */
         private void drawRect(Graphics g, TestPoliticalAgent p_player,int size)
         {
                 Rectangle rect = g.getClipBounds();
