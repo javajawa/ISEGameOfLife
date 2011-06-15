@@ -161,20 +161,20 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
- 
-        System.out.println("-------------START-GROUP---------------------------");        
-        for (String groupID : getConn().availableGroups())
-        {
-            int size = getConn().getGroupById(groupID).getMemberList().size();
-            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-            for (String a: getConn().getGroupById(groupID).getMemberList())
-            {
-                System.out.println("    "+getConn().getAgentById(a).getName());
-            }
-        }
-        System.out.println("--------------END-GROUP---------------------------");
-        System.out.println();
-        System.out.println();
+//
+//        System.out.println("-------------START-GROUP---------------------------");
+//        for (String groupID : getConn().availableGroups())
+//        {
+//            int size = getConn().getGroupById(groupID).getMemberList().size();
+//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+//            for (String a: getConn().getGroupById(groupID).getMemberList())
+//            {
+//                System.out.println("    "+getConn().getAgentById(a).getName());
+//            }
+//        }
+//        System.out.println("--------------END-GROUP---------------------------");
+//        System.out.println();
+//        System.out.println();
 
          //ONLY FOR DEBUGGING
 //         System.out.println("-------------------------"+count+"------------------------");
@@ -417,14 +417,14 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             heuristicValue = 0.3*esFaction;                                   
         }
-        
-        System.out.println("-------------START-INVITATION-ASSESSMENT--------------------");
-        System.out.println("My name is " + getConn().getAgentById(invitee).getName());
-        System.out.println("I was invited by " + getDataModel().getName());
-        System.out.println("My heuristic is " + heuristicValue);
-        System.out.println("--------------END-INVITATION-ASSESSMENT------------------");
-        System.out.println();
-        System.out.println();
+//
+//        System.out.println("-------------START-INVITATION-ASSESSMENT--------------------");
+//        System.out.println("My name is " + getConn().getAgentById(invitee).getName());
+//        System.out.println("I was invited by " + getDataModel().getName());
+//        System.out.println("My heuristic is " + heuristicValue);
+//        System.out.println("--------------END-INVITATION-ASSESSMENT------------------");
+//        System.out.println();
+//        System.out.println();
         
         
         if (heuristicValue > 0.6)

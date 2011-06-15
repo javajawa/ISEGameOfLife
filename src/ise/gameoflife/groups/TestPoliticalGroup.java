@@ -157,7 +157,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 	protected void beforeNewRound() {
             if (getDataModel().getMemberList().size() != 1)
             {
-                TreeSet<String> currentPanel = getDataModel().getPanel();
                 TreeSet<String> newPanel = updatePanel();
                 this.setPanel(newPanel);
             }
@@ -223,7 +222,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
             //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
             TreeSet<String> newPanel = new TreeSet<String>();
-            if (!panelCandidates.isEmpty())
+            if (!panelCandidates.isEmpty()&&(panelCandidates.size() > panelSize))//Panel is not empty and we have enough candidates to select leaders
             {
                 for (int i = 0; i < panelSize; i++)
                 {
@@ -300,7 +299,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
         int followers = population - currentPanel.size();
         double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
-
+        System.out.println("----------");
+        System.out.println(followers);
         Iterator<Tuple<AgentType, Double> > i = typesCounterList.iterator();
         while(i.hasNext())
         {
