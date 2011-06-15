@@ -48,6 +48,8 @@ public class TestPoliticalAgent extends AbstractAgent
         private final static TreeSet<String> freeToGroup = new TreeSet<String>();                
 	private History<Double> satisfaction = new History<Double>(1);
 
+        private static int count = 1;
+
 	private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
 	public TestPoliticalAgent()
@@ -161,7 +163,6 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
-
         logger.log(Level.FINE, "---------------------------------");
         for (String groupID : getConn().availableGroups())
         {
@@ -188,12 +189,19 @@ public class TestPoliticalAgent extends AbstractAgent
         System.out.println();
         System.out.println();
 
-
+         //ONLY FOR DEBUGGING
+//         System.out.println("-------------------------"+count+"------------------------");
+//         if (count%7 != 0) count++; else System.out.println("END OF ROUND - END OF ROUND") ;
+//        if (this.getDataModel().getGroupId() == null)
+//            System.out.println("I, agent "+ this.getDataModel().getName() + " am a free agent!");
+//        else
+//            System.out.println("I, agent " + this.getDataModel().getName() +  " and I belong to group" + getConn().getGroupById(this.getDataModel().getGroupId()).getName());
+        //ONLY FOR DEBUGGING END
 
         if (this.getDataModel().getGroupId() != null)
         {
             if (groupFounders.containsKey(this.getId()))
-            {
+            {  
                     groupFounders.remove(this.getId());
             }
             if (invitationHolders.contains(this.getId()))
@@ -214,6 +222,7 @@ public class TestPoliticalAgent extends AbstractAgent
             else
             {
                 checkToEvict();
+                //System.out.println("I am not satisfied with " + getConn().getGroupById(getDataModel().getGroupId()).getName()+ " so I will leave!");
                 return leaveGroup;
             }
         }
@@ -231,6 +240,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
            chosenGroup = freeAgentsGrouping();
         }
+
         return chosenGroup;
     }
 
@@ -301,9 +311,13 @@ public class TestPoliticalAgent extends AbstractAgent
             if (topCandidateHeuristicValue > 0.6)
             { 
                 chosenGroup = partnershipCandidates.get(0).getKey();
+                //System.out.println("I have tried groups and I will join" + getConn().getGroupById(chosenGroup).getName());
                 return chosenGroup;
             }
         }
+
+            //System.out.println("I have tried groups with no success!");
+        
         return chosenGroup;
     }
     
@@ -374,7 +388,8 @@ public class TestPoliticalAgent extends AbstractAgent
                 Double topCandidateESFaction = null;
                 while(itr.hasNext())
                 {
-                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();                    
+                    @SuppressWarnings("unchecked")
+                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();
                     if(listTuple.getKey().equals(invitee))
                         topCandidateESFaction = listTuple.getValue();
                 }
@@ -389,6 +404,9 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
             }
         }
+
+        //System.out.println("I have tried agents with no success!");
+        
         return chosenGroup;
     }
 
@@ -413,7 +431,7 @@ public class TestPoliticalAgent extends AbstractAgent
         {
             heuristicValue = 0.3*esFaction;                                   
         }
-            
+        
         System.out.println("-------------START-INVITATION-ASSESSMENT--------------------");
         System.out.println("My name is " + getConn().getAgentById(invitee).getName());
         System.out.println("I was invited by " + getDataModel().getName());
@@ -1289,9 +1307,4 @@ public class TestPoliticalAgent extends AbstractAgent
             	return (v1>v2 ? -1 : 1);
             }
 	};
-
-        private void ratePanel(){
-            AgentType groupStrategy = getConn().getGroupById(getDataModel().getGroupId()).getGroupStrategy();
-            System.out.println(groupStrategy);
-        }
 }
