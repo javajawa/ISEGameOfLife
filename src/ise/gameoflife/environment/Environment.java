@@ -109,8 +109,21 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
+			if (isAgentId(actorID))
+			{
+				String group = dmodel.getAgentById(actorID).getGroupId();
+				if (group != null)
+				{
+					sim.getPlayer(group).enqueueInput(
+						new LeaveNotification(dmodel.time, LeaveNotification.Reasons.Death, actorID));
+				}
+				logger.log(Level.FINE, "Agent {0} has died. So long, and thanks for all the fish.", nameOf(actorID));
+			}
+			else
+			{
+				logger.log(Level.FINE, "Group {0} is empty. So long, and thanks for all the fish.", nameOf(actorID));
+			}
 			sim.deActivateParticipant(actorID);
-			logger.log(Level.FINE, "Agent {0} has died. So long and thanks for all the fish.", nameOf(actorID));
 			return null;
 		}
 		
@@ -389,10 +402,13 @@ public class Environment extends AbstractEnvironment
 	{
 		if (!authenticator.get(deregistrationObject.getParticipantID()).equals(deregistrationObject.getParticipantAuthCode()))
 		{
+			logger.log(Level.FINE, "Illegal deregister request from {0}", nameOf(deregistrationObject.getParticipantID()));
 			return false;
 		}
-       
-		return dmodel.removeParticipant(deregistrationObject.getParticipantID());
+
+		boolean succeeded = dmodel.removeParticipant(deregistrationObject.getParticipantID());
+		logger.log(Level.FINE, "Deregister request from {0} reutrned {1}", new Object[]{nameOf(deregistrationObject.getParticipantID()), succeeded});
+		return succeeded;
 	}
 
 	@Override
