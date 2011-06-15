@@ -158,10 +158,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             if (getDataModel().getMemberList().size() != 1)
             {
                 TreeSet<String> currentPanel = getDataModel().getPanel();
-                if (!currentPanel.isEmpty())
-                {
-                    //this.ratePanel();
-                }
                 TreeSet<String> newPanel = updatePanel();
                 this.setPanel(newPanel);
             }
@@ -253,8 +249,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     @Override
     protected AgentType decideGroupStrategy() {
         //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
-        TreeSet<String> oldPanel = getDataModel().getPanel();
-        if (oldPanel.isEmpty())  return null;
+        TreeSet<String> currentPanel = getDataModel().getPanel();
+        if (currentPanel.isEmpty())  return null;
 
         Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
         Tuple<AgentType, Double> acTypes = new Tuple<AgentType, Double>(AgentType.AC, 0.0);
@@ -302,7 +298,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         typesCounterList.add(tftTypes);
         typesCounterList.add(rTypes);
 
-        int followers = population - oldPanel.size();
+        int followers = population - currentPanel.size();
         double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
 
         Iterator<Tuple<AgentType, Double> > i = typesCounterList.iterator();
