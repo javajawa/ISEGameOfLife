@@ -59,13 +59,24 @@ public class HunterInfo extends JPanel implements Plugin
 		HunterPanel(PublicAgentDataModel dm)
 		{
 			this.dm = dm;
+
+                        
                         String current = "Alive";
                         if (!sim.isParticipantActive(dm.getId()) ){
                             current = "Dead";
                         }
                         else if(dm.getGroupId() != null)
                         {
-                            current = "Alive - " + ec.getGroupById(dm.getGroupId()).getName();
+                            String Leader="";
+                            //Leaders
+                            if (!PublicEnvironmentConnection.getInstance().getGroupById(this.dm.getGroupId()).getPanel().isEmpty()){
+                                for (String ldr : PublicEnvironmentConnection.getInstance().getGroupById(this.dm.getGroupId()).getPanel()){
+                                        if (ldr.equals(this.dm.getId())){
+                                            Leader = " - Leader";
+                                        }
+                                 }
+                            }
+                            current = "Alive - " + ec.getGroupById(dm.getGroupId()).getName() + Leader;
                         }
                         else{
                             current = "Alive - Free";
