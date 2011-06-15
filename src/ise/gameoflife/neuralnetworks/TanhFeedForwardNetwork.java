@@ -60,7 +60,6 @@ public class TanhFeedForwardNetwork extends Network
 		for (int i = 0; i < net.inputs(); i++)
 		{
 			in[i] = rand.nextDouble();
-			// in[i] = 0;
 		}
 		// show test values
 		for (double val : in)
@@ -86,6 +85,27 @@ public class TanhFeedForwardNetwork extends Network
 					System.out.println("\t\tVal: " + val);
 				}
 			}
+		}
+		// show offsets
+		double offsets[][] = net.offsets();
+		for (double layerVals[] : offsets)
+		{
+			System.out.println("Layer");
+			for (double val : layerVals)
+			{
+				System.out.println("\tNeuron");
+				System.out.println("\t\tOffset: " + val);
+			}
+		}
+
+		// test setting values for the network
+		TanhFeedForwardNetwork net2 = new TanhFeedForwardNetwork(4,5,3);
+		net2.setWeights(weights);
+		net2.setOffsets(offsets);
+		double out2[] = net2.out(in);
+		for (double val : out2)
+		{
+			System.out.println("Out: " + val);
 		}
 	}
 
