@@ -2,6 +2,7 @@ package ise.gameoflife.participants;
 
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.UnmodifiableHistory;
+import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.TurnType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -102,6 +103,10 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
 
     public String getName() {
         return source.getName();
+    }
+
+    public AgentType getGroupStrategy() {
+        return source.getGroupStrategy();
     }
 
     /**

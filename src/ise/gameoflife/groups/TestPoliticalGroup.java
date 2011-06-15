@@ -299,12 +299,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 //            Tuple<AgentType, Double> counter = j.next();
 //            System.out.println(counter.getKey() + ": " + counter.getValue());
 //        }
-//        System.out.println(getConn().availableGroups().size());
-//        for (String a: getConn().availableGroups())
-//        {
-//            int size = getConn().getGroupById(a).getMemberList().size();
-//            System.out.println(getConn().getGroupById(a).getId() + " of size: " + size );
-//        }
         //FOR DEBUGGING ONLY END
 
         Iterator<Tuple<AgentType, Double> > i = typesCounterList.iterator();

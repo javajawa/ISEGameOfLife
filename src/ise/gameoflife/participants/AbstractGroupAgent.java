@@ -64,7 +64,6 @@ public abstract class AbstractGroupAgent implements Participant
 	private EnvironmentConnector tmp_ec;
 	private Map<String, Double> huntResult;
 	private Map<Proposition, Integer> voteResult;
-        private AgentType groupStrategy;
 
 	/**
 	 * 
@@ -312,9 +311,9 @@ public abstract class AbstractGroupAgent implements Participant
 
         private void doLeadersHunt(){
                 AgentType strategy = decideGroupStrategy();
-                this.groupStrategy = strategy;
+                this.dm.setGroupStrategy(strategy);
         }
-
+        
 	/**
 	 * Sets the number of cycles passed
 	 * @param cycle
@@ -349,6 +348,11 @@ public abstract class AbstractGroupAgent implements Participant
 		this.dm.setEconomicPosition(newPosition);
 	}
 
+        protected final void setGroupStrategy(AgentType strategy)
+	{
+		this.dm.setGroupStrategy(strategy);
+	}
+
 	/**
 	 * This function puts the inputs into a queue to be processed at the end of
 	 * the cycle
@@ -375,7 +379,8 @@ public abstract class AbstractGroupAgent implements Participant
 		if (input.getClass().equals(LeaveNotification.class))
 		{   
 			final LeaveNotification in = (LeaveNotification)input;
-			dm.removeMember(in.getAgent());
+
+                        dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
                         //Bug fix
                         ec.act(new RespondToApplication(in.getAgent(), false), this.getId(), authCode);

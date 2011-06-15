@@ -5,6 +5,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ class GroupDataModel extends APlayerDataModel
 	@Element
 	private History<HashMap<Proposition,Integer>> propositionHistory;
 
+        private AgentType groupStrategy;
+        
 	@Deprecated
 	GroupDataModel()
 	{
@@ -85,15 +88,24 @@ class GroupDataModel extends APlayerDataModel
 		return economicPosition.getValue();
 	}
 
+
 	void setEconomicPosition(double pos)
 	{
 		economicPosition.setValue(pos);
 	}
 
-	UnmodifiableHistory<Double> getEconomicPoisition()
+        UnmodifiableHistory<Double> getEconomicPoisition()
 	{
 		return economicPosition.getUnmodifableHistory();
 	}
+
+        AgentType getGroupStrategy(){
+            return groupStrategy;
+        }
+
+        void setGroupStrategy(AgentType strategy){
+            this.groupStrategy = strategy;
+        }
 
 	void clearRoundData()
 	{
