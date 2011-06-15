@@ -122,7 +122,11 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public boolean removeParticipant(String id)
 	{
-		return (agents.remove(id)!=null);
+		if (agents.remove(id)==null)
+		{
+			return (agentGroups.remove(id)!=null);
+		}
+		return true;
 	}
 
 	boolean registerParticipant(RegistrationRequest id)

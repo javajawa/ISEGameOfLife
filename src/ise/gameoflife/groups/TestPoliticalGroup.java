@@ -30,8 +30,6 @@ import static ise.gameoflife.models.ScaledDouble.scale;
 public class TestPoliticalGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;
 
-        private TreeSet<String> panel = new TreeSet<String>();
-
 	@Deprecated
 	public TestPoliticalGroup() {
 		super();
@@ -159,11 +157,9 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 	protected void beforeNewRound() {
             if (getDataModel().getMemberList().size() != 1)
             {
-                if (!panel.isEmpty())
-                {
-                    this.ratePanel();
-                }
-                this.panel = updatePanel(getDataModel());
+                TreeSet<String> currentPanel = getDataModel().getPanel();
+                TreeSet<String> newPanel = updatePanel();
+                this.setPanel(newPanel);
             }
 	}
         
@@ -175,16 +171,15 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     * @return The new panel members.
     */
         //private TreeSet<String> updatePanel(){
-        public static TreeSet<String> updatePanel(PublicGroupDataModel dm){
+        public TreeSet<String> updatePanel(){
             
             double groupSocialPosition;
             int population, panelSize;
-            final PublicEnvironmentConnection conn = PublicEnvironmentConnection.getInstance(); 
 
             //STEP 1:Find the size of the panel. It is the proportion of the total population that
             // can be in the panel. It is calculated using the social position of the group.
-            population = dm.getMemberList().size();
-            groupSocialPosition = dm.getEstimatedSocialLocation();
+            population = getDataModel().getMemberList().size();
+            groupSocialPosition = getDataModel().getEstimatedSocialLocation();
 
             //Round to the closest integer
             panelSize = (int) Math.round(population*groupSocialPosition);
@@ -198,7 +193,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             //STEP 2: Get the average trust of each agent in the group
             List< Tuple<String, Double> > panelCandidates = new LinkedList< Tuple<String, Double> >();
             
-            List<String> groupMembers = dm.getMemberList();
+            List<String> groupMembers = getDataModel().getMemberList();
 
             for (String candidate: groupMembers )
             { 
@@ -206,9 +201,9 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 int numKnownTrustValues = 0;
                 for (String member: groupMembers )
                 { 
-                    if ((conn.getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
+                    if ((getConn().getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
                     {
-                        sum += conn.getAgentById(member).getTrust(candidate);
+                        sum += getConn().getAgentById(member).getTrust(candidate);
                         numKnownTrustValues++;
                     }
                 }
@@ -254,7 +249,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     @Override
     protected AgentType decideGroupStrategy() {
         //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
-        if (panel.isEmpty())  return null;
+        TreeSet<String> currentPanel = getDataModel().getPanel();
+        if (currentPanel.isEmpty())  return null;
 
         Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
         Tuple<AgentType, Double> acTypes = new Tuple<AgentType, Double>(AgentType.AC, 0.0);
@@ -302,7 +298,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         typesCounterList.add(tftTypes);
         typesCounterList.add(rTypes);
 
-        int followers = population - panel.size();
+        int followers = population - currentPanel.size();
         double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
 
         Iterator<Tuple<AgentType, Double> > i = typesCounterList.iterator();
@@ -320,28 +316,19 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
     private void ratePanel(){
         AgentType groupStrategy = getDataModel().getGroupStrategy();
-
+        TreeSet<String> oldPanel = getDataModel().getPanel();
         int population = getDataModel().getMemberList().size();
-        int followers =  population - this.panel.size();
+        int followers =  population - oldPanel.size();
         double rating = 1/followers;
-
-        //DEBUGGING ONLY
-        System.out.println("----------------------------");
-        System.out.println(getDataModel().getName());
-        System.out.println("Population: "+ population);
-        System.out.println("Followers: "+ followers);
-        System.out.println("Rating: "+ rating);
-        System.out.println("Group strategy: "+ groupStrategy);
-        //DEBUGGING ONLY END
 
         for (String follower: getDataModel().getMemberList())
         {
             AgentType followerStrategy = getConn().getAgentById(follower).getAgentType();
-            Iterator<String > i = panel.iterator();
+            Iterator<String > i = oldPanel.iterator();
             while(i.hasNext())
             {
                 String panelMemberID = i.next();
-                if((!panel.contains(follower))&&(getConn().getAgentById(follower).getTrust(panelMemberID) != null))
+                if((!oldPanel.contains(follower))&&(getConn().getAgentById(follower).getTrust(panelMemberID) != null))
                 {
                     if (followerStrategy == groupStrategy)
                     {

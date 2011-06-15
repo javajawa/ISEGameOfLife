@@ -6,6 +6,9 @@ import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
+import ise.gameoflife.plugins.GroupGraphs;
+import ise.gameoflife.plugins.GroupInfo;
+import ise.gameoflife.plugins.HunterInfo;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
@@ -21,14 +24,14 @@ public class Politics extends GenericSimulation
         
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 500, 0, 0.1);
+		super("Basic Politics Testing Bed", 1000, 0, 0.1);
 	}
 
 	@Override
 	protected void agents()
 	{
                 Random randomGenerator = new Random(this.randomSeed);
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 7; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			//addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
@@ -68,9 +71,9 @@ public class Politics extends GenericSimulation
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
-                //addPlugin(new HunterInfo());
-                //addPlugin(new GroupInfo());
-                //addPlugin(new GroupGraphs());
+                addPlugin(new HunterInfo());
+                addPlugin(new GroupInfo());
+                addPlugin(new GroupGraphs());
 	}
 
 	@Override

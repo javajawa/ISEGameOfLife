@@ -74,6 +74,8 @@ public class GroupInfo extends JPanel implements Plugin
                         double Happiness = 0;
                         double Loyalty = 0;
                         double Food = 0;
+                        String Leader = "Null";
+
 
 //                        List<String> members = this.gm.getMemberList();
                           double size = this.gm.getMemberList().size();
@@ -93,6 +95,13 @@ public class GroupInfo extends JPanel implements Plugin
                         Loyalty = Loyalty/size;
                         Food = Food/size;
 
+                        //Leaders
+                        for (String ldr : this.gm.getPanel()){
+                            if (Leader.equals("Null") && !this.gm.getPanel().isEmpty()) Leader= "";
+
+                            Leader = Leader + ec.getAgentById(ldr).getName() + "  ";
+                        }
+
                         JPanel dataPanel = new JPanel(new GridLayout(4, 2, 1, -1));
 
                         dataPanel.add(labelise(this.gm.getName(),8));
@@ -105,8 +114,7 @@ public class GroupInfo extends JPanel implements Plugin
 			dataPanel.add(labelise("Average Happiness: "+Happiness));
 
                         dataPanel.add(labelise("Average Food: "+Food));
-
-
+                        dataPanel.add(labelise("Leaders: "+ Leader));
 
 
 			//chartPanel.setVisible(true);
@@ -155,16 +163,14 @@ public class GroupInfo extends JPanel implements Plugin
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
               panels.clear();
-              //this.removeAll();
               this.window.removeAll();
 		for (String aid : ec.availableGroups())
-		{       if (!panels.containsKey(aid))
+		{       if (!panels.containsKey(aid) && ec.getGroupById(aid).getMemberList().size() > 0 )
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));
+                        
+                                panels.get(aid).updateData();
                         }
-			panels.get(aid).updateData();
-                        //this.add(panels.get(aid));
-
 		}
 		validate();
 

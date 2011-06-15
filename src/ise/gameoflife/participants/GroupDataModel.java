@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
@@ -40,6 +41,8 @@ class GroupDataModel extends APlayerDataModel
 	private History<HashMap<Proposition,Integer>> propositionHistory;
 
         private AgentType groupStrategy;
+
+        private TreeSet<String> panel;
         
 	@Deprecated
 	GroupDataModel()
@@ -98,14 +101,6 @@ class GroupDataModel extends APlayerDataModel
 	{
 		return economicPosition.getUnmodifableHistory();
 	}
-
-        AgentType getGroupStrategy(){
-            return groupStrategy;
-        }
-
-        void setGroupStrategy(AgentType strategy){
-            this.groupStrategy = strategy;
-        }
 
 	void clearRoundData()
 	{
@@ -212,6 +207,27 @@ class GroupDataModel extends APlayerDataModel
 
 		return st_dev;
 	}
+
+        double getGroupSocialLocation(){
+            return 0.0;
+        }
+
+
+        TreeSet<String> getPanel(){
+            return this.panel;
+        }
+
+        void setPanel(TreeSet<String> nPanel){
+            this.panel = nPanel;
+        }
+        
+        AgentType getGroupStrategy(){
+            return groupStrategy;
+        }
+
+        void setGroupStrategy(AgentType strategy){
+            this.groupStrategy = strategy;
+        }
 
 	int size()
 	{

@@ -160,9 +160,9 @@ public class GroupGraphs extends JPanel implements Plugin
                         dataPanel.add(labelise(this.gm.getName(),8));
                         dataPanel.add(labelise("1.Economic Belief Graph"));
                         dataPanel.add(labelise("2.Social Belief Graph"));
-                        dataPanel.add(labelise("2.Average Food Graph"));
-                        dataPanel.add(labelise("3.Average Loyalty Graph"));
-                        dataPanel.add(labelise("4.Average Happiness Graph"));
+                        dataPanel.add(labelise("3.Average Food Graph"));
+                        dataPanel.add(labelise("4.Average Loyalty Graph"));
+                        dataPanel.add(labelise("5.Average Happiness Graph"));
 			//dataPanel.add(labelise("Size: "+ this.gm.getMemberList().size()));
 
                         //dataPanel.add(labelise("Economic: "+Economic));
