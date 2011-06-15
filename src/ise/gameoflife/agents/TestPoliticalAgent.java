@@ -158,6 +158,21 @@ public class TestPoliticalAgent extends AbstractAgent
 
         //If agent is already member of a group remove it from the founders or invitation holders lists
         //and check if it is satisfied. If not return leaveGroup request
+
+        //Debugging only
+        System.out.println("-----------------------------------");
+//        System.out.println("Available groups: "+getConn().availableGroups().size());
+//        for (String a: getConn().availableGroups())
+//        {
+//            int size = getConn().getGroupById(a).getMemberList().size();
+//            System.out.println(getConn().getGroupById(a).getId() + " of size: " + size );
+//            for (String agent: getConn().getGroupById(a).getMemberList() )
+//            {
+//                System.out.println("    "+getConn().getAgentById(agent).getName());
+//            }
+//        }
+        //Debugging only end
+        
         if (this.getDataModel().getGroupId() != null)
         {
             if (groupFounders.containsKey(this.getId()))
@@ -1003,7 +1018,7 @@ public class TestPoliticalAgent extends AbstractAgent
     */
         @Override
         protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
-        {
+        {        
             double currentEconomic = getDataModel().getEconomicBelief();
             //Your economic belief refines from how much more/less happy you are after the vote
             //and from how loyal you are after the group made their decision after the vote.
@@ -1246,4 +1261,9 @@ public class TestPoliticalAgent extends AbstractAgent
             	return (v1>v2 ? -1 : 1);
             }
 	};
+
+        private void ratePanel(){
+            AgentType groupStrategy = getConn().getGroupById(getDataModel().getGroupId()).getGroupStrategy();
+            System.out.println(groupStrategy);
+        }
 }

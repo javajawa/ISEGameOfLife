@@ -391,6 +391,7 @@ public class Environment extends AbstractEnvironment
 		{
 			return false;
 		}
+       
 		return dmodel.removeParticipant(deregistrationObject.getParticipantID());
 	}
 
