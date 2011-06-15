@@ -22,16 +22,16 @@ import java.util.Random;
  */
 public class Politics extends GenericSimulation
 {
-
+        int seed = 5000;
 	public Politics()
 	{
-		super("Basic Politics Testing Bed", 5000, 0, 0.1);
+		super("Basic Politics Testing Bed", seed, 0, 0.1);
 	}
 
 	@Override
 	protected void agents()
 	{
-                Random randomGenerator = new Random();
+                Random randomGenerator = new Random(seed);
 		for (int i = 0; i < 10; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
@@ -68,7 +68,7 @@ public class Politics extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
-		//addPlugin(new DatabasePlugin(comment,true));
+		addPlugin(new DatabasePlugin(comment,false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
