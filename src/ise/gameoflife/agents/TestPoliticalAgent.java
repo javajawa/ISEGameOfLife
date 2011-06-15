@@ -374,7 +374,8 @@ public class TestPoliticalAgent extends AbstractAgent
                 Double topCandidateESFaction = null;
                 while(itr.hasNext())
                 {
-                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();                    
+                    @SuppressWarnings("unchecked")
+                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();
                     if(listTuple.getKey().equals(invitee))
                         topCandidateESFaction = listTuple.getValue();
                 }
