@@ -92,7 +92,9 @@ public class DatabasePlugin implements Plugin
 	    pruneOldAgents();
 	    findNewAgents();
 	    getGroupRoundData();
-	    getAgentRoundData();
+	    //disables agent round data collection for remote db, to speed it up
+	    //in other words, a hack
+	    if (!remote) getAgentRoundData();
 	    
 	    //writes to db every 25 rounds (or 150 cycles)
 	    if(round%50==0) 

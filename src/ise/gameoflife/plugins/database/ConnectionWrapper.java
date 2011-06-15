@@ -42,7 +42,6 @@ final class ConnectionWrapper
 		    updateDatabaseStructure();
 		    conn.setAutoCommit(false);
 		}
-		conn.setAutoCommit(false);
 		newAgent = conn.prepareStatement(Statements.addAgent.getPrototype());
 		dieAgent = conn.prepareStatement(Statements.dieAgent.getPrototype());
 		roundAgent = conn.prepareStatement(Statements.roundAgent.getPrototype());
@@ -217,7 +216,13 @@ final class ConnectionWrapper
 		 roundGroup.setInt(3,groupid);
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
-		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
+		 //doesnt seem to work....
+		 if(group.getCurrentEconomicPoisition()==Double.NaN) {
+		     roundGroup.setDouble(6,0);
+		     logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to 0 instead",
+			     new Object[]{group.getId(), round});
+			}
+		 else roundGroup.setDouble(6,0);
 		 roundGroup.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, null, ex);
