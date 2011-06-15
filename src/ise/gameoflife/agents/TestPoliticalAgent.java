@@ -1055,11 +1055,6 @@ public class TestPoliticalAgent extends AbstractAgent
     {
     	invitationHolders.add(this.getId());
         this.invitationToGroup = group; 
-                System.out.println();
-                System.out.println("From the onInvite function, my name is: " + getDataModel().getName());                
-                System.out.println("And this is the group that is returned: " + getConn().getGroupById(invitationToGroup).getName());
-                System.out.println();
-
     }
 
     /**
