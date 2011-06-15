@@ -1,6 +1,5 @@
 package ise.gameoflife.participants;
 
-import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;

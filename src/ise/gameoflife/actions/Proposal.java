@@ -1,7 +1,5 @@
 package ise.gameoflife.actions;
 
-import presage.Action;
-
 /**
  * Class representing the types of Proposal an Agent can make with respect to
  * changed in Group Policy
