@@ -112,11 +112,11 @@ public class HunterInfo extends JPanel implements Plugin
                         dataPanel.add(labelise(current));
 
 			dataPanel.add(labelise("Food: "+food));
-			dataPanel.add(labelise("Loyalty: "+Loyalty));
-			dataPanel.add(labelise("Happiness: "+Happiness));
-
-			dataPanel.add(labelise("Economic: "+Economic));
+                        dataPanel.add(labelise("Economic: "+Economic));
                         dataPanel.add(labelise("Social: "+Social));
+
+                        dataPanel.add(labelise("Loyalty: "+Loyalty));
+			dataPanel.add(labelise("Happiness: "+Happiness));
                         dataPanel.add(labelise("LastHunted: "+LastHunted));
 
 

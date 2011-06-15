@@ -55,6 +55,20 @@ public class GroupGraphs extends JPanel implements Plugin
                 private final ValueAxis domainAxis2;
 		private final ValueAxis rangeAxis2;
 
+                private final XYSeries FoodHistorySeries;
+                private final ValueAxis domainAxis3;
+		private final ValueAxis rangeAxis3;
+
+                private final XYSeries LoyaltyHistorySeries;
+                private final ValueAxis domainAxis4;
+		private final ValueAxis rangeAxis4;
+
+                private final XYSeries HappinessHistorySeries;
+                private final ValueAxis domainAxis5;
+		private final ValueAxis rangeAxis5;
+
+                
+
 		private JLabel labelise(String s)
 		{
 			JLabel ret = new JLabel(s);
@@ -95,6 +109,36 @@ public class GroupGraphs extends JPanel implements Plugin
 			domainAxis2 = chart2.getXYPlot().getDomainAxis();
 			rangeAxis2 = chart2.getXYPlot().getRangeAxis();
 
+                        //Food Graph
+                        this.FoodHistorySeries = new XYSeries(gm.getId());
+			JFreeChart chart3 = ChartFactory.createXYLineChart(null, null, null,
+							new XYSeriesCollection(FoodHistorySeries),
+							PlotOrientation.VERTICAL, false, false, false);
+			ChartPanel chartPanel3 = new ChartPanel(chart3);
+			chart3.getXYPlot().setBackgroundAlpha(1);
+			domainAxis3 = chart3.getXYPlot().getDomainAxis();
+			rangeAxis3 = chart3.getXYPlot().getRangeAxis();
+
+                        //Loyalty Graph
+                        this.LoyaltyHistorySeries = new XYSeries(gm.getId());
+			JFreeChart chart4 = ChartFactory.createXYLineChart(null, null, null,
+							new XYSeriesCollection(LoyaltyHistorySeries),
+							PlotOrientation.VERTICAL, false, false, false);
+			ChartPanel chartPanel4 = new ChartPanel(chart4);
+			chart4.getXYPlot().setBackgroundAlpha(1);
+			domainAxis4 = chart4.getXYPlot().getDomainAxis();
+			rangeAxis4 = chart4.getXYPlot().getRangeAxis();
+
+                        //Happiness Graph
+                        this.HappinessHistorySeries = new XYSeries(gm.getId());
+			JFreeChart chart5 = ChartFactory.createXYLineChart(null, null, null,
+							new XYSeriesCollection(HappinessHistorySeries),
+							PlotOrientation.VERTICAL, false, false, false);
+			ChartPanel chartPanel5 = new ChartPanel(chart5);
+			chart5.getXYPlot().setBackgroundAlpha(1);
+			domainAxis5 = chart5.getXYPlot().getDomainAxis();
+			rangeAxis5 = chart5.getXYPlot().getRangeAxis();
+
 //
 //                        String Social = Double.toString(this.gm.getEstimatedSocialLocation());
 //                        String Economic = Double.toString(this.gm.getCurrentEconomicPoisition());
@@ -117,11 +161,14 @@ public class GroupGraphs extends JPanel implements Plugin
 //                        Loyalty = Loyalty/size;
 //                        Food = Food/size;
 
-                        JPanel dataPanel = new JPanel(new GridLayout(3, 1, 1, -1));
+                        JPanel dataPanel = new JPanel(new GridLayout(3, 1));
 
                         dataPanel.add(labelise(this.gm.getName(),8));
                         dataPanel.add(labelise("1.Economic Belief Graph"));
                         dataPanel.add(labelise("2.Social Belief Graph"));
+                        dataPanel.add(labelise("2.Average Food Graph"));
+                        dataPanel.add(labelise("3.Average Loyalty Graph"));
+                        dataPanel.add(labelise("4.Average Happiness Graph"));
 			//dataPanel.add(labelise("Size: "+ this.gm.getMemberList().size()));
 
                         //dataPanel.add(labelise("Economic: "+Economic));
@@ -135,11 +182,17 @@ public class GroupGraphs extends JPanel implements Plugin
 
 			chartPanel1.setVisible(true);
                         chartPanel2.setVisible(true);
+                        chartPanel3.setVisible(true);
+                        chartPanel4.setVisible(true);
+                        chartPanel5.setVisible(true);
 
-			this.setLayout(new GridLayout(1,3));
+			this.setLayout(new GridLayout(1,6));
 			this.add(dataPanel);
 			this.add(chartPanel1);
                         this.add(chartPanel2);
+                        this.add(chartPanel3);
+                        this.add(chartPanel4);
+                        this.add(chartPanel5);
 			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			window.add(this);
 			this.setPreferredSize(new Dimension(getWidth() - barWidth, 125));
@@ -148,16 +201,51 @@ public class GroupGraphs extends JPanel implements Plugin
 		void updateData()
 		{
                         //Update Economic
-			if (gm.getCurrentEconomicPoisition() > graphHeight) graphHeight += 25;
-			EconomicHistorySeries.addOrUpdate(ec.getRoundsPassed(), gm.getCurrentEconomicPoisition()*10);
+			if (gm.getCurrentEconomicPoisition() > graphHeight) graphHeight += 1;
+			EconomicHistorySeries.addOrUpdate(ec.getRoundsPassed(), gm.getCurrentEconomicPoisition());
 			domainAxis1.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
 			rangeAxis1.setRange(0, graphHeight);
 
                         //Update Social
-                        if (gm.getEstimatedSocialLocation() > graphHeight) graphHeight += 25;
-			SocialHistorySeries.addOrUpdate(ec.getRoundsPassed(), gm.getEstimatedSocialLocation()*10);
+                       if (gm.getEstimatedSocialLocation() > graphHeight) graphHeight += 1;
+			SocialHistorySeries.addOrUpdate(ec.getRoundsPassed(), gm.getEstimatedSocialLocation());
 			domainAxis2.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
 			rangeAxis2.setRange(0, graphHeight);
+
+                        //Update Food
+                        double size = gm.getMemberList().size();
+                        for( String memberId : gm.getMemberList())
+                        {
+                            Happiness += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness();
+                            Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty();
+                            Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
+                        }
+                        if (size != 0)
+                        {
+                            Happiness= Happiness/size;
+                            Loyalty = Loyalty/size;
+                            Food = Food/size;
+                        }
+                        else{
+                            Happiness= 0;
+                            Loyalty = 0;
+                            Food = 0;
+                        }
+
+                        if (Food > graphHeightFood) graphHeightFood += 25;
+			FoodHistorySeries.addOrUpdate(ec.getRoundsPassed(), Food);
+			domainAxis3.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
+			rangeAxis3.setRange(0, graphHeightFood);
+
+                        if (Loyalty > graphHeight) graphHeight += 1;
+			LoyaltyHistorySeries.addOrUpdate(ec.getRoundsPassed(), Loyalty);
+			domainAxis4.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
+			rangeAxis4.setRange(0, graphHeight);
+
+                        if (Happiness > graphHeight) graphHeight += 1;
+			HappinessHistorySeries.addOrUpdate(ec.getRoundsPassed(), Happiness);
+			domainAxis5.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
+			rangeAxis5.setRange(0, graphHeight);
 
 
                 }
@@ -173,7 +261,13 @@ public class GroupGraphs extends JPanel implements Plugin
 	//private final HashMap<String, GroupPanel> panels = new HashMap<String, GroupPanel>();
         private final TreeMap<String, GroupPanel> panels = new TreeMap<String, GroupPanel>();
 	private int barWidth;
-	private int graphHeight = 50;
+	private int graphHeight = 1;
+        private int graphHeightFood = 50;
+
+
+        private double Happiness = 0;
+        private double Loyalty = 0;
+        private double Food = 0;
 
 	public GroupGraphs()
 	{
@@ -195,6 +289,9 @@ public class GroupGraphs extends JPanel implements Plugin
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));
                         }
+                        Happiness= 0;
+                        Loyalty = 0;
+                        Food = 0;
 			panels.get(aid).updateData();
                         //this.add(panels.get(aid));
 
