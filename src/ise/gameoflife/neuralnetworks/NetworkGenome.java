@@ -30,16 +30,16 @@ public class NetworkGenome extends Genome<NetworkGenome>
 			new NetworkGenomeDelegate()
 			{
 				@Override
-				public double giveWeight(int i, int j, int k)
+				public double giveWeight(double weights[][][], int i, int j, int k)
 				{
 					return 2*rand.nextDouble()-1;
 				}
 				@Override
-				public double giveOffset(int i, int j)
+				public double giveOffset(double offsets[][], int i, int j)
 				{
 					return 2*rand.nextDouble()-1;
 				}
-			});
+			}, weights, offsets);
 	}
 
 	@Override
