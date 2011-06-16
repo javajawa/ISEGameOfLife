@@ -103,7 +103,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                 repaint();
 
-                if(this.outputdirectory != null)
+                if(this.outputdirectory != null && (PublicEnvironmentConnection.getInstance().getRoundsPassed() % 50 == 0))
                 {
                         writeToPNG();
                 }
@@ -112,18 +112,18 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         private void writeToPNG() {
                 BufferedImage bi = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_ARGB);
                 Graphics big = bi.getGraphics();
-                big.setClip(0, 0, 500, 500);
+                big.setClip(0, 0, this.getSize().width, this.getSize().height);
                 this.paint(big);
                 try
                 {
-                        File f =  new File(this.outputdirectory + "test"+this.framecount+".png");
+                        File f =  new File(this.outputdirectory + "PC2_"+this.framecount+".png");
                         f.mkdirs();
                         ImageIO.write(bi, "png",f);
                         this.framecount++;
                 }
                 catch (Exception e)
                 {
-                        System.out.println("Error writing political compass image: " + this.framecount);
+                        System.out.println("Error writing political compass2 image: " + this.framecount);
                 }
         }
 
