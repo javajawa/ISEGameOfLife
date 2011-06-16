@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,14 +41,14 @@ public class TestPoliticalAgent extends AbstractAgent
 	private static final long serialVersionUID = 1L;
 
         private String invitationToGroup = null;
-
+       
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static HashMap<String, String> groupFounders = new HashMap<String, String>();
         private final static TreeSet<String> membersToKickOut = new TreeSet<String>();        
         private final static TreeSet<String> freeToGroup = new TreeSet<String>();                
 	private History<Double> satisfaction = new History<Double>(1);
 
-        private static int count = 1;
+        Random randomGenerator = new Random();
 
 	private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
 	@Deprecated
@@ -866,18 +867,18 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 trust = 0.1;
             }
-            
+
             //If agent hunted stag then check what the opponent did. If betrayed decrease trust
             // otherwise increase it. If the agent hunted rabbit no change in trust
             if (lastHunted.getName().equals("Stag"))
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                        trust = scale(trust, -1, 0.3);
+                            trust = scale(trust, -1, randomGenerator.nextDouble());
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1,0.3);
+                        trust = scale(trust, 1,randomGenerator.nextDouble());
                     }
             }
             else    //Agent hunted rabbit so no trust issues
@@ -999,12 +1000,12 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
                 else
                 {
-                       proposerTrust = 0;
+                       proposerTrust = 0.1;
                 }
-                
+
                 //if votes > 0 we increase the trust for proposer
                 //if votes < 0 we decrease the trust for proposer
-                proposerTrust = scale(proposerTrust, votes, Math.abs(overallMovement));
+                proposerTrust = scale(proposerTrust, votes, randomGenerator.nextDouble());
                 newTrustValue.put(proposer, proposerTrust);
              }
              else
@@ -1352,13 +1353,13 @@ public class TestPoliticalAgent extends AbstractAgent
                 if (followerStrategy == groupStrategy)
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 0.3, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 1, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
                 else
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -0.3, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -1, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
             }

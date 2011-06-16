@@ -209,11 +209,6 @@ class GroupDataModel extends APlayerDataModel
 		return 1-st_dev;
 	}
 
-        double getGroupSocialLocation(){
-            return 0.0;
-        }
-
-
         List<String> getPanel(){
             return this.panel;
         }

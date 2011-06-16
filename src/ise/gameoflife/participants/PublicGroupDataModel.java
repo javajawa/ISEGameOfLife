@@ -111,10 +111,6 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
         return source.getGroupStrategy();
     }
 
-    public double getGroupSocialLocation() {
-        return source.getGroupSocialLocation();
-    }
-
     public List<String> getPanel() {
         return source.getPanel();
     }

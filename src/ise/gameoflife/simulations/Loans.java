@@ -1,6 +1,7 @@
 package ise.gameoflife.simulations;
 
 import ise.gameoflife.agents.TestPoliticalAgent;
+import ise.gameoflife.groups.LoansGroup;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
@@ -19,25 +20,22 @@ import java.util.Random;
  *
  * @author george
  */
-public class Politics extends GenericSimulation
+public class Loans extends GenericSimulation
 {
-        
-	public Politics()
+
+	public Loans()
 	{
-		super("Basic Politics Testing Bed", 800, 0, 0.1);
+		super("Basic Loans Testing Bed", 800, 0, 0.1);
 	}
 
 	@Override
 	protected void agents()
 	{
                 Random randomGenerator = new Random();
-                
+
 		for (int i = 0; i < 50; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
@@ -52,7 +50,7 @@ public class Politics extends GenericSimulation
 	@Override
 	protected void groups()
 	{
-              addGroup(TestPoliticalGroup.class);
+              addGroup(LoansGroup.class);
 	}
 
 	@Override
