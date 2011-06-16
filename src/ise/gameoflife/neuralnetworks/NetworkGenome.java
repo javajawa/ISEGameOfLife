@@ -45,8 +45,32 @@ public class NetworkGenome extends Genome<NetworkGenome>
 	@Override
 	public NetworkGenome mutate()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		NetworkGenome genome = new NetworkGenome(nodeCounts);
+		genome.setWeights(weights);
+		genome.setOffsets(offsets);
+		genome.generateParameters(
+			new NetworkGenomeDelegate()
+			{
+				@Override
+				public double giveWeight(double weights[][][], int i, int j, int k)
+				{
+					if (rand.nextDouble() > mutateRate)
+					{
+						return weights[i][j][k];
+					}
+					return 2*rand.nextDouble()-1;
+				}
+				@Override
+				public double giveOffset(double offsets[][], int i, int j)
+				{
+					if (rand.nextDouble() > mutateRate)
+					{
+						return offsets[i][j];
+					}
+					return 2*rand.nextDouble()-1;
+				}
+			}, weights, offsets);
+		return genome;
 	}
 
 	@Override
