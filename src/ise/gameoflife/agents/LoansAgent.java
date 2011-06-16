@@ -11,6 +11,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractAgent;
+import ise.gameoflife.tokens.AgentType;
 import java.util.Map;
 
 /**
@@ -18,6 +19,12 @@ import java.util.Map;
  * @author george
  */
 public class LoansAgent extends AbstractAgent{
+
+    public LoansAgent(double initialFood, double consumption, AgentType type,
+                              double socialBelief, double economicBelief){
+        super("<hunter>", 0, initialFood, consumption, type, socialBelief, economicBelief);
+
+    }
 
     @Override
     protected void onActivate() {

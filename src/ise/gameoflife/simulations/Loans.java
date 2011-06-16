@@ -1,8 +1,7 @@
 package ise.gameoflife.simulations;
 
-import ise.gameoflife.agents.TestPoliticalAgent;
+import ise.gameoflife.agents.LoansAgent;
 import ise.gameoflife.groups.LoansGroup;
-import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
@@ -35,7 +34,7 @@ public class Loans extends GenericSimulation
 
 		for (int i = 0; i < 50; i++)
 		{
-                        addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+                        addAgent(new LoansAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
