@@ -220,20 +220,28 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             //STEP 3 END
             
             //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
+            //Note that eventhough an agent is a candidate its trust must be above a threshold.
+            //The threshold is the social position. If the group is highly authoritarian then anyone with a trust value
+            //above zero can become a leader. In libertarian groups panels are formed more rarely since a high trust value
+            //must be achieved! Also the threshold acts as a warning for current panel members. If their trust falls
+            //below this threshold due to bad decision they will be ousted in the next round.
             TreeSet<String> newPanel = new TreeSet<String>();
             if (!panelCandidates.isEmpty()&&(panelCandidates.size() >= panelSize))//Panel is not empty and we have enough candidates to select leaders
             {
                 for (int i = 0; i < panelSize; i++)
                 {
-                    newPanel.add(panelCandidates.get(i).getKey());
+                    if (panelCandidates.get(i).getValue() > groupSocialPosition)
+                    {
+                        newPanel.add(panelCandidates.get(i).getKey());
+                    }
                 }
             }
             //STEP 4 END
 
             //Debugging ONLY
-            System.out.println("--------------------------------");
-            System.out.println(getDataModel().getName());
-            System.out.println(getDataModel().getEstimatedSocialLocation());
+//            System.out.println("--------------------------------");
+//            System.out.println(getDataModel().getName());
+//            System.out.println(getDataModel().getEstimatedSocialLocation());
 //            Iterator< Tuple<String, Double> > j = panelCandidates.iterator();
 //            while (j.hasNext())
 //            {
