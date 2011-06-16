@@ -76,8 +76,40 @@ public class NetworkGenome extends Genome<NetworkGenome>
 	@Override
 	public NetworkGenome crossOver(NetworkGenome genome)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (rand.nextDouble() > crossOverRate)
+		{
+			return this;
+		}
+
+		final double gWeights[][][] = genome.weights();
+		final double gOffsets[][] = genome.offsets();
+
+		NetworkGenome newGenome = new NetworkGenome(nodeCounts);
+		newGenome.setWeights(weights);
+		newGenome.setOffsets(offsets);
+		newGenome.generateParameters(
+				new NetworkGenomeDelegate()
+				{
+					@Override
+					public double giveWeight(double weights[][][], int i, int j, int k)
+					{
+						if (rand.nextDouble() > crossOverRate)
+						{
+							return weights[i][j][k];
+						}
+						return gWeights[i][j][k];
+					}
+					@Override
+					public double giveOffset(double offsets[][], int i, int j)
+					{
+						if (rand.nextDouble() > mutateRate)
+						{
+							return offsets[i][j];
+						}
+						return gOffsets[i][j];
+					}
+				}, weights, offsets);
+		return newGenome;
 	}
 
 	protected void generateParameters(NetworkGenomeDelegate delegate, double weights[][][], double offsets[][])
