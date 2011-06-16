@@ -10,6 +10,8 @@ public abstract class Neuron
 	abstract public double activationFunction(double sum, double offset);
 
 	private int inputs = 0;
+	private double weights[] = null;
+	private double offset = 0;
 
 	public Neuron(int inputs)
 	{
@@ -57,8 +59,6 @@ public abstract class Neuron
 		return this.activationFunction(sum, offset);
 	}
 
-	private double weights[] = null;
-
 	public void setWeights(double weights[])
 	{
 		this.weights = weights;
@@ -78,8 +78,6 @@ public abstract class Neuron
 	{
 		return this.weights;
 	}
-
-	private double offset = 0;
 
 	public void setOffset(double offset)
 	{
