@@ -9,6 +9,7 @@ import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -42,7 +43,7 @@ class GroupDataModel extends APlayerDataModel
 
         private AgentType groupStrategy;
 
-        private TreeSet<String> panel = new TreeSet<String>();
+        private List<String> panel = new LinkedList<String>();
         
 	@Deprecated
 	GroupDataModel()
@@ -213,11 +214,11 @@ class GroupDataModel extends APlayerDataModel
         }
 
 
-        TreeSet<String> getPanel(){
+        List<String> getPanel(){
             return this.panel;
         }
 
-        void setPanel(TreeSet<String> nPanel){
+        void setPanel(List<String> nPanel){
             this.panel = nPanel;
         }
         

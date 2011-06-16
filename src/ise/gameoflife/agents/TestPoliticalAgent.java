@@ -1326,7 +1326,7 @@ public class TestPoliticalAgent extends AbstractAgent
         if (groupID == null) return null;
 
         //Get the current panel of te group that this agent belongs to
-        TreeSet<String> currentPanel = getConn().getGroupById(groupID).getPanel();
+        List<String> currentPanel = getConn().getGroupById(groupID).getPanel();
 
         //If there is nobobdy to rate or this agent is member of the current panel do nothing
         if (currentPanel.isEmpty()||(currentPanel.contains(getDataModel().getId()))) return null;

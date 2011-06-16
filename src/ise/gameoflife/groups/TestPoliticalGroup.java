@@ -10,9 +10,6 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
-
-import ise.gameoflife.participants.PublicGroupDataModel;
-
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,8 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.TreeSet;
-import static ise.gameoflife.models.ScaledDouble.scale;
 /**
  *
  * @author Aadil
@@ -157,7 +152,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 	protected void beforeNewRound() {
             if (getDataModel().getMemberList().size() != 1)
             {
-                TreeSet<String> newPanel = updatePanel();
+                List<String> newPanel = updatePanel();
                 this.setPanel(newPanel);
             }
 	}
@@ -169,7 +164,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     * @param none
     * @return The new panel members.
     */
-        private TreeSet<String> updatePanel(){
+        private List<String> updatePanel(){
             
             double groupSocialPosition;
             int population, panelSize;
@@ -220,47 +215,28 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             //STEP 3 END
             
             //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
-            //Note that eventhough an agent is a candidate its trust must be above a threshold.
+            //Note that eventhough an agent is a candidate its trust must be above a threshold to become member of the panel.
             //The threshold is the social position. If the group is highly authoritarian then anyone with a trust value
-            //above zero can become a leader. In libertarian groups panels are formed more rarely since a high trust value
+            //above zero can become a leader. In libertarian groups panel formations are rare since a relatively high trust value
             //must be achieved! Also the threshold acts as a warning for current panel members. If their trust falls
-            //below this threshold due to bad decision they will be ousted in the next round.
-            TreeSet<String> newPanel = new TreeSet<String>();
+            //below this threshold due to bad decisions they will be ousted in the next round.
+            List<String> newPanel = new LinkedList<String>();
             if (!panelCandidates.isEmpty()&&(panelCandidates.size() >= panelSize))//Panel is not empty and we have enough candidates to select leaders
             {
                 for (int i = 0; i < panelSize; i++)
                 {
-                    if (panelCandidates.get(i).getValue() > groupSocialPosition)
-                    {
+                    //if (panelCandidates.get(i).getValue() >= groupSocialPosition)
+                    //{
                         newPanel.add(panelCandidates.get(i).getKey());
-                    }
+                    //}
                 }
             }
             //STEP 4 END
-
-            //Debugging ONLY
-//            System.out.println("--------------------------------");
-//            System.out.println(getDataModel().getName());
-//            System.out.println(getDataModel().getEstimatedSocialLocation());
-//            Iterator< Tuple<String, Double> > j = panelCandidates.iterator();
-//            while (j.hasNext())
-//            {
-//                Tuple<String, Double> agent = j.next();
-//                System.out.println("Agent "+getConn().getAgentById(agent.getKey()).getName()+" has overall trust "+agent.getValue());
-//            }
-//            System.out.println("Panel size is: "+panelSize);
-//            System.out.println("Candidates are: "+panelCandidates.size());
-//            for (String panelmember: newPanel)
-//            {
-//                System.out.println(getConn().getAgentById(panelmember).getName()+" is in panel");
-//            }
-            //Debugging ONLY END
-
+            
             return newPanel;
         }
 
-        //private Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
-        private static Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
+        private Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
             @Override
             public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
             {
@@ -273,20 +249,59 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     @Override
     protected AgentType decideGroupStrategy() {
         //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
-        TreeSet<String> currentPanel = getDataModel().getPanel();
+        List<String> currentPanel = getDataModel().getPanel();
         int population = getDataModel().getMemberList().size();
 
         if (currentPanel.isEmpty()||(population == 1))  return null;
+
+        List<Tuple<AgentType, Double> > followersTypeCounterList = new LinkedList<Tuple<AgentType, Double> >();
+        List<Tuple<AgentType, Double> > panelTypeCounterList = new LinkedList<Tuple<AgentType, Double> >();
+
+        //We get lists containing panel's and followers' preferences in strategies in descending order
+        followersTypeCounterList = getStrategyPreferences(getDataModel().getMemberList());
+        panelTypeCounterList = getStrategyPreferences(currentPanel);
+
+        //Calculate the quotum. It is the number of supporters needed to pass a proposal. In this case proposal
+        //is the strategy of the group. The quotum is a function of the social belief of the group
+        double quotum = (population * getDataModel().getEstimatedSocialLocation())/population;
+
+        //Start with the most prefereed strategy of the panel (the strategy that the leader/leaders wish to follow
+        //If this strategy is supported by a high enough number of followers (quotum) then we pick this strategy
+        //Otherwise try the next best strategy. The lower the quotum the less easy is to get your proposal accepted
+        //This is the case of dictatorship.
+        Iterator<Tuple<AgentType, Double> > i = panelTypeCounterList.iterator();
+        while(i.hasNext())
+        {
+            int n = 0;
+            Tuple<AgentType, Double> panelPreference = i.next();
+            while (panelPreference.getKey() != followersTypeCounterList.get(n).getKey())
+            {
+                n++;
+            }
+            double followerSupport = followersTypeCounterList.get(n).getValue();
+            if (followerSupport >= quotum)
+            {
+                return panelPreference.getKey();
+            }
+        }
+        //If we have reached this statement then we have not found a well suported strategy probably because the
+        //quotum is very high (bottom of y axis - anarchism)
+        return null;
+    }
+
+    private List<Tuple<AgentType, Double>> getStrategyPreferences(List<String> agents) {
+        
+        int population = agents.size();
 
         Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
         Tuple<AgentType, Double> acTypes = new Tuple<AgentType, Double>(AgentType.AC, 0.0);
         Tuple<AgentType, Double> adTypes = new Tuple<AgentType, Double>(AgentType.AD, 0.0);
         Tuple<AgentType, Double> rTypes = new Tuple<AgentType, Double>(AgentType.R, 0.0);
 
-        //Count followers types
-        for (String followerID : getDataModel().getMemberList())
+        //Count types in agents list
+        for (String agentID : agents)
         {
-            switch(getConn().getAgentById(followerID).getAgentType())
+            switch(getConn().getAgentById(agentID).getAgentType())
             {
                 case AC:
                     double oldCountAC = acTypes.getValue();
@@ -307,46 +322,35 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             }
         }
 
-        List<Tuple<AgentType, Double> > followersTypeCounterList = new LinkedList<Tuple<AgentType, Double> >();
-        
         //Find the average of each type
         acTypes.setValue(acTypes.getValue()/population);
         adTypes.setValue(adTypes.getValue()/population);
         tftTypes.setValue(tftTypes.getValue()/population);
         rTypes.setValue(rTypes.getValue()/population);
 
+        List< Tuple<AgentType, Double> > preferencesRatioList = new LinkedList<Tuple<AgentType, Double> >();
+
         //Add the ratios to the list
-        followersTypeCounterList.add(acTypes);
-        followersTypeCounterList.add(adTypes);
-        followersTypeCounterList.add(tftTypes);
-        followersTypeCounterList.add(rTypes);
-        
-        int followers = (int) Math.round(population*(1 - getDataModel().getEstimatedSocialLocation()));
-        double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
+        preferencesRatioList.add(acTypes);
+        preferencesRatioList.add(adTypes);
+        preferencesRatioList.add(tftTypes);
+        preferencesRatioList.add(rTypes);
 
-        //FOR DEBUGGING ONLY
-//        System.out.println("--------------------");
-//        System.out.println(getDataModel().getName());
-//        System.out.println("Population: "+population);
-//        System.out.println("Panel size: "+currentPanel.size());
-//        System.out.println("Followers: "+ followers);
-//        System.out.println("Quotum: "+ quotum);
-//        System.out.println("AC: "+ acTypes.getValue());
-//        System.out.println("AD: "+ adTypes.getValue());
-//        System.out.println("TFT: "+ tftTypes.getValue());
-//        System.out.println("R: "+ rTypes.getValue());
-        //FOR DEBUGGING ONLY END
+        //Sort the preferred startegies in descending order
+        Collections.sort(preferencesRatioList, preferencesComparator);
 
-        Iterator<Tuple<AgentType, Double> > i = followersTypeCounterList.iterator();
-        while(i.hasNext())
-        {
-            Tuple<AgentType, Double> typeRatio = i.next();
-            if (typeRatio.getValue()>quotum)
-            {
-                return typeRatio.getKey();
-            }
-        }
-        return null;
+        return preferencesRatioList;
     }
+
+    private Comparator< Tuple<AgentType, Double> > preferencesComparator = new Comparator< Tuple<AgentType, Double> >() {
+        @Override
+        public int compare(Tuple<AgentType, Double> o1, Tuple<AgentType, Double> o2)
+        {
+            Double v1 = o1.getValue();
+            Double v2 = o2.getValue();
+            return (v1>v2 ? -1 : 1);
+        }
+    };
+
 }
 
