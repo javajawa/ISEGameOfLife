@@ -877,7 +877,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1, 0.3);
+                        trust = scale(trust, 1,0.3);
                     }
             }
             else    //Agent hunted rabbit so no trust issues
@@ -1311,4 +1311,45 @@ public class TestPoliticalAgent extends AbstractAgent
             	return (v1>v2 ? -1 : 1);
             }
 	};
+
+    @Override
+    protected Map<String, Double> updateTrustAfterLeadersHunt() {
+
+        String groupID = getDataModel().getGroupId();
+
+        if (groupID == null) return null;
+        
+        TreeSet<String> currentPanel = getConn().getGroupById(groupID).getPanel();
+
+        //If there is nobobdy to rate or this agent is member of the current panel do nothing
+        if (currentPanel.isEmpty()||(currentPanel.contains(getDataModel().getId()))) return null;
+        
+        AgentType groupStrategy = getConn().getGroupById(groupID).getGroupStrategy();
+        AgentType followerStrategy = getDataModel().getAgentType();
+
+        int population = getConn().getGroupById(groupID).getMemberList().size();
+        double rating = 1/population;
+
+        Map<String, Double> newTrustValues = new HashMap<String, Double>();
+
+        for (String panelMember: currentPanel)
+        {
+            if(getDataModel().getTrust(panelMember) != null)
+            {
+                if (followerStrategy == groupStrategy)
+                {
+                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 0.5, rating);
+                     newTrustValues.put(panelMember, currentTrustForPanelMember);
+                }
+                else
+                {
+                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -0.5, rating);
+                     newTrustValues.put(panelMember, currentTrustForPanelMember);
+                }
+            }
+        }
+    return newTrustValues;
+    }
 }
