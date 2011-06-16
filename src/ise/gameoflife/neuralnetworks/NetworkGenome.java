@@ -88,7 +88,7 @@ public class NetworkGenome extends Genome<NetworkGenome>
 		this.offsets = offsets;
 	}
 
-	public double[][] offset()
+	public double[][] offsets()
 	{
 		return offsets;
 	}
