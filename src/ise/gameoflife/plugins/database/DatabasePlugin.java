@@ -92,6 +92,7 @@ public class DatabasePlugin implements Plugin
 	    pruneOldAgents();
 	    findNewAgents();
 	    getGroupRoundData();
+	    wrap.getFreeAgentGroupData(round,ec.getUngroupedAgents().size());
 	    //disables agent round data collection for remote db, to speed it up
 	    //in other words, a hack
 	    if (!remote) getAgentRoundData();
@@ -258,7 +259,7 @@ public class DatabasePlugin implements Plugin
 	private void createFreeAgentGroup() 
 	{
 		int groupid = 0;
-//		wrap.groupAdd("FreeAgentsGroup", groupid, round);
+		wrap.groupAdd("FreeAgentsGroup", groupid, round);
 		//required to allow idMap to work for agents with no group
 		idMap.put(null,groupid);
 	}
