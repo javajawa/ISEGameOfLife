@@ -186,31 +186,31 @@ public class TestPoliticalAgent extends AbstractAgent
     */
     @Override
     protected String chooseGroup() {
-        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
-        for (String agent : freeToGroup.descendingSet())
-        {
-            System.out.println(getConn().getAgentById(agent).getName());
-        }
-        System.out.println(freeToGroup.size());
-        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
-        System.out.println();
-        System.out.println();
-        
 
-        System.out.println("-------------START-GROUP---------------------------");        
-        for (String groupID : getConn().availableGroups())
-        {
-            int size = getConn().getGroupById(groupID).getMemberList().size();
-            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-            for (String a: getConn().getGroupById(groupID).getMemberList())
-            {
-                System.out.println("    "+getConn().getAgentById(a).getName());
-            }
-        }
-        System.out.println("--------------END-GROUP---------------------------");
-        System.out.println();
-        System.out.println();
-
+//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
+//        for (String agent : freeToGroup.descendingSet())
+//        {
+//            System.out.println(getConn().getAgentById(agent).getName());
+//        }
+//        System.out.println(freeToGroup.size());
+//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
+//        System.out.println();
+//        System.out.println();
+//
+//
+//        System.out.println("-------------START-GROUP---------------------------");
+//        for (String groupID : getConn().availableGroups())
+//        {
+//            int size = getConn().getGroupById(groupID).getMemberList().size();
+//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+//            for (String a: getConn().getGroupById(groupID).getMemberList())
+//            {
+//                System.out.println("    "+getConn().getAgentById(a).getName());
+//            }
+//        }
+//        System.out.println("--------------END-GROUP---------------------------");
+//        System.out.println();
+//        System.out.println();
         
         String chosenGroup = "";
 
@@ -877,7 +877,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1, 0.3);
+                        trust = scale(trust, 1,0.3);
                     }
             }
             else    //Agent hunted rabbit so no trust issues
@@ -1040,13 +1040,13 @@ public class TestPoliticalAgent extends AbstractAgent
 
                     if (votes > 0)
                     {   //you're social belief moves towards the group's social posistion
-                        currentSocial = scale(currentSocial, -deltaSocial*10, Math.abs(overallMovement));
+                        currentSocial = scale(currentSocial, deltaSocial*10, Math.abs(overallMovement));
                     }
                     else if (votes < 0)
 
                     {
                         //you're social belief moves away from the group's social posistion
-                        currentSocial = scale(currentSocial, deltaSocial*10, Math.abs(overallMovement));
+                        currentSocial = scale(currentSocial, -deltaSocial*10, Math.abs(overallMovement));
 
                     }
                     //otherwise your social belief remains the same
@@ -1084,14 +1084,14 @@ public class TestPoliticalAgent extends AbstractAgent
                     if (moreLoyal() && moreHappy())
 
                     {
-                        currentEconomic = scale(currentEconomic, -deltaEconomic*10, Math.abs(overallMovement));
+                        currentEconomic = scale(currentEconomic, deltaEconomic*10, Math.abs(overallMovement));
 
                     }
                     else
                     {
                         if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
                         {
-                            currentEconomic = scale(currentEconomic, deltaEconomic*10, Math.abs(overallMovement));
+                            currentEconomic = scale(currentEconomic, -deltaEconomic*10, Math.abs(overallMovement));
                         }
                         else //if your beliefs are exactly the same with the group's beliefs
                         {
@@ -1311,4 +1311,45 @@ public class TestPoliticalAgent extends AbstractAgent
             	return (v1>v2 ? -1 : 1);
             }
 	};
+
+    @Override
+    protected Map<String, Double> updateTrustAfterLeadersHunt() {
+
+        String groupID = getDataModel().getGroupId();
+
+        if (groupID == null) return null;
+        
+        TreeSet<String> currentPanel = getConn().getGroupById(groupID).getPanel();
+
+        //If there is nobobdy to rate or this agent is member of the current panel do nothing
+        if (currentPanel.isEmpty()||(currentPanel.contains(getDataModel().getId()))) return null;
+        
+        AgentType groupStrategy = getConn().getGroupById(groupID).getGroupStrategy();
+        AgentType followerStrategy = getDataModel().getAgentType();
+
+        int population = getConn().getGroupById(groupID).getMemberList().size();
+        double rating = 1/population;
+
+        Map<String, Double> newTrustValues = new HashMap<String, Double>();
+
+        for (String panelMember: currentPanel)
+        {
+            if(getDataModel().getTrust(panelMember) != null)
+            {
+                if (followerStrategy == groupStrategy)
+                {
+                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 0.5, rating);
+                     newTrustValues.put(panelMember, currentTrustForPanelMember);
+                }
+                else
+                {
+                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -0.5, rating);
+                     newTrustValues.put(panelMember, currentTrustForPanelMember);
+                }
+            }
+        }
+    return newTrustValues;
+    }
 }

@@ -169,8 +169,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     * @param none
     * @return The new panel members.
     */
-        //private TreeSet<String> updatePanel(){
-        public TreeSet<String> updatePanel(){
+        private TreeSet<String> updatePanel(){
             
             double groupSocialPosition;
             int population, panelSize;
@@ -219,10 +218,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             //STEP 3: Sort the agents in descending order of trust values
             Collections.sort(panelCandidates, d);
             //STEP 3 END
-
+            
             //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
             TreeSet<String> newPanel = new TreeSet<String>();
-            if (!panelCandidates.isEmpty()&&(panelCandidates.size() > panelSize))//Panel is not empty and we have enough candidates to select leaders
+            if (!panelCandidates.isEmpty()&&(panelCandidates.size() >= panelSize))//Panel is not empty and we have enough candidates to select leaders
             {
                 for (int i = 0; i < panelSize; i++)
                 {
@@ -230,6 +229,24 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 }
             }
             //STEP 4 END
+
+            //Debugging ONLY
+            System.out.println("--------------------------------");
+            System.out.println(getDataModel().getName());
+            System.out.println(getDataModel().getEstimatedSocialLocation());
+//            Iterator< Tuple<String, Double> > j = panelCandidates.iterator();
+//            while (j.hasNext())
+//            {
+//                Tuple<String, Double> agent = j.next();
+//                System.out.println("Agent "+getConn().getAgentById(agent.getKey()).getName()+" has overall trust "+agent.getValue());
+//            }
+//            System.out.println("Panel size is: "+panelSize);
+//            System.out.println("Candidates are: "+panelCandidates.size());
+//            for (String panelmember: newPanel)
+//            {
+//                System.out.println(getConn().getAgentById(panelmember).getName()+" is in panel");
+//            }
+            //Debugging ONLY END
 
             return newPanel;
         }
@@ -249,13 +266,14 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     protected AgentType decideGroupStrategy() {
         //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
         TreeSet<String> currentPanel = getDataModel().getPanel();
-        if (currentPanel.isEmpty())  return null;
+        int population = getDataModel().getMemberList().size();
+
+        if (currentPanel.isEmpty()||(population == 1))  return null;
 
         Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
         Tuple<AgentType, Double> acTypes = new Tuple<AgentType, Double>(AgentType.AC, 0.0);
         Tuple<AgentType, Double> adTypes = new Tuple<AgentType, Double>(AgentType.AD, 0.0);
         Tuple<AgentType, Double> rTypes = new Tuple<AgentType, Double>(AgentType.R, 0.0);
-
 
         //Count followers types
         for (String followerID : getDataModel().getMemberList())
@@ -281,10 +299,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             }
         }
 
-        List<Tuple<AgentType, Double> > typesCounterList = new LinkedList<Tuple<AgentType, Double> >();
-
-        int population = getDataModel().getMemberList().size();
-
+        List<Tuple<AgentType, Double> > followersTypeCounterList = new LinkedList<Tuple<AgentType, Double> >();
+        
         //Find the average of each type
         acTypes.setValue(acTypes.getValue()/population);
         adTypes.setValue(adTypes.getValue()/population);
@@ -292,15 +308,28 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         rTypes.setValue(rTypes.getValue()/population);
 
         //Add the ratios to the list
-        typesCounterList.add(acTypes);
-        typesCounterList.add(adTypes);
-        typesCounterList.add(tftTypes);
-        typesCounterList.add(rTypes);
-
-        int followers = population - currentPanel.size();
-        double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
+        followersTypeCounterList.add(acTypes);
+        followersTypeCounterList.add(adTypes);
+        followersTypeCounterList.add(tftTypes);
+        followersTypeCounterList.add(rTypes);
         
-        Iterator<Tuple<AgentType, Double> > i = typesCounterList.iterator();
+        int followers = (int) Math.round(population*(1 - getDataModel().getEstimatedSocialLocation()));
+        double quotum = (followers * getDataModel().getEstimatedSocialLocation())/population;
+
+        //FOR DEBUGGING ONLY
+//        System.out.println("--------------------");
+//        System.out.println(getDataModel().getName());
+//        System.out.println("Population: "+population);
+//        System.out.println("Panel size: "+currentPanel.size());
+//        System.out.println("Followers: "+ followers);
+//        System.out.println("Quotum: "+ quotum);
+//        System.out.println("AC: "+ acTypes.getValue());
+//        System.out.println("AD: "+ adTypes.getValue());
+//        System.out.println("TFT: "+ tftTypes.getValue());
+//        System.out.println("R: "+ rTypes.getValue());
+        //FOR DEBUGGING ONLY END
+
+        Iterator<Tuple<AgentType, Double> > i = followersTypeCounterList.iterator();
         while(i.hasNext())
         {
             Tuple<AgentType, Double> typeRatio = i.next();
@@ -311,39 +340,5 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         }
         return null;
     }
-
-
-    private void ratePanel(){
-        AgentType groupStrategy = getDataModel().getGroupStrategy();
-        TreeSet<String> oldPanel = getDataModel().getPanel();
-        int population = getDataModel().getMemberList().size();
-        int followers =  population - oldPanel.size();
-        double rating = 1/followers;
-
-        for (String follower: getDataModel().getMemberList())
-        {
-            AgentType followerStrategy = getConn().getAgentById(follower).getAgentType();
-            Iterator<String > i = oldPanel.iterator();
-            while(i.hasNext())
-            {
-                String panelMemberID = i.next();
-                if((!oldPanel.contains(follower))&&(getConn().getAgentById(follower).getTrust(panelMemberID) != null))
-                {
-                    if (followerStrategy == groupStrategy)
-                    {
-                         double currentTrustForPanelMember = getConn().getAgentById(follower).getTrust(panelMemberID);
-                         currentTrustForPanelMember = scale(currentTrustForPanelMember, 1, rating);
-                    }
-                    else
-                    {
-                        double currentTrustForPanelMember = getConn().getAgentById(follower).getTrust(panelMemberID);
-                        currentTrustForPanelMember = scale(currentTrustForPanelMember, -1, rating);
-                    }
-                }
-            }
-        }
-    }
-
-
 }
 

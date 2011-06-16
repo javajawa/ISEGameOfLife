@@ -174,5 +174,11 @@ public class TestGroupableAgent extends AbstractAgent
 	{
 		return 0.5;
 	}
+
+    @Override
+    protected Map<String, Double> updateTrustAfterLeadersHunt() {
+        return null;
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
                
 }
