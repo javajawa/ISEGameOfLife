@@ -4,6 +4,7 @@ import ise.gameoflife.simulations.AgentsAndGroup;
 import ise.gameoflife.simulations.CLIPolitics;
 import ise.gameoflife.simulations.DoubleAgent;
 import ise.gameoflife.simulations.FreeAgentsTest;
+import ise.gameoflife.simulations.Loans;
 import ise.gameoflife.simulations.SingleAgent;
 import ise.gameoflife.simulations.Politics;
 import java.util.logging.Level;
@@ -24,7 +25,8 @@ final class BuildSimulations
 		AgentsAndGroup.class,
 		Politics.class,
 		CLIPolitics.class,
-		FreeAgentsTest.class
+		FreeAgentsTest.class,
+                Loans.class
 	};
 
 	private BuildSimulations()

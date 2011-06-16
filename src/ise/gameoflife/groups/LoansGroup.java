@@ -17,34 +17,43 @@ import java.util.List;
  */
 public class LoansGroup extends AbstractGroupAgent {
 
+    //TODO: 1) Add history of charities/loans.
+    //      2) Add history of reserved food
+    //      3) Add an abstract inspectOtherGroups() in GroupDataModel. Concrete implementation here.
+    // *What if we use public static methods for the histories to keep the framework intact?
     @Override
     protected void onActivate() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //Do nothing!
     }
 
     @Override
     protected boolean respondToJoinRequest(String playerID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO: To keep it simple always accept agents no matter what (Is that ok?) otherwise reuse code
+        return true;
     }
 
     @Override
     protected List<HuntingTeam> selectTeams() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO: Reuse code from TestPoliticalGroup
+        return null;
     }
 
     @Override
     protected void onMemberLeave(String playerID, Reasons reason) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO: Reuse code from TestPoliticalGroup but it doesn't really matter because we don't care about politics
     }
 
     @Override
     protected AgentType decideGroupStrategy() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO: The panel should make a decision. This decision will determine how much food we will spend this round/
+        //The amount spent is taken from the reserve pool. Two possibilities: Either groups go hunting and spend energy = food
+        //or spend money for public service (build roads, schools, big pointless sculptures etc)
+        return null;
     }
 
     @Override
     protected void beforeNewRound() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO: Reuse code from TestPoliticalGroup
     }
 
 }
