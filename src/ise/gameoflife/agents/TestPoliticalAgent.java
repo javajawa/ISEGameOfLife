@@ -1040,13 +1040,13 @@ public class TestPoliticalAgent extends AbstractAgent
 
                     if (votes > 0)
                     {   //you're social belief moves towards the group's social posistion
-                        currentSocial = scale(currentSocial, -deltaSocial*10, Math.abs(overallMovement));
+                        currentSocial = scale(currentSocial, deltaSocial*10, Math.abs(overallMovement));
                     }
                     else if (votes < 0)
 
                     {
                         //you're social belief moves away from the group's social posistion
-                        currentSocial = scale(currentSocial, deltaSocial*10, Math.abs(overallMovement));
+                        currentSocial = scale(currentSocial, -deltaSocial*10, Math.abs(overallMovement));
 
                     }
                     //otherwise your social belief remains the same
@@ -1084,14 +1084,14 @@ public class TestPoliticalAgent extends AbstractAgent
                     if (moreLoyal() && moreHappy())
 
                     {
-                        currentEconomic = scale(currentEconomic, -deltaEconomic*10, Math.abs(overallMovement));
+                        currentEconomic = scale(currentEconomic, deltaEconomic*10, Math.abs(overallMovement));
 
                     }
                     else
                     {
                         if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
                         {
-                            currentEconomic = scale(currentEconomic, deltaEconomic*10, Math.abs(overallMovement));
+                            currentEconomic = scale(currentEconomic, -deltaEconomic*10, Math.abs(overallMovement));
                         }
                         else //if your beliefs are exactly the same with the group's beliefs
                         {
