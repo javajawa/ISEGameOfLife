@@ -23,6 +23,7 @@ import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -228,6 +229,13 @@ public abstract class AbstractGroupAgent implements Participant
 			shared += value;
 		}
 
+                //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
+                double tax = decideTaxForReservePool();
+                double pooledFood = tax*shared;
+                this.setReservedFood(getDataModel().getCurrentReservedFood() + pooledFood);
+                shared = shared - pooledFood;
+                //Loans simulation addition end
+
 		shared = shared * taxRate / dm.getMemberList().size();
 
 		Map<String, Double> result = new HashMap<String, Double>(huntResult.size());
@@ -353,9 +361,14 @@ public abstract class AbstractGroupAgent implements Participant
 		this.dm.setGroupStrategy(strategy);
 	}
 
-	protected final void setPanel(TreeSet<String> newPanel)
+	protected final void setPanel(List<String> newPanel)
 	{
 		this.dm.setPanel(newPanel);
+	}
+
+        protected final void setReservedFood(double newAmount)
+	{
+		this.dm.setReservedFoodHistory(newAmount);
 	}
 
 	/**
@@ -509,7 +522,9 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
         
         abstract protected AgentType decideGroupStrategy();
-	abstract protected void beforeNewRound();
+	abstract protected double decideTaxForReservePool();
+        abstract protected void beforeNewRound();
+
 
 	/**
 	 * @return the conn

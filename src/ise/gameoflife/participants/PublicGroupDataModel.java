@@ -6,6 +6,7 @@ import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.TurnType;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -110,13 +111,14 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
         return source.getGroupStrategy();
     }
 
-    public double getGroupSocialLocation() {
-        return source.getGroupSocialLocation();
-    }
-
-    public TreeSet<String> getPanel() {
+    public List<String> getPanel() {
         return source.getPanel();
     }
+
+    public double getCurrentReservedFood() {
+        return source.getCurrentReservedFood();
+    }
+
     /**
      * Gets the proposals made this turn, and the results
      * The value will be null except on the {@link TurnType#Voting Voting} turn

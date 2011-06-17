@@ -9,6 +9,7 @@ import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -42,7 +43,9 @@ class GroupDataModel extends APlayerDataModel
 
         private AgentType groupStrategy;
 
-        private TreeSet<String> panel;
+        private List<String> panel = new LinkedList<String>();
+
+        private History<Double> reservedFoodHistory;
         
 	@Deprecated
 	GroupDataModel()
@@ -68,6 +71,8 @@ class GroupDataModel extends APlayerDataModel
 		ret.economicPosition = new History<Double>(50);
 		ret.propositionHistory = new History<HashMap<Proposition, Integer>>(50);
 		ret.economicPosition.newEntry(init.getInitialEconomicBelief());
+                ret.reservedFoodHistory = new History<Double>(50);
+                ret.reservedFoodHistory.newEntry(0.0);
 		return ret;
 	}
 
@@ -185,6 +190,7 @@ class GroupDataModel extends APlayerDataModel
 					++n;
 				}
 			}
+                        
 			if (n > 0) avg_trusts.add(sum / n);
 		}
 
@@ -204,20 +210,14 @@ class GroupDataModel extends APlayerDataModel
 		for (Double v : avg_trusts) variance += (v - mu)*(v - mu);
 
 		double st_dev = 2 * Math.sqrt(variance / n);
-
 		return 1-st_dev;
 	}
 
-        double getGroupSocialLocation(){
-            return 0.0;
-        }
-
-
-        TreeSet<String> getPanel(){
+        List<String> getPanel(){
             return this.panel;
         }
 
-        void setPanel(TreeSet<String> nPanel){
+        void setPanel(List<String> nPanel){
             this.panel = nPanel;
         }
         
@@ -228,6 +228,15 @@ class GroupDataModel extends APlayerDataModel
         void setGroupStrategy(AgentType strategy){
             this.groupStrategy = strategy;
         }
+
+        void setReservedFoodHistory(double pooledFood){
+            reservedFoodHistory.setValue(pooledFood);
+        }
+
+	double getCurrentReservedFood()
+	{
+		return reservedFoodHistory.getValue();
+	}
 
 	int size()
 	{

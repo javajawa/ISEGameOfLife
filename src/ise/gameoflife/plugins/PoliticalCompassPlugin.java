@@ -75,7 +75,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 		BufferedImage bi = new BufferedImage(this.getSize().width,
 						this.getSize().height, BufferedImage.TYPE_INT_ARGB);
 		Graphics big = bi.getGraphics();
-		big.setClip(0, 0, 500, 500);
+		big.setClip(0, 0, this.getSize().width, this.getSize().height);
 		this.paint(big);
 		try
 		{
@@ -86,8 +86,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 		}
 		catch (Exception e)
 		{
-			System.out.println(
-							"Error writing political compass image: " + this.framecount);
+			System.out.println("Error writing political compass image: " + this.framecount);
 		}
 	}
 
@@ -115,7 +114,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 		{
 			PublicGroupDataModel dm = ec.getGroupById(group);
 			double size = 2 * Math.sqrt((double)dm.size());
-			logger.log(Level.INFO, "{0} [{1}) '{'{2},{3},{4}'}'", new Object[]{group,
+			logger.log(Level.INFO, "{0} [{1}] '{'{2},{3},{4}'}'", new Object[]{group,
 							dm.getName(), dm.getCurrentEconomicPoisition(),
 							dm.getEstimatedSocialLocation(), dm.size()});
 			drawAgent(g, dm.getEstimatedSocialLocation(), dm.getCurrentEconomicPoisition(), (int)size, dm.getName());

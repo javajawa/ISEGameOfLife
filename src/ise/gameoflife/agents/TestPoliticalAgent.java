@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,16 +41,15 @@ public class TestPoliticalAgent extends AbstractAgent
 	private static final long serialVersionUID = 1L;
 
         private String invitationToGroup = null;
-
+       
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static HashMap<String, String> groupFounders = new HashMap<String, String>();
         private final static TreeSet<String> membersToKickOut = new TreeSet<String>();        
         private final static TreeSet<String> freeToGroup = new TreeSet<String>();                
 	private History<Double> satisfaction = new History<Double>(1);
 
-        private static int count = 1;
-
-	private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
+        Random randomGenerator = new Random();
+        
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -111,7 +111,7 @@ public class TestPoliticalAgent extends AbstractAgent
         
         //get the previous satisfaction value
         Double previousSatisfaction = satisfaction.getValue();        
-
+        if (getConn().getGroupById(getDataModel().getGroupId()) == null) return false;
         //compute current satisfaction, based on your socio economic vector distance with the group        
         double myEconomic = getDataModel().getEconomicBelief();
         double mySocial = getDataModel().getSocialBelief();
@@ -162,8 +162,10 @@ public class TestPoliticalAgent extends AbstractAgent
     protected void checkToEvict() {
         PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
         
-        //used when agent is about to issue the command to leave the group of only himself and another,
+        //Used when agent is about to issue the command to leave the group of only himself and another,
         //it searches for the other agent and tells it leave the group as well
+        if (myGroup == null) return;
+        
         if(myGroup.getMemberList().size() == 2)
         {
              for(String member : myGroup.getMemberList())
@@ -186,66 +188,65 @@ public class TestPoliticalAgent extends AbstractAgent
     */
     @Override
     protected String chooseGroup() {
+
+//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
+//        for (String agent : freeToGroup.descendingSet())
+//        {
+//            System.out.println(getConn().getAgentById(agent).getName());
+//        }
+//        System.out.println(freeToGroup.size());
+//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
+//        System.out.println();
+//        System.out.println();
+//
+//
+//        System.out.println("-------------START-GROUP---------------------------");
+//        for (String groupID : getConn().availableGroups())
+//        {
+//            int size = getConn().getGroupById(groupID).getMemberList().size();
+//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+//            for (String a: getConn().getGroupById(groupID).getMemberList())
+//            {
+//                System.out.println("    "+getConn().getAgentById(a).getName());
+//            }
+//        }
+//        System.out.println("--------------END-GROUP---------------------------");
+//        System.out.println();
+//        System.out.println();
+        
         String chosenGroup = "";
 
-        //If agent is already member of a group remove it from the founders or invitation holders lists
-        //and check if it is satisfied. If not return leaveGroup request
-
-        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
-        for (String agent : freeToGroup.descendingSet())
-        {
-            System.out.println(getConn().getAgentById(agent).getName());
-        }
-        System.out.println(freeToGroup.size());
-        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
-        System.out.println();
-        System.out.println();
-        
-
-        System.out.println("-------------START-GROUP---------------------------");        
-        for (String groupID : getConn().availableGroups())
-        {
-            int size = getConn().getGroupById(groupID).getMemberList().size();
-            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-            for (String a: getConn().getGroupById(groupID).getMemberList())
-            {
-                System.out.println("    "+getConn().getAgentById(a).getName());
-            }
-        }
-        System.out.println("--------------END-GROUP---------------------------");
-        System.out.println();
-        System.out.println();
-
-
-        
+        //If you're not available to group and you are part of a group already
+        //Note: an agent is allowed to not be free to group and not be part of a group,
+        //      this agent would be waiting to receive an invitation or wants to return one
         if (!freeToGroup.contains(this.getId()) && getDataModel().getGroupId() != null)
         {
-
-//            if (membersToKickOut.contains(this.getId()))
-//            {
-//                    membersToKickOut.remove(this.getId());
-//                    return leaveGroup;
-//            }            
-//            
-//            if (SatisfiedInGroup())
-//            { 
-//                return null;
-//            }
-//            else
-//            {
-//                checkToEvict();
-//                return leaveGroup;
-//            }
-            return null;
+            //If you have been told to leave this group then do so
+            if (membersToKickOut.contains(this.getId()))
+            {
+                    membersToKickOut.remove(this.getId());
+                    return leaveGroup;
+            }            
+          
+            //If you're satisfied in the group, nothing changes for you, you remain not free to group with others
+            if (SatisfiedInGroup())
+            { 
+                return null;
+            }
+            else//Otherwise, you need to leave the group and tell the other guy to leave if its just you and him in the group
+            {
+                checkToEvict();
+                return leaveGroup;
+            }
         }
-        else 
-        {
-            //If this agent has a pending invitation to a group, return the invitation
+        else//Otherwise, you are not yet part of a group:  
+        {           
+            //If you have a pending invitation to a group then return the invitation
             if(invitationToGroup != null && invitationHolders.contains(this.getId()))
             {
                 return invitationToGroup;
             }
-            else
+            else//Otherwise, you have to look for a grouping:
             {
                 //If you're here then you're still a free agent, so, firstly try to find an optimal group to join with            
                 if(freeToGroup.contains(this.getId()) && !getConn().availableGroups().isEmpty())
@@ -328,7 +329,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
 
             //If top candidate has evaluation above the threshold then choose that group
-            if (topCandidateHeuristicValue > 0.6)
+            if (topCandidateHeuristicValue > 0.4)
             { 
                 chosenGroup = partnershipCandidates.get(0).getKey();
                 freeToGroup.remove(this.getId());                
@@ -397,7 +398,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
 
             //If top candidate has evaluation above the threshold then choose that group
-            if (topCandidateHeuristicValue > 0.6)
+            if (topCandidateHeuristicValue > 0.3)
             {
                 String invitee = partnershipCandidates.get(0).getKey();
                 
@@ -447,7 +448,7 @@ public class TestPoliticalAgent extends AbstractAgent
             heuristicValue = 0.3*esFaction;                                   
         }
                 
-        if (heuristicValue > 0.6)
+        if (heuristicValue > 0.3)
         {
             //you accept the invitation and are no longer free to group with anyone else
             freeToGroup.remove(invitee);
@@ -458,23 +459,7 @@ public class TestPoliticalAgent extends AbstractAgent
             //you reject the invitation
             return false;
         }                               
-    }
-    
-    private String getFounderOfGroup()
-    {
-        String founder = "";
-        if(!groupFounders.isEmpty())
-        {                                          
-            for(String agent : groupFounders.keySet())
-            {                          
-                if(groupFounders.get(agent).equals(invitationToGroup))
-                {
-                    founder = agent;
-                }
-            }
-        }        
-        return founder;
-    }
+    }    
     
     @Override
     protected void groupApplicationResponse(boolean accepted) {        
@@ -602,8 +587,8 @@ public class TestPoliticalAgent extends AbstractAgent
     protected ProposalType makeProposal()
     {
             //Note : No need to check if agent is in a group. This is done by doMakeProposal
-
             String groupId = this.getDataModel().getGroupId();
+            if (getConn().getGroupById(groupId) == null) return ProposalType.staySame;
             ProposalType proposal;
             
             //Get the economic beliefs of the agent and the group
@@ -856,6 +841,7 @@ public class TestPoliticalAgent extends AbstractAgent
             Food lastHunted = this.getDataModel().getLastHunted();
             
             //Get the members of the hunting team
+            if (this.getDataModel().getHuntingTeam() == null) return null;
             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
 
             //If agent didn't go hunting or has no team pair then do nothing
@@ -890,7 +876,7 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                        trust = scale(trust, -1, 0.3);
+                            trust = scale(trust, -1, 0.3);
                     }
                     else //Opponent cooperated
                     {
@@ -970,8 +956,8 @@ public class TestPoliticalAgent extends AbstractAgent
     protected double updateHappinessAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
-            Double currentHappiness = getDataModel().getCurrentHappiness();            
-
+            Double currentHappiness = getDataModel().getCurrentHappiness();
+            if (getDataModel().getGroupId() == null) return currentHappiness;
 
             if (currentHappiness == null)
             {
@@ -981,7 +967,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
 
             //If this concerns you...
-            if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+            if (getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
             {
                     //If votes > 0 you are happy your proposition was passed
                     //If votes < 0 you are dissapointed your proposition was not passed
@@ -1016,9 +1002,9 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
                 else
                 {
-                       proposerTrust = 0;
+                       proposerTrust = 0.1;
                 }
-                
+
                 //if votes > 0 we increase the trust for proposer
                 //if votes < 0 we decrease the trust for proposer
                 proposerTrust = scale(proposerTrust, votes, Math.abs(overallMovement));
@@ -1328,4 +1314,58 @@ public class TestPoliticalAgent extends AbstractAgent
             	return (v1>v2 ? -1 : 1);
             }
 	};
+
+    /**
+    * This method allows followers to rate their leaders' decisions. The rating is based only on the external
+    * strategy followed by the group.
+    * @param none
+    * @return A map structure containing new trust values for every member of the current panel of the group that this agent belongs to
+    */
+    @Override
+    protected Map<String, Double> updateTrustAfterLeadersHunt() {
+
+        String groupID = getDataModel().getGroupId();
+        //If this is a free agent then no leader to rate
+        if (groupID == null) return null;
+
+        //Get the current panel of te group that this agent belongs to
+        List<String> currentPanel = getConn().getGroupById(groupID).getPanel();
+
+        //If there is nobobdy to rate or this agent is member of the current panel do nothing
+        if (currentPanel.isEmpty()||(currentPanel.contains(getDataModel().getId()))) return null;
+
+        //Get the preferred strategy for an agent i.e. its type and the strategy adopted by the panel
+        //Positive or negative rating depends on the similarity of these two strategies
+        AgentType groupStrategy = getConn().getGroupById(groupID).getGroupStrategy();
+        AgentType followerStrategy = getDataModel().getAgentType();
+
+        //The rating weighting is a simple function of the group's population
+        int population = getConn().getGroupById(groupID).getMemberList().size();
+        double rating = 1/population;
+
+        Map<String, Double> newTrustValues = new HashMap<String, Double>();
+
+        //If the agent supports the group's strategy it will give a positive rating to every member of the panel
+        //The reward to a panel member is to increase its current trust value from this agent. Accordingly, the
+        //punishment for a bad decision is to decrease the trust value! Note that there is a threshold associated with a leader (panel member)
+        for (String panelMember: currentPanel)
+        {
+            if(getDataModel().getTrust(panelMember) != null)
+            {
+                if (followerStrategy == groupStrategy)
+                {
+                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 1, rating);
+                     newTrustValues.put(panelMember, currentTrustForPanelMember);
+                }
+                else
+                {
+                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -1, rating);
+                     newTrustValues.put(panelMember, currentTrustForPanelMember);
+                }
+            }
+        }
+    return newTrustValues;
+    }
 }

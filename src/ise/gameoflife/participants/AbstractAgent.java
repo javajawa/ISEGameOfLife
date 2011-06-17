@@ -96,6 +96,12 @@ abstract public class AbstractAgent implements Participant
 			{
 				dm.setTrust(agent, t.get(agent));
 			}
+                        Map<String,Double> t1 = updateTrustAfterLeadersHunt();
+                        if (t1==null) return;
+			for (String agent : t1.keySet())
+			{
+				dm.setTrust(agent, t1.get(agent));
+			}
 		}
 	}
 
@@ -636,6 +642,7 @@ abstract public class AbstractAgent implements Participant
 	 * values should be scaled between 0 and 1.
 	 */
 	abstract protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
+	abstract protected Map<String, Double> updateTrustAfterLeadersHunt();
 	abstract protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes,	double overallMovement);

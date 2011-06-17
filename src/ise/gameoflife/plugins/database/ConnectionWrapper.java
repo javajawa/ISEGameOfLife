@@ -276,4 +276,18 @@ final class ConnectionWrapper
 		    logger.log(Level.WARNING,"Failed to create database tables", ex);
 		}
 	}
+	void getFreeAgentGroupData(int round,int pop) {
+	         try {
+		 //updates the FreeAgensGroup
+		 roundGroup.setInt(1, simId);
+		 roundGroup.setInt(2, round);
+		 roundGroup.setInt(3,0);
+		 roundGroup.setInt(4,pop);
+		 roundGroup.setDouble(5,-1);
+		 roundGroup.setDouble(6,-1);
+		 roundGroup.addBatch();
+	    } catch (SQLException ex) {
+		logger.log(Level.WARNING, null, ex);
+	    }
+	}
 }

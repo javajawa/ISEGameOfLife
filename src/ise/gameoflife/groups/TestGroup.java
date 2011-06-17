@@ -77,5 +77,10 @@ public class TestGroup extends AbstractGroupAgent
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    protected double decideTaxForReservePool() {
+        return 0;
+    }
 	
 }
