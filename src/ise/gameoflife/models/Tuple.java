@@ -33,4 +33,35 @@ public class Tuple<K, V> {
     public void setValue(V newValue){
         this.value = newValue;
     }
+
+    public void setKey(K newKey){
+        this.key = newKey;
+    }
+
+    public void add(K newKey, V newValue){
+        this.key = newKey;
+        this.value = newValue;
+    }
+
+    public boolean contains(K cKey, V cValue){
+        if ((this.key == cKey)&&(this.value == cValue))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public boolean equalsKey(K cKey){
+        if (this.key == cKey)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

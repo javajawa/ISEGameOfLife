@@ -186,6 +186,7 @@ class GroupDataModel extends APlayerDataModel
 					++n;
 				}
 			}
+                        
 			if (n > 0) avg_trusts.add(sum / n);
 		}
 
@@ -205,7 +206,6 @@ class GroupDataModel extends APlayerDataModel
 		for (Double v : avg_trusts) variance += (v - mu)*(v - mu);
 
 		double st_dev = 2 * Math.sqrt(variance / n);
-
 		return 1-st_dev;
 	}
 

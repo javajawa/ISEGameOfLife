@@ -189,7 +189,6 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                 // Draw all agents agents
           try{
-
                 for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
                 {
                         g.setColor(Color.BLUE);

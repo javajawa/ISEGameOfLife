@@ -9,16 +9,38 @@ import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractAgent;
+import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.AgentType;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
  * @author george
  */
 public class LoansAgent extends AbstractAgent{
+
+    private static final long serialVersionUID = 1L;
+
+    private static int groupCounter = 0;
+
+    @Deprecated
+    public LoansAgent()
+    {
+    	super();
+    }
 
     public LoansAgent(double initialFood, double consumption, AgentType type,
                               double socialBelief, double economicBelief){
@@ -28,20 +50,37 @@ public class LoansAgent extends AbstractAgent{
 
     @Override
     protected void onActivate() {
-        //Do nothing!
     }
 
     @Override
     protected void beforeNewRound() {
-        //Do nothing!
     }
 
     @Override
     protected String chooseGroup() {
-        //TODO: Reuse the code of TestPoliticalAgent. No change here
-        return null;
-    }
+        Random randomGenerator = new Random();
+        
+        if (this.getDataModel().getGroupId() != null) return null;
 
+        if (randomGenerator.nextDouble() > 0.9)
+        {
+                Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+                return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
+        }
+        else
+        {
+            Set<String> groups = getConn().availableGroups();
+            int randomIndex = (int)Math.round(randomGenerator.nextDouble()*groups.size());
+            Iterator<String> i = groups.iterator();
+            String groupID = null;
+            for(int j = 0; j<randomIndex; j++)
+            {
+                groupID = i.next();
+            }
+            return groupID;
+        }
+    }
+    
     @Override
     protected void groupApplicationResponse(boolean accepted) {
         //TODO: Reuse the code of TestPoliticalAgent. No change here
@@ -57,13 +96,13 @@ public class LoansAgent extends AbstractAgent{
     @Override
     protected ProposalType makeProposal() {
         //Do nothing. No proposals for this simulation
-        return null;
+        return ProposalType.staySame;
     }
 
     @Override
     protected VoteType castVote(Proposition p) {
         //Do nothing. No proposal = no vote
-        return null;
+        return VoteType.Abstain;
     }
 
     @Override
@@ -128,7 +167,5 @@ public class LoansAgent extends AbstractAgent{
 
     @Override
     protected void onInvite(String group) {
-        //TODO: Reuse code from TestPoliticalAgent
     }
-
 }

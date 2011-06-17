@@ -264,7 +264,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         //Calculate the quotum. It is the number of supporters needed to pass a proposal. In this case proposal
         //is the strategy of the group. The quotum is a function of the social belief of the group
         double quotum = (population * getDataModel().getEstimatedSocialLocation())/population;
-System.out.println(getDataModel().getEstimatedSocialLocation());
+
         //Start with the most prefereed strategy of the panel (the strategy that the leader/leaders wish to follow
         //If this strategy is supported by a high enough number of followers (quotum) then we pick this strategy
         //Otherwise try the next best strategy. The lower the quotum the less easy is to get your proposal accepted
