@@ -229,6 +229,10 @@ public abstract class AbstractGroupAgent implements Participant
 			shared += value;
 		}
 
+                //Added for loans simulation. In any other simulation tax = 0 always
+                double tax = decideTaxForReservePool();
+                shared = shared*(1-tax);
+
 		shared = shared * taxRate / dm.getMemberList().size();
 
 		Map<String, Double> result = new HashMap<String, Double>(huntResult.size());
@@ -510,7 +514,9 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
         
         abstract protected AgentType decideGroupStrategy();
-	abstract protected void beforeNewRound();
+	abstract protected double decideTaxForReservePool();
+        abstract protected void beforeNewRound();
+
 
 	/**
 	 * @return the conn

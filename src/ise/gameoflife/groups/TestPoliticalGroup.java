@@ -352,5 +352,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         }
     };
 
+    @Override
+    protected double decideTaxForReservePool() {
+        return 0;
+    }
+
 }
 

@@ -189,7 +189,7 @@ public class LoansAgent extends AbstractAgent{
 
     @Override
     protected Food giveAdvice(String agent, HuntingTeam agentsTeam) {
-        //TODO: If we get rid of advice in chooseFoo() then do nothing here
+        //Do nothing
         return null;
     }
 
@@ -256,31 +256,31 @@ public class LoansAgent extends AbstractAgent{
     * @param none
     * @return A list containing the food for cooperation and defection
     */
-        private List<Food> getFoodTypes(){
-            List<Food> foodArray = new LinkedList<Food>();
-            List<Food> foodList = new LinkedList<Food>();
-            Food cooperateFood, defectFood;
+    private List<Food> getFoodTypes(){
+        List<Food> foodArray = new LinkedList<Food>();
+        List<Food> foodList = new LinkedList<Food>();
+        Food cooperateFood, defectFood;
 
-            //Stores the two sources in an array
-            for (Food noms : getConn().availableFoods())
-            {
-                    foodArray.add(noms);
-            }
+        //Stores the two sources in an array
+        for (Food noms : getConn().availableFoods())
+        {
+                foodArray.add(noms);
+        }
 
-            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
-            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
-            {
-                    cooperateFood = foodArray.get(0);
-                    defectFood = foodArray.get(1);
-            }
-            else
-            {
-                    cooperateFood = foodArray.get(1);
-                    defectFood = foodArray.get(0);
-            }
+        //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
+        if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
+        {
+                cooperateFood = foodArray.get(0);
+                defectFood = foodArray.get(1);
+        }
+        else
+        {
+                cooperateFood = foodArray.get(1);
+                defectFood = foodArray.get(0);
+        }
 
-            foodList.add(cooperateFood);
-            foodList.add(defectFood);
-            return foodList;
-       }
+        foodList.add(cooperateFood);
+        foodList.add(defectFood);
+        return foodList;
+   }
 }

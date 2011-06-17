@@ -7,6 +7,7 @@ package ise.gameoflife.groups;
 
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.AgentType;
@@ -22,11 +23,12 @@ import java.util.Random;
  */
 public class LoansGroup extends AbstractGroupAgent {
     private static final long serialVersionUID = 1L;
-    //TODO: 1) Add history of charities/loans.
-    //      2) Add history of reserved food
-    //      3) Add an abstract inspectOtherGroups() in GroupDataModel. Concrete implementation here.
+    //TODO: 1) Add an abstract inspectOtherGroups() in GroupDataModel. Concrete implementation here.
     // *What if we use public static methods for the histories to keep the framework intact?
 
+    private History<Double> loanHistory;
+    private History<Double> foodReserveHistory; 
+    
     @Deprecated
     public LoansGroup() {
     	super();
@@ -43,7 +45,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
     @Override
     protected boolean respondToJoinRequest(String playerID) {
-        //TODO: To keep it simple always accept agents no matter what (Is that ok?) otherwise reuse code
+        //To keep it simple always accept agents no matter what 
         return true;
     }
 
@@ -88,6 +90,11 @@ public class LoansGroup extends AbstractGroupAgent {
     @Override
     protected void beforeNewRound() {
         //TODO: Reuse code from TestPoliticalGroup
+    }
+
+    @Override
+    protected double decideTaxForReservePool() {
+        return 0;
     }
 
 }
