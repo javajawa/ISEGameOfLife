@@ -5,6 +5,7 @@
 
 package ise.gameoflife.agents;
 
+import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
 import ise.gameoflife.inputs.Proposition;
@@ -33,8 +34,6 @@ import java.util.TreeSet;
 public class LoansAgent extends AbstractAgent{
 
     private static final long serialVersionUID = 1L;
-
-    private static int groupCounter = 0;
 
     @Deprecated
     public LoansAgent()
@@ -193,10 +192,34 @@ public class LoansAgent extends AbstractAgent{
         return null;
     }
 
+    /**
+    * This method updates the agent's happiness after hunt.
+    * @param foodHunted The amount of food the agent returned from hunting.
+    * @param foodReceived The final amount of food the agent received after tax
+    * @return The new happiness value
+    */
     @Override
-    protected double updateHappinessAfterHunt(double foodHunted, double foodReceived) {
-        //TODO: Reuse most of the code from TestPoliticalAgent
-        return 0;
+    protected double updateHappinessAfterHunt(double foodHunted,
+                                    double foodReceived)
+    {
+        //NOTE: Free agents can update their happiness but not their loyalty (see next method)
+
+            //'entitelment' denotes the amount of food an agent wants to get, at the least
+            double entitlement = getDataModel().getEconomicBelief() * foodHunted;
+            double surplus = foodReceived - entitlement;
+            Double currentHappiness = getDataModel().getCurrentHappiness();
+
+            if (currentHappiness == null)
+                //By default we are all satisfied with the economic position
+                //we start off in, unless you are always happy or just hate life
+                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
+
+            //If surplus is >0 you're overjoyed and increase happiness
+            //If surplus is <0 you are dissapointed and decrease your happiness
+            //If surplus is zero nothing really changed
+            currentHappiness = scale(currentHappiness, surplus, 0.1);
+
+            return currentHappiness;
     }
 
     @Override
@@ -232,13 +255,13 @@ public class LoansAgent extends AbstractAgent{
     @Override
     protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement) {
         //Do nothing!
-        return 0;
+        return this.getDataModel().getSocialBelief();
     }
 
     @Override
     protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement) {
         //Do nothing!
-        return 0;
+        return this.getDataModel().getEconomicBelief();
     }
 
     @Override

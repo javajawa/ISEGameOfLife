@@ -9,12 +9,15 @@ import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -25,6 +28,12 @@ public class LoansGroup extends AbstractGroupAgent {
     private static final long serialVersionUID = 1L;
     //TODO: 1) Add an abstract inspectOtherGroups() in GroupDataModel. Concrete implementation here.
     // *What if we use public static methods for the histories to keep the framework intact?
+
+    //The following structures store the group ID of the group that gave or took a loan. The tuple stores
+    //the amount borrowed and  the interest rate
+    private static final double achievementThreshold = 1000;
+    private History< HashMap<String, Tuple<Double, Double> > > loansGiven = new History< HashMap<String, Tuple<Double, Double> > >(50);
+    private History< HashMap<String, Tuple<Double, Double> > > loansTaken = new History< HashMap<String, Tuple<Double, Double> > >(50);
     
     @Deprecated
     public LoansGroup() {
@@ -81,6 +90,16 @@ public class LoansGroup extends AbstractGroupAgent {
         //TODO: The panel should make a decision. This decision will determine how much food we will spend this round/
         //The amount spent is taken from the reserve pool. Two possibilities: Either groups go hunting and spend energy = food
         //or spend money for public service (build roads, schools, big pointless sculptures etc)
+        double currentFoodReserve = getDataModel().getCurrentReservedFood();
+
+        if (!loansTaken.isEmpty())
+        {
+            //TODO: Repay loans (if possible)
+        }
+
+        //TODO: Spend money
+
+        
         return null;
     }
 
@@ -91,7 +110,12 @@ public class LoansGroup extends AbstractGroupAgent {
 
     @Override
     protected double decideTaxForReservePool() {
-        return 0.1;
+        double currentFoodReserve = getDataModel().getCurrentReservedFood();
+
+        if (achievementThreshold - currentFoodReserve > 500)
+            return 0.9;
+        else
+            return 0.1;
     }
 
 }
