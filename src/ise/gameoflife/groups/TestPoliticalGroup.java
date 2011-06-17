@@ -4,13 +4,18 @@
  */
 package ise.gameoflife.groups;
 
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 /**
@@ -35,66 +40,75 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 	}
 
 	@Override
-	protected boolean respondToJoinRequest(String playerID) {            
-//            //find out if the agent itself has just created this group
-//            //if so then there is no need to compute a heuristic
-//            if (getDataModel().getMemberList().isEmpty())
-//                return true;
-//
-//            //find out if the agent was invited into a newly created group
-//            //if so then there is no need to to compute a heuristic
-//            if (getDataModel().getMemberList().size() == 1)
-//                return true;
-//
-//            //otherwise we have the usual agent requesting entry to this group
-//            double heuristic = 0;
-//
-//            //used for the socio-economic faction of heuristic
-//            double vectorDistance;
-//            double maxDistance = Math.sqrt(2);
-//            double economic, social, esFaction = 0;
-//
-//            //used for the trust faction of heuristic
-//            double trustFaction = 0, trustSum = 0;
-//            int numKnownTrustValues = 0;
-//
-//            //Obtain how much trust there is between the members of the group and the agent
-//            for (String trustor : this.getDataModel().getMemberList()) {
-//                    Double trustValue = this.getConn().getAgentById(trustor).getTrust(playerID);
-//                    if (trustValue != null) {
-//                            trustSum += trustValue;
-//                            numKnownTrustValues++;
-//                    }
-//            }
-//            if (numKnownTrustValues != 0) {
-//                trustFaction = trustSum / numKnownTrustValues;
-//            }
-//
-//            economic = this.getConn().getAgentById(playerID).getEconomicBelief() - this.getDataModel().getCurrentEconomicPoisition();//change in X
-//            social = this.getConn().getAgentById(playerID).getSocialBelief() - this.getDataModel().getEstimatedSocialLocation();//change in Y
-//            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-//            esFaction = 1 - (vectorDistance / maxDistance);
-//
-//            heuristic = 0.5*trustFaction + 0.5*esFaction;
-//
-//            if (heuristic > 0.5) {
-//                return true;
-//            }
-//            else {
-//                return false;
-//            }
-
-            //update economic belief of the group when agent joins (TRUE)
-            double size = this.getDataModel().getMemberList().size();
-            double economic = 0;
-            for (String members : this.getDataModel().getMemberList()){
-                if (getConn().getAgentById(members) != null)   //GIVES PROBLEMS
-                    economic += getConn().getAgentById(members).getEconomicBelief();
+	protected boolean respondToJoinRequest(String playerID) {    
+                       
+            if (getDataModel().getMemberList().isEmpty())
+            {
+                //if empty then 'playerID' created the group so there is no need to compute a heuristic
+                return true;
             }
-            economic += getConn().getAgentById(playerID).getEconomicBelief();
-            economic = economic / (size+1);
-            this.setEconomicPosition(economic);
-            return true;
+            else if (getDataModel().getMemberList().size() == 1)
+            {
+                //if there is only one member then 'playerID' was invited and wants to accept the invitation
+                //so there is no need to compute a heuristic
+                return true;
+            }
+            else
+            {
+                double maxDistance = Math.sqrt(2);
+                int numKnownTrustValues = 0;
+                double trustSum = 0;
+
+                //Retieve the trust value between requester and the group
+                for (String trustor : this.getDataModel().getMemberList())
+                {
+                        if (getConn().getAgentById(trustor).getTrust(playerID) != null)
+                        {
+                                trustSum += getConn().getAgentById(trustor).getTrust(playerID);
+                                numKnownTrustValues++;
+                        }
+                }
+
+                //Calculate the vector distance between these two agents socio-economic beliefs
+                double economic = getConn().getAgentById(playerID).getEconomicBelief() - getDataModel().getCurrentEconomicPoisition();//change in X
+                double social = getConn().getAgentById(playerID).getSocialBelief() - getDataModel().getEstimatedSocialLocation();//change in Y
+                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+
+                //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
+                //higher probability of joining this group
+                double esFaction = 1 - (vectorDistance / maxDistance);
+
+                double heuristicValue;
+                if (numKnownTrustValues != 0)
+                {
+                    //The actual heuristic value is calculated. The politics is more important for compatibility than
+                    //trust when a group decides on the request, but trust does contribute signicantly
+                    heuristicValue = 0.4*(trustSum/numKnownTrustValues) + 0.6*esFaction;
+                }
+                else
+                {
+                    heuristicValue = 0.6*esFaction;
+                }
+
+                if (heuristicValue > 0.5)
+                {
+                    //agent can join, so update economic beliefs
+                    double size = this.getDataModel().getMemberList().size();
+                    economic = 0;
+                    for (String members : getDataModel().getMemberList()){
+                        if (getConn().getAgentById(members) != null)   //GIVES PROBLEMS
+                            economic += getConn().getAgentById(members).getEconomicBelief();
+                    }
+                    economic += getConn().getAgentById(playerID).getEconomicBelief();
+                    economic = economic / (size+1);
+                    setEconomicPosition(economic);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
 	}
 
 	private Comparator<String> c = new Comparator<String>() {
@@ -124,11 +138,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void onMemberLeave(String playerID, Reasons reason) {
-		/**Change groups economic belief onMemberLeave HERE
-                 * !!!reset individual agent loyalty from agent NOT HERE
-                 * !!!change economic belief when a new member joins the group NOT HERE
-                 * */
-
                 //update economic belief of the group when the agent leaves the group
                 double size = this.getDataModel().getMemberList().size();
                 double economic = 0;
@@ -141,8 +150,212 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void beforeNewRound() {
-		// Do nothing
-           
+            if (getDataModel().getMemberList().size() != 1)
+            {
+                List<String> newPanel = updatePanel();
+                this.setPanel(newPanel);
+            }
 	}
-	
+        
+    /**
+    * This method updates the panel for this group. The panel is the set of leaders in this group
+    * The size of the panel depends on the social position of the group. If it is at the very top
+    * it has a single leader (dictator). If it is at the bottom then every member belongs to the panel (anarchism).
+    * @param none
+    * @return The new panel members.
+    */
+        private List<String> updatePanel(){
+            
+            double groupSocialPosition;
+            int population, panelSize;
+
+            //STEP 1:Find the size of the panel. It is the proportion of the total population that
+            // can be in the panel. It is calculated using the social position of the group.
+            population = getDataModel().getMemberList().size();
+            groupSocialPosition = getDataModel().getEstimatedSocialLocation();
+
+            //Round to the closest integer
+            panelSize = (int) Math.round(population*groupSocialPosition);
+            if (panelSize == 0) //The group is on the very top of the axis. Dictatorship
+            {
+                //Force panelSize to be at least one (dictator)
+                panelSize = 1;
+            }
+            //STEP 1 END
+
+            //STEP 2: Get the average trust of each agent in the group
+            List< Tuple<String, Double> > panelCandidates = new LinkedList< Tuple<String, Double> >();
+            
+            List<String> groupMembers = getDataModel().getMemberList();
+
+            for (String candidate: groupMembers )
+            { 
+                double sum = 0;
+                int numKnownTrustValues = 0;
+                for (String member: groupMembers )
+                { 
+                    if ((getConn().getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
+                    {
+                        sum += getConn().getAgentById(member).getTrust(candidate);
+                        numKnownTrustValues++;
+                    }
+                }
+                
+                Tuple<String, Double> tuple;
+                if (numKnownTrustValues != 0)
+                {
+                    tuple = new Tuple<String, Double>(candidate, sum/numKnownTrustValues);
+                    panelCandidates.add(tuple);
+                }
+            }
+            //STEP 2 END
+            
+            //STEP 3: Sort the agents in descending order of trust values
+            Collections.sort(panelCandidates, d);
+            //STEP 3 END
+            
+            //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
+            //Note that eventhough an agent is a candidate its trust must be above a threshold to become member of the panel.
+            //The threshold is the social position. If the group is highly authoritarian then anyone with a trust value
+            //above zero can become a leader. In libertarian groups panel formations are rare since a relatively high trust value
+            //must be achieved! Also the threshold acts as a warning for current panel members. If their trust falls
+            //below this threshold due to bad decisions they will be ousted in the next round.
+            List<String> newPanel = new LinkedList<String>();
+            if (!panelCandidates.isEmpty()&&(panelCandidates.size() >= panelSize))//Panel is not empty and we have enough candidates to select leaders
+            {
+                for (int i = 0; i < panelSize; i++)
+                {
+                    if (panelCandidates.get(i).getValue() >= groupSocialPosition)
+                    {
+                        newPanel.add(panelCandidates.get(i).getKey());
+                    }
+                }
+            }
+            //STEP 4 END
+            
+            return newPanel;
+        }
+
+        private Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
+            @Override
+            public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
+            {
+                Double v1 = o1.getValue();
+                Double v2 = o2.getValue();
+            	return (v1>v2 ? -1 : 1);
+            }
+	};
+
+    @Override
+    protected AgentType decideGroupStrategy() {
+        //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
+        List<String> currentPanel = getDataModel().getPanel();
+        int population = getDataModel().getMemberList().size();
+
+        if (currentPanel.isEmpty()||(population == 1))  return null;
+
+        List<Tuple<AgentType, Double> > followersTypeCounterList = new LinkedList<Tuple<AgentType, Double> >();
+        List<Tuple<AgentType, Double> > panelTypeCounterList = new LinkedList<Tuple<AgentType, Double> >();
+
+        //We get lists containing panel's and followers' preferences in strategies in descending order
+        followersTypeCounterList = getStrategyPreferences(getDataModel().getMemberList());
+        panelTypeCounterList = getStrategyPreferences(currentPanel);
+
+        //Calculate the quotum. It is the number of supporters needed to pass a proposal. In this case proposal
+        //is the strategy of the group. The quotum is a function of the social belief of the group
+        double quotum = (population * getDataModel().getEstimatedSocialLocation())/population;
+
+        //Start with the most prefereed strategy of the panel (the strategy that the leader/leaders wish to follow
+        //If this strategy is supported by a high enough number of followers (quotum) then we pick this strategy
+        //Otherwise try the next best strategy. The lower the quotum the less easy is to get your proposal accepted
+        //This is the case of dictatorship.
+        Iterator<Tuple<AgentType, Double> > i = panelTypeCounterList.iterator();
+        while(i.hasNext())
+        {
+            int n = 0;
+            Tuple<AgentType, Double> panelPreference = i.next();
+            while (panelPreference.getKey() != followersTypeCounterList.get(n).getKey())
+            {
+                n++;
+            }
+            double followerSupport = followersTypeCounterList.get(n).getValue();
+            if (followerSupport >= quotum)
+            {
+                return panelPreference.getKey();
+            }
+        }
+        //If we have reached this statement then we have not found a well suported strategy probably because the
+        //quotum is very high (bottom of y axis - anarchism)
+        return null;
+    }
+
+    private List<Tuple<AgentType, Double>> getStrategyPreferences(List<String> agents) {
+        
+        int population = agents.size();
+
+        Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
+        Tuple<AgentType, Double> acTypes = new Tuple<AgentType, Double>(AgentType.AC, 0.0);
+        Tuple<AgentType, Double> adTypes = new Tuple<AgentType, Double>(AgentType.AD, 0.0);
+        Tuple<AgentType, Double> rTypes = new Tuple<AgentType, Double>(AgentType.R, 0.0);
+
+        //Count types in agents list
+        for (String agentID : agents)
+        {
+            switch(getConn().getAgentById(agentID).getAgentType())
+            {
+                case AC:
+                    double oldCountAC = acTypes.getValue();
+                    acTypes.setValue(oldCountAC+1);
+                    break;
+                case AD:
+                    double oldCountAD = adTypes.getValue();
+                    adTypes.setValue(oldCountAD+1);
+                    break;
+                case TFT:
+                    double oldCountTFT = tftTypes.getValue();
+                    tftTypes.setValue(oldCountTFT+1);
+                    break;
+                case R:
+                    double oldCountR = rTypes.getValue();
+                    rTypes.setValue(oldCountR+1);
+                    break;
+            }
+        }
+
+        //Find the average of each type
+        acTypes.setValue(acTypes.getValue()/population);
+        adTypes.setValue(adTypes.getValue()/population);
+        tftTypes.setValue(tftTypes.getValue()/population);
+        rTypes.setValue(rTypes.getValue()/population);
+
+        List< Tuple<AgentType, Double> > preferencesRatioList = new LinkedList<Tuple<AgentType, Double> >();
+
+        //Add the ratios to the list
+        preferencesRatioList.add(acTypes);
+        preferencesRatioList.add(adTypes);
+        preferencesRatioList.add(tftTypes);
+        preferencesRatioList.add(rTypes);
+
+        //Sort the preferred startegies in descending order
+        Collections.sort(preferencesRatioList, preferencesComparator);
+
+        return preferencesRatioList;
+    }
+
+    private Comparator< Tuple<AgentType, Double> > preferencesComparator = new Comparator< Tuple<AgentType, Double> >() {
+        @Override
+        public int compare(Tuple<AgentType, Double> o1, Tuple<AgentType, Double> o2)
+        {
+            Double v1 = o1.getValue();
+            Double v2 = o2.getValue();
+            return (v1>v2 ? -1 : 1);
+        }
+    };
+
+    @Override
+    protected double decideTaxForReservePool() {
+        return 0;
+    }
+
 }
+

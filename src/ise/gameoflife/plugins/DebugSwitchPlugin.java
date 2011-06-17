@@ -1,6 +1,5 @@
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.environment.PublicEnvironmentConnection;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -12,7 +11,6 @@ import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Handler;
 import java.util.logging.Level;

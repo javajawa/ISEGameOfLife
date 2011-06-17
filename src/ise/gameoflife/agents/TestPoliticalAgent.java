@@ -15,13 +15,18 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.models.History;
-import java.util.HashMap;
+import ise.gameoflife.models.Tuple;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.ListIterator;
+import java.util.Iterator;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,12 +41,15 @@ public class TestPoliticalAgent extends AbstractAgent
 	private static final long serialVersionUID = 1L;
 
         private String invitationToGroup = null;
-
+       
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
-        private final static TreeSet<String> groupFounders = new TreeSet<String>();
+        private final static HashMap<String, String> groupFounders = new HashMap<String, String>();
+        private final static TreeSet<String> membersToKickOut = new TreeSet<String>();        
+        private final static TreeSet<String> freeToGroup = new TreeSet<String>();                
 	private History<Double> satisfaction = new History<Double>(1);
 
-				private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
+        Random randomGenerator = new Random();
+        
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -56,209 +64,459 @@ public class TestPoliticalAgent extends AbstractAgent
 
     @Override
     protected void onActivate() {
-        //Do nothing
+        freeToGroup.add(this.getId());
     }
 
     @Override
     protected void beforeNewRound() {
-         //Do nothing
+        TreeSet<String> theLiving = new TreeSet<String>();
+        for(String activeAgent : getConn().getAgents())
+        {
+            theLiving.add(activeAgent);
+        }
+        
+        if(!theLiving.isEmpty())
+        {
+            TreeSet<String> theDead = new TreeSet<String>();            
+            for(String agent : freeToGroup)
+            {
+                if(!theLiving.contains(agent))
+                {
+                    theDead.add(agent);
+                }
+            }
+            for(String agent : theDead)
+            {
+                if(freeToGroup.contains(agent))
+                {
+                    freeToGroup.remove(agent);
+                }
+            }           
+        }
+        else
+        {
+            freeToGroup.clear();
+        }
+    
     }
-
+    /**
+    * This method assesses an agent's satisfaction in the group. If the agent is satisfied remains in the group
+    * otherwise it will request to leave the group.
+    * @param none
+    * @return Satisfied or not?
+    */
     protected boolean SatisfiedInGroup() {
         if (satisfaction.isEmpty())
             satisfaction.newEntry(0.0);
         
         //get the previous satisfaction value
         Double previousSatisfaction = satisfaction.getValue();        
-
+        if (getConn().getGroupById(getDataModel().getGroupId()) == null) return false;
         //compute current satisfaction, based on your socio economic vector distance with the group        
         double myEconomic = getDataModel().getEconomicBelief();
         double mySocial = getDataModel().getSocialBelief();
         double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
         double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
 
-        double economic = groupEconomic - myEconomic;//change in X
-        double social = groupSocial - mySocial;//change in Y
-        Double currentSatisfaction = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+        double deltaEconomic = groupEconomic - myEconomic;//change in X
+        double deltaSocial = groupSocial - mySocial;//change in Y
+        Double currentSatisfaction = Math.sqrt(Math.pow(deltaEconomic, 2) + Math.pow(deltaSocial, 2));
         
         //store it in the history
         satisfaction.newEntry(currentSatisfaction); 
         
         //compare with previous satisfaction and find out if agent should stay in the group        
-        Double deltaSatisfaction = currentSatisfaction - previousSatisfaction;        
-        if (deltaSatisfaction >= 0)        
-            //you're satisfied, so stay
+        Double deltaSatisfaction = currentSatisfaction - previousSatisfaction;
+
+        if (deltaSatisfaction >= 0)//you're growing more satisfied, so stay
+        {
             return true;
-        else if (deltaSatisfaction > -0.2)            
-                //you're not satisfied but you're willing to stay a bit longer
-                return true;
-            else
+        }
+        else if (currentSatisfaction > 0.6)//if strictly greater than the weighting of 'esFaction' in the grouping heuristic
+        {
+                //you're very far apart on the political compass and you're not satisfied, so give up and leave
                 return false;
-    }    
+        }
+        else if (deltaSatisfaction < -0.2)
+        {
+                    //you may be quite close on the political compass, but you were very unsatisfied in the last turn,
+                    //so give up and leave
+                    return false;
+        }
+        else
+        {
+                    //you're close on the political compass and you were unsatisfied in the last turn, but, you're
+                    //willing to give the group another shot
+                    return true;
+        }             
+    }
     
+    /**
+     * This procedure is primarily used right before an agent issues the choice to leave the group it
+     * is currently in. If the group it is leaving had only one other member then that member is stored
+     * in a dedicated tree structure 'membersToKickOut' so that it is known that this member will have
+     * to leave in the next turn. This is necessary as you cannot have a group characterised by only one member.
+     * @param none
+     * @return none
+    */   
+    protected void checkToEvict() {
+        PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
+        
+        //Used when agent is about to issue the command to leave the group of only himself and another,
+        //it searches for the other agent and tells it leave the group as well
+        if (myGroup == null) return;
+        
+        if(myGroup.getMemberList().size() == 2)
+        {
+             for(String member : myGroup.getMemberList())
+             {
+                //look for the other member of this group to kick out into free agent mode
+                if(!member.equals(getDataModel().getId()))
+                    membersToKickOut.add(member);                 
+             }
+        }
+    }
+    
+    /**
+    * This method enables agents to form groups. It uses a heuristic based on mutual trust and
+    * the socio-economic beliefs. The agent can either try the heuristic with another free agent or
+    * with an existing group. The priority is to find an existing group to join. If that fails then
+    * we check compatibility between two free agents.
+    * @param none
+    * @return The group ID that this agent has chosen to join. If null no group is chosen. 
+     *        If leaveGroup is returned the agent requested to leave the group
+    */
     @Override
     protected String chooseGroup() {
 
-        String chosenGroup = "";
+//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
+//        for (String agent : freeToGroup.descendingSet())
+//        {
+//            System.out.println(getConn().getAgentById(agent).getName());
+//        }
+//        System.out.println(freeToGroup.size());
+//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
+//        System.out.println();
+//        System.out.println();
+//
+//
+//        System.out.println("-------------START-GROUP---------------------------");
+//        for (String groupID : getConn().availableGroups())
+//        {
+//            int size = getConn().getGroupById(groupID).getMemberList().size();
+//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+//            for (String a: getConn().getGroupById(groupID).getMemberList())
+//            {
+//                System.out.println("    "+getConn().getAgentById(a).getName());
+//            }
+//        }
+//        System.out.println("--------------END-GROUP---------------------------");
+//        System.out.println();
+//        System.out.println();
         
-        //If agent is already member of a group do nothing
-        if (this.getDataModel().getGroupId() != null)
-        {
-            if (groupFounders.contains(this.getId()))
-            {
-                    groupFounders.remove(this.getId());
-            }
-            if (invitationHolders.contains(this.getId()))
-            {
-                    invitationHolders.remove(this.getId());
-            }
+        String chosenGroup = "";
 
+        //If you're not available to group and you are part of a group already
+        //Note: an agent is allowed to not be free to group and not be part of a group,
+        //      this agent would be waiting to receive an invitation or wants to return one
+        if (!freeToGroup.contains(this.getId()) && getDataModel().getGroupId() != null)
+        {
+            //If you have been told to leave this group then do so
+            if (membersToKickOut.contains(this.getId()))
+            {
+                    membersToKickOut.remove(this.getId());
+                    return leaveGroup;
+            }            
+          
+            //If you're satisfied in the group, nothing changes for you, you remain not free to group with others
             if (SatisfiedInGroup())
+            { 
                 return null;
-            else
+            }
+            else//Otherwise, you need to leave the group and tell the other guy to leave if its just you and him in the group
+            {
+                checkToEvict();
                 return leaveGroup;
+            }
         }
-        else if(this.invitationToGroup != null) //If this agent has a pending invitation to a group, return the invitation
-        {
-            return this.invitationToGroup;
+        else//Otherwise, you are not yet part of a group:  
+        {           
+            //If you have a pending invitation to a group then return the invitation
+            if(invitationToGroup != null && invitationHolders.contains(this.getId()))
+            {
+                return invitationToGroup;
+            }
+            else//Otherwise, you have to look for a grouping:
+            {
+                //If you're here then you're still a free agent, so, firstly try to find an optimal group to join with            
+                if(freeToGroup.contains(this.getId()) && !getConn().availableGroups().isEmpty())
+                {
+                    chosenGroup = agentGroupGrouping();//returns either "" or a new String (which is the group)
+                }
+                //Secondly, if the above fails, try to find an optimal free agent to form a group with 
+                if (freeToGroup.contains(this.getId()) && chosenGroup.equals(""))
+                {
+                   chosenGroup = freeAgentsGrouping();//returns either null or a new String (which is the group)
+                }                                  
+            }
+        
         }
-        else //If none of the above worked out then first try to find an optimal group to join with
-        {
-            chosenGroup = agentGroupGrouping();
-        }
-
-        //And if the above line didn't work then try to group with other free agents
-        if (chosenGroup.equals(""))
-        {
-           chosenGroup = freeAgentsGrouping();
-        }
-        return chosenGroup;
+        return chosenGroup;//can either be null or a String (which is the group)
     }
 
+    /**
+    * This method enables agents to check their compatibility to already existing groups
+    * @param none
+    * @return The group ID that this agent has chosen to join. If null no group is chosen.
+    */
     private String agentGroupGrouping() {
         String chosenGroup = "";
-        double currentHeuristic = 0, previousHeuristic = 0;
-        //used for the socio-economic faction of heuristic
-        double vectorDistance; 
         double maxDistance = Math.sqrt(2);
-        double economic, social, esFaction=0;
-        //used for the trust faction of heuristic
-        double trustFaction=0, trustSum;
-        int numKnownTrustValues;
+        List< Tuple<String, Double> > partnershipCandidates = new LinkedList< Tuple<String, Double> >();
         
-        PublicGroupDataModel aGroup;
-
         //Assess each group in turn
-        for (String groupID : getConn().availableGroups()) {
-            aGroup = getConn().getGroupById(groupID);
+        for (String groupID: getConn().availableGroups())
+        {
+            //proceed, only if, this is a group with two members or more
+            if (getConn().getGroupById(groupID).getMemberList().size() >= 2)
+            {
+                int numKnownTrustValues = 0;
+                double trustSum = 0;
 
-            //Obtain how much trust there is between this agent and the members of the group
-            numKnownTrustValues = 0;
-            trustSum = 0;
-            for (String trustee : aGroup.getMemberList()) {
-                    Double trustValue = this.getDataModel().getTrust(trustee);
-
-                    if (trustValue != null) {
-                            trustSum += trustValue;
-                            numKnownTrustValues++;
+                for (String trustee : getConn().getGroupById(groupID).getMemberList())
+                {
+                    //Obtain how much trust there is between this agent and the members of the group
+                    if (getDataModel().getTrust(trustee) != null)
+                    {
+                        trustSum += getDataModel().getTrust(trustee);
+                        numKnownTrustValues++;
                     }
-            }
-            if(numKnownTrustValues != 0)
-                trustFaction = trustSum / numKnownTrustValues;
-            else
-                trustFaction = 0;
+                }
+                //calculates the vector distance between agent's and group's beliefs
+                double economic = getConn().getGroupById(groupID).getCurrentEconomicPoisition() - getDataModel().getEconomicBelief();//change in X
+                double social = getConn().getGroupById(groupID).getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
+                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
 
-            economic = aGroup.getCurrentEconomicPoisition() - this.getDataModel().getEconomicBelief();//change in X
-            social = aGroup.getEstimatedSocialLocation() - getDataModel().getSocialBelief();//change in Y
-            vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-            esFaction = 1 - (vectorDistance / maxDistance);
+                //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
+                //higher probability of joining this group
+                double esFaction = 1 - (vectorDistance / maxDistance);
 
-            currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
+                Tuple<String, Double> tuple;
+                double heuristicValue;
+                if (numKnownTrustValues != 0)
+                {
+                    //The actual heuristic value is calculated. The politics is more important for compatibility than
+                    //trust when a free agent tries to enter a group
+                    heuristicValue = 0.3*(trustSum/numKnownTrustValues) + 0.7*esFaction;
+                }
+                else
+                {
+                    heuristicValue = 0.7*esFaction;                
+                }
+                tuple = new Tuple<String , Double>(groupID, heuristicValue);
+                partnershipCandidates.add(tuple);                 
+            }                       
+        }
 
-            if ((currentHeuristic > 0.5) && (previousHeuristic < currentHeuristic)) {
-                chosenGroup = aGroup.getId();
-                previousHeuristic = currentHeuristic;
+        //We sort candidate groups in descending order based on the heuristic value
+        Collections.sort(partnershipCandidates, c);
+
+        //Then simply check if the top candidate has a heuristic evaluation above a certain threshold
+        //If top candidate has a value less than the threshold no need to check anyone else since
+        //they are in descending order.
+        if (!partnershipCandidates.isEmpty())
+        { 
+            double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
+
+            //If top candidate has evaluation above the threshold then choose that group
+            if (topCandidateHeuristicValue > 0.4)
+            { 
+                chosenGroup = partnershipCandidates.get(0).getKey();
+                freeToGroup.remove(this.getId());                
             }
         }
         return chosenGroup;
-    }    
+    }
     
+    /**
+    * This method enables agents to check their compatibility with other free agents
+    * @param none
+    * @return The group ID that this agent has chosen to join. If null no group is chosen.
+    */
     private String freeAgentsGrouping() {
-        String chosenGroup = "";
-        double currentHeuristic = 0, previousHeuristic = 0;
-        //used for the socio-economic faction of heuristic
-        double vectorDistance; 
+        String chosenGroup = null;
         double maxDistance = Math.sqrt(2);
-        double economic, social, esFaction=0;
-        //used for the trust faction of heuristic
-        double trustFaction=0;
+        List< Tuple<String, Double> > partnershipCandidates = new LinkedList< Tuple<String, Double> >();
+        List< Tuple<String, Double> > partnershipESFactions = new LinkedList< Tuple<String, Double> >();        
 
-        String bestPartner = "";
-
+        //Iterate over the set of free agents
         for (String trustee : getConn().getUngroupedAgents())
         {
-            //if an agent is not comparing with itself and has not been invited
-            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.contains(trustee)))
+            //if an agent is not comparing with itself and has not been invited or has not formed a group already 
+            if ((!this.getId().equals(trustee))&&(!invitationHolders.contains(trustee))&&(!groupFounders.containsKey(trustee))
+                    &&(freeToGroup.contains(trustee)))
             {
                 Double trustValue = this.getDataModel().getTrust(trustee);
-                if (trustValue != null) trustFaction = trustValue;
 
-                economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
-                social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
-                vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-                esFaction = 1 - (vectorDistance / maxDistance);
+                //Calculate the vector distance between these two agents socio-economic beliefs
+                double economic = getConn().getAgentById(trustee).getEconomicBelief() - getDataModel().getEconomicBelief();//change in X
+                double social = getConn().getAgentById(trustee).getSocialBelief() - getDataModel().getSocialBelief();//change in Y
+                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
 
-                currentHeuristic = 0.5*trustFaction + 0.5*esFaction;
-                if ((currentHeuristic > 0.6) && (previousHeuristic < currentHeuristic))
+                //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
+                //higher probability of joining this group
+                double esFaction = 1 - (vectorDistance / maxDistance);                             
+
+                Tuple<String, Double> tuple;
+                double heuristicValue;
+                if (trustValue != null)
                 {
-                    bestPartner = trustee;
-                    previousHeuristic = currentHeuristic;
+                    //The actual heuristic value is calculated. Trust is more important for compatibility than the politics
+                    //when free agents try to group with each other
+                    heuristicValue = 0.7*trustValue + 0.3*esFaction;
                 }
+                else
+                {
+                    heuristicValue = 0.3*esFaction;                
+                }
+                tuple = new Tuple<String , Double>(trustee, heuristicValue);
+                partnershipCandidates.add(tuple);
+                
+                Tuple<String, Double> esTuple = new Tuple<String, Double>(trustee, esFaction);
+                partnershipESFactions.add(esTuple);
             }
         }
-        
-        if (bestPartner.equals(""))
-            return null;
-        else
-        {               //REPLACE ECONOMIC INITIALISER OF GROUP with 0, Dont NEEDED Here
-            GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(bestPartner).getEconomicBelief())/2);
-            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-            chosenGroup = getConn().createGroup(gtype, myGroup, bestPartner);
-            groupFounders.add(this.getId());
-            return chosenGroup;
-        }        
-    }
-       
-    @Override
-    protected void groupApplicationResponse(boolean accepted) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+ 
+        //We sort candidate groups in descending order based on the heuristic value
+        Collections.sort(partnershipCandidates, c);
+
+        //Then simply check if the top candidate has a heuristic evaluation above a certain threshold
+        //If top candidate has a value less than the threshold no need to check anyone else since
+        //they are in descending order.
+        if (!partnershipCandidates.isEmpty())
+        { 
+            double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
+
+            //If top candidate has evaluation above the threshold then choose that group
+            if (topCandidateHeuristicValue > 0.3)
+            {
+                String invitee = partnershipCandidates.get(0).getKey();
+                
+                ListIterator itr = partnershipESFactions.listIterator();
+                Double topCandidateESFaction = null;
+                while(itr.hasNext())
+                {
+                    @SuppressWarnings("unchecked")
+                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();
+                    if(listTuple.getKey().equals(invitee))
+                        topCandidateESFaction = listTuple.getValue();
+                }
+                
+                if (inviteeAccepts(invitee, topCandidateESFaction))
+                {
+                    //Create a new group and invite your partner to join it
+                    GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(invitee).getEconomicBelief())/2);
+                    Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+                    chosenGroup = getConn().createGroup(gtype, myGroup, invitee);
+                    groupFounders.put(this.getId(), chosenGroup);
+                    freeToGroup.remove(this.getId());
+                }
+            }
+        }     
+        return chosenGroup;
     }
 
+    /**
+    * This method enables agents who received an invitation to check if they want to accept that invitation
+    * @param none
+    * @return The group ID held in the invitation. If null, the agent has rejected the invitation.
+    */
+    private boolean inviteeAccepts(String invitee, Double esFaction) {
+        
+        //Retieve the trust value between founder and invitee
+        Double trustValue =  getConn().getAgentById(invitee).getTrust(getDataModel().getId());
+
+        double heuristicValue;
+        if (trustValue != null)  
+        {
+            //The actual heuristic value is calculated. Trust is more important for compatibility than the politics
+            //when free agents try to group with each other
+            heuristicValue = 0.7*trustValue + 0.3*esFaction;
+        }
+        else
+        {
+            heuristicValue = 0.3*esFaction;                                   
+        }
+                
+        if (heuristicValue > 0.3)
+        {
+            //you accept the invitation and are no longer free to group with anyone else
+            freeToGroup.remove(invitee);
+            return true;   
+        }
+        else
+        {
+            //you reject the invitation
+            return false;
+        }                               
+    }    
+    
+    @Override
+    protected void groupApplicationResponse(boolean accepted) {        
+        if (invitationHolders.contains(this.getId()))
+        {                
+                invitationHolders.remove(this.getId());
+                invitationToGroup = null;
+        }
+        
+        if (groupFounders.containsKey(this.getId()))
+        {
+                groupFounders.remove(this.getId());
+        }    
+        
+        if (!accepted)
+        {
+            freeToGroup.add(this.getId());
+        }          
+    }
+
+    /**
+    * This method enables agents to pick their preferred choice of food
+    * The choice is based on several factors. First of all if we deal with a free agent
+    * its choice is based only on its type (TFT, AD, AC or R). Otherwise, the agent belongs
+    * to a group it can also ask for advice. If the advice is not good enough then the agent just
+    * follows its type.
+    * @param none
+    * @return The chosen food for this round.
+    */
     @Override
     protected Food chooseFood()
     {
+            if (getDataModel().getHuntingTeam() == null) return null;
+            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
             Food suggestedFood, cooperateFood, defectFood, choice;
-            
+
             //Distinguish between stag (cooperate) and rabbit (defect)
             foodArray = this.getFoodTypes();
             cooperateFood = foodArray.get(0);
             defectFood = foodArray.get(1);
             
             String groupID = this.getDataModel().getGroupId();
-            //If the agent belongs to a group can ask for advice
-            if (groupID != null)
+            //If the agent belongs to a group then it can ask for advice
+            if (groupID != null && getConn().getGroupById(groupID).getMemberList().size() > 1)
             {   
-                suggestedFood = this.askAdvice();
+                suggestedFood = this.askAdvice(members);
                 if (suggestedFood != null)
                 {
                     return suggestedFood;
                 }
             }
 
-            //If the agent is not in a group or advisor didn't give a definitive answer hunt
-            //according to its type
+            //If the agent is not in a group or advisor didn't give a definitive answer then hunt
+            //according to type
             switch (this.getDataModel().getAgentType())
             {
                     //The choice is always to hunt stags
@@ -280,7 +538,6 @@ public class TestPoliticalAgent extends AbstractAgent
                     case TFT:
                             //Get last hunting choice of opponent and act accordingly
                             Food opponentPreviousChoice = cooperateFood;
-                            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
 
                             // TFT makes no sense in a team of 1...
                             if (members.size() == 1)
@@ -320,13 +577,20 @@ public class TestPoliticalAgent extends AbstractAgent
             return choice;
     }
 
+    /**
+    * This method allows an agent to make a proposal to change the economic belief of the group.
+    * Based on its own economic belief the agent decides the type of the proposal.
+    * @param none
+    * @return The type of the proposal. Three types {staySame, moveRight, moveLeft}
+    */
     @Override
     protected ProposalType makeProposal()
     {
             //Note : No need to check if agent is in a group. This is done by doMakeProposal
-
             String groupId = this.getDataModel().getGroupId();
+            if (getConn().getGroupById(groupId) == null) return ProposalType.staySame;
             ProposalType proposal;
+            
             //Get the economic beliefs of the agent and the group
             double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
             double agentEconomicBelief = this.getDataModel().getEconomicBelief();
@@ -349,6 +613,12 @@ public class TestPoliticalAgent extends AbstractAgent
             return proposal;
     }
 
+    /**
+    * This method allows an agent to cast its vote about a proposal. The decision depends
+    * on the economic belief of this agent.
+    * @param p The proposition
+    * @return The type of the vote. Two types {For, Against}
+    */
     @Override
     protected VoteType castVote(Proposition p)
     {
@@ -357,13 +627,14 @@ public class TestPoliticalAgent extends AbstractAgent
             ProposalType agentProposal;
             VoteType vote = null;
 
-            if (groupId != null)
-            { //check if is in a group
-                    if (groupId.equals(proposerGroup))
-                    { //check if agent is in the same group as the proposal
+            if (groupId != null && getConn().getGroupById(groupId).getMemberList().size() > 1)//check if is in a group
+            { 
+                    if (groupId.equals(proposerGroup))  //check if agent is in the same group as the proposal
+                    {
                             double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
                             double agentEconomicBelief = this.getDataModel().getEconomicBelief();
 
+                            //What this agent would propose...
                             if (agentEconomicBelief > groupEconomicPosition)
                             {
                                  agentProposal = ProposalType.moveRight;
@@ -376,7 +647,9 @@ public class TestPoliticalAgent extends AbstractAgent
                             {
                                 agentProposal = ProposalType.staySame;
                             }
-                            //Compare proposals
+
+                            //Compare agent's possible proposal to the actual proposal.
+                            //If they agree obviously the agent will vote for.
                             if (p.getType().equals(agentProposal))
                             {
                                 vote = VoteType.For;
@@ -387,7 +660,6 @@ public class TestPoliticalAgent extends AbstractAgent
                             }
                     }
                     else{ //must never happen!!
-                        //throw new UnsupportedOperationException("Agent cannot vote for other Groups ");
                         vote =  VoteType.Abstain;
                     }
             }
@@ -398,11 +670,17 @@ public class TestPoliticalAgent extends AbstractAgent
             return vote;
     }
 
+    /**
+    * If this agent has been chosen to be an advisor then this method will return the advice
+    * @param agent The asking agent
+    * @param agentsTeam The hunting team the asking agent belongs to
+    * @return The advice in the form of suggested food type
+    */
     @Override
     protected Food giveAdvice(String agent, HuntingTeam agentsTeam)
     {
-            double MaxThreshold = 0.85;
-            double MinThreshold = 0.15;
+            double MaxThreshold = 0.9;
+            double MinThreshold = 0.1;
             String opponentID = null;
             
             //find opponent
@@ -424,9 +702,13 @@ public class TestPoliticalAgent extends AbstractAgent
             //get opponent's trust value from "this" agent
             double opponentTrust;
             if ((opponentID != null)&& (getDataModel().getTrust(opponentID)!= null))
+            {
                 opponentTrust = getDataModel().getTrust(opponentID);
+            }
             else
+            {
                 return null;
+            }
 
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
@@ -437,7 +719,8 @@ public class TestPoliticalAgent extends AbstractAgent
             cooperateFood = foodArray.get(0);
             defectFood = foodArray.get(1);
 
-            //Check for threshold values
+            //Check for threshold values. If this agent has high trust value for the opponent
+            // the advice is to cooperate. Otherwise the advice is to defect.
             if(opponentTrust >= MaxThreshold)
             {
                     choice = cooperateFood;
@@ -446,17 +729,25 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     choice = defectFood;
             }
-            else
+            else //This agent cannot say for sure if the opponent will cooperate or not
             {
-                choice = null;  //!!!!!!! can be modified to use distribution for inbetween values
+                choice = null; 
             }
             return choice;
     }
 
+    /**
+    * This method updates the agent's happiness after hunt.
+    * @param foodHunted The amount of food the agent returned from hunting.
+    * @param foodReceived The final amount of food the agent received after tax
+    * @return The new happiness value
+    */
     @Override
     protected double updateHappinessAfterHunt(double foodHunted,
                                     double foodReceived)
     {
+        //NOTE: Free agents can update their happiness but not their loyalty (see next method)
+        
             //'entitelment' denotes the amount of food an agent wants to get, at the least
             double entitlement = getDataModel().getEconomicBelief() * foodHunted;
             double surplus = foodReceived - entitlement;
@@ -475,12 +766,19 @@ public class TestPoliticalAgent extends AbstractAgent
             return currentHappiness;
     }
 
+    /**
+    * This method updates the agent's loyalty after hunt. Note that loyalty is related to happiness
+    * @param foodHunted The amount of food the agent returned from hunting.
+    * @param foodReceived The final amount of food the agent received after tax
+    * @return The new loyalty value
+    */
     @Override
     protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
     {
             //Loyalty after hunting refines from how much more happy you are after the hunt
             //and from comparing your economic (sharing of food) belief with the group's belief.
-            if (this.getDataModel().getGroupId() != null)
+            String groupId = getDataModel().getGroupId();
+            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
             {
                 //get change in economic beliefs
                 double myEconomic = getDataModel().getEconomicBelief();
@@ -491,44 +789,60 @@ public class TestPoliticalAgent extends AbstractAgent
 
                 //get change in happiness
                 Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
+                
                 //if there is no entry for happiness initialise it
                 if (oneTurnAgoHappiness == null)
                 {
                     oneTurnAgoHappiness = 0.5 * myEconomic;
                 }
+                
                 //Calculate difference in happiness between the current and the previous round
                 Double currentHappiness = getDataModel().getCurrentHappiness();
                 double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
+
                 //get new loyalty
                 Double currentLoyalty = getDataModel().getCurrentLoyalty();
-                
-                if (currentLoyalty == null || currentLoyalty == 0)
-                    //As this if statement implies either entry to your first group or
-                    //entry to a new (but not necessarily your first) group then you're
-                    //loyal to the average sense (not too much and no too little)
 
+                //As this if statement implies either entry to your first group or
+                //entry to a new (but not necessarily your first) group then you're
+                //loyal to the average sense (not too much and no too little)
+                if (currentLoyalty == null || currentLoyalty == 0)
+                {
                     currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic); 
+                }
 
                 //If deltaHappiness is < 0 you lose loyalty to the group. Otherwise if deltaHappiness is >0
                 //you gain loyalty. If deltaHappiness is zero you don't change your loyalty
-                currentLoyalty = scale(currentLoyalty, deltaHappiness, 1 - deltaEconomic);
+                currentLoyalty = scale(currentLoyalty, deltaHappiness, deltaEconomic);
                 
                 return currentLoyalty;
             }
-            else
-                return 0;//agent doesnt belong to a group and so is not loyal to anyone
-            //throw new UnsupportedOperationException("Not supported yet.");
+            else //agent doesnt belong to a group and so is not loyal to anyone
+            {
+                return 0;
+            }
     }
 
+    /**
+    * This method updates the agent's trust value for its current opponent after hunt. 
+    * @param foodHunted The amount of food the agent returned from hunting.
+    * @param foodReceived The final amount of food the agent received after tax
+    * @return A map entry containing the opponent's ID and the new trust value
+    */
     @Override
     protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
                                     double foodReceived)
     {
-            Food lastHunted = this.getDataModel().getLastHunted();
-            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
             String opponentID;
             Map<String, Double> newTrustValue = new HashMap<String, Double>();
             double trust;
+            
+            //get what this agent has chosen to hunt in this round
+            Food lastHunted = this.getDataModel().getLastHunted();
+            
+            //Get the members of the hunting team
+            if (this.getDataModel().getHuntingTeam() == null) return null;
+            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
 
             //If agent didn't go hunting or has no team pair then do nothing
             if ((lastHunted == null)||(members.size() <2)) return null;
@@ -551,7 +865,7 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 trust = this.getDataModel().getTrust(opponentID);
             }
-            else
+            else 
             {
                 trust = 0.1;
             }
@@ -562,7 +876,7 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                        trust = scale(trust, -1, 0.3);
+                            trust = scale(trust, -1, 0.3);
                     }
                     else //Opponent cooperated
                     {
@@ -578,6 +892,13 @@ public class TestPoliticalAgent extends AbstractAgent
             return  newTrustValue;
     }
 
+    /**
+    * This method updates the agent's loyalty after the voting results are published.
+    * @param proposition The proposition
+    * @param votes How many votes this proposition got. If votes > 0 proposition passed otherwise has not.
+    * @param overallMovement The overall change in group's position after voting
+    * @return The new loyalty value
+    */
     @Override
     protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
@@ -585,10 +906,10 @@ public class TestPoliticalAgent extends AbstractAgent
             //Loyalty after voting refines from how much more happy you are after the vote
             //and from comparing your economic (decision to deviate from your belief) belief
             //with the group's belief.
-
-            if (this.getDataModel().getGroupId() != null)
+            String groupId = getDataModel().getGroupId();
+            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
             {
-                //get change in economic beleifs
+                //get change in economic beliefs
                 double myEconomic = getDataModel().getEconomicBelief();
                 double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
@@ -616,20 +937,27 @@ public class TestPoliticalAgent extends AbstractAgent
                         //If deltaHappiness <0 you lose loyalty to your group
                         //If deltaHappiness >0 you increase your loyalty to your group
                         //If deltaHappiness = 0 you don't change at all
-                        currentLoyalty = scale(currentLoyalty, deltaHappiness, 1- deltaEconomic);
+                        currentLoyalty = scale(currentLoyalty, deltaHappiness, deltaEconomic);
                 }
                 return currentLoyalty;                                      
             }               
             else
                 return 0;//agent doesnt belong to a group and so is not loyal to anyone
     }
-
+    
+    /**
+    * This method updates the agent's happiness after the voting results are published.
+    * @param proposition The proposition
+    * @param votes How many votes this proposition got. If votes > 0 proposition passed otherwise has not.
+    * @param overallMovement The overall change in group's position after voting
+    * @return The new happiness value
+    */
     @Override
     protected double updateHappinessAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
-            Double currentHappiness = getDataModel().getCurrentHappiness();            
-
+            Double currentHappiness = getDataModel().getCurrentHappiness();
+            if (getDataModel().getGroupId() == null) return currentHappiness;
 
             if (currentHappiness == null)
             {
@@ -639,7 +967,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
 
             //If this concerns you...
-            if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+            if (getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
             {
                     //If votes > 0 you are happy your proposition was passed
                     //If votes < 0 you are dissapointed your proposition was not passed
@@ -649,6 +977,13 @@ public class TestPoliticalAgent extends AbstractAgent
             return currentHappiness;
     }                     
 
+    /**
+    * This method updates the agent's trust for the proposer after the voting results are published.
+    * @param proposition The proposition
+    * @param votes How many votes this proposition got. If votes > 0 proposition passed otherwise has not.
+    * @param overallMovement The overall change in group's position after voting
+    * @return The new loyalty value
+    */
     @Override
     protected Map<String, Double> updateTrustAfterVotes(Proposition proposition,
                                     int votes, double overallMovement)
@@ -667,9 +1002,11 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
                 else
                 {
-                       proposerTrust = 0;
+                       proposerTrust = 0.1;
                 }
-                //increase the trust for proposer according to the number of votes
+
+                //if votes > 0 we increase the trust for proposer
+                //if votes < 0 we decrease the trust for proposer
                 proposerTrust = scale(proposerTrust, votes, Math.abs(overallMovement));
                 newTrustValue.put(proposer, proposerTrust);
              }
@@ -679,7 +1016,14 @@ public class TestPoliticalAgent extends AbstractAgent
              }
             return newTrustValue;
         }
-    
+
+    /**
+    * This method updates the agent's social belief after the voting results are published.
+    * @param proposition The proposition
+    * @param votes How many votes this proposition got. If votes > 0 proposition passed otherwise has not.
+    * @param overallMovement The overall change in group's position after voting
+    * @return The new social belief
+    */
         @Override
 	protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
         {
@@ -687,7 +1031,8 @@ public class TestPoliticalAgent extends AbstractAgent
             //Your social belief refines from how much more/less trust there is in the group
             //after the vote. Whether or not your proposition passed reflects how much you
             //want to trust the group to make decisions or a single dictator to make decisions.
-            if (this.getDataModel().getGroupId() != null)
+            String groupId = getDataModel().getGroupId();
+            if ((groupId != null)  && (getConn().getGroupById(groupId).getMemberList().size() > 1))
             {
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
@@ -697,15 +1042,14 @@ public class TestPoliticalAgent extends AbstractAgent
                                         
 
                     if (votes > 0)
-                    {   //you're social belief moves towards the group social posistion
-                        //currentSocial = ValueScaler.scale(currentSocial, deltaSocial, Math.abs(overallMovement));
-                        currentSocial = scale(currentSocial, (1-deltaSocial), 0.001);
+                    {   //you're social belief moves towards the group's social posistion
+                        currentSocial = scale(currentSocial, deltaSocial*10, Math.abs(overallMovement));
                     }
                     else if (votes < 0)
 
-                    {                     
-                        //currentSocial = ValueScaler.scale(currentSocial, -deltaSocial, Math.abs(overallMovement));
-                        currentSocial = scale(currentSocial, -(1-deltaSocial), 0.001);
+                    {
+                        //you're social belief moves away from the group's social posistion
+                        currentSocial = scale(currentSocial, -deltaSocial*10, Math.abs(overallMovement));
 
                     }
                     //otherwise your social belief remains the same
@@ -713,16 +1057,26 @@ public class TestPoliticalAgent extends AbstractAgent
                 return currentSocial;
             }
             else
+            {
                 return currentSocial;//agent doesnt belong to a group and does not vote
+            }
         }
-	
+
+    /**
+    * This method updates the agent's economic belief after the voting results are published.
+    * @param proposition The proposition
+    * @param votes How many votes this proposition got. If votes > 0 proposition passed otherwise has not.
+    * @param overallMovement The overall change in group's position after voting
+    * @return The new social belief
+    */
         @Override
         protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
-        {
+        {        
             double currentEconomic = getDataModel().getEconomicBelief();
             //Your economic belief refines from how much more/less happy you are after the vote
             //and from how loyal you are after the group made their decision after the vote.
-            if (this.getDataModel().getGroupId() != null)
+            String groupId = getDataModel().getGroupId();
+            if ((groupId != null)  && (getConn().getGroupById(groupId).getMemberList().size() > 1))
             {
                //If this concerns you...
                 if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
@@ -730,28 +1084,26 @@ public class TestPoliticalAgent extends AbstractAgent
                     double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
                     double deltaEconomic = groupEconomic - currentEconomic;//how close are you to the group's belief
 
-                    //The reason for (1 - deltaEconomic) is to allow agents that are closer to the
-                    //group's beliefs to move faster towards the group than agents that are far away!
                     if (moreLoyal() && moreHappy())
 
                     {
-                        currentEconomic = scale(currentEconomic, (1-deltaEconomic), 0.001);
+                        currentEconomic = scale(currentEconomic, deltaEconomic*10, Math.abs(overallMovement));
 
                     }
                     else
                     {
                         if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
                         {
-                            currentEconomic = scale(currentEconomic, -(1-deltaEconomic), 0.001);
+                            currentEconomic = scale(currentEconomic, -deltaEconomic*10, Math.abs(overallMovement));
                         }
                         else //if your beliefs are exactly the same with the group's beliefs
                         {
-                            //any direction, for now
+                            //move in any direction, for now
                             boolean random = uniformRandBoolean();
                             if (random)
-                                currentEconomic = scale(currentEconomic, 1, 0.001);
+                                currentEconomic = scale(currentEconomic, 1, Math.abs(overallMovement));
                             else
-                                currentEconomic = scale(currentEconomic, -1, 0.001);
+                                currentEconomic = scale(currentEconomic, -1, Math.abs(overallMovement));
                         }
                     }
                 }
@@ -760,150 +1112,171 @@ public class TestPoliticalAgent extends AbstractAgent
             else
                 return currentEconomic;//agent doesnt belong to a group and so is not loyal to anyone
         }
-    
-        //An agent which has been invited to a group must be tagged in order to process the invitation later
-	@Override
-	protected void onInvite(String group)
-	{
-		invitationHolders.add(this.getId());
-                this.invitationToGroup = group;
 
-	}
+    /**
+    * An agent which has been invited to a group must be tagged in order to process the invitation later
+    * @param group The group this agent has been invited to
+    * @return none
+    */
+    @Override
+    protected void onInvite(String group)
+    {
+    	invitationHolders.add(this.getId());
+        this.invitationToGroup = group; 
+    }
 
-
-        private Food askAdvice() {
-            Food suggestedFood = null;
-            String opponentID = null;
-
-            //Get the members of the hunting team that this agent belongs to
-            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
-
-            //If the agent has no pair then no advice
-            if (members.size() == 1) return null;
-
-            //Find opponent's ID
-            if (members.get(0).equals(this.getId()))
-            {
-                    if (getConn().getAgentById(members.get(1)) != null)
-                    {
-                        opponentID = members.get(1);
-                    }
-            }
-            else
-            {
-                    if (getConn().getAgentById(members.get(0)) != null)
-                    {
-                        opponentID = members.get(0);
-                    }
-            }
-
-            //Get the hunting teams history of the opponent. Get the last hunting team of the opponent
-            //and find out which agent was its opponent at that time. This agent has the latest information
-            //about our opponent. Therefore this agent is the advisor.
-            if (opponentID != null)
-            {
-                HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
-                if (opponentPreviousTeam != null)
-                {
-                    for (String agent: opponentPreviousTeam.getMembers())
-                    {
-                        if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
-                        {
-                            return suggestedFood = seekAvice(agent);
-                        }
-                    }
-                }
-            }
-            
-            return suggestedFood;
-        }   
+    /**
+    * An agent which belongs to a group can consult another agent to choose what type of food to hunt
+    * given its current opponent
+    * @param none
+    * @return The suggested food type
+    */
+    private Food askAdvice(List<String> members) {
+        Food suggestedFood = null;
+        String opponentID = null;
         
-        private boolean moreLoyal() {
-            if (this.getDataModel().getGroupId() != null)
+        //If the agent has no pair then no advice
+        if (members.size() == 1) return null;
+
+        //Find opponent's ID
+        if (members.get(0).equals(this.getId()))
+        {
+                if (getConn().getAgentById(members.get(1)) != null)
+                {
+                    opponentID = members.get(1);
+                }
+        }
+        else
+        {
+                if (getConn().getAgentById(members.get(0)) != null)
+                {
+                    opponentID = members.get(0);
+                }
+        }
+
+        //Get the hunting teams history of the opponent. Get the last hunting team of the opponent
+        //and find out which agent was its opponent at that time. This agent has the latest information
+        //about our opponent. Therefore this agent is the advisor.
+        if (opponentID != null)
+        {
+            HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
+            if (opponentPreviousTeam != null)
             {
-                //get change in economic beliefs
-                double myEconomic = getDataModel().getEconomicBelief();
-                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
-                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
-
-                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
-                if (oneTurnAgoHappiness == null)
+                for (String agent: opponentPreviousTeam.getMembers())
                 {
-                    oneTurnAgoHappiness = 0.5 * myEconomic;
+                    if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
+                    {
+                        return suggestedFood = seekAvice(agent);
+                    }
                 }
-
-                Double curretnHappiness = getDataModel().getCurrentHappiness();
-                if (curretnHappiness == null)
-                {
-                    curretnHappiness = 0.5 * myEconomic;
-                }
-
-                //get your loyalty and loyalty history
-                Double oneTurnAgoLoyalty = getDataModel().getLoyaltyHistory().getValue(1);
-                if (oneTurnAgoLoyalty == null)
-                {
-                    oneTurnAgoLoyalty = 0.5 * (oneTurnAgoHappiness * deltaEconomic);
-                }
-
-                Double currentLoyalty = getDataModel().getCurrentLoyalty();
-                if (currentLoyalty == null)
-                {
-                    currentLoyalty = 0.5 * (curretnHappiness * deltaEconomic);
-                }
-
-                double deltaLoyalty = currentLoyalty - oneTurnAgoLoyalty;//how much or less loyal did you get
-
-                if (deltaLoyalty > 0)
-                {
-                    //you became more loyal to the group
-                    return true;
-                }
-                else if(deltaLoyalty < 0)
-                {
-                    //you became less loyal to the group
-                    return false;
-                } else
-                    //you just got in the group and for that you must be loyal to them, at the least
-                    return true;
             }
-            else
-                //not loyal to anyone
+        }
+
+        return suggestedFood;
+    }
+
+    /**
+    * This method checks if the agent has become more loyal since last round
+    * @param none
+    * @return True for becoming more loyal and false otherwise
+    */
+    private boolean moreLoyal() {
+        String groupId = getDataModel().getGroupId();
+        if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
+        {
+            //get change in economic beliefs
+            double myEconomic = getDataModel().getEconomicBelief();
+            double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+            double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
+
+            Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
+            if (oneTurnAgoHappiness == null)
+            {
+                oneTurnAgoHappiness = 0.5 * myEconomic;
+            }
+
+            Double curretnHappiness = getDataModel().getCurrentHappiness();
+            if (curretnHappiness == null)
+            {
+                curretnHappiness = 0.5 * myEconomic;
+            }
+
+            //get your loyalty and loyalty history
+            Double oneTurnAgoLoyalty = getDataModel().getLoyaltyHistory().getValue(1);
+            if (oneTurnAgoLoyalty == null)
+            {
+                oneTurnAgoLoyalty = 0.5 * (oneTurnAgoHappiness * deltaEconomic);
+            }
+
+            Double currentLoyalty = getDataModel().getCurrentLoyalty();
+            if (currentLoyalty == null)
+            {
+                currentLoyalty = 0.5 * (curretnHappiness * deltaEconomic);
+            }
+
+            double deltaLoyalty = currentLoyalty - oneTurnAgoLoyalty;//how much or less loyal did you get
+
+            if (deltaLoyalty > 0)
+            {
+                //you became more loyal to the group
+                return true;
+            }
+            else if(deltaLoyalty < 0)
+            {
+                //you became less loyal to the group
                 return false;
+            } else
+                //you just got in the group and for that you must be loyal to them, at the least
+                return true;
         }
+        else
+            //not loyal to anyone
+            return false;
+    }
+    
+    /**
+    * This method checks if the agent has become happier since last round
+    * @param none
+    * @return True for becoming happier and false otherwise
+    */
+    private boolean moreHappy() {
+            //get change in economic beliefs
+            double myEconomic = getDataModel().getEconomicBelief();
 
-        private boolean moreHappy() {
-                //get change in economic beleifs
-                double myEconomic = getDataModel().getEconomicBelief();
+            //get your loyalty and loyalty history
+            Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
+            if (oneTurnAgoHappiness == null)
+            {
+                oneTurnAgoHappiness = 0.5 * myEconomic;
+            }
 
-                //get your loyalty and loyalty history
-                Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
-                if (oneTurnAgoHappiness == null)
-                {
-                    oneTurnAgoHappiness = 0.5 * myEconomic;
-                }
+            Double currentHappiness = getDataModel().getCurrentHappiness();
+            if (currentHappiness == null)
+            {
+                currentHappiness = 0.5 * myEconomic;
+            }
 
-                Double currentHappiness = getDataModel().getCurrentHappiness();
-                if (currentHappiness == null)
-                {
-                    currentHappiness = 0.5 * myEconomic;
-                }
+            double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less loyal did you get
 
-                double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less loyal did you get
+            if (deltaHappiness > 0)
+            {
+                //you became more loyal to the group
+                return true;
+            }
+            else if(deltaHappiness < 0)
+            {
+                //you became less loyal to the group
+                return false;
+            } else
+                //you're not overjoyed but you're satisfied
+                return true;
+    }
 
-                if (deltaHappiness > 0)
-                {
-                    //you became more loyal to the group
-                    return true;
-                }
-                else if(deltaHappiness < 0)
-                {
-                    //you became less loyal to the group
-                    return false;
-                } else
-                    //you're not overjoyed but you're satisfied
-                    return true;                
-        }
-
+    /**
+    * This is a helper method and distinguishes what is the food type for cooperation and defection
+    * @param none
+    * @return A list containing the food for cooperation and defection
+    */
         private List<Food> getFoodTypes(){
             List<Food> foodArray = new LinkedList<Food>();
             List<Food> foodList = new LinkedList<Food>();
@@ -931,4 +1304,68 @@ public class TestPoliticalAgent extends AbstractAgent
             foodList.add(defectFood);
             return foodList;
        }
+
+        private Comparator< Tuple<String, Double> > c = new Comparator< Tuple<String, Double> >() {
+            @Override
+            public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
+            {
+                Double v1 = o1.getValue();
+                Double v2 = o2.getValue();
+            	return (v1>v2 ? -1 : 1);
+            }
+	};
+
+    /**
+    * This method allows followers to rate their leaders' decisions. The rating is based only on the external
+    * strategy followed by the group.
+    * @param none
+    * @return A map structure containing new trust values for every member of the current panel of the group that this agent belongs to
+    */
+    @Override
+    protected Map<String, Double> updateTrustAfterLeadersHunt() {
+
+        String groupID = getDataModel().getGroupId();
+        //If this is a free agent then no leader to rate
+        if (groupID == null) return null;
+
+        //Get the current panel of te group that this agent belongs to
+        List<String> currentPanel = getConn().getGroupById(groupID).getPanel();
+
+        //If there is nobobdy to rate or this agent is member of the current panel do nothing
+        if (currentPanel.isEmpty()||(currentPanel.contains(getDataModel().getId()))) return null;
+
+        //Get the preferred strategy for an agent i.e. its type and the strategy adopted by the panel
+        //Positive or negative rating depends on the similarity of these two strategies
+        AgentType groupStrategy = getConn().getGroupById(groupID).getGroupStrategy();
+        AgentType followerStrategy = getDataModel().getAgentType();
+
+        //The rating weighting is a simple function of the group's population
+        int population = getConn().getGroupById(groupID).getMemberList().size();
+        double rating = 1/population;
+
+        Map<String, Double> newTrustValues = new HashMap<String, Double>();
+
+        //If the agent supports the group's strategy it will give a positive rating to every member of the panel
+        //The reward to a panel member is to increase its current trust value from this agent. Accordingly, the
+        //punishment for a bad decision is to decrease the trust value! Note that there is a threshold associated with a leader (panel member)
+        for (String panelMember: currentPanel)
+        {
+            if(getDataModel().getTrust(panelMember) != null)
+            {
+                if (followerStrategy == groupStrategy)
+                {
+                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 1, rating);
+                     newTrustValues.put(panelMember, currentTrustForPanelMember);
+                }
+                else
+                {
+                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -1, rating);
+                     newTrustValues.put(panelMember, currentTrustForPanelMember);
+                }
+            }
+        }
+    return newTrustValues;
+    }
 }

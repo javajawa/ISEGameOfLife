@@ -42,7 +42,6 @@ final class ConnectionWrapper
 		    updateDatabaseStructure();
 		    conn.setAutoCommit(false);
 		}
-		
 		newAgent = conn.prepareStatement(Statements.addAgent.getPrototype());
 		dieAgent = conn.prepareStatement(Statements.dieAgent.getPrototype());
 		roundAgent = conn.prepareStatement(Statements.roundAgent.getPrototype());
@@ -113,10 +112,11 @@ final class ConnectionWrapper
 		return simulationId;
 	}
 	
-	void flush()
+	void flush(int round)
 	{
 		try
 		{
+		    
 		    newGroup.executeBatch();
 		    dieGroup.executeBatch();
 		    newAgent.executeBatch();
@@ -218,6 +218,8 @@ final class ConnectionWrapper
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
 		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
+		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
+			//     new Object[]{group.getId(), round});
 		 roundGroup.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, null, ex);
@@ -233,20 +235,25 @@ final class ConnectionWrapper
 		//sets the database id for group, 0 for no group
 		roundAgent.setInt(4,groupid);
 		roundAgent.setDouble(5,agent.getFoodAmount());
-		//not available for first round
-		if(round!=0) 
-		{
-		    roundAgent.setString(6,agent.getLastHunted().getName());
+		if (round==0) {
+		    roundAgent.setString(6,null);
+		    roundAgent.setDouble(9,-1);
+		    roundAgent.setDouble(10,-1);
+		}
+		else {
+		    if(agent.getLastHunted()==null) roundAgent.setString(6,null);
+			else roundAgent.setString(6,agent.getLastHunted().getName());
 		    roundAgent.setDouble(9,agent.getCurrentHappiness());
 		    roundAgent.setDouble(10,agent.getCurrentLoyalty());
 		}
+		
 		roundAgent.setDouble(7,agent.getSocialBelief());
 		roundAgent.setDouble(8,agent.getEconomicBelief());
 		roundAgent.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, null, ex);
 	    } catch (NullPointerException ex) {
-		logger.log(Level.WARNING, "Agent {0} misbehaved. Agent data for round {1}"
+		logger.log(Level.WARNING, "Null Exception: Agent {0} data for round {1}"
 			+ " not stored.", new Object[]{agent.getName(), round});
 	    }
 	}
@@ -268,5 +275,19 @@ final class ConnectionWrapper
 		} catch (SQLException ex) {
 		    logger.log(Level.WARNING,"Failed to create database tables", ex);
 		}
+	}
+	void getFreeAgentGroupData(int round,int pop) {
+	         try {
+		 //updates the FreeAgensGroup
+		 roundGroup.setInt(1, simId);
+		 roundGroup.setInt(2, round);
+		 roundGroup.setInt(3,0);
+		 roundGroup.setInt(4,pop);
+		 roundGroup.setDouble(5,-1);
+		 roundGroup.setDouble(6,-1);
+		 roundGroup.addBatch();
+	    } catch (SQLException ex) {
+		logger.log(Level.WARNING, null, ex);
+	    }
 	}
 }

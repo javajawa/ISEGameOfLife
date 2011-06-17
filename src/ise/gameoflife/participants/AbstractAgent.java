@@ -96,6 +96,12 @@ abstract public class AbstractAgent implements Participant
 			{
 				dm.setTrust(agent, t.get(agent));
 			}
+                        Map<String,Double> t1 = updateTrustAfterLeadersHunt();
+                        if (t1==null) return;
+			for (String agent : t1.keySet())
+			{
+				dm.setTrust(agent, t1.get(agent));
+			}
 		}
 	}
 
@@ -120,7 +126,6 @@ abstract public class AbstractAgent implements Participant
 
 	private class ApplicationResponseHandler implements InputHandler
 	{
-
 		@Override
 		public boolean canHandle(Input input)
 		{
@@ -135,6 +140,11 @@ abstract public class AbstractAgent implements Participant
 			{ 
 				dm.setGroup(in.getGroup());
 			}
+                        else
+                        {
+                                 dm.setGroup(null);
+                        }
+
 			groupApplicationResponse(in.wasAccepted());	
 			logger.log(Level.FINE, "I, agent {0} was {1}accepted into group {2}", new Object[]{dm.getName(),
 							in.wasAccepted() ? "" : "not ", ec.nameof(in.getGroup())});
@@ -394,9 +404,11 @@ abstract public class AbstractAgent implements Participant
 		String gid = chooseGroup();
 		if (gid == null ? true : gid.equals(dm.getGroupId())) return;
 		if (gid.equals(leaveGroup))
-		{
+		{  
 			ec.act(new ApplyToGroup(gid), getId(), authCode);
-			this.dm.setGroup(null);
+                        //Bug source
+			//this.dm.setGroup(null);
+                        //Bug source end
 			return;
 		}
 		if (getConn().isGroupId(gid)) ec.act(new ApplyToGroup(gid), getId(), authCode);
@@ -630,6 +642,7 @@ abstract public class AbstractAgent implements Participant
 	 * values should be scaled between 0 and 1.
 	 */
 	abstract protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived);
+	abstract protected Map<String, Double> updateTrustAfterLeadersHunt();
 	abstract protected double updateLoyaltyAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected double updateHappinessAfterVotes(Proposition proposition, int votes,	double overallMovement);
 	abstract protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes,	double overallMovement);

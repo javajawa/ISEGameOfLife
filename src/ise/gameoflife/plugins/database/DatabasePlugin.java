@@ -92,13 +92,18 @@ public class DatabasePlugin implements Plugin
 	    pruneOldAgents();
 	    findNewAgents();
 	    getGroupRoundData();
-	    getAgentRoundData();
+	    wrap.getFreeAgentGroupData(round,ec.getUngroupedAgents().size());
+	    //disables agent round data collection for remote db, to speed it up
+	    //in other words, a hack
+	    if (!remote) getAgentRoundData();
 	    
 	    //writes to db every 25 rounds (or 150 cycles)
-	    if(round%25==0) {
+	    if(round%50==0) 
+	    {
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
-		else logger.log(Level.INFO,"Writing data to remote database (could be slow)");
-		wrap.flush();
+		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
+		wrap.flush(round);
+		logger.log(Level.INFO,"Database write complete");
 	    }
 	    
 	}
@@ -142,14 +147,16 @@ public class DatabasePlugin implements Plugin
 	@Override
 	public void onDelete()
 	{
-		wrap.flush();
+		wrap.flush(round);
 		wrap.end(round);
 	}
 
 	@Override
 	public void onSimulationComplete()
 	{
-		wrap.flush();
+		if (!remote) logger.log(Level.INFO,"Writing data to local database");
+		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
+		wrap.flush(round);
 		wrap.end(round);
 	}
 
@@ -252,7 +259,7 @@ public class DatabasePlugin implements Plugin
 	private void createFreeAgentGroup() 
 	{
 		int groupid = 0;
-//		wrap.groupAdd("FreeAgentsGroup", groupid, round);
+		wrap.groupAdd("FreeAgentsGroup", groupid, round);
 		//required to allow idMap to work for agents with no group
 		idMap.put(null,groupid);
 	}

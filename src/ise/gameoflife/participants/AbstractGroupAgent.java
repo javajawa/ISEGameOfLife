@@ -15,6 +15,7 @@ import ise.gameoflife.inputs.Vote;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import static ise.gameoflife.models.ScaledDouble.scale;
+import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
@@ -22,8 +23,10 @@ import ise.gameoflife.tokens.UnregisterRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -169,7 +172,8 @@ public abstract class AbstractGroupAgent implements Participant
 				break;
 			case GoHunt:
 				// Nothing to do here - agents are off hunting!
-				break;
+                                doLeadersHunt();
+                                break;
 			case HuntResults:
 				doHandleHuntResults();
 				break;
@@ -225,6 +229,12 @@ public abstract class AbstractGroupAgent implements Participant
 			shared += value;
 		}
 
+                //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
+                double tax = decideTaxForReservePool();
+                this.setReservedFood(getDataModel().getCurrentReservedFood() + tax*shared);
+                shared = shared - tax*shared;
+                //Loans simulation addition end
+
 		shared = shared * taxRate / dm.getMemberList().size();
 
 		Map<String, Double> result = new HashMap<String, Double>(huntResult.size());
@@ -250,7 +260,7 @@ public abstract class AbstractGroupAgent implements Participant
 
 		for (String agent : uninformedAgents)
 		{
-			ec.act(new DistributeFood(agent, 0, 0), getId(), authCode);
+			ec.act(new DistributeFood(agent, 0, shared), getId(), authCode);
 		}
 	}
 
@@ -306,6 +316,11 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 	}
 
+        private void doLeadersHunt(){
+                AgentType strategy = decideGroupStrategy();
+                this.dm.setGroupStrategy(strategy);
+        }
+        
 	/**
 	 * Sets the number of cycles passed
 	 * @param cycle
@@ -340,6 +355,21 @@ public abstract class AbstractGroupAgent implements Participant
 		this.dm.setEconomicPosition(newPosition);
 	}
 
+        protected final void setGroupStrategy(AgentType strategy)
+	{
+		this.dm.setGroupStrategy(strategy);
+	}
+
+	protected final void setPanel(List<String> newPanel)
+	{
+		this.dm.setPanel(newPanel);
+	}
+
+        protected final void setReservedFood(double newAmount)
+	{
+		this.dm.setReservedFoodHistory(newAmount);
+	}
+
 	/**
 	 * This function puts the inputs into a queue to be processed at the end of
 	 * the cycle
@@ -350,7 +380,7 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		if (input.getClass().equals(JoinRequest.class))
 		{
-			final JoinRequest req = (JoinRequest)input;
+		        final JoinRequest req = (JoinRequest)input;
 			boolean response = this.respondToJoinRequest(req.getAgent());
 			if (response) this.dm.addMember(req.getAgent());
 			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(),
@@ -364,19 +394,25 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 
 		if (input.getClass().equals(LeaveNotification.class))
-		{    
+		{   
 			final LeaveNotification in = (LeaveNotification)input;
-			dm.removeMember(in.getAgent());
+
+                        dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
+                        //Bug fix
+                        ec.act(new RespondToApplication(in.getAgent(), false), this.getId(), authCode);
+                        //Bug fix end
 			logger.log(Level.FINE, "{0} lost memeber {1} because of {2}", new Object[]
 							{
 								dm.getName(),
 								ec.nameof(in.getAgent()), in.getReason()
-							});
+
+							});                        
 
 			if (dm.getMemberList().isEmpty())
+                        {
 				ec.act(new Death(), dm.getId(), authCode);
-
+                        }
 			return;
 		}
 
@@ -483,7 +519,11 @@ public abstract class AbstractGroupAgent implements Participant
 	 * Alternatively, use of the unit "Harcourt" may also be used. 
 	 * 1 Round = 1 Harcourt
 	 */
-	abstract protected void beforeNewRound();
+        
+        abstract protected AgentType decideGroupStrategy();
+	abstract protected double decideTaxForReservePool();
+        abstract protected void beforeNewRound();
+
 
 	/**
 	 * @return the conn

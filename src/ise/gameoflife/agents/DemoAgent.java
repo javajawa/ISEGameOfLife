@@ -141,5 +141,11 @@ public class DemoAgent extends AbstractAgent
 					int votes, double overallMovement)
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
-	}     
+	}
+
+    @Override
+    protected Map<String, Double> updateTrustAfterLeadersHunt() {
+        return null;
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
