@@ -23,7 +23,7 @@ public class Loans extends GenericSimulation
 
 	public Loans()
 	{
-		super("Basic Loans Testing Bed", 800, 0, 0.1);
+		super("Basic Loans Testing Bed", 400, 0, 0.1);
 	}
 
 	@Override

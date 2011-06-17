@@ -231,7 +231,10 @@ public abstract class AbstractGroupAgent implements Participant
 
                 //Added for loans simulation. In any other simulation tax = 0 always
                 double tax = decideTaxForReservePool();
-                shared = shared*(1-tax);
+                double pooledFood = tax*shared;
+                this.setReservedFood(getDataModel().getCurrentReservedFood() + pooledFood);
+                shared = shared - pooledFood;
+                
 
 		shared = shared * taxRate / dm.getMemberList().size();
 
@@ -361,6 +364,11 @@ public abstract class AbstractGroupAgent implements Participant
 	protected final void setPanel(List<String> newPanel)
 	{
 		this.dm.setPanel(newPanel);
+	}
+
+        protected final void setReservedFood(double newAmount)
+	{
+		this.dm.setReservedFoodHistory(newAmount);
 	}
 
 	/**

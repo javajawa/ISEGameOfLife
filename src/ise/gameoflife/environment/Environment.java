@@ -283,7 +283,7 @@ public class Environment extends AbstractEnvironment
 
 			logger.log(Level.FINE, "Agent {0} proposed a motion of  {1} to group {2}", new Object[]{nameOf(actorID),
 							prop.getType(), nameOf(prop.getForGroup())});
-
+                        if(dmodel.getGroupById(prop.getForGroup()) == null) return null;
 			for (String member : dmodel.getGroupById(prop.getForGroup()).getMemberList())
 			{
 				sim.getPlayer(member).enqueueInput(p);
