@@ -25,9 +25,6 @@ public class LoansGroup extends AbstractGroupAgent {
     private static final long serialVersionUID = 1L;
     //TODO: 1) Add an abstract inspectOtherGroups() in GroupDataModel. Concrete implementation here.
     // *What if we use public static methods for the histories to keep the framework intact?
-
-    private History<Double> loanHistory;
-    private History<Double> foodReserveHistory; 
     
     @Deprecated
     public LoansGroup() {
@@ -94,7 +91,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
     @Override
     protected double decideTaxForReservePool() {
-        return 0;
+        return 0.1;
     }
 
 }

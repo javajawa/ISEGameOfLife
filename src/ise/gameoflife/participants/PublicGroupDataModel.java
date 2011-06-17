@@ -114,6 +114,11 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
     public List<String> getPanel() {
         return source.getPanel();
     }
+
+    public double getCurrentReservedFood() {
+        return source.getCurrentReservedFood();
+    }
+
     /**
      * Gets the proposals made this turn, and the results
      * The value will be null except on the {@link TurnType#Voting Voting} turn

@@ -111,11 +111,10 @@ public class TestPoliticalAgent extends AbstractAgent
         
         //get the previous satisfaction value
         Double previousSatisfaction = satisfaction.getValue();        
-
+        if (getConn().getGroupById(getDataModel().getGroupId()) == null) return false;
         //compute current satisfaction, based on your socio economic vector distance with the group        
         double myEconomic = getDataModel().getEconomicBelief();
         double mySocial = getDataModel().getSocialBelief();
-        if (getConn().getGroupById(getDataModel().getGroupId()) == null) return false;
         double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
         double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
 
@@ -166,6 +165,7 @@ public class TestPoliticalAgent extends AbstractAgent
         //Used when agent is about to issue the command to leave the group of only himself and another,
         //it searches for the other agent and tells it leave the group as well
         if (myGroup == null) return;
+        
         if(myGroup.getMemberList().size() == 2)
         {
              for(String member : myGroup.getMemberList())
@@ -588,7 +588,7 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             //Note : No need to check if agent is in a group. This is done by doMakeProposal
             String groupId = this.getDataModel().getGroupId();
-            if (getConn().getGroupById(groupId) == null) return null;
+            if (getConn().getGroupById(groupId) == null) return ProposalType.staySame;
             ProposalType proposal;
             
             //Get the economic beliefs of the agent and the group
@@ -876,11 +876,11 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                            trust = scale(trust, -1, randomGenerator.nextDouble());
+                            trust = scale(trust, -1, 0.3);
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1, randomGenerator.nextDouble());
+                        trust = scale(trust, 1, 0.3);
                     }
             }
             else    //Agent hunted rabbit so no trust issues
@@ -956,8 +956,8 @@ public class TestPoliticalAgent extends AbstractAgent
     protected double updateHappinessAfterVotes(Proposition proposition, int votes,
                                     double overallMovement)
     {
-            Double currentHappiness = getDataModel().getCurrentHappiness();            
-
+            Double currentHappiness = getDataModel().getCurrentHappiness();
+            if (getDataModel().getGroupId() == null) return currentHappiness;
 
             if (currentHappiness == null)
             {
@@ -967,7 +967,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
 
             //If this concerns you...
-            if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
+            if (getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
             {
                     //If votes > 0 you are happy your proposition was passed
                     //If votes < 0 you are dissapointed your proposition was not passed
@@ -1007,7 +1007,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
                 //if votes > 0 we increase the trust for proposer
                 //if votes < 0 we decrease the trust for proposer
-                proposerTrust = scale(proposerTrust, votes, randomGenerator.nextDouble());
+                proposerTrust = scale(proposerTrust, votes, Math.abs(overallMovement));
                 newTrustValue.put(proposer, proposerTrust);
              }
              else
