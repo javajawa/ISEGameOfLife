@@ -67,8 +67,8 @@ public class Loans extends GenericSimulation
 		//if having errors, delete your Simulations.db file to recreate db
 		//addPlugin(new DatabasePlugin(comment,false));
 		addPlugin(new HunterListPlugin());
-		//addPlugin(new PoliticalCompassPlugin());
-                //addPlugin(new PoliticalCompass2Plugin());
+		addPlugin(new PoliticalCompassPlugin());
+                addPlugin(new PoliticalCompass2Plugin());
                 //addPlugin(new HunterInfo());
                 //addPlugin(new GroupInfo());
                 //addPlugin(new GroupGraphs());

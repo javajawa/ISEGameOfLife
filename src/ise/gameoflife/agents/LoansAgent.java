@@ -228,10 +228,73 @@ public class LoansAgent extends AbstractAgent{
         return 0;
     }
 
+    /**
+    * This method updates the agent's trust value for its current opponent after hunt.
+    * @param foodHunted The amount of food the agent returned from hunting.
+    * @param foodReceived The final amount of food the agent received after tax
+    * @return A map entry containing the opponent's ID and the new trust value
+    */
     @Override
-    protected Map<String, Double> updateTrustAfterHunt(double foodHunted, double foodReceived) {
-        //TODO: Reuse most of the code from TestPoliticalAgent
-        return null;
+    protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
+                                    double foodReceived)
+    {
+            String opponentID;
+            Map<String, Double> newTrustValue = new HashMap<String, Double>();
+            double trust;
+
+            //get what this agent has chosen to hunt in this round
+            Food lastHunted = this.getDataModel().getLastHunted();
+
+            //Get the members of the hunting team
+            if (this.getDataModel().getHuntingTeam() == null) return null;
+            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
+            //If agent didn't go hunting or has no team pair then do nothing
+            if ((lastHunted == null)||(members.size() <2)) return null;
+
+            //Find out agent's opponent ID
+            if (members.get(0).equals(this.getId()))
+            {
+                opponentID = members.get(1);
+
+            }
+            else
+            {
+                opponentID = members.get(0);
+
+            }
+
+            //Get agent's trust value for this particular opponent
+            //If there is no entry initialise it
+            if (this.getDataModel().getTrust(opponentID) != null)
+            {
+                trust = this.getDataModel().getTrust(opponentID);
+            }
+            else
+            {
+                trust = 0.1;
+            }
+
+            //If agent hunted stag then check what the opponent did. If betrayed decrease trust
+            // otherwise increase it. If the agent hunted rabbit no change in trust
+            if (lastHunted.getName().equals("Stag"))
+            {
+                    if (foodHunted == 0) //Agent has been betrayed
+                    {
+                            trust = scale(trust, -1, 0.3);
+                    }
+                    else //Opponent cooperated
+                    {
+                        trust = scale(trust, 1, 0.3);
+                    }
+            }
+            else    //Agent hunted rabbit so no trust issues
+            {
+                trust = scale(trust, 0, 0.3);
+            }
+
+            newTrustValue.put(opponentID, trust);
+            return  newTrustValue;
     }
 
     @Override
