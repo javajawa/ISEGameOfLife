@@ -172,4 +172,35 @@ public class NetworkGenome extends Genome<NetworkGenome>
 		return nodeCounts;
 	}
 
+	public static void main(String args[])
+	{
+		NetworkGenome genome1 = new NetworkGenome(4,5,3);
+		NetworkGenome genome2 = new NetworkGenome(4,5,3);
+		genome1.randomize();
+		genome2.randomize();
+		NetworkGenome genome3 = genome1.crossOver(genome2).mutate();
+
+		double weights[][][] = genome3.weights();
+		// double offsets[][] = genome3.offsets();
+
+		int layers = weights.length;
+		for (int i = 0; i < layers - 1; i++)
+		{
+			System.out.println("Layer");
+			int neurons = weights[i].length;
+			for (int j = 0; j < neurons; j++)
+			{
+				System.out.println("\tNeuron");
+				int wvals = weights[i][j].length;
+				for (int k = 0; k < wvals; k++)
+				{
+					System.out.println("\t\tVal1: " +
+							genome1.weights()[i][j][k]);
+					System.out.println("\t\tVal2: " +
+							genome2.weights()[i][j][k]);
+					System.out.println("\t\tVal3: " + weights[i][j][k]);
+				}
+			}
+		}
+	}
 }
