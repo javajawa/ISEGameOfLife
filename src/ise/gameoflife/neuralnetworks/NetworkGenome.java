@@ -10,8 +10,9 @@ import java.util.Random;
 public class NetworkGenome extends Genome<NetworkGenome>
 {
 	private static final long serialVersionUID = 1L;
+	private Random rand = new Random();
 
-	private double mutateRate = 0.05f;
+	private double mutateRate = 0.10f;
 	private double crossOverRate = 0.20f;
 	private double weights[][][] = null;
 	private double offsets[][] = null;
@@ -22,7 +23,6 @@ public class NetworkGenome extends Genome<NetworkGenome>
 		this.setNodeCounts(nodeCounts);
 	}
 
-	Random rand = new Random();
 	@Override
 	public void randomize()
 	{
