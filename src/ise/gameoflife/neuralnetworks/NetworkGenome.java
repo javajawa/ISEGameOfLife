@@ -112,31 +112,34 @@ public class NetworkGenome extends Genome<NetworkGenome>
 		return newGenome;
 	}
 
-	protected void generateParameters(NetworkGenomeDelegate delegate, double weights[][][], double offsets[][])
+	protected void generateParameters(NetworkGenomeDelegate delegate)
 	{
 		int layers = nodeCounts.length;
 
-		if (null == weights) weights = new double[layers][][];
-		if (null == offsets) offsets = new double[layers][];
+		double weights[][][] = new double[layers-1][][];
+		double offsets[][] = new double[layers-1][];
 
-		for (int i = 0; i < layers - 1; i++)
+		for (int i = 0; i < layers-1; i++)
 		{
 			int inputs = nodeCounts[i];
 			int outputs = nodeCounts[i+1];
 
-			if (null == weights[i]) weights[i] = new double[outputs][];
-			if (null == offsets[i]) offsets[i] = new double[outputs];
+			weights[i] = new double[outputs][];
+			offsets[i] = new double[outputs];
 
 			for (int j = 0; j < outputs; j++)
 			{
-				if (null == weights[i][j]) weights[i][j] = new double[inputs];
+				weights[i][j] = new double[inputs];
 				for (int k = 0; k < inputs; k++)
 				{
-					weights[i][j][k] = delegate.giveWeight(weights,i,j,k);
+					weights[i][j][k] = delegate.giveWeight(this.weights(),i,j,k);
 				}
-				offsets[i][j] = delegate.giveOffset(i,j);
+				offsets[i][j] = delegate.giveOffset(this.offsets(),i,j);
 			}
 		}
+
+		this.setWeights(weights);
+		this.setOffsets(offsets);
 	}
 
 	public void setWeights(double weights[][][])
