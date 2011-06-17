@@ -49,8 +49,7 @@ public class TestPoliticalAgent extends AbstractAgent
 	private History<Double> satisfaction = new History<Double>(1);
 
         Random randomGenerator = new Random();
-
-	private final static Logger logger = Logger.getLogger("gameoflife.PoliticalAgent");
+        
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -116,6 +115,7 @@ public class TestPoliticalAgent extends AbstractAgent
         //compute current satisfaction, based on your socio economic vector distance with the group        
         double myEconomic = getDataModel().getEconomicBelief();
         double mySocial = getDataModel().getSocialBelief();
+        if (getConn().getGroupById(getDataModel().getGroupId()) == null) return false;
         double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
         double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
 
@@ -165,6 +165,7 @@ public class TestPoliticalAgent extends AbstractAgent
         
         //Used when agent is about to issue the command to leave the group of only himself and another,
         //it searches for the other agent and tells it leave the group as well
+        if (myGroup == null) return;
         if(myGroup.getMemberList().size() == 2)
         {
              for(String member : myGroup.getMemberList())
@@ -328,7 +329,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
 
             //If top candidate has evaluation above the threshold then choose that group
-            if (topCandidateHeuristicValue > 0.6)
+            if (topCandidateHeuristicValue > 0.4)
             { 
                 chosenGroup = partnershipCandidates.get(0).getKey();
                 freeToGroup.remove(this.getId());                
@@ -397,7 +398,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
 
             //If top candidate has evaluation above the threshold then choose that group
-            if (topCandidateHeuristicValue > 0.6)
+            if (topCandidateHeuristicValue > 0.3)
             {
                 String invitee = partnershipCandidates.get(0).getKey();
                 
@@ -447,7 +448,7 @@ public class TestPoliticalAgent extends AbstractAgent
             heuristicValue = 0.3*esFaction;                                   
         }
                 
-        if (heuristicValue > 0.6)
+        if (heuristicValue > 0.3)
         {
             //you accept the invitation and are no longer free to group with anyone else
             freeToGroup.remove(invitee);
@@ -586,8 +587,8 @@ public class TestPoliticalAgent extends AbstractAgent
     protected ProposalType makeProposal()
     {
             //Note : No need to check if agent is in a group. This is done by doMakeProposal
-
             String groupId = this.getDataModel().getGroupId();
+            if (getConn().getGroupById(groupId) == null) return null;
             ProposalType proposal;
             
             //Get the economic beliefs of the agent and the group            
@@ -840,6 +841,7 @@ public class TestPoliticalAgent extends AbstractAgent
             Food lastHunted = this.getDataModel().getLastHunted();
             
             //Get the members of the hunting team
+            if (this.getDataModel().getHuntingTeam() == null) return null;
             List<String> members = this.getDataModel().getHuntingTeam().getMembers();
 
             //If agent didn't go hunting or has no team pair then do nothing
@@ -867,7 +869,7 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 trust = 0.1;
             }
-
+            
             //If agent hunted stag then check what the opponent did. If betrayed decrease trust
             // otherwise increase it. If the agent hunted rabbit no change in trust
             if (lastHunted.getName().equals("Stag"))
@@ -878,7 +880,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1,randomGenerator.nextDouble());
+                        trust = scale(trust, 1, randomGenerator.nextDouble());
                     }
             }
             else    //Agent hunted rabbit so no trust issues
