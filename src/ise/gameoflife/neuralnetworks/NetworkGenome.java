@@ -39,7 +39,7 @@ public class NetworkGenome extends Genome<NetworkGenome>
 				{
 					return 2*rand.nextDouble()-1;
 				}
-			}, weights, offsets);
+			});
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class NetworkGenome extends Genome<NetworkGenome>
 					}
 					return 2*rand.nextDouble()-1;
 				}
-			}, weights, offsets);
+			});
 		return genome;
 	}
 
@@ -108,7 +108,7 @@ public class NetworkGenome extends Genome<NetworkGenome>
 						}
 						return gOffsets[i][j];
 					}
-				}, weights, offsets);
+				});
 		return newGenome;
 	}
 
