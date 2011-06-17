@@ -69,6 +69,7 @@ public class LoansAgent extends AbstractAgent{
         }
         else
         {
+            //TODO: When there is no ungrouped agent left check for one membered groups and release their members
             Set<String> groups = getConn().availableGroups();
             int randomIndex = (int)Math.round(randomGenerator.nextDouble()*groups.size());
             Iterator<String> i = groups.iterator();
@@ -86,11 +87,92 @@ public class LoansAgent extends AbstractAgent{
         //TODO: Reuse the code of TestPoliticalAgent. No change here
     }
 
+    /**
+    * This method enables agents to pick their preferred choice of food
+    * The choice is based on several factors. First of all if we deal with a free agent
+    * its choice is based only on its type (TFT, AD, AC or R). Otherwise, the agent belongs
+    * to a group it can also ask for advice. If the advice is not good enough then the agent just
+    * follows its type.
+    * @param none
+    * @return The chosen food for this round.
+    */
     @Override
-    protected Food chooseFood() {
-        //TODO: Reuse the code of TestPoliticalAgent. No change here. Probably get rid of advice.
-        //The less details we have for agents the better. ABSTRACTION
-        return null;
+    protected Food chooseFood()
+    {
+            if (getDataModel().getHuntingTeam() == null) return null;
+            List<String> members = this.getDataModel().getHuntingTeam().getMembers();
+
+            //We assume there will only be two food sources (stags/rabbits)
+            List<Food> foodArray = new LinkedList<Food>();
+            Food cooperateFood, defectFood, choice;
+
+            //Distinguish between stag (cooperate) and rabbit (defect)
+            foodArray = this.getFoodTypes();
+            cooperateFood = foodArray.get(0);
+            defectFood = foodArray.get(1);
+
+            String groupID = this.getDataModel().getGroupId();
+
+            //If the agent is not in a group or advisor didn't give a definitive answer then hunt
+            //according to type
+            switch (this.getDataModel().getAgentType())
+            {
+                    //The choice is always to hunt stags
+                    case AC:
+                            choice = cooperateFood;
+                            break;
+
+                    //The choice is always to hunt rabbits
+                    case AD:
+                            choice = defectFood;
+                            break;
+
+                    // Picks a random stratergy
+                    case R:
+                            choice = (uniformRandBoolean() ? cooperateFood : defectFood);
+                            break;
+
+                    //If first time cooperate else imitate what your partner (opponent?) choose the previous time
+                    case TFT:
+                            //Get last hunting choice of opponent and act accordingly
+                            Food opponentPreviousChoice = cooperateFood;
+
+                            // TFT makes no sense in a team of 1...
+                            if (members.size() == 1)
+                            {
+                                    choice = cooperateFood;
+                                    return choice;
+                            }
+                            //Get the previous choice of your pair. For this round imitate him.
+                            //In the first round we have no hunting history therefore default choice is stag
+                            if (members.get(0).equals(this.getId()))
+                            {
+                                    if (getConn().getAgentById(members.get(1)) != null)
+                                    {
+                                        if (getConn().getAgentById(members.get(1)).getHuntingHistory().size() != 1)
+                                        {
+                                                opponentPreviousChoice = getConn().getAgentById(members.get(1)).getHuntingHistory().getValue(1);
+                                        }
+                                    }
+                            }
+                            else
+                            {
+                                    if (getConn().getAgentById(members.get(0)) != null)
+                                    {
+                                        if (getConn().getAgentById(members.get(0)).getHuntingHistory().size() != 1)
+                                        {
+                                                opponentPreviousChoice = getConn().getAgentById(members.get(0)).getHuntingHistory().getValue(1);
+                                        }
+                                    }
+                            }
+                            choice = opponentPreviousChoice;
+                            break;
+
+                    default:
+                            throw new IllegalStateException("Agent type was not recognised");
+            }
+
+            return choice;
     }
 
     @Override
@@ -168,4 +250,37 @@ public class LoansAgent extends AbstractAgent{
     @Override
     protected void onInvite(String group) {
     }
+
+    /**
+    * This is a helper method and distinguishes what is the food type for cooperation and defection
+    * @param none
+    * @return A list containing the food for cooperation and defection
+    */
+        private List<Food> getFoodTypes(){
+            List<Food> foodArray = new LinkedList<Food>();
+            List<Food> foodList = new LinkedList<Food>();
+            Food cooperateFood, defectFood;
+
+            //Stores the two sources in an array
+            for (Food noms : getConn().availableFoods())
+            {
+                    foodArray.add(noms);
+            }
+
+            //Hunting a stag is equivalent to cooperation. Hunting rabbit is equivalent to defection
+            if (foodArray.get(0).getNutrition() > foodArray.get(1).getNutrition())
+            {
+                    cooperateFood = foodArray.get(0);
+                    defectFood = foodArray.get(1);
+            }
+            else
+            {
+                    cooperateFood = foodArray.get(1);
+                    defectFood = foodArray.get(0);
+            }
+
+            foodList.add(cooperateFood);
+            foodList.add(defectFood);
+            return foodList;
+       }
 }
