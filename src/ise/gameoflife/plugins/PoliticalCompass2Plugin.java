@@ -5,10 +5,10 @@
 
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.agents.TestPoliticalAgent;
 
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import java.awt.Color;
@@ -48,7 +48,9 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         private Environment en;
 
         // Set of political participants that are active
-        private TreeMap<String, TestPoliticalAgent> p_players = new TreeMap<String, TestPoliticalAgent>();
+        //private TreeMap<String, AbstractAgent> p_players = new TreeMap<String, AbstractAgent>();
+        private TreeMap<String, AbstractAgent> p_players = new TreeMap<String, AbstractAgent>();
+
         double correction = 1; //scale the agents
         int shift = 5; //shift axes
         
@@ -142,7 +144,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                         String id = iter.next();
                         if(!p_players.containsKey(id))
                         {
-                                p_players.put(id, (TestPoliticalAgent) sim.getPlayer(id));
+                                p_players.put(id, (AbstractAgent) sim.getPlayer(id));
                         }
 
 
@@ -150,7 +152,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 
                 // Delete agents which are no longer active
                 List<String> ids_to_remove = new LinkedList<String>();
-                for(Map.Entry<String, TestPoliticalAgent> entry : p_players.entrySet())
+                for(Map.Entry<String, AbstractAgent> entry : p_players.entrySet())
                 {
                         String id = entry.getKey();
                         if(!active_agent_ids.contains(id))
@@ -189,7 +191,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                 // Draw all agents agents
           try{
-                for(Map.Entry<String,TestPoliticalAgent> entry : p_players.entrySet())
+                for(Map.Entry<String,AbstractAgent> entry : p_players.entrySet())
                 {
                         g.setColor(Color.BLUE);
                         if (entry.getValue().getDataModel().getGroupId() == null)
@@ -216,14 +218,14 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 Rectangle rect = g.getClipBounds();
                 int size=0;
 
-                for(Map.Entry<String, TestPoliticalAgent> entry1 : p_players.entrySet())
+                for(Map.Entry<String, AbstractAgent> entry1 : p_players.entrySet())
                 {
                         PublicAgentDataModel agent1_dm = entry1.getValue().getDataModel();
 
                         if(agent1_dm.getGroupId() != null && PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getMemberList().size() > 1)
                         {
                                                     
-                            for(Map.Entry<String,TestPoliticalAgent> entry2 : p_players.entrySet())
+                            for(Map.Entry<String,AbstractAgent> entry2 : p_players.entrySet())
                             {
                                PublicAgentDataModel agent2_dm = entry2.getValue().getDataModel();
 
@@ -273,7 +275,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                             //drawLeader
                             float hue = getGroupColour(GroupId);
                             g.setColor(Color.getHSBColor( hue, 1, 1));
-                            drawRect(g, p_players.get(LeaderId),4);
+                            if (p_players.get(LeaderId) != null)
+                                drawRect(g, p_players.get(LeaderId),4);
                         }
                     }
                 }
@@ -300,10 +303,10 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
             /**
          * Draws a circle representing an agent's political views location
          * @param g Graphics objects
-         * @param p_player TestPoliticalAgent object to draw
+         * @param p_player AbstractAgent object to draw
          * @param size size of the group
          */
-        private void drawAgent(Graphics g, TestPoliticalAgent p_player,int size)
+        private void drawAgent(Graphics g, AbstractAgent p_player,int size)
         {
                 Rectangle rect = g.getClipBounds();
                 double x,y;
@@ -322,10 +325,10 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
          /**
          * Draws a rectangle representing an leaders's political views location
          * @param g Graphics objects
-         * @param p_player TestPoliticalAgent object to draw
+         * @param p_player AbstractAgent object to draw
          * @param size size of the group
          */
-        private void drawRect(Graphics g, TestPoliticalAgent p_player,int size)
+        private void drawRect(Graphics g, AbstractAgent p_player,int size)
         {
                 Rectangle rect = g.getClipBounds();
                 double x,y;

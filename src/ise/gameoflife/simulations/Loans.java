@@ -34,6 +34,7 @@ public class Loans extends GenericSimulation
 		for (int i = 0; i < 150; i++)
 		{
                         addAgent(new LoansAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+                        addAgent(new LoansAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
