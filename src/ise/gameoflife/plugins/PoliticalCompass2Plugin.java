@@ -274,7 +274,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                             //drawLeader
                             float hue = getGroupColour(GroupId);
                             g.setColor(Color.getHSBColor( hue, 1, 1));
-                            drawRect(g, p_players.get(LeaderId),4);
+                            if (p_players.get(LeaderId) != null)
+                                drawRect(g, p_players.get(LeaderId),4);
                         }
                     }
                 }
