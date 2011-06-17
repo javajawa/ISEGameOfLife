@@ -33,7 +33,7 @@ public class Politics extends GenericSimulation
 	{
                 Random randomGenerator = new Random();
                 
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 10; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
@@ -69,7 +69,7 @@ public class Politics extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
-		addPlugin(new DatabasePlugin(comment,false));
+		//addPlugin(new DatabasePlugin(comment,false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());

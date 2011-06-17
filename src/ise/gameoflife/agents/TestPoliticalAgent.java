@@ -590,7 +590,7 @@ public class TestPoliticalAgent extends AbstractAgent
             String groupId = this.getDataModel().getGroupId();
             ProposalType proposal;
             
-            //Get the economic beliefs of the agent and the group
+            //Get the economic beliefs of the agent and the group            
             double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
             double agentEconomicBelief = this.getDataModel().getEconomicBelief();
 
