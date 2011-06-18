@@ -11,6 +11,7 @@ import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeSet;
 
 /**
  *
@@ -36,7 +38,8 @@ public class LoansGroup extends AbstractGroupAgent {
     private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
     private History< HashMap<String, Tuple<Double, Double> > > loansGiven = new History< HashMap<String, Tuple<Double, Double> > >(50);
     private History< HashMap<String, Tuple<Double, Double> > > loansTaken = new History< HashMap<String, Tuple<Double, Double> > >(50);
-    
+    private static Map<String, Double> inNeed = new HashMap<String, Double>();
+
     @Deprecated
     public LoansGroup() {
     	super();
@@ -330,7 +333,35 @@ public class LoansGroup extends AbstractGroupAgent {
 
     @Override
     protected void interactWithOtherGroups() {
-        //TODO: Check for loans
+
+        double currentFoodReserve = getDataModel().getCurrentReservedFood();
+
+        //First check your financial status and if your in need ask for a loan
+        if(inNeed.containsKey(this.getId()))
+        {
+            //TODO: Get the money if u have requested a loan
+            return;
+        }
+        
+        if (!inNeed.isEmpty())
+        {
+            for (String groupID: inNeed.keySet() )
+            {
+                double amountNeeded = inNeed.get(groupID);
+                double interestRate = 0.15;
+                //TODO: Design a heuristic to decide if group will give a loan
+                //For now give a loan if u have the amount needed
+                if (currentFoodReserve > amountNeeded)
+                {
+                    Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
+                    loanInfo.add(amountNeeded, interestRate);
+                    HashMap<String, Tuple<Double, Double> > loanRecord =new HashMap<String, Tuple<Double, Double> >();
+                    loanRecord.put(groupID, loanInfo);
+                    loansGiven.setValue(loanRecord);
+                }
+            }
+        }
     }
+    
 }
 
