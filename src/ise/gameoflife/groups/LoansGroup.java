@@ -266,12 +266,24 @@ public class LoansGroup extends AbstractGroupAgent {
         double average = 0;
         if(!getDataModel().getMemberList().isEmpty())
         {
+            Double happiness;
             for(String member : getDataModel().getMemberList())
             {
-                Double happiness = getConn().getAgentById(member).getHappinessHistory().getValue(turnsAgo);
-                if(happiness != null)//otherwise add nothing
+                if(turnsAgo > 0)
                 {
-                    average += happiness;                   
+                    happiness = getConn().getAgentById(member).getCurrentHappiness();
+                    if(happiness != null)//otherwise add nothing
+                    {
+                        average += happiness;                   
+                    }
+                }
+                else
+                {
+                    happiness = getConn().getAgentById(member).getHappinessHistory().getValue(turnsAgo);
+                    if(happiness != null)//otherwise add nothing
+                    {
+                        average += happiness;                   
+                    }                    
                 }
             }
             average = average / getDataModel().getMemberList().size();
