@@ -1,6 +1,7 @@
 package ise.gameoflife.participants;
 
 import ise.gameoflife.inputs.Proposition;
+import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.TurnType;
@@ -119,9 +120,9 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
         return source.getCurrentReservedFood();
     }
     
-    public UnmodifiableHistory<Double> getReservedFood()
+    public UnmodifiableHistory<Double> getReservedFoodHistory()
     {
-            return source.getReservedFood();
+            return source.getReservedFoodHistory();
     }      
 
     /**

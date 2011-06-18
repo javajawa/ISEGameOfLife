@@ -44,7 +44,8 @@ class GroupDataModel extends APlayerDataModel
         private AgentType groupStrategy;
 
         private List<String> panel = new LinkedList<String>();
-
+        
+        @Element
         private History<Double> reservedFoodHistory;
         
 	@Deprecated
@@ -110,6 +111,7 @@ class GroupDataModel extends APlayerDataModel
 	void clearRoundData()
 	{
 		economicPosition.newEntry(true);
+                reservedFoodHistory.newEntry(true);
 		propositionHistory.newEntry(null);
 	}
 
@@ -238,9 +240,9 @@ class GroupDataModel extends APlayerDataModel
 		return reservedFoodHistory.getValue();
 	}
         
-        UnmodifiableHistory<Double> getReservedFood()
+        UnmodifiableHistory<Double> getReservedFoodHistory()
 	{
-		return economicPosition.getUnmodifableHistory();
+		return reservedFoodHistory.getUnmodifableHistory();
 	}        
 
 	int size()

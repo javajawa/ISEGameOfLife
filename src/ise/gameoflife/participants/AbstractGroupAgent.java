@@ -338,7 +338,7 @@ public abstract class AbstractGroupAgent implements Participant
                         case LoanGiven:
                             this.setReservedFood(this.getDataModel().getCurrentReservedFood() - interactionResult.getValue());
                         case NothingHappened:
-                            this.setReservedFood(this.getDataModel().getCurrentReservedFood() + interactionResult.getValue());
+                            this.setReservedFood(this.getDataModel().getCurrentReservedFood());
             }
             
         }

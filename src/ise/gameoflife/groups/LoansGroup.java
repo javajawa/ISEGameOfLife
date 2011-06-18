@@ -263,15 +263,27 @@ public class LoansGroup extends AbstractGroupAgent {
 //            deltaFoodReserve = mostRecentReserve;
 //        else
 //            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFood().getValue(1);
-        double currentFoodReserve = getDataModel().getCurrentReservedFood();
-        if (currentFoodReserve > 100)
+        double oneTurnAgoFoodReserve;
+        if(getDataModel().getReservedFoodHistory().size()>1)
         {
-            return true;
+            oneTurnAgoFoodReserve = getDataModel().getReservedFoodHistory().getValue(1);
         }
         else
         {
+            oneTurnAgoFoodReserve = 0;
+        }
+
+        if (mostRecentReserve > 100)
+        {
+            return true;
+        }
+        else if ((mostRecentReserve <= 100)&&(mostRecentReserve < oneTurnAgoFoodReserve))
+        {
+            inNeed.put(this.getId(), mostRecentReserve);
             return false;
         }
+        else
+            return false;
     }
     
     private double getAverageHappiness(int turnsAgo)
@@ -307,7 +319,7 @@ public class LoansGroup extends AbstractGroupAgent {
     @Override
     protected double decideTaxForReservePool() {
         double currentFoodReserve;        
-        if(getDataModel().getReservedFood().isEmpty())
+        if(getDataModel().getReservedFoodHistory().isEmpty())
             currentFoodReserve = 0;
         else
             currentFoodReserve = getDataModel().getCurrentReservedFood();
@@ -346,9 +358,22 @@ public class LoansGroup extends AbstractGroupAgent {
 
         double currentFoodReserve = getDataModel().getCurrentReservedFood();
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
+
+        //FOR DEBUGGING ONLY
+        System.out.println("------------------");
+        System.out.println(this.getDataModel().getName());
+        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+        if(getDataModel().getReservedFoodHistory().size()>1)
+        {
+            System.out.println("Previously reserved food: "+this.getDataModel().getReservedFoodHistory().getValue(1));
+        }
+        System.out.println("There are "+ inNeed.size()+" some groups in need!");
+        //FOR DEBUGGING ONLY END
+
         //First check your financial status and if your in need ask for a loan
         if(inNeed.containsKey(this.getId()))
         {
+
             //TODO: Get the money if u have requested a loan
             if (loanRequestsAccepted.containsKey(this.getId()))
             {
@@ -358,14 +383,14 @@ public class LoansGroup extends AbstractGroupAgent {
                  loanRequestsAccepted.remove(this.getId());
                  Set<String> giverID = loanRecord.keySet();
                  interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
-                 return interactionResult;
             }
             else
             {
                 interactionResult.add(InteractionResult.NothingHappened, 0.0);
-                return interactionResult;
-            }
 
+            }
+            System.out.println("I have requested a loan and the result is "+ interactionResult.getKey()+ ". I have been given "+ interactionResult.getValue()+ " units of food!");
+            return interactionResult;
         }
         
         if (!inNeed.isEmpty())
@@ -392,11 +417,13 @@ public class LoansGroup extends AbstractGroupAgent {
                     loanRecord.put(this.getId(), loanInfo);
                     loanRequestsAccepted.put(groupID, loanRecord);
                     interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
+                    System.out.println(getConn().getGroupById(groupID).getName() + " requested a loan and the result is "+ interactionResult.getKey()+ ". I gave them "+ interactionResult.getValue()+ " units of food!");
                     return interactionResult;
                 }
             }
         }
         interactionResult.add(InteractionResult.NothingHappened, 0.0);
+        System.out.println("No interaction at all!");
         return interactionResult;
     }
     
