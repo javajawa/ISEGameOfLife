@@ -356,6 +356,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     protected double decideTaxForReservePool() {
         return 0;
     }
-
+    
+    @Override
+    protected Tuple<AgentType, Double> makePayments()
+    {      
+        return new Tuple<AgentType, Double>(this.getDataModel().getGroupStrategy(), this.getDataModel().getCurrentReservedFood());
+    }
 }
-

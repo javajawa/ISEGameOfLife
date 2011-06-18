@@ -237,6 +237,11 @@ class GroupDataModel extends APlayerDataModel
 	{
 		return reservedFoodHistory.getValue();
 	}
+        
+        UnmodifiableHistory<Double> getReservedFood()
+	{
+		return economicPosition.getUnmodifableHistory();
+	}        
 
 	int size()
 	{

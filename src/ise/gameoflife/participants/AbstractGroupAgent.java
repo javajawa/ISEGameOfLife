@@ -14,6 +14,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.inputs.Vote;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.Tuple;
 import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.GroupRegistration;
@@ -319,6 +320,10 @@ public abstract class AbstractGroupAgent implements Participant
         private void doLeadersHunt(){
                 AgentType strategy = decideGroupStrategy();
                 this.dm.setGroupStrategy(strategy);
+                
+                Tuple<AgentType, Double> finalStrategy = makePayments();
+                this.setReservedFood(finalStrategy.getValue());                
+                this.dm.setGroupStrategy(finalStrategy.getKey());
         }
         
 	/**
@@ -519,7 +524,8 @@ public abstract class AbstractGroupAgent implements Participant
 	 * Alternatively, use of the unit "Harcourt" may also be used. 
 	 * 1 Round = 1 Harcourt
 	 */
-        
+
+        abstract protected Tuple<AgentType, Double> makePayments();
         abstract protected AgentType decideGroupStrategy();
 	abstract protected double decideTaxForReservePool();
         abstract protected void beforeNewRound();

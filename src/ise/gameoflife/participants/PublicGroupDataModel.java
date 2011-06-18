@@ -118,6 +118,11 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
     public double getCurrentReservedFood() {
         return source.getCurrentReservedFood();
     }
+    
+    public UnmodifiableHistory<Double> getReservedFood()
+    {
+            return source.getReservedFood();
+    }      
 
     /**
      * Gets the proposals made this turn, and the results

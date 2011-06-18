@@ -588,10 +588,21 @@ public class TestPoliticalAgent extends AbstractAgent
     {
             //Note : No need to check if agent is in a group. This is done by doMakeProposal
             String groupId = this.getDataModel().getGroupId();
-            if (getConn().getGroupById(groupId) == null) return ProposalType.staySame;
+            //if (getConn().getGroupById(groupId) == null) return ProposalType.staySame;
             ProposalType proposal;
-            
-            //Get the economic beliefs of the agent and the group
+
+            //Get the economic beliefs of the agent and the group    
+        System.out.println("-------------START-GROUP---------------------------");
+        System.out.println("My name is " + getDataModel().getName() );        
+        int size = getConn().getGroupById(groupId).getMemberList().size();
+        System.out.println(getConn().getGroupById(groupId).getName() +" with size: " +size );
+        for (String a: getConn().getGroupById(groupId).getMemberList())
+        {
+            System.out.println("    "+getConn().getAgentById(a).getName());
+        }
+        System.out.println("--------------END-GROUP---------------------------");
+        System.out.println();
+        System.out.println();
             double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
             double agentEconomicBelief = this.getDataModel().getEconomicBelief();
 
