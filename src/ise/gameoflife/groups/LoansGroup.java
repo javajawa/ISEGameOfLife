@@ -317,6 +317,7 @@ public class LoansGroup extends AbstractGroupAgent {
             tax = 1 - goalRatio;//since you're far away from achievement, tax high
             
         }
+        return 0.9;//stays for now
     }
 
 }
