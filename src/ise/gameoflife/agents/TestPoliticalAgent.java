@@ -402,12 +402,11 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                 String invitee = partnershipCandidates.get(0).getKey();
                 
-                ListIterator itr = partnershipESFactions.listIterator();
+                ListIterator<Tuple<String,Double>> itr = partnershipESFactions.listIterator();
                 Double topCandidateESFaction = null;
                 while(itr.hasNext())
                 {
-                    @SuppressWarnings("unchecked")
-                    Tuple<String, Double> listTuple = (Tuple<String, Double>) itr.next();
+                    Tuple<String, Double> listTuple = itr.next();
                     if(listTuple.getKey().equals(invitee))
                         topCandidateESFaction = listTuple.getValue();
                 }
