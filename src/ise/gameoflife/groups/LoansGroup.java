@@ -267,14 +267,13 @@ public class LoansGroup extends AbstractGroupAgent {
 //            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFood().getValue(1);
         if (inNeed.containsKey(this.getId())) return false;
         double oneTurnAgoFoodReserve = getDataModel().getReservedFoodHistory().getValue(1);
-        if (mostRecentReserve > 100)
+        if (mostRecentReserve >= 100)
         {
             return true;
         }
-        else if ((mostRecentReserve <= 100)&&(oneTurnAgoFoodReserve - mostRecentReserve > 20))
+        else if ((mostRecentReserve < 100)&&(oneTurnAgoFoodReserve - mostRecentReserve > 20))
         {
             inNeed.put(this.getId(), 100-mostRecentReserve);
-            System.out.println(getDataModel().getName() + " has requested " + (100-mostRecentReserve) + " units of food!");
             return false;
         }
         else
@@ -365,38 +364,48 @@ public class LoansGroup extends AbstractGroupAgent {
         //First check your financial status and if your in need ask for a loan
         if(inNeed.containsKey(this.getId()))
         {
-
-            //TODO: Get the money if u have requested a loan
-            if (loanRequestsAccepted.containsKey(this.getId()))
+            if (currentFoodReserve > 100) 
+            {
+                //We are hardworkers and we managed to recover our economic status to good
+                inNeed.remove(this.getId());
+                System.out.println("We solved our economic problem so we don't want a loan anymore!");
+                interactionResult.add(InteractionResult.NothingHappened, 0.0);
+            }
+            else if (loanRequestsAccepted.containsKey(this.getId()))
             {
                  //If the request for a loan was granted then store the receipt in your records to help with repayments later (Hopefully..)
                  HashMap<String, Tuple<Double, Double> > loanRecord = loanRequestsAccepted.get(this.getId());
                  Set<String> giverID = loanRecord.keySet();
                  this.loansTaken.put(giverID.iterator().next(), loanRecord.get(giverID.iterator().next()));
                  loanRequestsAccepted.remove(this.getId());
-                 
+                 System.out.println("I have requested a loan and the result is "+ interactionResult.getKey()+ ". I have been given "+ interactionResult.getValue()+ " units of food!");
                  interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
             }
             else
             {
                 interactionResult.add(InteractionResult.NothingHappened, 0.0);
-
+                System.out.println("I have requested a loan and the result is "+ interactionResult.getKey()+ ". I have been given "+ interactionResult.getValue()+ " units of food!");
             }
-            System.out.println("I have requested a loan and the result is "+ interactionResult.getKey()+ ". I have been given "+ interactionResult.getValue()+ " units of food!");
+            
             return interactionResult;
         }
         
         if (!inNeed.isEmpty())
         {
             System.out.println("There are "+ inNeed.size()+" some groups in need!");
+            for (String s: inNeed.keySet())
+            {
+                if (getConn().getGroupById(s) != null)
+                    System.out.println("    "+ getConn().getGroupById(s).getName()+ " has requested "+inNeed.get(s)+" units of food!");
+            }
+            
             for (String groupID: inNeed.keySet() )
             {
                 double amountNeeded = inNeed.get(groupID);
                 double interestRate = 0.15;
                 //TODO: Design a heuristic to decide if group will give a loan
                 //For now give a loan if u have the amount needed
-                        System.out.println("Amount needed: "+ amountNeeded);
-                if (currentFoodReserve > amountNeeded)
+                if (currentFoodReserve - amountNeeded > 100)
                 {
                     //Create a tuple containing the amount granted and the interest
                     Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
