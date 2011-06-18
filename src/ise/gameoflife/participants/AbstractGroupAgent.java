@@ -166,13 +166,14 @@ public abstract class AbstractGroupAgent implements Participant
 		switch (turn)
 		{
 			case GroupSelect:
-				// Nothing to do here - this is handled in enQueueMessage
+				// Allow groups to "explore" their surroundings
+                                doInteractWithOtherGroups();
 				break;
 			case TeamSelect:
 				doTeamSelect();
 				break;
 			case GoHunt:
-				// Nothing to do here - agents are off hunting!
+				// The panel (if it exists) decides the group's strategy
                                 doLeadersHunt();
                                 break;
 			case HuntResults:
@@ -322,8 +323,13 @@ public abstract class AbstractGroupAgent implements Participant
                 this.dm.setGroupStrategy(strategy);
                 
                 Tuple<AgentType, Double> finalStrategy = makePayments();
-                this.setReservedFood(finalStrategy.getValue());                
+                this.setReservedFood(finalStrategy.getValue());
+                
                 this.dm.setGroupStrategy(finalStrategy.getKey());
+        }
+
+        private void doInteractWithOtherGroups(){
+            interactWithOtherGroups();
         }
         
 	/**
@@ -528,6 +534,8 @@ public abstract class AbstractGroupAgent implements Participant
         abstract protected Tuple<AgentType, Double> makePayments();
         abstract protected AgentType decideGroupStrategy();
 	abstract protected double decideTaxForReservePool();
+        abstract protected void interactWithOtherGroups();
+
         abstract protected void beforeNewRound();
 
 

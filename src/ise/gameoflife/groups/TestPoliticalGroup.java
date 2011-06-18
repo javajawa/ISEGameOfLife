@@ -362,4 +362,9 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     {      
         return new Tuple<AgentType, Double>(this.getDataModel().getGroupStrategy(), this.getDataModel().getCurrentReservedFood());
     }
+
+    @Override
+    protected void interactWithOtherGroups() {
+        //TODO: Allow groups play the game with other groups
+    }
 }

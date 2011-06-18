@@ -88,6 +88,11 @@ public class TestGroup extends AbstractGroupAgent
     protected Tuple<AgentType, Double> makePayments()
     {      
         return new Tuple<AgentType, Double>(this.getDataModel().getGroupStrategy(), this.getDataModel().getCurrentReservedFood());
-    }    
+    }
+
+    @Override
+    protected void interactWithOtherGroups() {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
 	
 }

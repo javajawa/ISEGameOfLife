@@ -327,4 +327,10 @@ public class LoansGroup extends AbstractGroupAgent {
         }
         return tax;
     }
+
+    @Override
+    protected void interactWithOtherGroups() {
+        //TODO: Check for loans
+    }
 }
+
