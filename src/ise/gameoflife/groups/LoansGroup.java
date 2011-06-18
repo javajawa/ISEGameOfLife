@@ -392,6 +392,8 @@ public class LoansGroup extends AbstractGroupAgent {
         double currentFoodReserve = getDataModel().getCurrentReservedFood();
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
 
+        isTheMoneyOK(currentFoodReserve);
+        
         //FOR DEBUGGING ONLY
         System.out.println("------------------");
         System.out.println(this.getDataModel().getName());
