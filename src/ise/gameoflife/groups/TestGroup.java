@@ -6,6 +6,7 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.AgentType;
+import ise.gameoflife.tokens.InteractionResult;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,8 +92,11 @@ public class TestGroup extends AbstractGroupAgent
     }
 
     @Override
-    protected void interactWithOtherGroups() {
+    protected Tuple<InteractionResult, Double> interactWithOtherGroups() {
         //throw new UnsupportedOperationException("Not supported yet.");
+        Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
+        interactionResult.add(InteractionResult.NothingHappened, 0.0);
+        return interactionResult;
     }
 	
 }

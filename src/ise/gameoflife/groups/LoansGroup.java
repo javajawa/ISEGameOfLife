@@ -23,6 +23,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
+import ise.gameoflife.tokens.InteractionResult;
+import java.util.Set;
 
 /**
  *
@@ -39,6 +41,7 @@ public class LoansGroup extends AbstractGroupAgent {
     private History< HashMap<String, Tuple<Double, Double> > > loansGiven = new History< HashMap<String, Tuple<Double, Double> > >(50);
     private History< HashMap<String, Tuple<Double, Double> > > loansTaken = new History< HashMap<String, Tuple<Double, Double> > >(50);
     private static Map<String, Double> inNeed = new HashMap<String, Double>();
+    private static Map<String, HashMap<String, Tuple<Double, Double> >> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double> >>();
 
     @Deprecated
     public LoansGroup() {
@@ -259,9 +262,16 @@ public class LoansGroup extends AbstractGroupAgent {
 //        if(getDataModel().getReservedFood().size() < 2)
 //            deltaFoodReserve = mostRecentReserve;
 //        else
-//            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFood().getValue(1); 
-        
-        return true;
+//            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFood().getValue(1);
+        double currentFoodReserve = getDataModel().getCurrentReservedFood();
+        if (currentFoodReserve > 100)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     
     private double getAverageHappiness(int turnsAgo)
@@ -332,15 +342,30 @@ public class LoansGroup extends AbstractGroupAgent {
     }
 
     @Override
-    protected void interactWithOtherGroups() {
+    protected Tuple<InteractionResult, Double> interactWithOtherGroups() {
 
         double currentFoodReserve = getDataModel().getCurrentReservedFood();
-
+        Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
         //First check your financial status and if your in need ask for a loan
         if(inNeed.containsKey(this.getId()))
         {
             //TODO: Get the money if u have requested a loan
-            return;
+            if (loanRequestsAccepted.containsKey(this.getId()))
+            {
+                 //If the request for a loan was granted then store the receipt in your records to help with repayments later (Hopefully..)
+                 HashMap<String, Tuple<Double, Double> > loanRecord = loanRequestsAccepted.get(this.getId());
+                 this.loansTaken.setValue(loanRecord);
+                 loanRequestsAccepted.remove(this.getId());
+                 Set<String> giverID = loanRecord.keySet();
+                 interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
+                 return interactionResult;
+            }
+            else
+            {
+                interactionResult.add(InteractionResult.NothingHappened, 0.0);
+                return interactionResult;
+            }
+
         }
         
         if (!inNeed.isEmpty())
@@ -353,14 +378,26 @@ public class LoansGroup extends AbstractGroupAgent {
                 //For now give a loan if u have the amount needed
                 if (currentFoodReserve > amountNeeded)
                 {
+                    //Create a tuple containing the amount granted and the interest
                     Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
                     loanInfo.add(amountNeeded, interestRate);
+
+                    //Then store the loan info along with the requester ID in your records
                     HashMap<String, Tuple<Double, Double> > loanRecord =new HashMap<String, Tuple<Double, Double> >();
                     loanRecord.put(groupID, loanInfo);
-                    loansGiven.setValue(loanRecord);
+                    this.loansGiven.setValue(loanRecord);
+
+                    //Use the same structure to send a receipt to the requester to store it in his records
+                    loanRecord.clear();
+                    loanRecord.put(this.getId(), loanInfo);
+                    loanRequestsAccepted.put(groupID, loanRecord);
+                    interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
+                    return interactionResult;
                 }
             }
         }
+        interactionResult.add(InteractionResult.NothingHappened, 0.0);
+        return interactionResult;
     }
     
 }
