@@ -111,7 +111,7 @@ public class LoansGroup extends AbstractGroupAgent {
     @Override
     protected double decideTaxForReservePool() {
         double currentFoodReserve = getDataModel().getCurrentReservedFood();
-
+        //TODO: Design a proper heuristic for tax rate
         if (achievementThreshold - currentFoodReserve > 500)
             return 0.9;
         else
