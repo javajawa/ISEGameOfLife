@@ -249,9 +249,16 @@ public class LoansGroup extends AbstractGroupAgent {
         }        
     }
     
-    private boolean theMoneyIsOK(double reserve)
+    private boolean theMoneyIsOK(double mostRecentReserve)
     {
-        //assess the reserve, your loan history and the wealth of the people
+        //need to assess the reserve, your loan history and the wealth of the people!?
+        
+//        double deltaFoodReserve;
+//        if(getDataModel().getReservedFood().size() < 2)
+//            deltaFoodReserve = mostRecentReserve;
+//        else
+//            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFood().getValue(1); 
+        
         return true;
     }
     
@@ -275,12 +282,41 @@ public class LoansGroup extends AbstractGroupAgent {
 
     @Override
     protected double decideTaxForReservePool() {
-        double currentFoodReserve = getDataModel().getCurrentReservedFood();
-
-        if (achievementThreshold - currentFoodReserve > 500)
-            return 0.9;
+        double currentFoodReserve;        
+        if(getDataModel().getReservedFood().isEmpty())
+            currentFoodReserve = 0;
         else
-            return 0.1;
+            currentFoodReserve = getDataModel().getCurrentReservedFood();
+                            
+        double tax = 0;
+        double deltaHappiness = getAverageHappiness(0) - getAverageHappiness(1);       
+        //check how close you are to attaining achievement
+        double goalRatio = currentFoodReserve / achievementThreshold;
+            
+        if(theMoneyIsOK(currentFoodReserve))
+        {
+            //tax as normal
+ 
+            
+            //check the happiness of the citizens
+            if(deltaHappiness < 0)
+            {
+                //tax your citizens, but not too much becasue they are unhappy
+                //lower the tax significantly if closer to achievement
+                tax = Math.abs(deltaHappiness) * (1 - goalRatio);
+            }
+            else
+            {
+                //need something here
+                //tax = 1 - goalRatio;//if you're far away from achievement then tax high
+            }
+        }
+        else
+        {
+            //otherwise, you're in trouble and you have to tax high
+            tax = 1 - goalRatio;//since you're far away from achievement, tax high
+            
+        }
     }
 
 }
