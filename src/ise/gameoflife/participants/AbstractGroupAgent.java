@@ -18,6 +18,7 @@ import ise.gameoflife.models.Tuple;
 import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.GroupRegistration;
+import ise.gameoflife.tokens.InteractionResult;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
@@ -329,7 +330,17 @@ public abstract class AbstractGroupAgent implements Participant
         }
 
         private void doInteractWithOtherGroups(){
-            interactWithOtherGroups();
+            Tuple<InteractionResult, Double> interactionResult = interactWithOtherGroups();
+            switch (interactionResult.getKey())
+            {
+			case LoanTaken:
+                            this.setReservedFood(this.getDataModel().getCurrentReservedFood() + interactionResult.getValue());
+                        case LoanGiven:
+                            this.setReservedFood(this.getDataModel().getCurrentReservedFood() - interactionResult.getValue());
+                        case NothingHappened:
+                            this.setReservedFood(this.getDataModel().getCurrentReservedFood() + interactionResult.getValue());
+            }
+            
         }
         
 	/**
@@ -534,7 +545,7 @@ public abstract class AbstractGroupAgent implements Participant
         abstract protected Tuple<AgentType, Double> makePayments();
         abstract protected AgentType decideGroupStrategy();
 	abstract protected double decideTaxForReservePool();
-        abstract protected void interactWithOtherGroups();
+        abstract protected Tuple<InteractionResult, Double> interactWithOtherGroups();
 
         abstract protected void beforeNewRound();
 

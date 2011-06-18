@@ -11,6 +11,7 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.AgentType;
+import ise.gameoflife.tokens.InteractionResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -364,7 +365,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     }
 
     @Override
-    protected void interactWithOtherGroups() {
-        //TODO: Allow groups play the game with other groups
+    protected Tuple<InteractionResult, Double> interactWithOtherGroups() {
+        //throw new UnsupportedOperationException("Not supported yet.");
+        Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
+        interactionResult.add(InteractionResult.NothingHappened, 0.0);
+        return interactionResult;
     }
 }
