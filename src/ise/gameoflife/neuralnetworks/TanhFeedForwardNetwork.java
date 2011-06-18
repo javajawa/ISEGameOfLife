@@ -9,12 +9,6 @@ import java.util.Random;
 public class TanhFeedForwardNetwork extends Network
 {
 
-	@Deprecated
-	public TanhFeedForwardNetwork(Layer[] layers)
-	{
-		super(layers);
-	}
-
 	public TanhFeedForwardNetwork(int... nodeCounts)
 	{
 		int layerCount = nodeCounts.length;

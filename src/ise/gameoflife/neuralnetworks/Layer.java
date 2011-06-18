@@ -1,9 +1,9 @@
 package ise.gameoflife.neuralnetworks;
 
 /**
- * @author Xitong Gao
  * The Layer class is a class which defines a layer
  * in a feed forward neural network.
+ * @author Xitong Gao
  */
 public class Layer
 {

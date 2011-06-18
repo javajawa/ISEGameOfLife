@@ -4,19 +4,37 @@ import ise.gameoflife.genetics.Genome;
 import java.util.Random;
 
 /**
+ * NetworkGenome is a {@link Genome} subclass which
+ * represents the genome of {@link Network}.
  * @author Xitong Gao
- * TODO NetworkGenome doc
  */
 public class NetworkGenome extends Genome<NetworkGenome>
 {
 	private static final long serialVersionUID = 1L;
 	private Random rand = new Random();
 
-	private double mutateRate = 0.10f;
-	private double crossOverRate = 0.20f;
-	private double weights[][][] = null;
-	private double offsets[][] = null;
 	private int nodeCounts[] = null;
+
+	/**
+	 * Rate of mutating one parameter.
+	 */
+	private double mutateRate = 0.10f;
+
+	/**
+	 * Rate of crossing over with another genome
+	 * on one parameter.
+	 */
+	private double crossOverRate = 0.20f;
+
+	/**
+	 * The weights parameters.
+	 */
+	private double weights[][][] = null;
+
+	/**
+	 * The offsets parameters.
+	 */
+	private double offsets[][] = null;
 
 	public NetworkGenome(int... nodeCounts)
 	{
