@@ -8,6 +8,11 @@ public final class LinearNeuron extends Neuron
 {
 	/**
 	 * @param weights
+	public LinearNeuron(int inputs)
+	{
+		super(inputs);
+	}
+
 	 */
 	public LinearNeuron(double[] weights)
 	{
