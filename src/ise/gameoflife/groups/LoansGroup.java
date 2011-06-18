@@ -222,7 +222,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
         if(theMoneyIsOK(currentFoodReserve))
         {
-             if(strategy != null)
+            if(strategy != null)
             {
                 percentDecrease = 0.3;//30% of the reserve will be payment to play the game
                 currentFoodReserve -= percentDecrease * currentFoodReserve;
