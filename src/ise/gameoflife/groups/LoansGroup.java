@@ -279,7 +279,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
         //3 negatives and you're close to playing one last game with the other groups
         //then you have to declare you need help
-        if(reserveTrend < -3 && mostRecentReserve < 150)
+        if(reserveTrend < -3 && mostRecentReserve < 150 && !inNeed.containsKey(this.getId()))
         {
             inNeed.put(this.getId(), mostRecentReserve); 
         }
