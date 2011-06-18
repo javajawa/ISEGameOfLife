@@ -3,6 +3,7 @@ package ise.gameoflife.groups;
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
@@ -82,5 +83,11 @@ public class TestGroup extends AbstractGroupAgent
     protected double decideTaxForReservePool() {
         return 0;
     }
+    
+    @Override
+    protected Tuple<AgentType, Double> makePayments()
+    {      
+        return new Tuple<AgentType, Double>(this.getDataModel().getGroupStrategy(), this.getDataModel().getCurrentReservedFood());
+    }    
 	
 }
