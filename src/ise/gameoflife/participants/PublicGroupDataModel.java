@@ -120,7 +120,7 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
         return source.getCurrentReservedFood();
     }
     
-    public UnmodifiableHistory<Double> getReservedFoodHistory()
+    public History<Double> getReservedFoodHistory()
     {
             return source.getReservedFoodHistory();
     }      

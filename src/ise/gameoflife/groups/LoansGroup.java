@@ -40,8 +40,8 @@ public class LoansGroup extends AbstractGroupAgent {
     private static final double priceToPlay = 100;
     private int reserveTrend;    
     private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
-    private History< HashMap<String, Tuple<Double, Double> > > loansGiven = new History< HashMap<String, Tuple<Double, Double> > >(50);
-    private History< HashMap<String, Tuple<Double, Double> > > loansTaken = new History< HashMap<String, Tuple<Double, Double> > >(50);
+    private Map<String, Tuple<Double, Double> > loansGiven = new HashMap<String, Tuple<Double, Double> >();
+    private Map<String, Tuple<Double, Double> > loansTaken = new HashMap<String, Tuple<Double, Double> >();
     private static Map<String, Double> inNeed = new HashMap<String, Double>();
     private static Map<String, HashMap<String, Tuple<Double, Double> >> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double> >>();
 
@@ -281,8 +281,20 @@ public class LoansGroup extends AbstractGroupAgent {
         //then you have to declare you need help
         if(reserveTrend < -3 && mostRecentReserve < 150)
         {
-            inNeed.put(this.getId(), mostRecentReserve);            
+            inNeed.put(this.getId(), mostRecentReserve); 
         }
+
+//        if (inNeed.containsKey(this.getId())) return false;
+//        double oneTurnAgoFoodReserve = getDataModel().getReservedFoodHistory().getValue(1);
+//        if (mostRecentReserve > 100)
+//        {
+//            return true;
+//        }
+//        else if ((mostRecentReserve <= 100)&&(oneTurnAgoFoodReserve - mostRecentReserve > 20))
+//        {
+//            inNeed.put(this.getId(), 100-mostRecentReserve);
+//            System.out.println(getDataModel().getName() + " has requested " + (100-mostRecentReserve) + " units of food!");
+//            return false;        
         
 //        double oneTurnAgoFoodReserve;
 //        if(getDataModel().getReservedFoodHistory().size()>1)
@@ -346,6 +358,7 @@ public class LoansGroup extends AbstractGroupAgent {
             currentFoodReserve = getDataModel().getCurrentReservedFood();
                             
         double tax = 0;
+
         double deltaHappiness = getAverageHappiness(0) - getAverageHappiness(1);       
         //check how close you are to attaining achievement
         double goalRatio = currentFoodReserve / achievementThreshold;
@@ -383,11 +396,6 @@ public class LoansGroup extends AbstractGroupAgent {
         System.out.println("------------------");
         System.out.println(this.getDataModel().getName());
         System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-        if(getDataModel().getReservedFoodHistory().size()>1)
-        {
-            System.out.println("Previously reserved food: "+this.getDataModel().getReservedFoodHistory().getValue(1));
-        }
-        System.out.println("There are "+ inNeed.size()+" some groups in need!");
         //FOR DEBUGGING ONLY END
 
         //First check your financial status and if your in need ask for a loan
@@ -399,9 +407,10 @@ public class LoansGroup extends AbstractGroupAgent {
             {
                  //If the request for a loan was granted then store the receipt in your records to help with repayments later (Hopefully..)
                  HashMap<String, Tuple<Double, Double> > loanRecord = loanRequestsAccepted.get(this.getId());
-                 this.loansTaken.setValue(loanRecord);
-                 loanRequestsAccepted.remove(this.getId());
                  Set<String> giverID = loanRecord.keySet();
+                 this.loansTaken.put(giverID.iterator().next(), loanRecord.get(giverID.iterator().next()));
+                 loanRequestsAccepted.remove(this.getId());
+                 
                  interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
             }
             else
@@ -415,12 +424,14 @@ public class LoansGroup extends AbstractGroupAgent {
         
         if (!inNeed.isEmpty())
         {
+            System.out.println("There are "+ inNeed.size()+" some groups in need!");
             for (String groupID: inNeed.keySet() )
             {
                 double amountNeeded = inNeed.get(groupID);
                 double interestRate = 0.15;
                 //TODO: Design a heuristic to decide if group will give a loan
                 //For now give a loan if u have the amount needed
+                        System.out.println("Amount needed: "+ amountNeeded);
                 if (currentFoodReserve > amountNeeded)
                 {
                     //Create a tuple containing the amount granted and the interest
@@ -428,14 +439,13 @@ public class LoansGroup extends AbstractGroupAgent {
                     loanInfo.add(amountNeeded, interestRate);
 
                     //Then store the loan info along with the requester ID in your records
-                    HashMap<String, Tuple<Double, Double> > loanRecord =new HashMap<String, Tuple<Double, Double> >();
-                    loanRecord.put(groupID, loanInfo);
-                    this.loansGiven.setValue(loanRecord);
+                    this.loansGiven.put(groupID, loanInfo);
 
                     //Use the same structure to send a receipt to the requester to store it in his records
-                    loanRecord.clear();
+                    HashMap<String, Tuple<Double, Double> > loanRecord = new HashMap<String, Tuple<Double, Double> >();
                     loanRecord.put(this.getId(), loanInfo);
                     loanRequestsAccepted.put(groupID, loanRecord);
+                    inNeed.remove(groupID);
                     interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
                     System.out.println(getConn().getGroupById(groupID).getName() + " requested a loan and the result is "+ interactionResult.getKey()+ ". I gave them "+ interactionResult.getValue()+ " units of food!");
                     return interactionResult;
