@@ -221,9 +221,8 @@ public class LoansGroup extends AbstractGroupAgent {
         {
              if(strategy != null)
             {
-                percentDecrease += 0.3;//30% of the reserve will payment to play the game
+                percentDecrease = 0.3;//30% of the reserve will be payment to play the game
                 currentFoodReserve -= percentDecrease * currentFoodReserve;
-                percentDecrease = 0;
             }  
              
             if(theMoneyIsOK(currentFoodReserve))//if its still okay then make your citizens happy
@@ -236,7 +235,7 @@ public class LoansGroup extends AbstractGroupAgent {
                     double goalRatio = currentFoodReserve / achievementThreshold;
                     //make your citizens happy by funding public service but dont spend too much
                     //if you're far away from attaining achievement
-                    percentDecrease += Math.abs(deltaHappiness) * goalRatio;
+                    percentDecrease = Math.abs(deltaHappiness) * goalRatio;
                 }
                 currentFoodReserve -= percentDecrease * currentFoodReserve;                
             }
@@ -245,7 +244,7 @@ public class LoansGroup extends AbstractGroupAgent {
         else 
         {
             //you dont have enough to spend for anything, including to play the hunting game
-            return new Tuple<AgentType, Double>(strategy, currentFoodReserve);
+            return new Tuple<AgentType, Double>(null, currentFoodReserve);
         }        
     }
     
@@ -296,8 +295,6 @@ public class LoansGroup extends AbstractGroupAgent {
         if(theMoneyIsOK(currentFoodReserve))
         {
             //tax as normal
- 
-            
             //check the happiness of the citizens
             if(deltaHappiness < 0)
             {
@@ -307,17 +304,16 @@ public class LoansGroup extends AbstractGroupAgent {
             }
             else
             {
-                //need something here
-                //tax = 1 - goalRatio;//if you're far away from achievement then tax high
+                //everyone is happy, the group's money is ok, concentrate on getting achievement
+                tax = 1 - goalRatio;//if you're far away from achievement then tax high
             }
         }
         else
         {
             //otherwise, you're in trouble and you have to tax high
-            tax = 1 - goalRatio;//since you're far away from achievement, tax high
-            
+            tax = 1 - goalRatio;//since you're far away from your achievement, tax high            
         }
-        return 0.9;//stays for now
+        return tax;
     }
 
 }
