@@ -957,6 +957,7 @@ public class TestPoliticalAgent extends AbstractAgent
                                     double overallMovement)
     {
             Double currentHappiness = getDataModel().getCurrentHappiness();
+
             if (getDataModel().getGroupId() == null) return currentHappiness;
 
             if (currentHappiness == null)

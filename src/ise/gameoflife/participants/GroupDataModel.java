@@ -240,7 +240,7 @@ class GroupDataModel extends APlayerDataModel
 		return reservedFoodHistory.getValue();
 	}
         
-        UnmodifiableHistory<Double> getReservedFoodHistory()
+        History<Double> getReservedFoodHistory()
 	{
 		return reservedFoodHistory.getUnmodifableHistory();
 	}        
