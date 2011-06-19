@@ -111,8 +111,8 @@ class GroupDataModel extends APlayerDataModel
 	void clearRoundData()
 	{
 		economicPosition.newEntry(true);
-                reservedFoodHistory.newEntry(true);
 		propositionHistory.newEntry(null);
+                reservedFoodHistory.newEntry(true);
 	}
 
 	void addMember(String a)

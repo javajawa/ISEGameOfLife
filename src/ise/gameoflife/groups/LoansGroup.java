@@ -210,7 +210,7 @@ public class LoansGroup extends AbstractGroupAgent {
     
     @Override
     protected Tuple<AgentType, Double> makePayments()
-    {
+    {   
         double currentFoodReserve;
 
         if(getDataModel().getReservedFoodHistory().isEmpty())
@@ -240,36 +240,15 @@ public class LoansGroup extends AbstractGroupAgent {
             }
         }
 
-        //check the happiness of the citizens
-        double deltaHappiness = getAverageHappiness(0) - getAverageHappiness(1);
-
         double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
         double percentDecrease;
-        if(deltaHappiness < 0)
+        //make your citizens satisfied by funding public service but dont spend too much
+        //if you're far away from attaining achievement
+        percentDecrease = ( (1-getAverageHappiness(0)) * goalRatio) * currentFoodReserve;        
+        if(currentFoodReserve - percentDecrease > priceToPlay)//if helping the public cant be done at the moment
         {
-            //make your citizens happy by funding public service but dont spend too much
-            //if you're far away from attaining achievement
-            percentDecrease = (deltaHappiness * goalRatio) * currentFoodReserve;
-            currentFoodReserve += percentDecrease;
-            if(currentFoodReserve < priceToPlay)//if helping the public cant be done at the moment
-            {
-                currentFoodReserve -= percentDecrease;//go back
-            }            
-        }
-        else
-        {
-            //make your citizens satisfied by funding public service but dont spend too much
-            //if you're far away from attaining achievement
-
-            percentDecrease = (getAverageHappiness(0) * goalRatio) * currentFoodReserve;
             currentFoodReserve -= percentDecrease;
-            if(currentFoodReserve < priceToPlay)//if helping the public cant be done at the moment
-            {
-                currentFoodReserve += percentDecrease;//go back
-            }              
         }
-
-        isTheMoneyOK(currentFoodReserve);
         
         return new Tuple<AgentType, Double>(strategy, currentFoodReserve);            
     }
@@ -286,11 +265,12 @@ public class LoansGroup extends AbstractGroupAgent {
         }
         else
         {
-            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFoodHistory().getValue();
+            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFoodHistory().getValue(1);
         }
 
         //3 negatives and you're close to playing one last game with the other groups
         //then you have to declare you need help
+
         if((deltaFoodReserve < 0)&&(mostRecentReserve < 150) && (!inNeed.containsKey(this.getId())))
         {
             inNeed.put(this.getId(), mostRecentReserve); 
@@ -338,37 +318,31 @@ public class LoansGroup extends AbstractGroupAgent {
     @Override
     protected double decideTaxForReservePool() {
         double currentFoodReserve;        
+
         if(getDataModel().getReservedFoodHistory().isEmpty())
+        {
             currentFoodReserve = 0;
+        }
         else
+        {
             currentFoodReserve = getDataModel().getCurrentReservedFood();
-                            
+        }
+                isTheMoneyOK(currentFoodReserve);
         double tax = 0;
 
-        double deltaHappiness = getAverageHappiness(0) - getAverageHappiness(1);       
         //check how close you are to attaining achievement
         double goalRatio = currentFoodReserve / achievementThreshold;
 
         //if you're in trouble you need to tax high
-        if(reserveTrend < -3 && currentFoodReserve < 150)
+        if(currentFoodReserve < 150)
         {
             tax = 1 - goalRatio;//since you're far away from your achievement, tax high 
         }
         else
         {
-            //check the happiness of the citizens
-            if(deltaHappiness < 0)
-            {
-                //tax your citizens, but not too much because they are unhappy
-                //lower the tax significantly if closer to achievement
-                tax = Math.abs(deltaHappiness) * (1 - goalRatio);
-            }
-            else
-            {
-                //everyone is happy, the group's money is ok, concentrate on getting achievement
-                tax = 1 - goalRatio;//the farther away from achievement the higher the tax
-            }            
+            tax = Math.abs(getAverageHappiness(0)) * (1-goalRatio);
         }
+
         return tax;
     }
 
@@ -379,9 +353,9 @@ public class LoansGroup extends AbstractGroupAgent {
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
         
         //FOR DEBUGGING ONLY
-//        System.out.println("------------------");
-//        System.out.println(this.getDataModel().getName());
-//        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+        System.out.println("------------------");
+        System.out.println(this.getDataModel().getName());
+        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
         //FOR DEBUGGING ONLY END
 
         //First check your financial status and if your in need ask for a loan

@@ -322,10 +322,10 @@ public abstract class AbstractGroupAgent implements Participant
         private void doLeadersHunt(){
                 AgentType strategy = decideGroupStrategy();
                 this.dm.setGroupStrategy(strategy);
-                
+
                 Tuple<AgentType, Double> finalStrategy = makePayments();
                 this.setReservedFood(finalStrategy.getValue());
-                
+
                 this.dm.setGroupStrategy(finalStrategy.getKey());
         }
 
