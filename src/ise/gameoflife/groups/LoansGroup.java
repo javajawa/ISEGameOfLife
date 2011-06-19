@@ -252,10 +252,10 @@ public class LoansGroup extends AbstractGroupAgent {
                 double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
                 double percentDecrease;
                 percentDecrease = ( (1-getAverageHappiness(0)) * goalRatio) * currentFoodReserve;
-                if(currentFoodReserve - percentDecrease > priceToPlay)//if helping the public cant be done at the moment
-                {
+                //if(currentFoodReserve - percentDecrease > priceToPlay)//if helping the public cant be done at the moment
+                //{
                     currentFoodReserve -= percentDecrease;
-                }
+                //}
             }
         }
         else
@@ -288,8 +288,8 @@ public class LoansGroup extends AbstractGroupAgent {
             averageAmount += getConn().getAgentById(member).getFoodAmount();
         }
         averageAmount = averageAmount /getDataModel().getMemberList().size();
+        
         double goalMembersRatio = averageAmount /achievementThreshold;
-
         if(!inNeed.containsKey(this.getId()))
         {            
             if(goalRatio < 0.15)
