@@ -239,17 +239,29 @@ public class LoansGroup extends AbstractGroupAgent {
 
         //check the happiness of the citizens
         double deltaHappiness = getAverageHappiness(0) - getAverageHappiness(1);
+        double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
+        double percentDecrease;
         if(deltaHappiness < 0)
         {
-            double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
             //make your citizens happy by funding public service but dont spend too much
             //if you're far away from attaining achievement
-            double percentDecrease = (Math.abs(deltaHappiness) * goalRatio) * currentFoodReserve;
+            percentDecrease = (deltaHappiness * goalRatio) * currentFoodReserve;
+            currentFoodReserve += percentDecrease;
+            if(currentFoodReserve < priceToPlay)//if helping the public cant be done at the moment
+            {
+                currentFoodReserve -= percentDecrease;//go back
+            }            
+        }
+        else
+        {
+            //make your citizens satisfied by funding public service but dont spend too much
+            //if you're far away from attaining achievement
+            percentDecrease = (getAverageHappiness(0) * goalRatio) * currentFoodReserve;
             currentFoodReserve -= percentDecrease;
             if(currentFoodReserve < priceToPlay)//if helping the public cant be done at the moment
             {
                 currentFoodReserve += percentDecrease;//go back
-            }            
+            }              
         }
         
         isTheMoneyOK(currentFoodReserve);
