@@ -211,14 +211,17 @@ public class LoansGroup extends AbstractGroupAgent {
     @Override
     protected Tuple<AgentType, Double> makePayments()
     {
-        //TODO: The panel should make a decision. This decision will determine how much food we will spend this round/
-        //The amount spent is taken from the reserve pool. Two possibilities: Either groups go hunting and spend energy = food
-        //or spend money for public service (build roads, schools, big pointless sculptures etc)
         double currentFoodReserve;
+
         if(getDataModel().getReservedFoodHistory().isEmpty())
+        {
             currentFoodReserve = 0;
+        }
         else
+        {
             currentFoodReserve = getDataModel().getCurrentReservedFood();        
+        }
+
         AgentType strategy = getDataModel().getGroupStrategy();
         
         if (!loansTaken.isEmpty())
@@ -241,7 +244,8 @@ public class LoansGroup extends AbstractGroupAgent {
         double deltaHappiness = getAverageHappiness(0) - getAverageHappiness(1);
         if(deltaHappiness < 0)
         {
-            double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
+            //check how close you are to attaining achievement
+            double goalRatio = currentFoodReserve / achievementThreshold;
             //make your citizens happy by funding public service but dont spend too much
             //if you're far away from attaining achievement
             double percentDecrease = (Math.abs(deltaHappiness) * goalRatio) * currentFoodReserve;
@@ -249,7 +253,7 @@ public class LoansGroup extends AbstractGroupAgent {
             if(currentFoodReserve < priceToPlay)//if helping the public cant be done at the moment
             {
                 currentFoodReserve += percentDecrease;//go back
-            }            
+            }
         }
         
         isTheMoneyOK(currentFoodReserve);
@@ -260,13 +264,17 @@ public class LoansGroup extends AbstractGroupAgent {
     private void isTheMoneyOK(double mostRecentReserve)
     {
         //need to assess the reserve, your loan history and the wealth of the people!?
-        if (inNeed.containsKey(this.getId())) return;
+
         //is the reserve increasing or decreasing        
         double deltaFoodReserve;
         if(getDataModel().getReservedFoodHistory().getValue() == null)
+        {
             deltaFoodReserve = mostRecentReserve;
+        }
         else
+        {
             deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFoodHistory().getValue();
+        }
         
         if(deltaFoodReserve > 0)
         {
@@ -279,7 +287,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
         //3 negatives and you're close to playing one last game with the other groups
         //then you have to declare you need help
-        if(reserveTrend < -3 && mostRecentReserve < 150 && !inNeed.containsKey(this.getId()))
+        if((reserveTrend < -3) && (mostRecentReserve < 150) && (!inNeed.containsKey(this.getId())))
         {
             inNeed.put(this.getId(), mostRecentReserve); 
         }
