@@ -38,8 +38,8 @@ public class LoansGroup extends AbstractGroupAgent {
     private static final double priceToPlay = 100;
     private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
     private final double greediness = new Random().nextDouble();
-    private Map<String, Tuple<Double, Double> > loansGiven = new HashMap<String, Tuple<Double, Double> >();
-    private Map<String, Tuple<Double, Double> > loansTaken = new HashMap<String, Tuple<Double, Double> >();
+    private Map<String, List<Tuple<Double, Double> > > loansGiven = new HashMap<String, List<Tuple<Double, Double> > >();
+    private Map<String, List<Tuple<Double, Double> > > loansTaken = new HashMap<String, List<Tuple<Double, Double> > >();
     private static Map<String, Double> inNeed = new HashMap<String, Double>();
     private static Map<String, HashMap<String, Tuple<Double, Double> >> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double> >>();
 
@@ -227,11 +227,32 @@ public class LoansGroup extends AbstractGroupAgent {
         currentFoodReserve = getDataModel().getCurrentReservedFood();        
         if(!inNeed.containsKey(this.getId()))
         {
+            System.out.println("------------------");
+            System.out.println(this.getDataModel().getName());
+            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
             if (!loansTaken.isEmpty())
             {
+                System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
                 for (String s: loansTaken.keySet())
+                {   
+                    System.out.println("I owe "+getConn().getGroupById(s).getName());
+                    for(Tuple<Double, Double> t: loansTaken.get(s))
+                    {
+                        System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
+                    }
+                }
+            }
+                System.out.println("*********************");
+            if (!loansGiven.isEmpty())
+            {
+                System.out.println("I have " + loansGiven.size()+ " debtors!");
+                for (String s: loansGiven.keySet())
                 {
-                    System.out.println("I owe "+ loansTaken.get(s).getKey() + " to "+getConn().getGroupById(s).getName() + "with interest rate: "+loansTaken.get(s).getValue() );
+                    System.out.println("I will get:");
+                    for(Tuple<Double, Double> t: loansGiven.get(s))
+                    {
+                        System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue()+" from "+getConn().getGroupById(s).getName());
+                    }
                 }
             }
 
@@ -293,18 +314,6 @@ public class LoansGroup extends AbstractGroupAgent {
                 //everything is ok, nobody needs help
                 return true;
             }
-        
-//            if((deltaFoodReserve < 0)&&(mostRecentReserve < 150))
-//            {
-//                //you need help and things are not ok
-//                inNeed.put(this.getId(), 150 - mostRecentReserve);
-//                return false;
-//            }
-//            else
-//            {
-//                //you're still ok, you dont need help
-//                return true;
-//            }
         }
         else
         {
@@ -391,7 +400,7 @@ public class LoansGroup extends AbstractGroupAgent {
         //FOR DEBUGGING ONLY
         System.out.println("------------------");
         System.out.println(this.getDataModel().getName());
-//        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
 //                    System.out.println("There are "+ inNeed.size()+" some groups in need!");
 //        for (String s: inNeed.keySet())
 //        {
@@ -416,7 +425,23 @@ public class LoansGroup extends AbstractGroupAgent {
                  //If the request for a loan was granted then store the receipt in your records to help with repayments later (Hopefully..)
                  HashMap<String, Tuple<Double, Double> > loanRecord = loanRequestsAccepted.get(this.getId());
                  Set<String> giverID = loanRecord.keySet();
-                 this.loansTaken.put(giverID.iterator().next(), loanRecord.get(giverID.iterator().next()));
+
+                 //Changes
+                 Tuple<Double, Double> currentLoanInfo = loanRecord.get(giverID.iterator().next());
+                 if (!loansTaken.containsKey(giverID.iterator().next()))
+                 {
+                     List<Tuple<Double, Double> > existingLoans = new ArrayList<Tuple<Double, Double> >();
+                     existingLoans.add(currentLoanInfo);
+                     this.loansTaken.put(giverID.iterator().next(), existingLoans);
+                 }
+                else
+                {
+                    List<Tuple<Double, Double> > existingLoans = (List) this.loansTaken.get(giverID.iterator().next());
+                    existingLoans.add(currentLoanInfo);
+                }
+                 //Changes END
+                 
+                 //this.loansTaken.put(giverID.iterator().next(), existingLoans);
                  loanRequestsAccepted.remove(this.getId());
                  inNeed.remove(this.getId());
                  interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
@@ -452,7 +477,20 @@ public class LoansGroup extends AbstractGroupAgent {
                         loanInfo.add(amountNeeded, interestRate);
 
                         //Then store the loan info along with the requester ID in your records
-                        this.loansGiven.put(groupID, loanInfo);
+                        //this.loansGiven.put(groupID, loanInfo);
+                        //Changes
+                        if (!loansGiven.containsKey(groupID))
+                        {
+                            List<Tuple<Double, Double> > existingLoans = new ArrayList<Tuple<Double, Double> >();
+                            existingLoans.add(loanInfo);
+                            this.loansGiven.put(groupID, existingLoans);
+                        }
+                        else
+                        {
+                            List<Tuple<Double, Double> > existingLoans = (List) this.loansGiven.get(groupID);
+                            existingLoans.add(loanInfo);
+                        }
+                        //Changes END
 
                         //Use the same structure to send a receipt to the requester to store it in his records
                         HashMap<String, Tuple<Double, Double> > loanRecord = new HashMap<String, Tuple<Double, Double> >();
@@ -461,7 +499,7 @@ public class LoansGroup extends AbstractGroupAgent {
                         interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
                         System.out.println(getConn().getGroupById(groupID).getName() + " requested a loan and the result is "+ interactionResult.getKey()+ ". I gave them "+ interactionResult.getValue()+ " units of food!");
                         return interactionResult;
-                    }                    
+                    }
                 }
             }
         }
