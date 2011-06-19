@@ -36,6 +36,7 @@ public class LoansGroup extends AbstractGroupAgent {
     //The following structures store the group ID of the group that gave or took a loan. The tuple stores
     //the amount borrowed and  the interest rate
     private static final double priceToPlay = 100;
+    private boolean taxLess = false;    
     private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
     private final double greediness = new Random().nextDouble();
     private Map<String, Tuple<Double, Double> > loansGiven = new HashMap<String, Tuple<Double, Double> >();
@@ -107,7 +108,8 @@ public class LoansGroup extends AbstractGroupAgent {
                 }
             }
         }
-        
+
+        taxLess = false;
         theMoneyIsOK(getDataModel().getCurrentReservedFood());
     }    
 
@@ -263,32 +265,71 @@ public class LoansGroup extends AbstractGroupAgent {
     
     private boolean theMoneyIsOK(double mostRecentReserve)
     {
-        //need to assess the reserve, your loan history and the wealth of the people!?
-
         //is the reserve increasing or decreasing        
-        double deltaFoodReserve;
-        if (getDataModel().getReservedFoodHistory().size() > 1)
+//        double deltaFoodReserve;
+//        if (getDataModel().getReservedFoodHistory().size() > 1)
+//        {
+//            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFoodHistory().getValue(1);
+//        }
+//        else
+//        {
+//            deltaFoodReserve = 0;
+//        }
+
+        //check how close the group is to attaining achievement
+        double goalRatio = mostRecentReserve / achievementThreshold;
+        
+        //find out how rich the group is from within, on average, compared to attaining the achievement
+        double averageAmount = 0;
+        for(String member : getDataModel().getMemberList())
         {
-            deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFoodHistory().getValue(1);
+            averageAmount += getConn().getAgentById(member).getFoodAmount();
         }
-        else
-        {
-            deltaFoodReserve = 0;
-        }
+        averageAmount = averageAmount /getDataModel().getMemberList().size();
+        double goalMembersRatio = averageAmount /achievementThreshold;
 
         if(!inNeed.containsKey(this.getId()))
-        {
-            if((deltaFoodReserve < 0)&&(mostRecentReserve < 150))
+        {            
+            if(goalRatio < 0.15)
             {
-                //you need help and things are not ok
+                //if group is only 15% of the way then the group needs help
+                if(goalMembersRatio < 0.15)
+                {
+                    //if members of the group are only 15% of the way then they need help
+                    inNeed.put(this.getId(), 150.0);
+                    return false;
+                }                
                 inNeed.put(this.getId(), 150 - mostRecentReserve);
                 return false;
             }
             else
             {
-                //you're still ok, you dont need help
-                return true;
+                if(goalMembersRatio < 0.15)
+                {
+                    //the group may not need help but the members may need help
+                    //if members of the group are only 15% of the way then they need help
+                    inNeed.put(this.getId(), 150.0);
+                    taxLess = true;
+                    return false;
+                }
+                else
+                {
+                    //everything is ok, nobody needs help
+                    return true;
+                }
             }
+        
+//            if((deltaFoodReserve < 0)&&(mostRecentReserve < 150))
+//            {
+//                //you need help and things are not ok
+//                inNeed.put(this.getId(), 150 - mostRecentReserve);
+//                return false;
+//            }
+//            else
+//            {
+//                //you're still ok, you dont need help
+//                return true;
+//            }
         }
         else
         {
@@ -353,14 +394,22 @@ public class LoansGroup extends AbstractGroupAgent {
         //check how close you are to attaining achievement
         double goalRatio = currentFoodReserve / achievementThreshold;
 
-        //if you're in trouble you need to tax high
-        if(currentFoodReserve < 150)
+        if(inNeed.containsKey(this.getId()))
         {
+            //the group is in trouble and needs to tax high
             tax = 1 - goalRatio;//since you're far away from your achievement, tax high 
         }
         else
         {
-            tax = getAverageHappiness(0) * (1-goalRatio);
+            if(taxLess)
+            {
+                //the group is not in trouble but the members are not doing well
+                tax = getAverageHappiness(0) * (1-goalRatio) * 0.5;//tax less
+            }
+            else
+            {
+                tax = getAverageHappiness(0) * (1-goalRatio);//tax normally
+            }
         }
         return tax;
     }
