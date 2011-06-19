@@ -110,10 +110,6 @@ public class LoansAgent extends AbstractAgent{
             cooperateFood = foodArray.get(0);
             defectFood = foodArray.get(1);
 
-            String groupID = this.getDataModel().getGroupId();
-
-            //If the agent is not in a group or advisor didn't give a definitive answer then hunt
-            //according to type
             switch (this.getDataModel().getAgentType())
             {
                     //The choice is always to hunt stags
@@ -207,6 +203,7 @@ public class LoansAgent extends AbstractAgent{
             //'entitelment' denotes the amount of food an agent wants to get, at the least
             double entitlement = getDataModel().getEconomicBelief() * foodHunted;
             double surplus = foodReceived - entitlement;
+
             Double currentHappiness = getDataModel().getCurrentHappiness();
 
             if (currentHappiness == null)
@@ -306,13 +303,13 @@ public class LoansAgent extends AbstractAgent{
     @Override
     protected double updateLoyaltyAfterVotes(Proposition proposition, int votes, double overallMovement) {
         //Do nothing!
-        return 0;
+        return this.getDataModel().getCurrentLoyalty();
     }
 
     @Override
     protected double updateHappinessAfterVotes(Proposition proposition, int votes, double overallMovement) {
         //Do nothing!
-        return 0;
+        return this.getDataModel().getCurrentHappiness();
     }
 
     @Override

@@ -752,7 +752,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double entitlement = getDataModel().getEconomicBelief() * foodHunted;
             double surplus = foodReceived - entitlement;
             Double currentHappiness = getDataModel().getCurrentHappiness();
-            
+
             if (currentHappiness == null)
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life

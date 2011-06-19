@@ -242,20 +242,32 @@ public class LoansGroup extends AbstractGroupAgent {
 
         //check the happiness of the citizens
         double deltaHappiness = getAverageHappiness(0) - getAverageHappiness(1);
+        double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
+        double percentDecrease;
         if(deltaHappiness < 0)
         {
-            //check how close you are to attaining achievement
-            double goalRatio = currentFoodReserve / achievementThreshold;
             //make your citizens happy by funding public service but dont spend too much
             //if you're far away from attaining achievement
-            double percentDecrease = (Math.abs(deltaHappiness) * goalRatio) * currentFoodReserve;
+            percentDecrease = (deltaHappiness * goalRatio) * currentFoodReserve;
+            currentFoodReserve += percentDecrease;
+            if(currentFoodReserve < priceToPlay)//if helping the public cant be done at the moment
+            {
+                currentFoodReserve -= percentDecrease;//go back
+            }            
+        }
+        else
+        {
+            //make your citizens satisfied by funding public service but dont spend too much
+            //if you're far away from attaining achievement
+
+            percentDecrease = (getAverageHappiness(0) * goalRatio) * currentFoodReserve;
             currentFoodReserve -= percentDecrease;
             if(currentFoodReserve < priceToPlay)//if helping the public cant be done at the moment
             {
                 currentFoodReserve += percentDecrease;//go back
-            }
+            }              
         }
-        
+
         isTheMoneyOK(currentFoodReserve);
         
         return new Tuple<AgentType, Double>(strategy, currentFoodReserve);            
@@ -275,19 +287,10 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFoodHistory().getValue();
         }
-        
-        if(deltaFoodReserve > 0)
-        {
-            reserveTrend++;
-        }
-        else if(deltaFoodReserve < 0)
-        {
-            reserveTrend--;
-        }
 
         //3 negatives and you're close to playing one last game with the other groups
         //then you have to declare you need help
-        if((reserveTrend < -3) && (mostRecentReserve < 150) && (!inNeed.containsKey(this.getId())))
+        if((deltaFoodReserve < 0)&&(mostRecentReserve < 150) && (!inNeed.containsKey(this.getId())))
         {
             inNeed.put(this.getId(), mostRecentReserve); 
         }
@@ -296,14 +299,16 @@ public class LoansGroup extends AbstractGroupAgent {
     private double getAverageHappiness(int turnsAgo)
     {
         double average = 0;
+
         if(!getDataModel().getMemberList().isEmpty())
         {
             Double happiness;
             for(String member : getDataModel().getMemberList())
             {
                 if(turnsAgo > 0)
-                {
+                {   
                     happiness = getConn().getAgentById(member).getCurrentHappiness();
+
                     if(happiness != null)//otherwise add nothing
                     {
                         average += happiness;                   
@@ -312,6 +317,7 @@ public class LoansGroup extends AbstractGroupAgent {
                 else
                 {
                     happiness = getConn().getAgentById(member).getHappinessHistory().getValue(turnsAgo);
+
                     if(happiness != null)//otherwise add nothing
                     {
                         average += happiness;                   
@@ -367,9 +373,9 @@ public class LoansGroup extends AbstractGroupAgent {
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
         
         //FOR DEBUGGING ONLY
-        System.out.println("------------------");
-        System.out.println(this.getDataModel().getName());
-        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//        System.out.println("------------------");
+//        System.out.println(this.getDataModel().getName());
+//        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
         //FOR DEBUGGING ONLY END
 
         //First check your financial status and if your in need ask for a loan
