@@ -32,8 +32,6 @@ import java.util.Set;
  */
 public class LoansGroup extends AbstractGroupAgent {
     private static final long serialVersionUID = 1L;
-    //TODO: 1) Add an abstract inspectOtherGroups() in GroupDataModel. Concrete implementation here.
-    // *What if we use public static methods for the histories to keep the framework intact?
 
     //The following structures store the group ID of the group that gave or took a loan. The tuple stores
     //the amount borrowed and  the interest rate
@@ -389,7 +387,9 @@ public class LoansGroup extends AbstractGroupAgent {
                  Set<String> giverID = loanRecord.keySet();
                  this.loansTaken.put(giverID.iterator().next(), loanRecord.get(giverID.iterator().next()));
                  loanRequestsAccepted.remove(this.getId());
+                 inNeed.remove(this.getId());
                  System.out.println("I have requested a loan and the result is "+ interactionResult.getKey()+ ". I have been given "+ interactionResult.getValue()+ " units of food!");
+                 System.out.println("My previous reserve was: "+ getDataModel().getCurrentReservedFood());
                  interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
             }
             else
@@ -406,11 +406,14 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             for (String groupID: inNeed.keySet() )
             {
+                //if someone else accepted their requests do nothing!
+                if (loanRequestsAccepted.containsKey(groupID)) break;
+
                 double amountNeeded = inNeed.get(groupID);
                 double interestRate = 0.15;
                 //TODO: Design a heuristic to decide if group will give a loan
                 //For now give a loan if u have the amount needed
-                if (currentFoodReserve - amountNeeded >  0)
+                if (currentFoodReserve - amountNeeded >  priceToPlay+50)
                 {
                     //Create a tuple containing the amount granted and the interest
                     Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
@@ -423,9 +426,9 @@ public class LoansGroup extends AbstractGroupAgent {
                     HashMap<String, Tuple<Double, Double> > loanRecord = new HashMap<String, Tuple<Double, Double> >();
                     loanRecord.put(this.getId(), loanInfo);
                     loanRequestsAccepted.put(groupID, loanRecord);
-                    inNeed.remove(groupID);
                     interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
                     System.out.println(getConn().getGroupById(groupID).getName() + " requested a loan and the result is "+ interactionResult.getKey()+ ". I gave them "+ interactionResult.getValue()+ " units of food!");
+                    System.out.println("My previous reserve was: "+ getDataModel().getCurrentReservedFood());
                     return interactionResult;
                 }
             }
