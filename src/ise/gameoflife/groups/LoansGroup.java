@@ -213,17 +213,12 @@ public class LoansGroup extends AbstractGroupAgent {
     {   
         double currentFoodReserve;
 
-        if(getDataModel().getReservedFoodHistory().isEmpty())
-        {
-            currentFoodReserve = 0;
-        }
-        else
-        {
-            currentFoodReserve = getDataModel().getCurrentReservedFood();        
-        }
-
-        AgentType strategy = getDataModel().getGroupStrategy();
+        currentFoodReserve = getDataModel().getCurrentReservedFood();
         
+        AgentType strategy = getDataModel().getGroupStrategy();
+
+        isTheMoneyOK(currentFoodReserve);
+
         if (!loansTaken.isEmpty())
         {
             //TODO: Repay loans (if possible)
@@ -267,7 +262,10 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             deltaFoodReserve = mostRecentReserve - getDataModel().getReservedFoodHistory().getValue(1);
         }
-
+        System.out.println("------------------");
+        System.out.println(this.getDataModel().getName());
+        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+        System.out.println("Previously Reserved food: "+this.getDataModel().getReservedFoodHistory().getValue(1));
         //3 negatives and you're close to playing one last game with the other groups
         //then you have to declare you need help
 
@@ -327,7 +325,7 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             currentFoodReserve = getDataModel().getCurrentReservedFood();
         }
-                isTheMoneyOK(currentFoodReserve);
+
         double tax = 0;
 
         //check how close you are to attaining achievement
@@ -353,12 +351,18 @@ public class LoansGroup extends AbstractGroupAgent {
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
         
         //FOR DEBUGGING ONLY
-        System.out.println("------------------");
-        System.out.println(this.getDataModel().getName());
-        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//        System.out.println("------------------");
+//        System.out.println(this.getDataModel().getName());
+//        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//                    System.out.println("There are "+ inNeed.size()+" some groups in need!");
+//        for (String s: inNeed.keySet())
+//        {
+//          if (getConn().getGroupById(s) != null)
+//          System.out.println("    "+ getConn().getGroupById(s).getName()+ " has requested "+inNeed.get(s)+" units of food!");
+//        }
         //FOR DEBUGGING ONLY END
 
-        //First check your financial status and if your in need ask for a loan
+        //First check if you are in need
         if(inNeed.containsKey(this.getId()))
         {
             if (currentFoodReserve > priceToPlay)
@@ -380,31 +384,23 @@ public class LoansGroup extends AbstractGroupAgent {
             }
             else
             {
+                //Else if no one has given you money do nothing
                 interactionResult.add(InteractionResult.NothingHappened, 0.0);
                 System.out.println("I have requested a loan and the result is "+ interactionResult.getKey()+ ". I have been given "+ interactionResult.getValue()+ " units of food!");
             }
-            
             return interactionResult;
         }
-        
+
+        //If you are not in need you might want to help another group
         if (!inNeed.isEmpty())
         {
-            //FOR DEBUGGING ONLY
-            System.out.println("There are "+ inNeed.size()+" some groups in need!");
-            for (String s: inNeed.keySet())
-            {
-                if (getConn().getGroupById(s) != null)
-                    System.out.println("    "+ getConn().getGroupById(s).getName()+ " has requested "+inNeed.get(s)+" units of food!");
-            }
-            //FOR DEBUGGING ONLY END
-
             for (String groupID: inNeed.keySet() )
             {
                 double amountNeeded = inNeed.get(groupID);
                 double interestRate = 0.15;
                 //TODO: Design a heuristic to decide if group will give a loan
                 //For now give a loan if u have the amount needed
-                if (currentFoodReserve - amountNeeded >  priceToPlay+50)
+                if (currentFoodReserve - amountNeeded >  priceToPlay)
                 {
                     //Create a tuple containing the amount granted and the interest
                     Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();

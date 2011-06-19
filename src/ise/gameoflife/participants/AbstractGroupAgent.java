@@ -324,8 +324,10 @@ public abstract class AbstractGroupAgent implements Participant
                 this.dm.setGroupStrategy(strategy);
 
                 Tuple<AgentType, Double> finalStrategy = makePayments();
-                this.setReservedFood(finalStrategy.getValue());
-
+                if (finalStrategy.getValue() != getDataModel().getCurrentReservedFood())
+                {
+                    this.setReservedFood(finalStrategy.getValue());
+                }
                 this.dm.setGroupStrategy(finalStrategy.getKey());
         }
 
@@ -338,7 +340,7 @@ public abstract class AbstractGroupAgent implements Participant
                         case LoanGiven:
                             this.setReservedFood(this.getDataModel().getCurrentReservedFood() - interactionResult.getValue());
                         case NothingHappened:
-                            this.setReservedFood(this.getDataModel().getCurrentReservedFood());
+                            //this.setReservedFood(this.getDataModel().getCurrentReservedFood());
             }
             
         }
