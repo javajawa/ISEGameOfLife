@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeSet;
+import java.util.LinkedHashMap;
 import ise.gameoflife.tokens.InteractionResult;
 import java.util.Set;
 
@@ -433,31 +434,34 @@ public class LoansGroup extends AbstractGroupAgent {
         //If you are not in need you might want to help another group
         if (!inNeed.isEmpty())
         {
-            for (String groupID: inNeed.keySet() )
+            Map<String, Double> inNeedSorted = new HashMap<String, Double>();
+            inNeedSorted = sortHashMap(inNeed);            
+            for (String groupID: inNeedSorted.keySet() )
             {
                 //if someone else accepted their requests do nothing!
-                if (loanRequestsAccepted.containsKey(groupID)) break;
-
-                double amountNeeded = inNeed.get(groupID);
-                double interestRate = 0.15;
-                //TODO: Design a heuristic to decide if group will give a loan
-                //For now give a loan if u have the amount needed
-                if (currentFoodReserve - amountNeeded >  priceToPlay+50)
+                if (!loanRequestsAccepted.containsKey(groupID))
                 {
-                    //Create a tuple containing the amount granted and the interest
-                    Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
-                    loanInfo.add(amountNeeded, interestRate);
+                    double amountNeeded = inNeed.get(groupID);
+                    double interestRate = 0.15;
+                    //TODO: Design a heuristic to decide if group will give a loan
+                    //For now give a loan if u have the amount needed
+                    if (currentFoodReserve - amountNeeded >  priceToPlay+50)
+                    {
+                        //Create a tuple containing the amount granted and the interest
+                        Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
+                        loanInfo.add(amountNeeded, interestRate);
 
-                    //Then store the loan info along with the requester ID in your records
-                    this.loansGiven.put(groupID, loanInfo);
+                        //Then store the loan info along with the requester ID in your records
+                        this.loansGiven.put(groupID, loanInfo);
 
-                    //Use the same structure to send a receipt to the requester to store it in his records
-                    HashMap<String, Tuple<Double, Double> > loanRecord = new HashMap<String, Tuple<Double, Double> >();
-                    loanRecord.put(this.getId(), loanInfo);
-                    loanRequestsAccepted.put(groupID, loanRecord);
-                    interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
-                    System.out.println(getConn().getGroupById(groupID).getName() + " requested a loan and the result is "+ interactionResult.getKey()+ ". I gave them "+ interactionResult.getValue()+ " units of food!");
-                    return interactionResult;
+                        //Use the same structure to send a receipt to the requester to store it in his records
+                        HashMap<String, Tuple<Double, Double> > loanRecord = new HashMap<String, Tuple<Double, Double> >();
+                        loanRecord.put(this.getId(), loanInfo);
+                        loanRequestsAccepted.put(groupID, loanRecord);
+                        interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
+                        System.out.println(getConn().getGroupById(groupID).getName() + " requested a loan and the result is "+ interactionResult.getKey()+ ". I gave them "+ interactionResult.getValue()+ " units of food!");
+                        return interactionResult;
+                    }                    
                 }
             }
         }
@@ -465,6 +469,32 @@ public class LoansGroup extends AbstractGroupAgent {
         System.out.println("No interaction at all!");
         return interactionResult;
     }
+    
+    private HashMap<String, Double> sortHashMap(Map<String, Double> unsorted){
+        Map<String, Double> tempMap = new HashMap<String, Double>();
+        for (String key : unsorted.keySet())
+        {
+            tempMap.put(key,unsorted.get(key));
+        }
+
+        //make sure to get the data
+        List<String> unsortedKeys = new ArrayList<String>(tempMap.keySet());
+        List<Double> unsortedValues = new ArrayList<Double>(tempMap.values());
+        
+        //make our result ready
+        HashMap<String, Double> sortedMap = new LinkedHashMap<String, Double>();
+        
+        //put the values in a tree set, they are immediately orderd, then put them in an array
+        TreeSet<Double> sortedSet = new TreeSet<Double>(unsortedValues);       
+        Object[] sortedArray = sortedSet.toArray();
+        
+        //sort them in a map
+        for (int i = 0; i < sortedArray.length; i++){
+            sortedMap.put(unsortedKeys.get(unsortedValues.indexOf(sortedArray[i])), 
+                          (Double)sortedArray[i]);
+        }
+        return sortedMap;
+    }    
     
 }
 
