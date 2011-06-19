@@ -95,6 +95,19 @@ public class LoansGroup extends AbstractGroupAgent {
     
     @Override
     protected void beforeNewRound() {
+        //If a group in need has died then we have to remove it from the set.
+        if(!getConn().availableGroups().containsAll(inNeed.keySet()))
+        {
+            Set<String> available = getConn().availableGroups();
+            for (String inNeedMember: inNeed.keySet())
+            {
+                if (!available.contains(inNeedMember))
+                {
+                    inNeed.remove(inNeedMember);
+                }
+            }
+        }
+        
         theMoneyIsOK(getDataModel().getCurrentReservedFood());
     }    
 
@@ -388,9 +401,9 @@ public class LoansGroup extends AbstractGroupAgent {
                  this.loansTaken.put(giverID.iterator().next(), loanRecord.get(giverID.iterator().next()));
                  loanRequestsAccepted.remove(this.getId());
                  inNeed.remove(this.getId());
+                 interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
                  System.out.println("I have requested a loan and the result is "+ interactionResult.getKey()+ ". I have been given "+ interactionResult.getValue()+ " units of food!");
                  System.out.println("My previous reserve was: "+ getDataModel().getCurrentReservedFood());
-                 interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
             }
             else
             {
