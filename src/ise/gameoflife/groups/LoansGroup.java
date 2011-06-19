@@ -243,6 +243,10 @@ public class LoansGroup extends AbstractGroupAgent {
                 }
             }
         }
+        else
+        {
+            strategy = null;
+        }
         return new Tuple<AgentType, Double>(strategy, currentFoodReserve);            
     }
     
