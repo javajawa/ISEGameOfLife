@@ -7,6 +7,7 @@ package ise.gameoflife.plugins;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicAgentDataModel;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -59,24 +60,25 @@ public class HunterInfo extends JPanel implements Plugin
 		HunterPanel(PublicAgentDataModel dm)
 		{
 			this.dm = dm;
-
-                        
+                        PublicEnvironmentConnection Conn = PublicEnvironmentConnection.getInstance();
                         String current = "Alive";
                         if (!sim.isParticipantActive(dm.getId()) ){
                             current = "Dead";
                         }
-                        else if(dm.getGroupId() != null)
+
+                        else if(Conn.availableGroups() != null && dm.getGroupId() != null && Conn.getGroupById(this.dm.getGroupId()) != null)
                         {
                             String Leader="";
                             //Leaders
-                            if (!PublicEnvironmentConnection.getInstance().getGroupById(this.dm.getGroupId()).getPanel().isEmpty()){
-                                for (String ldr : PublicEnvironmentConnection.getInstance().getGroupById(this.dm.getGroupId()).getPanel()){
-                                        if (ldr.equals(this.dm.getId())){
+                            if (Conn.getGroupById(this.dm.getGroupId()).getPanel() != null){
+                                for (String ldr : Conn.getGroupById(this.dm.getGroupId()).getPanel()){
+                                        if (ldr.equals(dm.getId())){
                                             Leader = " - Leader";
                                         }
                                  }
                             }
-                            current = "Alive - " + ec.getGroupById(dm.getGroupId()).getName() + Leader;
+                            if (Conn.getGroupById(dm.getGroupId()) != null)
+                                current = "Alive - " + Conn.getGroupById(dm.getGroupId()).getName() + Leader;
                         }
                         else{
                             current = "Alive - Free";
