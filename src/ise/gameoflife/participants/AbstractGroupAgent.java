@@ -337,11 +337,9 @@ public abstract class AbstractGroupAgent implements Participant
             {
 			case LoanTaken:
                             this.setReservedFood(this.getDataModel().getCurrentReservedFood() + interactionResult.getValue());
-                            System.out.println("My new one after taking a loan is: "+getDataModel().getCurrentReservedFood());
                             break;
                         case LoanGiven:
                             this.setReservedFood(this.getDataModel().getCurrentReservedFood() - interactionResult.getValue());
-                            System.out.println("My new one after giving a loan is: "+getDataModel().getCurrentReservedFood());
                             break;
                         case NothingHappened:
                             //this.setReservedFood(this.getDataModel().getCurrentReservedFood());

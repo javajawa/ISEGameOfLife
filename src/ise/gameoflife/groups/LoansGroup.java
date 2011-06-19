@@ -11,7 +11,6 @@ import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -229,7 +228,10 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             if (!loansTaken.isEmpty())
             {
-                //TODO: Repay loans (if possible)
+                for (String s: loansTaken.keySet())
+                {
+                    System.out.println("I owe "+ loansTaken.get(s).getKey() + " to "+getConn().getGroupById(s).getName() + "with interest rate: "+loansTaken.get(s).getValue() );
+                }
             }
 
             //Spend money       
@@ -374,21 +376,22 @@ public class LoansGroup extends AbstractGroupAgent {
         //FOR DEBUGGING ONLY
         System.out.println("------------------");
         System.out.println(this.getDataModel().getName());
-        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-                    System.out.println("There are "+ inNeed.size()+" some groups in need!");
-        for (String s: inNeed.keySet())
-        {
-          if (getConn().getGroupById(s) != null)
-          System.out.println("    "+ getConn().getGroupById(s).getName()+ " has requested "+inNeed.get(s)+" units of food!");
-        }
+//        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//                    System.out.println("There are "+ inNeed.size()+" some groups in need!");
+//        for (String s: inNeed.keySet())
+//        {
+//          if (getConn().getGroupById(s) != null)
+//          System.out.println("    "+ getConn().getGroupById(s).getName()+ " has requested "+inNeed.get(s)+" units of food!");
+//        }
         //FOR DEBUGGING ONLY END
 
         //First check if you are in need
         if(inNeed.containsKey(this.getId()))
         {
-            if (currentFoodReserve > priceToPlay+50)
+            //Check if group has managed to recover their economic status to good.
+            //Also even if they managed to do so if someone has already givem them a loan then they must pay
+            if ((currentFoodReserve > priceToPlay+50)&&(!loanRequestsAccepted.containsKey(this.getId())))
             {
-                //We are hardworkers and we managed to recover our economic status to good
                 inNeed.remove(this.getId());
                 System.out.println("We solved our economic problem so we don't want a loan anymore!");
                 interactionResult.add(InteractionResult.NothingHappened, 0.0);
@@ -403,7 +406,6 @@ public class LoansGroup extends AbstractGroupAgent {
                  inNeed.remove(this.getId());
                  interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
                  System.out.println("I have requested a loan and the result is "+ interactionResult.getKey()+ ". I have been given "+ interactionResult.getValue()+ " units of food!");
-                 System.out.println("My previous reserve was: "+ getDataModel().getCurrentReservedFood());
             }
             else
             {
@@ -441,7 +443,6 @@ public class LoansGroup extends AbstractGroupAgent {
                     loanRequestsAccepted.put(groupID, loanRecord);
                     interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
                     System.out.println(getConn().getGroupById(groupID).getName() + " requested a loan and the result is "+ interactionResult.getKey()+ ". I gave them "+ interactionResult.getValue()+ " units of food!");
-                    System.out.println("My previous reserve was: "+ getDataModel().getCurrentReservedFood());
                     return interactionResult;
                 }
             }
