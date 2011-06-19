@@ -260,7 +260,7 @@ public class LoansGroup extends AbstractGroupAgent {
     private void isTheMoneyOK(double mostRecentReserve)
     {
         //need to assess the reserve, your loan history and the wealth of the people!?
-
+        if (inNeed.containsKey(this.getId())) return;
         //is the reserve increasing or decreasing        
         double deltaFoodReserve;
         if(getDataModel().getReservedFoodHistory().getValue() == null)
@@ -283,40 +283,6 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             inNeed.put(this.getId(), mostRecentReserve); 
         }
-
-//        if (inNeed.containsKey(this.getId())) return false;
-//        double oneTurnAgoFoodReserve = getDataModel().getReservedFoodHistory().getValue(1);
-//        if (mostRecentReserve > 100)
-//        {
-//            return true;
-//        }
-//        else if ((mostRecentReserve <= 100)&&(oneTurnAgoFoodReserve - mostRecentReserve > 20))
-//        {
-//            inNeed.put(this.getId(), 100-mostRecentReserve);
-//            System.out.println(getDataModel().getName() + " has requested " + (100-mostRecentReserve) + " units of food!");
-//            return false;        
-        
-//        double oneTurnAgoFoodReserve;
-//        if(getDataModel().getReservedFoodHistory().size()>1)
-//        {
-//            oneTurnAgoFoodReserve = getDataModel().getReservedFoodHistory().getValue(1);
-//        }
-//        else
-//        {
-//            oneTurnAgoFoodReserve = 0;
-//        }
-//
-//        if (mostRecentReserve > 100)
-//        {
-//            return true;
-//        }
-//        else if ((mostRecentReserve <= 100)&&(mostRecentReserve < oneTurnAgoFoodReserve))
-//        {
-//            inNeed.put(this.getId(), mostRecentReserve);
-//            return false;
-//        }
-//        else
-//            return false;
     }
     
     private double getAverageHappiness(int turnsAgo)
@@ -391,8 +357,6 @@ public class LoansGroup extends AbstractGroupAgent {
 
         double currentFoodReserve = getDataModel().getCurrentReservedFood();
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
-
-        isTheMoneyOK(currentFoodReserve);
         
         //FOR DEBUGGING ONLY
         System.out.println("------------------");
@@ -403,7 +367,7 @@ public class LoansGroup extends AbstractGroupAgent {
         //First check your financial status and if your in need ask for a loan
         if(inNeed.containsKey(this.getId()))
         {
-            if (currentFoodReserve > 100) 
+            if (currentFoodReserve > priceToPlay)
             {
                 //We are hardworkers and we managed to recover our economic status to good
                 inNeed.remove(this.getId());
@@ -431,20 +395,22 @@ public class LoansGroup extends AbstractGroupAgent {
         
         if (!inNeed.isEmpty())
         {
+            //FOR DEBUGGING ONLY
             System.out.println("There are "+ inNeed.size()+" some groups in need!");
             for (String s: inNeed.keySet())
             {
                 if (getConn().getGroupById(s) != null)
                     System.out.println("    "+ getConn().getGroupById(s).getName()+ " has requested "+inNeed.get(s)+" units of food!");
             }
-            
+            //FOR DEBUGGING ONLY END
+
             for (String groupID: inNeed.keySet() )
             {
                 double amountNeeded = inNeed.get(groupID);
                 double interestRate = 0.15;
                 //TODO: Design a heuristic to decide if group will give a loan
                 //For now give a loan if u have the amount needed
-                if (currentFoodReserve - amountNeeded > 100)
+                if (currentFoodReserve - amountNeeded >  priceToPlay+50)
                 {
                     //Create a tuple containing the amount granted and the interest
                     Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
