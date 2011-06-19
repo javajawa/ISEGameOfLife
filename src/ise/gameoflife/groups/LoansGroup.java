@@ -213,42 +213,49 @@ public class LoansGroup extends AbstractGroupAgent {
     {   
         double currentFoodReserve;
 
-        currentFoodReserve = getDataModel().getCurrentReservedFood();
-        
+        if(getDataModel().getReservedFoodHistory().isEmpty())
+        {
+            currentFoodReserve = 0;
+        }
+        else
+        {
+            currentFoodReserve = getDataModel().getCurrentReservedFood();        
+        }
+
         AgentType strategy = getDataModel().getGroupStrategy();
 
-        isTheMoneyOK(currentFoodReserve);
-
-        if (!loansTaken.isEmpty())
+        if(theMoneyIsOK(currentFoodReserve))
         {
-            //TODO: Repay loans (if possible)
-        }
-
-        //Spend money       
-        if(strategy != null)
-        {
-            currentFoodReserve -= priceToPlay;//pay, in theory, to join the game among groups
-            if(currentFoodReserve < priceToPlay)//if the theory is way to risky
+            if (!loansTaken.isEmpty())
             {
-                currentFoodReserve += priceToPlay;//go back
-                strategy = null;//and sit this turn out
+                //TODO: Repay loans (if possible)
             }
-        }
 
-        double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
-        double percentDecrease;
-        //make your citizens satisfied by funding public service but dont spend too much
-        //if you're far away from attaining achievement
-        percentDecrease = ( (1-getAverageHappiness(0)) * goalRatio) * currentFoodReserve;        
-        if(currentFoodReserve - percentDecrease > priceToPlay)//if helping the public cant be done at the moment
-        {
-            currentFoodReserve -= percentDecrease;
-        }
-        
+            //Spend money       
+            if(strategy != null)
+            {
+                currentFoodReserve -= priceToPlay;//pay, in theory, to join the game among groups
+                if(currentFoodReserve < priceToPlay)//if the theory is way to risky
+                {
+                    currentFoodReserve += priceToPlay;//go back
+                    strategy = null;//and sit this turn out
+                }
+            }
+
+            double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
+            double percentDecrease;
+            //make your citizens satisfied by funding public service but dont spend too much
+            //if you're far away from attaining achievement
+            percentDecrease = ( (1-getAverageHappiness(0)) * goalRatio) * currentFoodReserve;        
+            if(currentFoodReserve - percentDecrease > priceToPlay)//if helping the public cant be done at the moment
+            {
+                currentFoodReserve -= percentDecrease;
+            }            
+        }      
         return new Tuple<AgentType, Double>(strategy, currentFoodReserve);            
     }
     
-    private void isTheMoneyOK(double mostRecentReserve)
+    private boolean theMoneyIsOK(double mostRecentReserve)
     {
         //need to assess the reserve, your loan history and the wealth of the people!?
 
@@ -269,9 +276,24 @@ public class LoansGroup extends AbstractGroupAgent {
         //3 negatives and you're close to playing one last game with the other groups
         //then you have to declare you need help
 
-        if((deltaFoodReserve < 0)&&(mostRecentReserve < 150) && (!inNeed.containsKey(this.getId())))
+        if(!inNeed.containsKey(this.getId()))
         {
-            inNeed.put(this.getId(), mostRecentReserve); 
+            if((deltaFoodReserve < 0)&&(mostRecentReserve < 150))
+            {
+                //you need help and things are not ok
+                inNeed.put(this.getId(), mostRecentReserve);
+                return false;
+            }
+            else
+            {
+                //you're still ok, you dont need help
+                return true;
+            }
+        }
+        else
+        {
+            //you've been in need for quite a while, it would seem
+            return false;
         }
     }
     
@@ -325,7 +347,7 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             currentFoodReserve = getDataModel().getCurrentReservedFood();
         }
-
+        
         double tax = 0;
 
         //check how close you are to attaining achievement
