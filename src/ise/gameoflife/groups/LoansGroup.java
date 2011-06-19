@@ -251,7 +251,12 @@ public class LoansGroup extends AbstractGroupAgent {
             {
                 currentFoodReserve -= percentDecrease;
             }            
-        }      
+        }
+        else
+        {
+            //since things are bad, you cant play the game with other groups
+            strategy = null;
+        }
         return new Tuple<AgentType, Double>(strategy, currentFoodReserve);            
     }
     
