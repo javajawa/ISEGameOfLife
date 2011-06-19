@@ -242,6 +242,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
         //check the happiness of the citizens
         double deltaHappiness = getAverageHappiness(0) - getAverageHappiness(1);
+
         double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
         double percentDecrease;
         if(deltaHappiness < 0)
@@ -306,9 +307,15 @@ public class LoansGroup extends AbstractGroupAgent {
             for(String member : getDataModel().getMemberList())
             {
                 if(turnsAgo > 0)
-                {   
-                    happiness = getConn().getAgentById(member).getCurrentHappiness();
-
+                {
+                    if (getConn().getAgentById(member).getHappinessHistory().size() > 1)
+                    {
+                        happiness = getConn().getAgentById(member).getHappinessHistory().getValue(turnsAgo);
+                    }
+                    else
+                    {
+                        happiness = 0.0;
+                    }
                     if(happiness != null)//otherwise add nothing
                     {
                         average += happiness;                   
@@ -316,8 +323,7 @@ public class LoansGroup extends AbstractGroupAgent {
                 }
                 else
                 {
-                    happiness = getConn().getAgentById(member).getHappinessHistory().getValue(turnsAgo);
-
+                    happiness = getConn().getAgentById(member).getCurrentHappiness();
                     if(happiness != null)//otherwise add nothing
                     {
                         average += happiness;                   
