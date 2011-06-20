@@ -41,7 +41,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
 	private static final long serialVersionUID = 1L;
 
-        private static String special= null;
+        public static String special= null;
         private static int special_no=0;
 
         private String invitationToGroup = null;
@@ -52,7 +52,7 @@ public class TestPoliticalAgent extends AbstractAgent
         private final static TreeSet<String> freeToGroup = new TreeSet<String>();                
 	private History<Double> satisfaction = new History<Double>(1);
 
-        private static  List<String> special_agents = new LinkedList<String>();
+//        private static  List<String> special_agents = new LinkedList<String>();
 
         Random randomGenerator = new Random();
         
@@ -230,16 +230,20 @@ public class TestPoliticalAgent extends AbstractAgent
         
         String chosenGroup = "";
 
-        boolean agentG = false;
-        for (String ag : special_agents)
-                if (this.getId().equals(ag))
-                    agentG = true;
-                    
-        if(agentG) return special;
+  //Theo added
+//        boolean agentG = false;
+//        for (String ag : special_agents)
+//                if (this.getId().equals(ag))
+//                    agentG = true;
+//
+//        if(agentG) return special;
+
+
+
         //If you're not available to group and you are part of a group already
         //Note: an agent is allowed to not be free to group and not be part of a group,
         //      this agent would be waiting to receive an invitation or wants to return one
-        else if(!freeToGroup.contains(this.getId()) && getDataModel().getGroupId() != null)
+        if(!freeToGroup.contains(this.getId()) && getDataModel().getGroupId() != null)
         {
             //If you have been told to leave this group then do so
             if (membersToKickOut.contains(this.getId()))
@@ -448,9 +452,8 @@ public class TestPoliticalAgent extends AbstractAgent
                         special = getConn().createGroup(gtype, spGroup);
                         System.out.println("THis is the special group: "+special+ "name: "+getConn().getGroupById(special).getName());
                     }
-
-                    String agent_sp = getConn().createAgent(10, 0.5, getConn().getGroupById(special).getCurrentEconomicPoisition() , "A"+myGroup.getName()); //CREATE a new AGENT-Group
-                    special_agents.add(agent_sp);
+                    //Creates a political Agent group
+                    getConn().createAgent(10, 0.5, getConn().getGroupById(special).getCurrentEconomicPoisition() , "A"+myGroup.getName()); //CREATE a new AGENT-Group
                     //*********
                     
                     groupFounders.put(this.getId(), chosenGroup);

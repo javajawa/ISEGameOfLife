@@ -548,7 +548,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 
         abstract protected Tuple<AgentType, Double> makePayments();
-        abstract protected AgentType decideGroupStrategy();
+        abstract protected AgentType decideGroupStrategy(); //added The0
 	abstract protected double decideTaxForReservePool();
         abstract protected Tuple<InteractionResult, Double> interactWithOtherGroups();
 
