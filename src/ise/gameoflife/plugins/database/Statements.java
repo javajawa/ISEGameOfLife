@@ -25,6 +25,8 @@ enum Statements
 	"INSERT INTO a_data (simid,round,agentid,groupid,foodAmount,lastHunted,"
 		+ "socialBelief,economicBelief,happiness,loyalty)"
 	    + " VALUES (?,?,?,?,?,?,?,?,?,?);"),
+	trustAgent("INSERT INTO a_trust (simid,round,agentid,agentid_other,trust)"
+	    + " VALUES (?,?,?,?,?);"),
 	
 	createSim("CREATE TABLE IF NOT EXISTS [simulations] (\n"+
 	"[simid] INTEGER NOT NULL PRIMARY KEY ASC, \n"+

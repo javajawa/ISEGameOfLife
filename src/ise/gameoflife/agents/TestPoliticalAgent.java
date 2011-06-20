@@ -589,8 +589,8 @@ public class TestPoliticalAgent extends AbstractAgent
             String groupId = this.getDataModel().getGroupId();
             if (getConn().getGroupById(groupId) == null) return ProposalType.staySame;
             ProposalType proposal;
-            
-            //Get the economic beliefs of the agent and the group
+
+            //Get the economic beliefs of the agent and the group    
             double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
             double agentEconomicBelief = this.getDataModel().getEconomicBelief();
 
@@ -751,7 +751,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double entitlement = getDataModel().getEconomicBelief() * foodHunted;
             double surplus = foodReceived - entitlement;
             Double currentHappiness = getDataModel().getCurrentHappiness();
-            
+
             if (currentHappiness == null)
                 //By default we are all satisfied with the economic position
                 //we start off in, unless you are always happy or just hate life
@@ -956,6 +956,7 @@ public class TestPoliticalAgent extends AbstractAgent
                                     double overallMovement)
     {
             Double currentHappiness = getDataModel().getCurrentHappiness();
+
             if (getDataModel().getGroupId() == null) return currentHappiness;
 
             if (currentHappiness == null)

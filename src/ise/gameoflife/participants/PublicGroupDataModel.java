@@ -1,6 +1,7 @@
 package ise.gameoflife.participants;
 
 import ise.gameoflife.inputs.Proposition;
+import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.TurnType;
@@ -118,6 +119,11 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
     public double getCurrentReservedFood() {
         return source.getCurrentReservedFood();
     }
+    
+    public History<Double> getReservedFoodHistory()
+    {
+            return source.getReservedFoodHistory();
+    }      
 
     /**
      * Gets the proposals made this turn, and the results

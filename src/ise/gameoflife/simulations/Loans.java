@@ -9,8 +9,11 @@ import ise.gameoflife.plugins.GroupGraphs;
 import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
 import ise.gameoflife.plugins.HunterListPlugin;
+import ise.gameoflife.plugins.LoansInfo;
+import ise.gameoflife.plugins.LoansPlugin;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
+import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.tokens.AgentType;
 import java.util.Random;
 
@@ -31,10 +34,10 @@ public class Loans extends GenericSimulation
 	{
                 Random randomGenerator = new Random();
 
-		for (int i = 0; i < 150; i++)
+		for (int i = 0; i < 50; i++)
 		{
                         addAgent(new LoansAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-                        addAgent(new LoansAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+                        //addAgent(new LoansAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
@@ -65,13 +68,11 @@ public class Loans extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
-		//addPlugin(new DatabasePlugin(comment,false));
+		//addPlugin(new DatabasePlugin(comment,true));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
-                //addPlugin(new HunterInfo());
-                //addPlugin(new GroupInfo());
-                //addPlugin(new GroupGraphs());
+                addPlugin(new LoansInfo());
 	}
 
 	@Override

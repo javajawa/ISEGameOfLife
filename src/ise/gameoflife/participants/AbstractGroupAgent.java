@@ -14,9 +14,11 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.inputs.Vote;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
+import ise.gameoflife.models.Tuple;
 import static ise.gameoflife.models.ScaledDouble.scale;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.GroupRegistration;
+import ise.gameoflife.tokens.InteractionResult;
 import ise.gameoflife.tokens.RegistrationResponse;
 import ise.gameoflife.tokens.TurnType;
 import ise.gameoflife.tokens.UnregisterRequest;
@@ -165,13 +167,14 @@ public abstract class AbstractGroupAgent implements Participant
 		switch (turn)
 		{
 			case GroupSelect:
-				// Nothing to do here - this is handled in enQueueMessage
+				// Allow groups to "explore" their surroundings
+                                doInteractWithOtherGroups();
 				break;
 			case TeamSelect:
 				doTeamSelect();
 				break;
 			case GoHunt:
-				// Nothing to do here - agents are off hunting!
+				// The panel (if it exists) decides the group's strategy
                                 doLeadersHunt();
                                 break;
 			case HuntResults:
@@ -230,9 +233,9 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 
                 //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
-                double tax = decideTaxForReservePool();
-                this.setReservedFood(getDataModel().getCurrentReservedFood() + tax*shared);
-                shared = shared - tax*shared;
+                Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
+                this.setReservedFood(updatedSharedAndReserve.getValue());
+                shared = updatedSharedAndReserve.getKey();
                 //Loans simulation addition end
 
 		shared = shared * taxRate / dm.getMemberList().size();
@@ -319,6 +322,30 @@ public abstract class AbstractGroupAgent implements Participant
         private void doLeadersHunt(){
                 AgentType strategy = decideGroupStrategy();
                 this.dm.setGroupStrategy(strategy);
+
+                Tuple<AgentType, Double> finalStrategy = makePayments();
+                if (finalStrategy.getValue() != getDataModel().getCurrentReservedFood())
+                {
+                    this.setReservedFood(finalStrategy.getValue());
+                }
+                this.dm.setGroupStrategy(finalStrategy.getKey());
+        }
+
+        private void doInteractWithOtherGroups(){
+            Tuple<InteractionResult, Double> interactionResult = interactWithOtherGroups();
+            switch (interactionResult.getKey())
+            {
+			case LoanTaken:
+                            this.setReservedFood(this.getDataModel().getCurrentReservedFood() + interactionResult.getValue());
+                            break;
+                        case LoanGiven:
+                            this.setReservedFood(this.getDataModel().getCurrentReservedFood() - interactionResult.getValue());
+                            break;
+                        case NothingHappened:
+                            //this.setReservedFood(this.getDataModel().getCurrentReservedFood());
+                            break;
+            }
+            
         }
         
 	/**
@@ -510,18 +537,22 @@ public abstract class AbstractGroupAgent implements Participant
 	abstract protected void onMemberLeave(String playerID,
 					LeaveNotification.Reasons reason);
 
-	/**
+
+
+        abstract protected Tuple<AgentType, Double> makePayments();
+        abstract protected AgentType decideGroupStrategy();
+	abstract protected Tuple<Double, Double> updateTaxedPool(double sharedFood);
+        abstract protected Tuple<InteractionResult, Double> interactWithOtherGroups();
+
+        /**
 	 * Here you implement any code concerning data storage about the events
 	 * of this round before it is all deleted for a new round to begin.
-	 * N.B: a "round" occurs after all {@link TurnType turn types} have been 
+	 * N.B: a "round" occurs after all {@link TurnType turn types} have been
 	 * iterated through. This
-	 * is to avoid confusion between "cycles", "turn" and "time". 
-	 * Alternatively, use of the unit "Harcourt" may also be used. 
+	 * is to avoid confusion between "cycles", "turn" and "time".
+	 * Alternatively, use of the unit "Harcourt" may also be used.
 	 * 1 Round = 1 Harcourt
 	 */
-        
-        abstract protected AgentType decideGroupStrategy();
-	abstract protected double decideTaxForReservePool();
         abstract protected void beforeNewRound();
 
 

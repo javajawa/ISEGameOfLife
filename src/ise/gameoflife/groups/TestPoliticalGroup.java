@@ -11,6 +11,7 @@ import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.tokens.AgentType;
+import ise.gameoflife.tokens.InteractionResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -353,9 +354,23 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     };
 
     @Override
-    protected double decideTaxForReservePool() {
-        return 0;
+    protected Tuple<Double, Double> updateTaxedPool(double sharedFood) {
+        Tuple<Double, Double> newSharedAndReserve = new Tuple<Double,Double>();
+        newSharedAndReserve.add(sharedFood, 0.0);
+        return newSharedAndReserve;
+    }
+    
+    @Override
+    protected Tuple<AgentType, Double> makePayments()
+    {      
+        return new Tuple<AgentType, Double>(this.getDataModel().getGroupStrategy(), this.getDataModel().getCurrentReservedFood());
     }
 
+    @Override
+    protected Tuple<InteractionResult, Double> interactWithOtherGroups() {
+        //throw new UnsupportedOperationException("Not supported yet.");
+        Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
+        interactionResult.add(InteractionResult.NothingHappened, 0.0);
+        return interactionResult;
+    }
 }
-

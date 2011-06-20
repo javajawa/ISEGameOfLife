@@ -56,17 +56,6 @@ public class GroupInfo extends JPanel implements Plugin
 		GroupPanel(PublicGroupDataModel gm)
 		{
                         this.gm = gm;
-//			this.foodHistorySeries = new XYSeries(gm.getId());
-//
-//			JFreeChart chart = ChartFactory.createXYLineChart(null, null, null,
-//							new XYSeriesCollection(foodHistorySeries),
-//							PlotOrientation.VERTICAL, false, false, false);
-			//ChartPanel chartPanel = new ChartPanel(chart);
-
-//			chart.getXYPlot().setBackgroundAlpha(1);
-//			domainAxis = chart.getXYPlot().getDomainAxis();
-//			rangeAxis = chart.getXYPlot().getRangeAxis();
-
 
                         String Social = Double.toString(this.gm.getEstimatedSocialLocation());
                         String Economic = Double.toString(this.gm.getCurrentEconomicPoisition());
@@ -141,7 +130,7 @@ public class GroupInfo extends JPanel implements Plugin
                 }
 	}
 
-	private final static String label = "Group Logs";
+	private final static String label = "Group logs";
 
 	private Simulation sim;
 	private PublicEnvironmentConnection ec = null;

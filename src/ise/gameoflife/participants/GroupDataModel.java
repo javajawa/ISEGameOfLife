@@ -5,6 +5,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.models.Tuple;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +46,7 @@ class GroupDataModel extends APlayerDataModel
 
         private List<String> panel = new LinkedList<String>();
 
+        @Element
         private History<Double> reservedFoodHistory;
         
 	@Deprecated
@@ -111,6 +113,7 @@ class GroupDataModel extends APlayerDataModel
 	{
 		economicPosition.newEntry(true);
 		propositionHistory.newEntry(null);
+                reservedFoodHistory.newEntry(true);
 	}
 
 	void addMember(String a)
@@ -237,6 +240,11 @@ class GroupDataModel extends APlayerDataModel
 	{
 		return reservedFoodHistory.getValue();
 	}
+        
+        History<Double> getReservedFoodHistory()
+	{
+		return reservedFoodHistory.getUnmodifableHistory();
+	}        
 
 	int size()
 	{
