@@ -42,7 +42,7 @@ public class LoansGroup extends AbstractGroupAgent {
     private Map<String, List<Tuple<Double, Double> > > loansTaken = new HashMap<String, List<Tuple<Double, Double> > >();
     private static Map<String, Double> inNeed = new HashMap<String, Double>();
     private static Map<String, HashMap<String, Tuple<Double, Double> >> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double> >>();
-
+    private static Map<String, List<Tuple<String, Double> > > loanRepayments = new HashMap<String, List<Tuple<String, Double> > >();
     @Deprecated
     public LoansGroup() {
     	super();
@@ -238,18 +238,18 @@ public class LoansGroup extends AbstractGroupAgent {
         if(!inNeed.containsKey(this.getId()))
         {
             //DEBUGGING ONLY
-//            System.out.println("------------------");
-//            System.out.println(this.getDataModel().getName());
-//            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-//            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
-//            for (String s: loansTaken.keySet())
-//            {
-//                System.out.println("I owe "+getConn().getGroupById(s).getName());
-//                for(Tuple<Double, Double> t: loansTaken.get(s))
-//                {
-//                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
-//                }
-//            }
+            System.out.println("------------------");
+            System.out.println(this.getDataModel().getName());
+            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
+            for (String s: loansTaken.keySet())
+            {
+                System.out.println("I owe "+getConn().getGroupById(s).getName());
+                for(Tuple<Double, Double> t: loansTaken.get(s))
+                {
+                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
+                }
+            }
 //            System.out.println("*********************");
 //            System.out.println("I have " + loansGiven.size()+ " debtors!");
 //            for (String s: loansGiven.keySet())
@@ -257,6 +257,7 @@ public class LoansGroup extends AbstractGroupAgent {
 //                System.out.println("I will get:");
 //                for(Tuple<Double, Double> t: loansGiven.get(s))
 //                {
+//                    if(getConn().getGroupById(s) == null) break;
 //                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue()+" from "+getConn().getGroupById(s).getName());
 //                }
 //             }
@@ -266,6 +267,7 @@ public class LoansGroup extends AbstractGroupAgent {
             {
                 for (String creditor: loansTaken.keySet())
                 {
+                    double totalAmountPaid = 0;
                     //Find the loans taken from this creditor and sort the in descending order
                     Collections.sort(loansTaken.get(creditor), loansComparator);
                     //Iterate through the loans from this creditor
@@ -281,17 +283,34 @@ public class LoansGroup extends AbstractGroupAgent {
                         //If the group has the money then it pays
                         if (currentFoodReserve > amountToPay)
                         {
-                            System.out.println("I repaid "+getConn().getGroupById(creditor).getName()+ " for the loan of "+loanInfo.getKey());
                             currentFoodReserve -= amountToPay;
                             //We remove this loan from  since it is paid
                             i.remove();
+                            totalAmountPaid += amountToPay;
                         }
                     }
                     //If that was the only loan taken from this creditor then remove the creditor form the list
                     if (loansTaken.get(creditor).isEmpty()) loansTaken.remove(creditor);
+                    if (totalAmountPaid != 0)
+                    {
+                        System.out.println("I paid back "+totalAmountPaid+ " to "+getConn().getGroupById(creditor).getName());
+                        Tuple<String, Double> paymentReceipt = new Tuple<String, Double>();
+                        paymentReceipt.add(this.getId(), totalAmountPaid);
+                        if (!loanRepayments.containsKey(creditor))
+                        {
+                            List<Tuple<String, Double> > existingPayments = new ArrayList<Tuple<String, Double> >();
+                            existingPayments.add(paymentReceipt);
+                            loanRepayments.put(creditor, existingPayments);
+                        }
+                        else
+                        {
+                            List<Tuple<String, Double> > existingPayments = (List) loanRepayments.get(creditor);
+                            existingPayments.add(paymentReceipt);
+                        }
+                    } 
                 }
             }
-
+            System.out.println("After repayment: "+currentFoodReserve);
             //Spend money       
             if(strategy != null)
             {
@@ -395,13 +414,33 @@ public class LoansGroup extends AbstractGroupAgent {
 
     @Override
     protected Tuple<Double, Double> updateTaxedPool(double sharedFood) {
-        double currentFoodReserve;        
-
-        //TODO: receive payments
-
-        currentFoodReserve = getDataModel().getCurrentReservedFood(); 
+        double currentFoodReserve; 
+        currentFoodReserve = getDataModel().getCurrentReservedFood();
         double tax = 0;
 
+        //FOR DEBUGGING ONLY
+        System.out.println("------------------");
+        System.out.println(this.getDataModel().getName());
+        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+        //FOR DEBUGGING ONLY END
+        
+        //If this groups has any debtors must check if any of them has paid back
+        if(loanRepayments.containsKey(this.getId()))
+        {
+            List<Tuple<String, Double> > paymentsInfo = new  ArrayList<Tuple<String, Double> >();
+            paymentsInfo = loanRepayments.get(this.getId());
+            
+            Iterator<Tuple<String, Double> > i = paymentsInfo.iterator();
+            while(i.hasNext())
+            {
+                Tuple<String, Double> currentPayment = i.next();
+                double amountReceived = currentPayment.getValue();
+                currentFoodReserve += amountReceived;
+                System.out.println("I have received a payment of "+amountReceived+" from "+getConn().getGroupById(currentPayment.getKey()).getName());
+            }
+            loanRepayments.remove(this.getId());
+        }
+        System.out.println("After repayments: "+currentFoodReserve);
         //check how close you are to attaining achievement
         double goalRatio = currentFoodReserve / achievementThreshold;
 
