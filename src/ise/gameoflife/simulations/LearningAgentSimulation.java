@@ -3,122 +3,147 @@
  */
 package ise.gameoflife.simulations;
 
-import ise.gameoflife.genetics.Evolvable;
+import ise.gameoflife.RunSimulation;
+import ise.gameoflife.environment.Environment;
+import ise.gameoflife.environment.EnvironmentDataModel;
+import ise.gameoflife.genetics.EvolvableEntity;
+import ise.gameoflife.models.Food;
+import ise.gameoflife.models.NameGenerator;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
+import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.simulations.evolution.SimulationGenome;
+import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
+import ise.gameoflife.agents.TestPoliticalAgent;
+import ise.gameoflife.groups.TestPoliticalGroup;
+import ise.gameoflife.tokens.AgentType;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.TreeMap;
+
+import presage.EventScriptManager;
+import presage.Participant;
+import presage.PluginManager;
+import presage.PresageConfig;
+import presage.Simulation;
+import presage.configure.ConfigurationLoader;
 
 /**
  * @author admko
  *
  */
-public class LearningAgentSimulation
-	extends GenericSimulation implements Evolvable<SimulationGenome>
+public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 {
 
-	/**
-	 *
-	 */
-	public LearningAgentSimulation()
+	private SimulationGenome genome = null;
+	private double fitness = -1;
+
+	private String comment = null;
+	private int iterations = 0;
+	private double foodConsumedPerAdvice = 0;
+	private long randomSeed = 0;
+	private Simulation sim;
+
+	private final HashMap<String, Food> foods = new HashMap<String, Food>();
+	private final TreeMap<String, Participant> agents = new TreeMap<String, Participant>();
+	private final ArrayList<Class<? extends AbstractGroupAgent>> groups = new ArrayList<Class<? extends AbstractGroupAgent>>();
+	private final EventScriptManager ms = new EventScriptManager();
+	private final PluginManager pm = new PluginManager();
+
+	public LearningAgentSimulation(SimulationGenome genome)
 	{
-		super("Basic Politics Testing Bed", 400, 0, 0.1);
-		// TODO Auto-generated constructor stub
+		super();
+		this.setGenome(genome);
 	}
 
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.simulations.GenericSimulation#plugins()
-	 */
-	@Override
-	protected void plugins()
+	public void run()
 	{
-		// TODO Auto-generated method stub
+		PresageConfig presageConfig = new PresageConfig();
+		presageConfig.setComment(comment);
+		presageConfig.setIterations(iterations);
+		presageConfig.setRandomSeed(randomSeed);
+		presageConfig.setThreadDelay(1);
+		presageConfig.setAutorun(true);
+		presageConfig.setEnvironmentClass(Environment.class);
 
+		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups, foodConsumedPerAdvice);
+		Environment e = new Environment(true, randomSeed, dm, chooseFreeAgentHandler());
+
+		NameGenerator.setRandomiser(new Random(randomSeed));
+		foods();
+		agents();
+		groups();
+		plugins();
+		events();
+
+		this.sim = new Simulation(presageConfig, agents, e, pm, ms);
 	}
 
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.simulations.GenericSimulation#foods()
-	 */
-	@Override
+	protected void plugins(){}
+
 	protected void foods()
 	{
-		// TODO Auto-generated method stub
-
+		this.addFood("Rabbit", 2, 1);
+		this.addFood("Stag", 5, 2);
 	}
 
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.simulations.GenericSimulation#agents()
-	 */
-	@Override
 	protected void agents()
 	{
-		// TODO Auto-generated method stub
-
+		Random rand = new Random(this.randomSeed);
+		for (int i = 0; i < 10; i++)
+		{
+			// this.addAgent(new LearningAgent(20, 2));
+			this.addAgent(new TestPoliticalAgent
+				 (20, 2, AgentType.AC, rand.nextDouble(), rand.nextDouble()));
+			this.addAgent(new TestPoliticalAgent
+				 (20, 2, AgentType.TFT, rand.nextDouble(), rand.nextDouble()));
+			this.addAgent(new TestPoliticalAgent
+				 (20, 2, AgentType.AD, rand.nextDouble(), rand.nextDouble()));
+			this.addAgent(new TestPoliticalAgent
+				 (20, 2, AgentType.R, rand.nextDouble(), rand.nextDouble()));
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.simulations.GenericSimulation#groups()
-	 */
-	@Override
 	protected void groups()
 	{
-		// TODO Auto-generated method stub
-
+		this.addGroup(TestPoliticalGroup.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.simulations.GenericSimulation#events()
-	 */
-	@Override
-	protected void events()
-	{
-		// TODO Auto-generated method stub
+	protected void events(){}
 
-	}
-
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.simulations.GenericSimulation#chooseFreeAgentHandler()
-	 */
-	@Override
 	protected Class<? extends AbstractFreeAgentGroup> chooseFreeAgentHandler()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return BasicFreeAgentGroup.class;
 	}
 
 	@Override
 	public SimulationGenome genome()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return genome;
 	}
 
 	@Override
 	public void setGenome(SimulationGenome genome)
 	{
-		// TODO Auto-generated method stub
-
+		this.genome = genome;
+		this.comment = genome.comment();
+		this.iterations = genome.iterations();
+		this.randomSeed = genome.randomSeed();
+		this.foodConsumedPerAdvice = genome.foodConsumedPerAdvice();
 	}
 
 	@Override
 	public double fitness()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return fitness;
 	}
 
 	@Override
 	public void setFitness(double aFitness)
 	{
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-		// TODO Auto-generated method stub
-
+		this.fitness = aFitness;
 	}
 
 }
