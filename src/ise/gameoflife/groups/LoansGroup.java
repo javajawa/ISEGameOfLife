@@ -101,11 +101,13 @@ public class LoansGroup extends AbstractGroupAgent {
         if(!getConn().availableGroups().containsAll(inNeed.keySet()))
         {
             Set<String> available = getConn().availableGroups();
-            for (String inNeedMember: inNeed.keySet())
+            Iterator<String> i = inNeed.keySet().iterator();
+            while(i.hasNext())
             {
-                if (!available.contains(inNeedMember))
+                String member = i.next();
+                if (!available.contains(member))
                 {
-                    inNeed.remove(inNeedMember);
+                    i.remove();
                 }
             }
         }
@@ -334,18 +336,18 @@ public class LoansGroup extends AbstractGroupAgent {
         if(!inNeed.containsKey(this.getId()))
         {
             //DEBUGGING ONLY
-//            System.out.println("------------------");
-//            System.out.println(this.getDataModel().getName());
-//            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-//            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
-//            for (String s: loansTaken.keySet())
-//            {
-//                System.out.println("I owe "+getConn().getGroupById(s).getName());
-//                for(Tuple<Double, Double> t: loansTaken.get(s))
-//                {
-//                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
-//                }
-//            }
+            System.out.println("------------------");
+            System.out.println(this.getDataModel().getName());
+            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
+            for (String s: loansTaken.keySet())
+            {
+                System.out.println("I owe "+getConn().getGroupById(s).getName());
+                for(Tuple<Double, Double> t: loansTaken.get(s))
+                {
+                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
+                }
+            }
 //            System.out.println("*********************");
 //            System.out.println("I have " + loansGiven.size()+ " debtors!");
 //            for (String s: loansGiven.keySet())
@@ -396,7 +398,7 @@ public class LoansGroup extends AbstractGroupAgent {
                         //Calculate the amount to pay (amount *(1+ interest))
                         double amountToPay = loanInfo.getKey()* (1+loanInfo.getValue());
                         //If the group has the money then it pays
-                        if (currentFoodReserve > amountToPay)
+                        if (currentFoodReserve > amountToPay + priceToPlay)
                         {
                             currentFoodReserve -= amountToPay;
                             //We remove this loan from  since it is paid
@@ -425,7 +427,7 @@ public class LoansGroup extends AbstractGroupAgent {
                     }
                 }
             }
-            //System.out.println("After repayment: "+currentFoodReserve);
+            System.out.println("After repayment: "+currentFoodReserve);
         }
         else
         {

@@ -537,21 +537,22 @@ public abstract class AbstractGroupAgent implements Participant
 	abstract protected void onMemberLeave(String playerID,
 					LeaveNotification.Reasons reason);
 
-	/**
-	 * Here you implement any code concerning data storage about the events
-	 * of this round before it is all deleted for a new round to begin.
-	 * N.B: a "round" occurs after all {@link TurnType turn types} have been 
-	 * iterated through. This
-	 * is to avoid confusion between "cycles", "turn" and "time". 
-	 * Alternatively, use of the unit "Harcourt" may also be used. 
-	 * 1 Round = 1 Harcourt
-	 */
+
 
         abstract protected Tuple<AgentType, Double> makePayments();
         abstract protected AgentType decideGroupStrategy();
 	abstract protected Tuple<Double, Double> updateTaxedPool(double sharedFood);
         abstract protected Tuple<InteractionResult, Double> interactWithOtherGroups();
 
+        /**
+	 * Here you implement any code concerning data storage about the events
+	 * of this round before it is all deleted for a new round to begin.
+	 * N.B: a "round" occurs after all {@link TurnType turn types} have been
+	 * iterated through. This
+	 * is to avoid confusion between "cycles", "turn" and "time".
+	 * Alternatively, use of the unit "Harcourt" may also be used.
+	 * 1 Round = 1 Harcourt
+	 */
         abstract protected void beforeNewRound();
 
 
