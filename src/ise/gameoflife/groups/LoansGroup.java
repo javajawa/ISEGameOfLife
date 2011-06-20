@@ -307,10 +307,7 @@ public class LoansGroup extends AbstractGroupAgent {
                 double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
                 double percentDecrease;
                 percentDecrease = ( (1-getAverageHappiness(0)) * goalRatio) * currentFoodReserve;
-                //if(currentFoodReserve - percentDecrease > priceToPlay)//if helping the public cant be done at the moment
-                //{
-                    currentFoodReserve -= percentDecrease;
-                //}
+                currentFoodReserve -= percentDecrease;
             }
         }
         else
@@ -436,12 +433,6 @@ public class LoansGroup extends AbstractGroupAgent {
         System.out.println("------------------");
         System.out.println(this.getDataModel().getName());
         System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-//                    System.out.println("There are "+ inNeed.size()+" some groups in need!");
-//        for (String s: inNeed.keySet())
-//        {
-//          if (getConn().getGroupById(s) != null)
-//          System.out.println("    "+ getConn().getGroupById(s).getName()+ " has requested "+inNeed.get(s)+" units of food!");
-//        }
         //FOR DEBUGGING ONLY END
 
         //First check if you are in need
