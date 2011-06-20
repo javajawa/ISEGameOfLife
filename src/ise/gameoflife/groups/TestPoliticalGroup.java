@@ -176,7 +176,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             groupSocialPosition = getDataModel().getEstimatedSocialLocation();
 
             //Round to the closest integer
-            panelSize = (int) Math.round(population*groupSocialPosition);
+            panelSize = (int) Math.round(population * groupSocialPosition);
             if (panelSize == 0) //The group is on the very top of the axis. Dictatorship
             {
                 //Force panelSize to be at least one (dictator)

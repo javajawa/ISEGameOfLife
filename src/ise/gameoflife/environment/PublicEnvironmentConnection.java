@@ -87,6 +87,20 @@ public class PublicEnvironmentConnection
 		return ec.getAvailableGroups();
 	}
 
+        //ADDED The0
+        /**
+         * Function used to create a new agent-group
+         * @param average food amount of agents in group
+         * @param economic position
+         * @param social position
+         * @return the ID of the created agent
+         */
+        public String createAgent(double food,double economic, double social, String name)
+        {
+                return ec.createAgent(food, economic, social, name);
+        }
+
+
 	/**
 	 * Function used to create a new group. 
 	 * Group data initialiser is an object that contains all the information used
@@ -113,6 +127,7 @@ public class PublicEnvironmentConnection
 	{
 		return ec.createGroup(type, init, invitees);
 	}
+
 
 	/**
 	 * Determines whether a string represents the id of an active agent in this

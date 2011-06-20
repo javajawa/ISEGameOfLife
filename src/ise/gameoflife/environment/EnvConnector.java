@@ -93,6 +93,12 @@ public class EnvConnector extends EnvironmentConnector
 		return e.getAvailableGroups();
 	}
 
+        //ADDED The0
+        public String createAgent(double food,double economic, double social,String name){
+
+                return e.createAgent(food, economic, social,name);
+        }
+
 	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init)
 	{
 		return e.createGroup(type, init);

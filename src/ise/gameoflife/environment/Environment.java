@@ -9,6 +9,7 @@ import ise.gameoflife.actions.Proposal;
 import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.actions.Vote;
 import ise.gameoflife.actions.VoteResult;
+import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
 import ise.gameoflife.inputs.GroupInvite;
@@ -24,6 +25,7 @@ import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.GroupRegistration;
 import ise.gameoflife.tokens.RegistrationRequest;
 import ise.gameoflife.tokens.RegistrationResponse;
@@ -595,6 +597,15 @@ public class Environment extends AbstractEnvironment
 	{
 		return dmodel.getCyclesPassed();
 	}
+
+        //ADDED The0
+        public String createAgent(double food,double economic, double social, String name){
+            AbstractAgent a = new TestPoliticalAgent(food, 0, AgentType.R, economic, social, name);
+            a.initialise(new EnvironmentConnector(this));
+            sim.addParticipant(a.getId(),a);
+            sim.activateParticipant(a.getId());
+            return a.getId();
+        }
 
 	String createGroup(Class<? extends AbstractGroupAgent> groupType, GroupDataInitialiser init)
 	{

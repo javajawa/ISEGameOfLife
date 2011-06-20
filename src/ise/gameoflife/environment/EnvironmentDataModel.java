@@ -3,6 +3,7 @@ package ise.gameoflife.environment;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.GroupRegistration;
@@ -177,6 +178,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	{
 		return cycles;
 	}
+
 
 	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> groupType, GroupDataInitialiser init)
 	{

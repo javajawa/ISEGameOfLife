@@ -286,6 +286,24 @@ abstract public class AbstractAgent implements Participant
 		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, type, socialBelief, economicBelief);
 	}
 
+        //ADDED The0
+        /** ADDED The0
+	 * Creates a new agent with the two primary properties
+	 * @param myroles The roles that this agent can perform
+	 * @param randomseed the random seed for this agent
+	 * @param initialFood The initial amount of food
+	 * @param consumption The amount consumed per turn
+	 * @param type The logic type of this agent
+         * @param socialBelief The social belief of this agent
+         * @param economicBelief The economic belief of this agent
+	 */
+	public AbstractAgent(String myroles, long randomseed, double initialFood, double consumption, AgentType type,
+                            double socialBelief, double economicBelief, String name)
+	{
+		UUID myid = UUID.randomUUID();
+		this.dm = new AgentDataModel(myid.toString(), myroles, this.getClass(), randomseed, initialFood, consumption, type, socialBelief, economicBelief,name);
+	}
+
 	/**
 	 * Returns the String representation of the Agent's UUID, which is used to
 	 * identify the agent in all interactions.

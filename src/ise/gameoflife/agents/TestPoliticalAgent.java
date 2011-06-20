@@ -62,6 +62,14 @@ public class TestPoliticalAgent extends AbstractAgent
 
     }
 
+    //ADDED The0
+    public TestPoliticalAgent(double initialFood, double consumption, AgentType type,
+                              double socialBelief, double economicBelief, String name){
+        super("<hunter>", 0, initialFood, consumption, type, socialBelief, economicBelief, name);
+
+    }
+
+
     @Override
     protected void onActivate() {
         freeToGroup.add(this.getId());
@@ -418,6 +426,9 @@ public class TestPoliticalAgent extends AbstractAgent
                     GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(), (this.getDataModel().getEconomicBelief() + getConn().getAgentById(invitee).getEconomicBelief())/2);
                     Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                     chosenGroup = getConn().createGroup(gtype, myGroup, invitee);
+
+                    getConn().createAgent(10, 0.1, 0.16, "antonis"); //CREATE a new AGENT-Group
+
                     groupFounders.put(this.getId(), chosenGroup);
                     freeToGroup.remove(this.getId());
                 }
