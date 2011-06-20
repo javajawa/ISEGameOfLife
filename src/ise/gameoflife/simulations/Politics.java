@@ -3,6 +3,7 @@ package ise.gameoflife.simulations;
 import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
+import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;

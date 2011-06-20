@@ -98,7 +98,7 @@ public class HunterInfo extends JPanel implements Plugin
                         String Loyalty = "Null";
                         String Happiness = "Null";
                         if (this.dm.getGroupId() != null ){ //exist only in groups
-                            Loyalty= Double.toString(this.dm.getCurrentLoyalty());
+                            Loyalty = Double.toString(this.dm.getCurrentLoyalty());
                             Happiness = Double.toString(this.dm.getCurrentHappiness());
                         }
                         String Social = Double.toString(this.dm.getSocialBelief());

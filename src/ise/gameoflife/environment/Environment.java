@@ -9,6 +9,7 @@ import ise.gameoflife.actions.Proposal;
 import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.actions.Vote;
 import ise.gameoflife.actions.VoteResult;
+import ise.gameoflife.agents.PoliticalAgentGroup;
 import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.inputs.ApplicationResponse;
 import ise.gameoflife.inputs.ConsumeFood;
@@ -600,7 +601,7 @@ public class Environment extends AbstractEnvironment
 
         //ADDED The0
         public String createAgent(double food,double economic, double social, String name){
-            AbstractAgent a = new TestPoliticalAgent(food, 0, AgentType.R, economic, social, name);
+            AbstractAgent a = new PoliticalAgentGroup(food, 0, AgentType.R, economic, social, name);
             a.initialise(new EnvironmentConnector(this));
             sim.addParticipant(a.getId(),a);
             sim.activateParticipant(a.getId());
