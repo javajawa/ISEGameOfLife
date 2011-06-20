@@ -6,11 +6,13 @@
 package ise.gameoflife.plugins;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.groups.LoansGroup;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.List;
 import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -23,19 +25,16 @@ import presage.Plugin;
 import presage.Simulation;
 /**
  *
- * @author The0s
+ * @author george
  */
-public class GroupInfo extends JPanel implements Plugin
+public class LoansPlugin extends JPanel implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 
 	private class GroupPanel extends JPanel
 	{
 		private static final long serialVersionUID = 1L;
-//		private final XYSeries foodHistorySeries;
 		private final PublicGroupDataModel gm;
-//		private final ValueAxis domainAxis;
-//		private final ValueAxis rangeAxis;
 
 		private JLabel labelise(String s)
 		{
@@ -57,63 +56,31 @@ public class GroupInfo extends JPanel implements Plugin
 		{
                         this.gm = gm;
 
-                        String Social = Double.toString(this.gm.getEstimatedSocialLocation());
-                        String Economic = Double.toString(this.gm.getCurrentEconomicPoisition());
+                        //String Social = Double.toString(this.gm.getEstimatedSocialLocation());
+                        //String Economic = Double.toString(this.gm.getCurrentEconomicPoisition());
 
-                        double Happiness = 0;
-                        double Loyalty = 0;
-                        double Food = 0;
-                        String Leader = "Null";
+                        double happiness = 0;
+                        double reserve = 0;
+                        double size = this.gm.getMemberList().size();
+                        int loansGiven = 0;
+                        
+                        reserve = PublicEnvironmentConnection.getInstance().getGroupById(gm.getId()).getCurrentReservedFood();                       
 
-
-//                        List<String> members = this.gm.getMemberList();
-                          double size = this.gm.getMemberList().size();
-//                        Iterator<String> iter = members.iterator();
-//                        while (iter.hasNext()) //iterate through available Groups
-//                        {
-//                            //String memberId =  iter.next();
-                        for( String memberId : this.gm.getMemberList())
+                        for (String member: gm.getMemberList())
                         {
-                           //if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness() != null)
-                                Happiness += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness();
-                          //  if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty() != null)
-                                Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty();
-                            Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
+                            happiness += PublicEnvironmentConnection.getInstance().getAgentById(member).getCurrentHappiness();
                         }
-                        Happiness= Happiness/size;
-                        Loyalty = Loyalty/size;
-                        Food = Food/size;
-
-                        //Leaders
-                        for (String ldr : this.gm.getPanel()){
-                            if (Leader.equals("Null") && !this.gm.getPanel().isEmpty()) 
-                                Leader= "";
-
-                            if (ec.getAgentById(ldr) != null)
-                                Leader = Leader + ec.getAgentById(ldr).getName() + "  ";
-                            
-                        }
+                        happiness = happiness / size;
 
                         JPanel dataPanel = new JPanel(new GridLayout(4, 2, 1, -1));
 
                         dataPanel.add(labelise(this.gm.getName(),8));
 			dataPanel.add(labelise("Size: "+ this.gm.getMemberList().size()));
+			dataPanel.add(labelise("Average Happiness: "+happiness));
+                        dataPanel.add(labelise("Current reserve: "+reserve));
 
-                        dataPanel.add(labelise("Economic: "+Economic));
-                        dataPanel.add(labelise("Social: "+Social));
-
-			dataPanel.add(labelise("Average Loyalty: "+Loyalty));
-			dataPanel.add(labelise("Average Happiness: "+Happiness));
-
-                        dataPanel.add(labelise("Average Food: "+Food));
-                        dataPanel.add(labelise("Leaders: "+ Leader));
-
-
-			//chartPanel.setVisible(true);
-
-			this.setLayout(new GridLayout(1,1));
+                        this.setLayout(new GridLayout(1,1));
 			this.add(dataPanel);
-			//this.add(chartPanel);
 			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			window.add(this);
 			this.setPreferredSize(new Dimension(getWidth() - barWidth, 125));
@@ -121,16 +88,11 @@ public class GroupInfo extends JPanel implements Plugin
 
 		void updateData()
 		{
-//			if (gm.getCurrentEconomicPoisition() > graphHeight) graphHeight += 25;
-//			foodHistorySeries.addOrUpdate(ec.getRoundsPassed(), gm.getCurrentEconomicPoisition());
-//			domainAxis.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
-//			rangeAxis.setRange(0, graphHeight);
-
 
                 }
 	}
 
-	private final static String label = "Group logs";
+	private final static String label = "Loan info";
 
 	private Simulation sim;
 	private PublicEnvironmentConnection ec = null;
@@ -142,7 +104,7 @@ public class GroupInfo extends JPanel implements Plugin
 	private int barWidth;
 	private int graphHeight = 50;
 
-	public GroupInfo()
+	public LoansPlugin()
 	{
 		// Nothing to see here. Move along, citizen!
 	}
@@ -150,30 +112,22 @@ public class GroupInfo extends JPanel implements Plugin
 	@Override
 	public void execute()
 	{
-		if (ec == null) ec = PublicEnvironmentConnection.getInstance();
-		if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
+              if (ec == null) ec = PublicEnvironmentConnection.getInstance();
+              if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 
-		barWidth = this.pane.getVerticalScrollBar().getWidth();
+              barWidth = this.pane.getVerticalScrollBar().getWidth();
               panels.clear();
               this.window.removeAll();
 		for (String aid : ec.availableGroups())
 		{       if (!panels.containsKey(aid) && ec.getGroupById(aid).getMemberList().size() > 0 )
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));
-                        
+
                                 panels.get(aid).updateData();
                         }
 		}
 		validate();
-
-
                 this.repaint();
-
-                //panels.clear();
-
-
-
-
 	}
 
 	@Override

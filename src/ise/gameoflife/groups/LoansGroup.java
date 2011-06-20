@@ -7,7 +7,6 @@ package ise.gameoflife.groups;
 
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
-import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
@@ -33,10 +32,10 @@ import java.util.Set;
 public class LoansGroup extends AbstractGroupAgent {
     private static final long serialVersionUID = 1L;
 
-    //The following structures store the group ID of the group that gave or took a loan. The tuple stores
-    //the amount borrowed and  the interest rate
+
     private static final double priceToPlay = 100;
     private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
+    
     private static Map<String, Double> inNeed = new HashMap<String, Double>();
     private static Map<String, HashMap<String, Tuple<Double, Double> >> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double> >>();
     private static Map<String, List<Tuple<String, Double> > > loanRepayments = new HashMap<String, List<Tuple<String, Double> > >();
