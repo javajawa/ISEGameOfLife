@@ -1,14 +1,11 @@
-/**
- *
- */
 package ise.gameoflife.simulations;
 
-import ise.gameoflife.RunSimulation;
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.EnvironmentDataModel;
 import ise.gameoflife.genetics.EvolvableEntity;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.NameGenerator;
+import ise.gameoflife.participants.AbstractAgent;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.participants.AbstractGroupAgent;
 import ise.gameoflife.simulations.evolution.SimulationGenome;
@@ -17,18 +14,19 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.tokens.AgentType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
 
+import presage.events.CoreEvents.ActivateParticipant;
 import presage.EventScriptManager;
 import presage.Participant;
+import presage.Plugin;
 import presage.PluginManager;
 import presage.PresageConfig;
+import presage.ScriptedEvent;
 import presage.Simulation;
-import presage.configure.ConfigurationLoader;
 
 /**
  * @author admko
@@ -44,7 +42,7 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	private int iterations = 0;
 	private double foodConsumedPerAdvice = 0;
 	private long randomSeed = 0;
-	private Simulation sim;
+	private Simulation simulation;
 
 	private final HashMap<String, Food> foods = new HashMap<String, Food>();
 	private final TreeMap<String, Participant> agents = new TreeMap<String, Participant>();
@@ -69,7 +67,7 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		presageConfig.setEnvironmentClass(Environment.class);
 
 		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups, foodConsumedPerAdvice);
-		Environment e = new Environment(true, randomSeed, dm, chooseFreeAgentHandler());
+		Environment e = new Environment(true, randomSeed, dm, BasicFreeAgentGroup.class);
 
 		NameGenerator.setRandomiser(new Random(randomSeed));
 		foods();
@@ -78,7 +76,7 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		plugins();
 		events();
 
-		this.sim = new Simulation(presageConfig, agents, e, pm, ms);
+		this.simulation = new Simulation(presageConfig, agents, e, pm, ms);
 	}
 
 	protected void plugins(){}
@@ -112,11 +110,6 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	}
 
 	protected void events(){}
-
-	protected Class<? extends AbstractFreeAgentGroup> chooseFreeAgentHandler()
-	{
-		return BasicFreeAgentGroup.class;
-	}
 
 	@Override
 	public SimulationGenome genome()
