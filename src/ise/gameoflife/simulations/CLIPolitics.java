@@ -4,6 +4,7 @@ import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
+import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.tokens.AgentType;
 import java.util.Random;
@@ -56,7 +57,7 @@ public class CLIPolitics extends GenericSimulation
 	@Override
 	protected void plugins()
 	{
-		//addPlugin(new DebugSwitchPlugin());
+		addPlugin(new DebugSwitchPlugin());
 		//addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
