@@ -4,6 +4,7 @@
 package ise.gameoflife.simulations.evolution;
 
 import ise.gameoflife.genetics.Genome;
+import ise.gameoflife.tokens.AgentType;
 
 /**
  * @author admko
@@ -14,24 +15,20 @@ public class SimulationGenome extends Genome<SimulationGenome>
 
 	private static final long serialVersionUID = 1L;
 
-	private final String comment = "Learning Agent";
-	private final int iterations = 200;
-	private final double foodConsumedPerAdvice = 0.1;
+	private static final double initialFood = 0;
+	private static final double consumption = 0;
+	private static final AgentType type = null;
+	private static final String comment = "Learning Agent";
+	private static final int iterations = 200;
+	private static final double foodConsumedPerAdvice = 0.1;
 	private long randomSeed;
 
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.genetics.Genome#randomize()
-	 */
 	@Override
 	public void randomize()
 	{
 		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.genetics.Genome#mutate()
-	 */
 	@Override
 	public SimulationGenome mutate()
 	{
@@ -39,9 +36,6 @@ public class SimulationGenome extends Genome<SimulationGenome>
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see ise.gameoflife.genetics.Genome#crossOver(ise.gameoflife.genetics.Genome)
-	 */
 	@Override
 	public SimulationGenome crossOver(SimulationGenome genome)
 	{
@@ -72,6 +66,33 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	public long randomSeed()
 	{
 		return randomSeed;
+	}
+
+	public double initialFood()
+	{
+		return initialFood;
+	}
+
+	public double consumption()
+	{
+		return consumption;
+	}
+
+	public AgentType type()
+	{
+		return type;
+	}
+
+	public double socialBelief()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public double economicBelief()
+	{
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
