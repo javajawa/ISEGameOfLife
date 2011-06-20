@@ -94,7 +94,8 @@ public class DatabasePlugin implements Plugin
 	    wrap.getFreeAgentGroupData(round,ec.getUngroupedAgents().size());
 	    //disables agent round data collection for remote db, to speed it up
 	    //also updates trust table
-	    if (!remote) getAgentRoundData();
+	    if (!remote) 
+		getAgentRoundData();
 	    pruneOldGroups();
 	    getGroupRoundData();
 	    
@@ -159,7 +160,8 @@ public class DatabasePlugin implements Plugin
 	{
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
 		else logger.log(Level.WARNING,"Writing data to remote database."
-			+ "\n ---= PLEASE DO NOT CLOSE WINDOW (DATABASE UPLOAD IN PROGRESS, WAIT TILL COMPLETE) =---");
+			+ "\n ---= DO NOT CLOSE WINDOW (DATABASE UPLOAD IN PROGRESS) =---"
+			+ "\n\t (wait till upload complete message if you wish to upload whole of your simulation");
 		wrap.flush(round);
 		wrap.end(round);
 	}
