@@ -233,9 +233,9 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 
                 //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
-                double tax = decideTaxForReservePool();
-                this.setReservedFood(getDataModel().getCurrentReservedFood() + tax*shared);
-                shared = shared - tax*shared;
+                Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
+                this.setReservedFood(updatedSharedAndReserve.getValue());
+                shared = updatedSharedAndReserve.getKey();
                 //Loans simulation addition end
 
 		shared = shared * taxRate / dm.getMemberList().size();
@@ -549,7 +549,7 @@ public abstract class AbstractGroupAgent implements Participant
 
         abstract protected Tuple<AgentType, Double> makePayments();
         abstract protected AgentType decideGroupStrategy();
-	abstract protected double decideTaxForReservePool();
+	abstract protected Tuple<Double, Double> updateTaxedPool(double sharedFood);
         abstract protected Tuple<InteractionResult, Double> interactWithOtherGroups();
 
         abstract protected void beforeNewRound();

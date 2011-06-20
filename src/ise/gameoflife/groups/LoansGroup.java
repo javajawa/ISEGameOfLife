@@ -238,28 +238,28 @@ public class LoansGroup extends AbstractGroupAgent {
         if(!inNeed.containsKey(this.getId()))
         {
             //DEBUGGING ONLY
-            System.out.println("------------------");
-            System.out.println(this.getDataModel().getName());
-            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
-            for (String s: loansTaken.keySet())
-            {
-                System.out.println("I owe "+getConn().getGroupById(s).getName());
-                for(Tuple<Double, Double> t: loansTaken.get(s))
-                {
-                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
-                }
-            }
-            System.out.println("*********************");
-            System.out.println("I have " + loansGiven.size()+ " debtors!");
-            for (String s: loansGiven.keySet())
-            {
-                System.out.println("I will get:");
-                for(Tuple<Double, Double> t: loansGiven.get(s))
-                {
-                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue()+" from "+getConn().getGroupById(s).getName());
-                }
-             }
+//            System.out.println("------------------");
+//            System.out.println(this.getDataModel().getName());
+//            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
+//            for (String s: loansTaken.keySet())
+//            {
+//                System.out.println("I owe "+getConn().getGroupById(s).getName());
+//                for(Tuple<Double, Double> t: loansTaken.get(s))
+//                {
+//                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
+//                }
+//            }
+//            System.out.println("*********************");
+//            System.out.println("I have " + loansGiven.size()+ " debtors!");
+//            for (String s: loansGiven.keySet())
+//            {
+//                System.out.println("I will get:");
+//                for(Tuple<Double, Double> t: loansGiven.get(s))
+//                {
+//                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue()+" from "+getConn().getGroupById(s).getName());
+//                }
+//             }
             //DEBUGGING ONLY END
             
             if (!loansTaken.isEmpty())
@@ -394,18 +394,12 @@ public class LoansGroup extends AbstractGroupAgent {
     }
 
     @Override
-    protected double decideTaxForReservePool() {
+    protected Tuple<Double, Double> updateTaxedPool(double sharedFood) {
         double currentFoodReserve;        
 
-        if(getDataModel().getReservedFoodHistory().isEmpty())
-        {
-            currentFoodReserve = 0;
-        }
-        else
-        {
-            currentFoodReserve = getDataModel().getCurrentReservedFood();
-        }
-        
+        //TODO: receive payments
+
+        currentFoodReserve = getDataModel().getCurrentReservedFood(); 
         double tax = 0;
 
         //check how close you are to attaining achievement
@@ -421,7 +415,15 @@ public class LoansGroup extends AbstractGroupAgent {
             //tax normally
             tax = getAverageHappiness(0) * (1-goalRatio);
         }
-        return tax;
+
+        //The actual taxation happens here
+        currentFoodReserve = currentFoodReserve + sharedFood*tax;
+        sharedFood = sharedFood - sharedFood*tax;
+        
+        Tuple<Double, Double> newSharedAndReserve = new Tuple<Double,Double>();
+        newSharedAndReserve.add(sharedFood, currentFoodReserve);
+
+        return newSharedAndReserve;
     }
 
     @Override
@@ -467,8 +469,7 @@ public class LoansGroup extends AbstractGroupAgent {
                     existingLoans.add(currentLoanInfo);
                 }
                  //Changes END
-                 
-                 //this.loansTaken.put(giverID.iterator().next(), existingLoans);
+
                  loanRequestsAccepted.remove(this.getId());
                  inNeed.remove(this.getId());
                  interactionResult.add(InteractionResult.LoanTaken, loanRecord.get(giverID.iterator().next()).getKey());
@@ -504,7 +505,6 @@ public class LoansGroup extends AbstractGroupAgent {
                         loanInfo.add(amountNeeded, interestRate);
 
                         //Then store the loan info along with the requester ID in your records
-                        //this.loansGiven.put(groupID, loanInfo);
                         //Changes
                         if (!loansGiven.containsKey(groupID))
                         {

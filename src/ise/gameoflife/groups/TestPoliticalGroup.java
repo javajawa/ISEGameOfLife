@@ -354,8 +354,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     };
 
     @Override
-    protected double decideTaxForReservePool() {
-        return 0;
+    protected Tuple<Double, Double> updateTaxedPool(double sharedFood) {
+        Tuple<Double, Double> newSharedAndReserve = new Tuple<Double,Double>();
+        newSharedAndReserve.add(sharedFood, 0.0);
+        return newSharedAndReserve;
     }
     
     @Override
