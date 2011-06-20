@@ -7,31 +7,39 @@ public class AgentSimulationEvolution
 	extends Evolution<SimulationGenome, LearningAgentSimulation>
 {
 
+	private final float elitistProportion = 0.10f;
+
 	@Override
 	protected LearningAgentSimulation newEntity(SimulationGenome genome)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new LearningAgentSimulation(genome);
 	}
 
 	@Override
 	protected SimulationGenome newGenome()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new SimulationGenome();
 	}
 
 	@Override
 	protected void evaluate(LearningAgentSimulation entity)
 	{
-		// TODO Auto-generated method stub
-
+		// TODO Evaluation of entity
 	}
 
 	@Override
 	protected boolean select(int rank, LearningAgentSimulation entity)
 	{
-		// TODO Auto-generated method stub
+		if (rank <= 1)
+		{
+			System.out.println("Iteration: " + this.currentIteration() +
+					",\tfitness: " + entity.fitness());
+		}
+
+		if (rank <= this.population() * elitistProportion)
+		{
+			return true;
+		}
 		return false;
 	}
 
@@ -40,8 +48,10 @@ public class AgentSimulationEvolution
 	 */
 	public static void main(String[] args)
 	{
-		// TODO Auto-generated method stub
-
+		AgentSimulationEvolution evolution = new AgentSimulationEvolution();
+		evolution.setIterations(1000);
+		evolution.setPopulation(50);
+		evolution.evolve();
 	}
 
 }
