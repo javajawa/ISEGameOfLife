@@ -218,6 +218,16 @@ public class LoansGroup extends AbstractGroupAgent {
         }
     };
     
+    private Comparator< Tuple<Double, Double> > loansComparator = new Comparator< Tuple<Double, Double> >() {
+        @Override
+        public int compare(Tuple<Double, Double> o1, Tuple<Double, Double> o2)
+        {
+            Double v1 = o1.getKey();
+            Double v2 = o2.getKey();
+            return (v1>v2 ? -1 : 1);
+        }
+    };
+
     @Override
     protected Tuple<AgentType, Double> makePayments()
     {   
@@ -227,32 +237,58 @@ public class LoansGroup extends AbstractGroupAgent {
         currentFoodReserve = getDataModel().getCurrentReservedFood();        
         if(!inNeed.containsKey(this.getId()))
         {
+            //DEBUGGING ONLY
             System.out.println("------------------");
             System.out.println(this.getDataModel().getName());
             System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-            if (!loansTaken.isEmpty())
+            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
+            for (String s: loansTaken.keySet())
             {
-                System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
-                for (String s: loansTaken.keySet())
-                {   
-                    System.out.println("I owe "+getConn().getGroupById(s).getName());
-                    for(Tuple<Double, Double> t: loansTaken.get(s))
-                    {
-                        System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
-                    }
+                System.out.println("I owe "+getConn().getGroupById(s).getName());
+                for(Tuple<Double, Double> t: loansTaken.get(s))
+                {
+                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
                 }
             }
-                System.out.println("*********************");
-            if (!loansGiven.isEmpty())
+            System.out.println("*********************");
+            System.out.println("I have " + loansGiven.size()+ " debtors!");
+            for (String s: loansGiven.keySet())
             {
-                System.out.println("I have " + loansGiven.size()+ " debtors!");
-                for (String s: loansGiven.keySet())
+                System.out.println("I will get:");
+                for(Tuple<Double, Double> t: loansGiven.get(s))
                 {
-                    System.out.println("I will get:");
-                    for(Tuple<Double, Double> t: loansGiven.get(s))
+                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue()+" from "+getConn().getGroupById(s).getName());
+                }
+             }
+            //DEBUGGING ONLY END
+            
+            if (!loansTaken.isEmpty())
+            {
+                for (String creditor: loansTaken.keySet())
+                {
+                    //Find the loans taken from this creditor and sort the in descending order
+                    Collections.sort(loansTaken.get(creditor), loansComparator);
+                    //Iterate through the loans from this creditor
+                    List<Tuple<Double, Double> > loanInfoList = loansTaken.get(creditor);
+                    Iterator<Tuple<Double, Double> > i = loanInfoList.iterator();
+                    
+                    while(i.hasNext())
                     {
-                        System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue()+" from "+getConn().getGroupById(s).getName());
+                        Tuple<Double, Double> loanInfo = i.next();
+                        
+                        //Calculate the amount to pay (amount *(1+ interest))
+                        double amountToPay = loanInfo.getKey()* (1+loanInfo.getValue());
+                        //If the group has the money then it pays
+                        if (currentFoodReserve > amountToPay)
+                        {
+                            System.out.println("I repaid "+getConn().getGroupById(creditor).getName()+ " for the loan of "+loanInfo.getKey());
+                            currentFoodReserve -= amountToPay;
+                            //We remove this loan from  since it is paid
+                            i.remove();
+                        }
                     }
+                    //If that was the only loan taken from this creditor then remove the creditor form the list
+                    if (loansTaken.get(creditor).isEmpty()) loansTaken.remove(creditor);
                 }
             }
 
