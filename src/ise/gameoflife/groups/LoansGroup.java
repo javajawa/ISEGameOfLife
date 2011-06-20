@@ -10,6 +10,7 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +44,9 @@ public class LoansGroup extends AbstractGroupAgent {
     private final double greediness = new Random().nextDouble();
     private Map<String, List<Tuple<Double, Double> > > loansGiven = new HashMap<String, List<Tuple<Double, Double> > >();
     private Map<String, List<Tuple<Double, Double> > > loansTaken = new HashMap<String, List<Tuple<Double, Double> > >();
-   
+
+    private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansGiven = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
+
     @Deprecated
     public LoansGroup() {
     	super();
@@ -362,7 +365,7 @@ public class LoansGroup extends AbstractGroupAgent {
             
             //Spend money       
             if(strategy != null)
-            {   System.out.println(strategy);System.out.println(strategy);System.out.println(strategy);
+            {  
                 currentFoodReserve -= priceToPlay;//pay, in theory, to join the game among groups
                 if(currentFoodReserve < priceToPlay)//if the theory is way to risky
                 {
@@ -592,7 +595,6 @@ public class LoansGroup extends AbstractGroupAgent {
                  HashMap<String, Tuple<Double, Double> > loanRecord = loanRequestsAccepted.get(this.getId());
                  Set<String> giverID = loanRecord.keySet();
 
-                 //Changes
                  Tuple<Double, Double> currentLoanInfo = loanRecord.get(giverID.iterator().next());
                  if (!loansTaken.containsKey(giverID.iterator().next()))
                  {
@@ -605,7 +607,6 @@ public class LoansGroup extends AbstractGroupAgent {
                     List<Tuple<Double, Double> > existingLoans = (List) this.loansTaken.get(giverID.iterator().next());
                     existingLoans.add(currentLoanInfo);
                 }
-                 //Changes END
 
                  loanRequestsAccepted.remove(this.getId());
                  inNeed.remove(this.getId());
@@ -643,7 +644,6 @@ public class LoansGroup extends AbstractGroupAgent {
                         loanInfo.add(amountNeeded, interestRate);
 
                         //Then store the loan info along with the requester ID in your records
-                        //Changes
                         if (!loansGiven.containsKey(groupID))
                         {
                             List<Tuple<Double, Double> > existingLoans = new ArrayList<Tuple<Double, Double> >();
@@ -655,8 +655,9 @@ public class LoansGroup extends AbstractGroupAgent {
                             List<Tuple<Double, Double> > existingLoans = (List) this.loansGiven.get(groupID);
                             existingLoans.add(loanInfo);
                         }
-                        //Changes END
 
+                        publicLoansGiven.put(this.getId(), loansGiven);
+                        
                         //Use the same structure to send a receipt to the requester to store it in his records
                         HashMap<String, Tuple<Double, Double> > loanRecord = new HashMap<String, Tuple<Double, Double> >();
                         loanRecord.put(this.getId(), loanInfo);
@@ -697,7 +698,15 @@ public class LoansGroup extends AbstractGroupAgent {
                           (Double)sortedArray[i]);
         }
         return sortedMap;
-    }    
+    }
+
+    public static HashMap<String, List<Tuple<Double, Double> > > getLoansGiven(PublicGroupDataModel dm)
+    {
+        if (!publicLoansGiven.containsKey(dm.getId()))
+            return null;
+        else
+            return (HashMap)publicLoansGiven.get(dm.getId());
+    }
     
 }
 

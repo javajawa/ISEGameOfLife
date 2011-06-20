@@ -7,11 +7,13 @@ package ise.gameoflife.plugins;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.groups.LoansGroup;
+import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import javax.swing.BorderFactory;
@@ -55,14 +57,9 @@ public class LoansPlugin extends JPanel implements Plugin
 		GroupPanel(PublicGroupDataModel gm)
 		{
                         this.gm = gm;
-
-                        //String Social = Double.toString(this.gm.getEstimatedSocialLocation());
-                        //String Economic = Double.toString(this.gm.getCurrentEconomicPoisition());
-
                         double happiness = 0;
                         double reserve = 0;
                         double size = this.gm.getMemberList().size();
-                        int loansGiven = 0;
                         
                         reserve = PublicEnvironmentConnection.getInstance().getGroupById(gm.getId()).getCurrentReservedFood();                       
 
@@ -71,13 +68,24 @@ public class LoansPlugin extends JPanel implements Plugin
                             happiness += PublicEnvironmentConnection.getInstance().getAgentById(member).getCurrentHappiness();
                         }
                         happiness = happiness / size;
+                        HashMap<String, List<Tuple<Double, Double> > > loansGivenByThisGroup = LoansGroup.getLoansGiven(gm);
 
                         JPanel dataPanel = new JPanel(new GridLayout(4, 2, 1, -1));
 
                         dataPanel.add(labelise(this.gm.getName(),8));
-			dataPanel.add(labelise("Size: "+ this.gm.getMemberList().size()));
+			dataPanel.add(labelise("Population: "+ this.gm.getMemberList().size()));
 			dataPanel.add(labelise("Average Happiness: "+happiness));
                         dataPanel.add(labelise("Current reserve: "+reserve));
+                        if(loansGivenByThisGroup != null)
+                        {
+                            dataPanel.add(labelise("I gave loans to :"));
+                            for (String debtor: loansGivenByThisGroup.keySet())
+                            {
+                                dataPanel.add(labelise(PublicEnvironmentConnection.getInstance().getGroupById(debtor).getName()));
+                            }
+                            
+                        }
+                        
 
                         this.setLayout(new GridLayout(1,1));
 			this.add(dataPanel);

@@ -9,6 +9,7 @@ import ise.gameoflife.plugins.GroupGraphs;
 import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
 import ise.gameoflife.plugins.HunterListPlugin;
+import ise.gameoflife.plugins.LoansInfo;
 import ise.gameoflife.plugins.LoansPlugin;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
@@ -70,7 +71,7 @@ public class Loans extends GenericSimulation
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
-                addPlugin(new LoansPlugin());
+                addPlugin(new LoansInfo());
 	}
 
 	@Override
