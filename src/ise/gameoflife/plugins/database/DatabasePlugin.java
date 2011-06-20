@@ -27,7 +27,7 @@ public class DatabasePlugin implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
-	private final static String name = "Database Plugin v2.2";
+	private final static String name = "Database Plugin v2.3";
 		
 	@Element
 	private final Boolean remote;
@@ -89,17 +89,19 @@ public class DatabasePlugin implements Plugin
 	    round = ec.getRoundsPassed();
 	    findNewGroups();
 	    findNewAgents();
-	    getGroupRoundData();
+	    pruneOldAgents();
 	    //update FreeAgentsGroup with data
 	    wrap.getFreeAgentGroupData(round,ec.getUngroupedAgents().size());
 	    //disables agent round data collection for remote db, to speed it up
 	    //also updates trust table
 	    if (!remote) getAgentRoundData();
-	    pruneOldAgents();
 	    pruneOldGroups();
+	    getGroupRoundData();
 	    
-	    //writes to db every 25 rounds (or 150 cycles)
-	    if(round%50==0) 
+	    
+	    //writes to db every 50 rounds (or 30 cycles) for local db
+	    //remote only writes at the end
+	    if(round%50==0 && !remote) 
 	    {
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
 		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
@@ -156,7 +158,8 @@ public class DatabasePlugin implements Plugin
 	public void onSimulationComplete()
 	{
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
-		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
+		else logger.log(Level.WARNING,"Writing data to remote database."
+			+ "\n ---= PLEASE DO NOT CLOSE WINDOW (DATABASE UPLOAD IN PROGRESS, WAIT TILL COMPLETE) =---");
 		wrap.flush(round);
 		wrap.end(round);
 	}

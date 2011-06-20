@@ -100,7 +100,7 @@ final class ConnectionWrapper
 		simAdd.close();
 		logger.log(Level.INFO, "Current simulationId = {0}", simulationId);
 		if (!conn.getAutoCommit()) conn.commit();
-		
+		if (remote) logger.log(Level.INFO, "ALL WRITES TO REMOTE DB WILL BE DONE AT END OF SIMULATION");  
 		newAgent.setInt(1, simulationId);
 		dieAgent.setInt(2, simulationId);
 		roundAgent.setInt(1, simulationId);
@@ -146,7 +146,7 @@ final class ConnectionWrapper
 		    endSim.execute();
 		    if (!conn.getAutoCommit()) conn.commit();
 		    conn.close();
-		    logger.log(Level.INFO,"Database connection closed");
+		    logger.log(Level.INFO,"Upload complete. Database connection closed");
 		} catch (SQLException ex) {
 		    logger.log(Level.WARNING, null, ex);
 		}
@@ -221,15 +221,13 @@ final class ConnectionWrapper
 		 roundGroup.setInt(3,groupid);
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
-		 //if (group.getCurrentEconomicPoisition() == null)
-		 //roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
 		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
 		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
 			//     new Object[]{group.getId(), round});
 		 roundGroup.addBatch();
 	    } catch (SQLException ex) {
-		logger.log(Level.WARNING, "{0} (db groupid: {2}) error for round {1}"
-		    + " data not stored.", new Object[]{group.getName(), round, groupid});
+		logger.log(Level.WARNING, "{0} (db groupid: {2}) error for round {1}:{3}"
+		    + " data not stored.", new Object[]{group.getName(), round, groupid, ex});
 	    }
 	}
 
