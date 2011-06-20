@@ -23,6 +23,7 @@ final class ConnectionWrapper
 	private final PreparedStatement newAgent;
 	private final PreparedStatement dieAgent;
 	private final PreparedStatement roundAgent;
+	private final PreparedStatement trustAgent;
 	private final PreparedStatement endAgent;
 	private final PreparedStatement newGroup;
 	private final PreparedStatement dieGroup;
@@ -45,6 +46,7 @@ final class ConnectionWrapper
 		newAgent = conn.prepareStatement(Statements.addAgent.getPrototype());
 		dieAgent = conn.prepareStatement(Statements.dieAgent.getPrototype());
 		roundAgent = conn.prepareStatement(Statements.roundAgent.getPrototype());
+		trustAgent = conn.prepareStatement(Statements.trustAgent.getPrototype());
 		endAgent = conn.prepareStatement(Statements.endAgent.getPrototype());
 		newGroup = conn.prepareStatement(Statements.addGroup.getPrototype());
 		dieGroup = conn.prepareStatement(Statements.dieGroup.getPrototype());
@@ -102,6 +104,7 @@ final class ConnectionWrapper
 		newAgent.setInt(1, simulationId);
 		dieAgent.setInt(2, simulationId);
 		roundAgent.setInt(1, simulationId);
+		trustAgent.setInt(1, simulationId);
 		newGroup.setInt(1, simulationId);
 		dieGroup.setInt(2, simulationId);
 		roundGroup.setInt(1, simulationId);
@@ -123,6 +126,7 @@ final class ConnectionWrapper
 		    dieAgent.executeBatch();
 		    roundGroup.executeBatch();
 		    roundAgent.executeBatch();
+		    trustAgent.executeBatch();
 		    if (!conn.getAutoCommit()) conn.commit();
 		}
 		catch (SQLException ex)
@@ -217,12 +221,15 @@ final class ConnectionWrapper
 		 roundGroup.setInt(3,groupid);
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
+		 //if (group.getCurrentEconomicPoisition() == null)
+		 //roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
 		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
 		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
 			//     new Object[]{group.getId(), round});
 		 roundGroup.addBatch();
 	    } catch (SQLException ex) {
-		logger.log(Level.WARNING, null, ex);
+		logger.log(Level.WARNING, "{0} (db groupid: {2}) error for round {1}"
+		    + " data not stored.", new Object[]{group.getName(), round, groupid});
 	    }
 	}
 
@@ -255,6 +262,21 @@ final class ConnectionWrapper
 	    } catch (NullPointerException ex) {
 		logger.log(Level.WARNING, "Null Exception: Agent {0} data for round {1}"
 			+ " not stored.", new Object[]{agent.getName(), round});
+	    }
+	}
+	
+	void agentTrust(int agentid, int agentid_other, double trust, int round) {
+	    try {
+		//updates trust between agents
+		trustAgent.setInt(1, simId);
+		trustAgent.setInt(2, round);
+		trustAgent.setInt(3,agentid);
+		trustAgent.setInt(4,agentid_other);
+		trustAgent.setDouble(5,trust);
+		trustAgent.addBatch();
+		
+	    } catch (SQLException ex) {
+		logger.log(Level.WARNING, null, ex);
 	    }
 	}
 

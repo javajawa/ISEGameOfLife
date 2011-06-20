@@ -78,7 +78,7 @@ public class DatabasePlugin implements Plugin
 	
 	//contains agentid and groupid that are used to represent participants in the database
 	//HashMap size should same order of magnitude as agents+groups set size for speed
-	private final Map<String,Integer> idMap = new HashMap<String,Integer>(80);
+	private final Map<String,Integer> idMap = new HashMap<String,Integer>(100);
 
 
 	@Override
@@ -87,15 +87,16 @@ public class DatabasePlugin implements Plugin
 	    //data only updated at the beginning of round
 	    if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 	    round = ec.getRoundsPassed();
-	    pruneOldGroups();
 	    findNewGroups();
-	    pruneOldAgents();
 	    findNewAgents();
 	    getGroupRoundData();
+	    //update FreeAgentsGroup with data
 	    wrap.getFreeAgentGroupData(round,ec.getUngroupedAgents().size());
 	    //disables agent round data collection for remote db, to speed it up
-	    //in other words, a hack
+	    //also updates trust table
 	    if (!remote) getAgentRoundData();
+	    pruneOldAgents();
+	    pruneOldGroups();
 	    
 	    //writes to db every 25 rounds (or 150 cycles)
 	    if(round%50==0) 
@@ -243,14 +244,29 @@ public class DatabasePlugin implements Plugin
 	}
 
 	private void getAgentRoundData() 
-	{	    
+	{
 	    for(Map.Entry<String, PublicAgentDataModel> entry : trackedAgents.entrySet())
 		{
-		    //gets the agents groupid and maps it to database id for group
-		    //if agent group is null, the map returns 0 groupid
 		    PublicAgentDataModel agent = entry.getValue();
-		    int groupid = idMap.get(agent.getGroupId());
-		    wrap.agentRound(idMap.get(entry.getKey()), groupid, round, agent);
+		    try {
+			//gets the agents groupid and maps it to database id for group
+			//if agent group is null, the map returns 0 groupid
+			
+			int groupid = idMap.get(agent.getGroupId());
+			int agentid = idMap.get(entry.getKey());
+			wrap.agentRound(agentid, groupid, round, agent);
+			for(Map.Entry<String, PublicAgentDataModel> entry2 : trackedAgents.entrySet()) 
+			{
+			    Double trust = agent.getTrust(entry2.getKey());
+			    if (trust != null) {
+				int agentid_other = idMap.get(entry2.getKey());
+				wrap.agentTrust(agentid, agentid_other, trust, round);
+			    }
+			}
+		    } catch (NullPointerException ex) {
+			logger.log(Level.WARNING, "Null Exception: For agent {0} for round {1}"
+			+ " ", new Object[]{agent.getName(), round});
+		    }
 		}
 	}
 	/*
