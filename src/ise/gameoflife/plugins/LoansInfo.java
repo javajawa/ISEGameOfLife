@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import ise.gameoflife.environment.Environment;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.groups.LoansGroup;
+import ise.gameoflife.models.Tuple;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.BufferedWriter;
@@ -16,9 +18,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -300,18 +304,40 @@ public class LoansInfo extends JPanel implements Plugin {
        
        if (en.getRoundsPassed() == rounds)
        {
-            data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getRoundsPassed() + ':' + en.getCurrentTurnType() + ") ==== "); 
+            data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getRoundsPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
+            data.add("************************************************************************************************************ ");
             for(Map.Entry<String,LoansGroup> entry : p_players.entrySet())
             {
-                data.add("***"+ entry.getValue().getDataModel().getName()+ " Reserved food logs ");
-                data.add("");
                 while (iter.hasNext())
                 {
-                     String id = iter.next();
+                    String id = iter.next();
                     if (p_players.get(id) != null)
                     {
                         name = p_players.get(id).getDataModel().getName();
-                        data.add("   > " + name + " Current reserve: " + p_players.get(id).getDataModel().getCurrentReservedFood());
+                        data.add("============="+name+"================");
+                        data.add("Group population: " + p_players.get(id).getDataModel().getMemberList().size());
+                        data.add("Current reserve: " + p_players.get(id).getDataModel().getCurrentReservedFood());
+                        data.add("----LOAN HISTORY OF THIS GROUP------");
+                        HashMap<String, List<Tuple<Double, Double>>> loansGiven = LoansGroup.getLoansGiven(p_players.get(id).getDataModel());
+                        if (loansGiven!= null)
+                        {
+                            Set<String> debtors = loansGiven.keySet();
+                            for (String deb: debtors)
+                            {
+                                if (PublicEnvironmentConnection.getInstance().getGroupById(deb) == null) break;
+                                data.add("---->Debtor: " + PublicEnvironmentConnection.getInstance().getGroupById(deb).getName()+" has been given: " + loansGiven.get(deb).size()+" loans from this group!");
+                                double amountBorrowed = 0;
+                                for (Tuple<Double, Double> t: loansGiven.get(deb))
+                                {
+                                    amountBorrowed += t.getKey()*(1+t.getValue());
+                                }
+                                data.add("          This bebtor has borrowed: " + amountBorrowed + " units of food");
+                            }
+                        }
+                        else
+                        {
+                            data.add("No loans at the moment!");
+                        }
                     }
                 }
             data.add("        ");
