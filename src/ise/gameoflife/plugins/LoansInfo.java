@@ -318,7 +318,7 @@ public class LoansInfo extends JPanel implements Plugin {
                         data.add("Group population: " + p_players.get(id).getDataModel().getMemberList().size());
                         data.add("Current reserve: " + p_players.get(id).getDataModel().getCurrentReservedFood());
                         data.add("----LOAN HISTORY OF THIS GROUP------");
-                        HashMap<String, List<Tuple<Double, Double>>> loansGiven = LoansGroup.getLoansGiven(p_players.get(id).getDataModel());
+                        Map<String, List<Tuple<Double, Double>>> loansGiven = LoansGroup.getLoansGiven(p_players.get(id).getDataModel());
                         if (loansGiven!= null)
                         {
                             Set<String> debtors = loansGiven.keySet();
