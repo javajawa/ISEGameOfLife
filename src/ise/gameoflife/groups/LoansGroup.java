@@ -534,7 +534,8 @@ public class LoansGroup extends AbstractGroupAgent {
                 if (!loanRequestsAccepted.containsKey(groupID))
                 {
                     double amountNeeded = inNeed.get(groupID);
-                    double interestRate = 0.15;
+                    //intrest = 0.5 of loaner's greediness and requesters situation which is neve above 0.15
+                    double interestRate = 0.05*greediness + (getConn().getGroupById(groupID).getCurrentReservedFood() / achievementThreshold);
                     //TODO: Design a heuristic to decide if group will give a loan
                     //For now give a loan if u have the amount needed
                     if (currentFoodReserve - amountNeeded >  priceToPlay+50)
