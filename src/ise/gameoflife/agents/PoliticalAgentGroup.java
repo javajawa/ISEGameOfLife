@@ -32,7 +32,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import presage.Simulation;
 /**
  *
  * @author The0s
@@ -52,7 +52,7 @@ public class PoliticalAgentGroup extends AbstractAgent
         private final static TreeSet<String> freeToGroup = new TreeSet<String>();
 	private History<Double> satisfaction = new History<Double>(1);
 
-        private static  List<String> special_agents = new LinkedList<String>();
+        public static  List<String> dead_agents = new LinkedList<String>();
         
     Random randomGenerator = new Random();
 
@@ -75,7 +75,9 @@ public class PoliticalAgentGroup extends AbstractAgent
     @Override
     protected void beforeNewRound() {
         if (getConn().getGroupById(this.getId()) == null){
-            //DEACTIVATE
+            //DEACTIVATE list
+            dead_agents.add(this.getId());
+            System.out.println("Agent-Group must be killed : "+ this.getId());
         }
     }
 
@@ -202,10 +204,13 @@ public class PoliticalAgentGroup extends AbstractAgent
                     return suggestedFood;
                 }
             }
-
             //If the agent is not in a group or advisor didn't give a definitive answer then hunt
             //according to type
-            switch (this.getDataModel().getAgentType()) /////THEO ADDED
+                AgentType group_type = AgentType.AC;
+                if (this.getConn().getGroupById(special) != null)
+                    group_type = this.getConn().getGroupById(special).getGroupStrategy();
+
+            switch (group_type) /////THEO ADDED
             {
                     //The choice is always to hunt stags
                     case AC:

@@ -5,6 +5,7 @@ import ise.gameoflife.actions.DistributeFood;
 import ise.gameoflife.actions.GroupOrder;
 import ise.gameoflife.actions.RespondToApplication;
 import ise.gameoflife.actions.VoteResult;
+import ise.gameoflife.agents.PoliticalAgentGroup;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.HuntResult;
@@ -161,7 +162,16 @@ public abstract class AbstractGroupAgent implements Participant
 		if (TurnType.firstTurn.equals(turn))
 		{
 			beforeNewRound();
-			clearRoundData();
+                        
+                        //ADDED THEO
+                        for (String dead_a: PoliticalAgentGroup.dead_agents){
+                            ec.act(new Death(), dead_a, authCode);
+
+                        }
+                        PoliticalAgentGroup.dead_agents.clear();
+			//********
+
+                        clearRoundData();
 		}
 
 		switch (turn)

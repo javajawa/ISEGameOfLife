@@ -38,6 +38,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 	@Override
 	protected void onActivate() {
 		// Do nothing.
+            
 	}
 
 	@Override
@@ -155,6 +156,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             {
                 List<String> newPanel = updatePanel();
                 this.setPanel(newPanel);
+                this.setGroupStrategy(decideGroupStrategy());
+                
             }
 	}
         
