@@ -146,4 +146,26 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		this.fitness = aFitness;
 	}
 
+	protected final void addFood(String name, double nutrition, int huntersRequired)
+	{
+		Food f = new Food(name, nutrition, huntersRequired);
+		this.foods.put(f.getId().toString(), f);
+	}
+
+	protected final void addAgent(AbstractAgent a)
+	{
+		agents.put(a.getId(), a);
+		ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+	}
+
+	protected final void addGroup(Class<? extends AbstractGroupAgent> g)
+	{
+		groups.add(g);
+	}
+
+	protected final void addPlugin(Plugin p)
+	{
+		pm.addPlugin(p);
+	}
+
 }
