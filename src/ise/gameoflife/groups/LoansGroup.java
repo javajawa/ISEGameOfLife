@@ -37,12 +37,14 @@ public class LoansGroup extends AbstractGroupAgent {
     //the amount borrowed and  the interest rate
     private static final double priceToPlay = 100;
     private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
-    private final double greediness = new Random().nextDouble();
-    private Map<String, List<Tuple<Double, Double> > > loansGiven = new HashMap<String, List<Tuple<Double, Double> > >();
-    private Map<String, List<Tuple<Double, Double> > > loansTaken = new HashMap<String, List<Tuple<Double, Double> > >();
     private static Map<String, Double> inNeed = new HashMap<String, Double>();
     private static Map<String, HashMap<String, Tuple<Double, Double> >> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double> >>();
     private static Map<String, List<Tuple<String, Double> > > loanRepayments = new HashMap<String, List<Tuple<String, Double> > >();
+
+    private final double greediness = new Random().nextDouble();
+    private Map<String, List<Tuple<Double, Double> > > loansGiven = new HashMap<String, List<Tuple<Double, Double> > >();
+    private Map<String, List<Tuple<Double, Double> > > loansTaken = new HashMap<String, List<Tuple<Double, Double> > >();
+   
     @Deprecated
     public LoansGroup() {
     	super();
@@ -109,6 +111,11 @@ public class LoansGroup extends AbstractGroupAgent {
         }
 
         theMoneyIsOK(getDataModel().getCurrentReservedFood());
+        if (getDataModel().getMemberList().size() != 1)
+        {
+            List<String> newPanel = updatePanel();
+            this.setPanel(newPanel);
+        }
     }    
 
     @Override
@@ -217,7 +224,96 @@ public class LoansGroup extends AbstractGroupAgent {
             return (v1>v2 ? -1 : 1);
         }
     };
-    
+
+        /**
+    * This method updates the panel for this group. The panel is the set of leaders in this group
+    * The size of the panel depends on the social position of the group. If it is at the very top
+    * it has a single leader (dictator). If it is at the bottom then every member belongs to the panel (anarchism).
+    * @param none
+    * @return The new panel members.
+    */
+    private List<String> updatePanel(){
+
+        double groupSocialPosition;
+        int population, panelSize;
+
+        //STEP 1:Find the size of the panel. It is the proportion of the total population that
+        // can be in the panel. It is calculated using the social position of the group.
+        population = getDataModel().getMemberList().size();
+        groupSocialPosition = getDataModel().getEstimatedSocialLocation();
+
+        //Round to the closest integer
+        panelSize = (int) Math.round(population*groupSocialPosition);
+        if (panelSize == 0) //The group is on the very top of the axis. Dictatorship
+        {
+            //Force panelSize to be at least one (dictator)
+            panelSize = 1;
+        }
+        //STEP 1 END
+
+        //STEP 2: Get the average trust of each agent in the group
+        List< Tuple<String, Double> > panelCandidates = new LinkedList< Tuple<String, Double> >();
+
+        List<String> groupMembers = getDataModel().getMemberList();
+
+        for (String candidate: groupMembers )
+        {
+            double sum = 0;
+            int numKnownTrustValues = 0;
+            for (String member: groupMembers )
+            {
+                if ((getConn().getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
+                {
+                    sum += getConn().getAgentById(member).getTrust(candidate);
+                    numKnownTrustValues++;
+                }
+            }
+
+            Tuple<String, Double> tuple;
+            if (numKnownTrustValues != 0)
+            {
+                tuple = new Tuple<String, Double>(candidate, sum/numKnownTrustValues);
+                panelCandidates.add(tuple);
+            }
+        }
+        //STEP 2 END
+
+        //STEP 3: Sort the agents in descending order of trust values
+        Collections.sort(panelCandidates, d);
+        //STEP 3 END
+
+        //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
+        //Note that eventhough an agent is a candidate its trust must be above a threshold to become member of the panel.
+        //The threshold is the social position. If the group is highly authoritarian then anyone with a trust value
+        //above zero can become a leader. In libertarian groups panel formations are rare since a relatively high trust value
+        //must be achieved! Also the threshold acts as a warning for current panel members. If their trust falls
+        //below this threshold due to bad decisions they will be ousted in the next round.
+        List<String> newPanel = new LinkedList<String>();
+        if (!panelCandidates.isEmpty()&&(panelCandidates.size() >= panelSize))//Panel is not empty and we have enough candidates to select leaders
+        {
+            for (int i = 0; i < panelSize; i++)
+            {
+                if (panelCandidates.get(i).getValue() >= groupSocialPosition)
+                {
+                    newPanel.add(panelCandidates.get(i).getKey());
+                }
+            }
+        }
+        //STEP 4 END
+
+        return newPanel;
+    }
+
+    private Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
+        @Override
+        public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
+        {
+            Double v1 = o1.getValue();
+            Double v2 = o2.getValue();
+            return (v1>v2 ? -1 : 1);
+        }
+    };
+
     private Comparator< Tuple<Double, Double> > loansComparator = new Comparator< Tuple<Double, Double> >() {
         @Override
         public int compare(Tuple<Double, Double> o1, Tuple<Double, Double> o2)
@@ -238,18 +334,18 @@ public class LoansGroup extends AbstractGroupAgent {
         if(!inNeed.containsKey(this.getId()))
         {
             //DEBUGGING ONLY
-            System.out.println("------------------");
-            System.out.println(this.getDataModel().getName());
-            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
-            for (String s: loansTaken.keySet())
-            {
-                System.out.println("I owe "+getConn().getGroupById(s).getName());
-                for(Tuple<Double, Double> t: loansTaken.get(s))
-                {
-                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
-                }
-            }
+//            System.out.println("------------------");
+//            System.out.println(this.getDataModel().getName());
+//            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
+//            for (String s: loansTaken.keySet())
+//            {
+//                System.out.println("I owe "+getConn().getGroupById(s).getName());
+//                for(Tuple<Double, Double> t: loansTaken.get(s))
+//                {
+//                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
+//                }
+//            }
 //            System.out.println("*********************");
 //            System.out.println("I have " + loansGiven.size()+ " debtors!");
 //            for (String s: loansGiven.keySet())
@@ -263,6 +359,25 @@ public class LoansGroup extends AbstractGroupAgent {
 //             }
             //DEBUGGING ONLY END
             
+            //Spend money       
+            if(strategy != null)
+            {   System.out.println(strategy);System.out.println(strategy);System.out.println(strategy);
+                currentFoodReserve -= priceToPlay;//pay, in theory, to join the game among groups
+                if(currentFoodReserve < priceToPlay)//if the theory is way to risky
+                {
+                    currentFoodReserve += priceToPlay;//go back
+                    strategy = null;//and sit this turn out
+                }
+            }
+
+            if ( this.greediness > new Random().nextDouble() )
+            {
+                double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
+                double percentDecrease;
+                percentDecrease = ( (1-getAverageHappiness(0)) * goalRatio) * currentFoodReserve;
+                currentFoodReserve -= percentDecrease;
+            }
+
             if (!loansTaken.isEmpty())
             {
                 for (String creditor: loansTaken.keySet())
@@ -273,11 +388,11 @@ public class LoansGroup extends AbstractGroupAgent {
                     //Iterate through the loans from this creditor
                     List<Tuple<Double, Double> > loanInfoList = loansTaken.get(creditor);
                     Iterator<Tuple<Double, Double> > i = loanInfoList.iterator();
-                    
+
                     while(i.hasNext())
                     {
                         Tuple<Double, Double> loanInfo = i.next();
-                        
+
                         //Calculate the amount to pay (amount *(1+ interest))
                         double amountToPay = loanInfo.getKey()* (1+loanInfo.getValue());
                         //If the group has the money then it pays
@@ -307,28 +422,10 @@ public class LoansGroup extends AbstractGroupAgent {
                             List<Tuple<String, Double> > existingPayments = (List) loanRepayments.get(creditor);
                             existingPayments.add(paymentReceipt);
                         }
-                    } 
+                    }
                 }
             }
-            System.out.println("After repayment: "+currentFoodReserve);
-            //Spend money       
-            if(strategy != null)
-            {
-                currentFoodReserve -= priceToPlay;//pay, in theory, to join the game among groups
-                if(currentFoodReserve < priceToPlay)//if the theory is way to risky
-                {
-                    currentFoodReserve += priceToPlay;//go back
-                    strategy = null;//and sit this turn out
-                }
-            }
-
-            if ( this.greediness > new Random().nextDouble() )
-            {
-                double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
-                double percentDecrease;
-                percentDecrease = ( (1-getAverageHappiness(0)) * goalRatio) * currentFoodReserve;
-                currentFoodReserve -= percentDecrease;
-            }
+            //System.out.println("After repayment: "+currentFoodReserve);
         }
         else
         {
