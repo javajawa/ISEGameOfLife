@@ -317,10 +317,13 @@ public class LoansInfo extends JPanel implements Plugin {
                     if (p_players.get(id) != null)
                     {
                         name = p_players.get(id).getDataModel().getName();
-                        data.add("============="+name+"================");
+                        data.add("==============================="+name+"===============================");
                         data.add("Group population: " + p_players.get(id).getDataModel().getMemberList().size());
                         data.add("Current reserve: " + p_players.get(id).getDataModel().getCurrentReservedFood());
-                        data.add("----LOAN HISTORY OF THIS GROUP------");
+                        data.add("++++++LOAN HISTORY OF THIS GROUP++++++");
+
+                        //Display debtors / loans given
+                        data.add("Debtors History-------------------------------");
                         Map<String, List<Tuple<Double, Double>>> loansGiven = LoansGroup.getLoansGiven(p_players.get(id).getDataModel());
                         if (loansGiven!= null)
                         {
@@ -334,12 +337,35 @@ public class LoansInfo extends JPanel implements Plugin {
                                 {
                                     amountBorrowed += t.getKey()*(1+t.getValue());
                                 }
-                                data.add("          This debtor has borrowed: " + amountBorrowed + " units of food");
+                                data.add("          This debtor has borrowed " + amountBorrowed + " units of food");
                             }
                         }
                         else
                         {
-                            data.add("No loans at the moment!");
+                            data.add("No loans given at the moment!");
+                        }
+                        
+                        data.add("Creditors History-------------------------------");
+                        //Display debtors / loans given
+                        Map<String, List<Tuple<Double, Double>>> loansTaken = LoansGroup.getLoansTaken(p_players.get(id).getDataModel());
+                        if (loansTaken!= null)
+                        { 
+                            Set<String> creditors = loansTaken.keySet();
+                            for (String cred: creditors)
+                            {
+                                if (PublicEnvironmentConnection.getInstance().getGroupById(cred) == null) break;
+                                data.add("---->Creditor: " + PublicEnvironmentConnection.getInstance().getGroupById(cred).getName()+" has given this group: " + loansTaken.get(cred).size()+" loans!");
+                                double amountBorrowed = 0;
+                                for (Tuple<Double, Double> t: loansTaken.get(cred))
+                                {
+                                    amountBorrowed += t.getKey()*(1+t.getValue());
+                                }
+                                data.add("          This group has been given " + amountBorrowed + " units of food from this creditor");
+                            }
+                        }
+                        else
+                        {
+                            data.add("No loans taken at the moment!");
                         }
                     }
                 }

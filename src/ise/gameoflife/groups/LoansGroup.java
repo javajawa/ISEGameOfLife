@@ -7,6 +7,7 @@ package ise.gameoflife.groups;
 
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.models.History;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
@@ -44,8 +45,10 @@ public class LoansGroup extends AbstractGroupAgent {
     private final double greediness = new Random().nextDouble();
     private Map<String, List<Tuple<Double, Double> > > loansGiven = new HashMap<String, List<Tuple<Double, Double> > >();
     private Map<String, List<Tuple<Double, Double> > > loansTaken = new HashMap<String, List<Tuple<Double, Double> > >();
+    private Map<String, List<Tuple<Double, Double> > > loansTakenHist = new HashMap<String, List<Tuple<Double, Double> > >();
 
     private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansGiven = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
+    private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansTaken = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
 
     @Deprecated
     public LoansGroup() {
@@ -521,9 +524,9 @@ public class LoansGroup extends AbstractGroupAgent {
         double tax = 0;
 
         //FOR DEBUGGING ONLY
-        System.out.println("------------------");
-        System.out.println(this.getDataModel().getName());
-        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//        System.out.println("------------------");
+//        System.out.println(this.getDataModel().getName());
+//        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
         //FOR DEBUGGING ONLY END
         
         //If this groups has any debtors must check if any of them has paid back
@@ -574,9 +577,9 @@ public class LoansGroup extends AbstractGroupAgent {
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
         
         //FOR DEBUGGING ONLY
-        System.out.println("------------------");
-        System.out.println(this.getDataModel().getName());
-        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//        System.out.println("------------------");
+//        System.out.println(this.getDataModel().getName());
+//        System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
         //FOR DEBUGGING ONLY END
 
         //First check if you are in need
@@ -603,11 +606,25 @@ public class LoansGroup extends AbstractGroupAgent {
                      existingLoans.add(currentLoanInfo);
                      this.loansTaken.put(giverID.iterator().next(), existingLoans);
                  }
-                else
-                {
+                 else
+                 {
                     List<Tuple<Double, Double> > existingLoans = this.loansTaken.get(giverID.iterator().next());
                     existingLoans.add(currentLoanInfo);
-                }
+                 }
+
+                 if (!loansTakenHist.containsKey(giverID.iterator().next()))
+                 {
+                     List<Tuple<Double, Double> > existingLoans = new ArrayList<Tuple<Double, Double> >();
+                     existingLoans.add(currentLoanInfo);
+                     this.loansTakenHist.put(giverID.iterator().next(), existingLoans);
+                 }
+                 else
+                 {
+                    List<Tuple<Double, Double> > existingLoans = this.loansTakenHist.get(giverID.iterator().next());
+                    existingLoans.add(currentLoanInfo);
+                 }
+
+                 publicLoansTaken.put(this.getId(), loansTakenHist);
 
                  loanRequestsAccepted.remove(this.getId());
                  inNeed.remove(this.getId());
@@ -636,7 +653,7 @@ public class LoansGroup extends AbstractGroupAgent {
                     double amountNeeded = inNeed.get(groupID);
                     //intrest = 0.5 of loaner's greediness and requesters situation which is neve above 0.15
                     double interestRate = 0.05*greediness + (getConn().getGroupById(groupID).getCurrentReservedFood() / achievementThreshold);
-                    //TODO: Design a heuristic to decide if group will give a loan
+
                     //For now give a loan if u have the amount needed
                     if (currentFoodReserve - amountNeeded >  priceToPlay+50)
                     {
@@ -710,6 +727,18 @@ public class LoansGroup extends AbstractGroupAgent {
         else
         {
             return publicLoansGiven.get(dm.getId());
+        }
+    }
+
+    public static Map<String, List<Tuple<Double, Double> > > getLoansTaken(PublicGroupDataModel dm)
+    {
+        if (!publicLoansTaken.containsKey(dm.getId()))
+        {
+            return null;
+        }
+        else
+        {
+            return publicLoansTaken.get(dm.getId());
         }
     }
     
