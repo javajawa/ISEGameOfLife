@@ -51,6 +51,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         //private TreeMap<String, AbstractAgent> p_players = new TreeMap<String, AbstractAgent>();
         private TreeMap<String, AbstractAgent> p_players = new TreeMap<String, AbstractAgent>();
 
+        private TreeMap<String, AbstractAgent> agent_groups = new TreeMap<String, AbstractAgent>();
+
         double correction = 1; //scale the agents
         int shift = 5; //shift axes
         
@@ -141,10 +143,21 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 // Add any new agents
                 while(iter.hasNext())
                 {
+
                         String id = iter.next();
                         if(!p_players.containsKey(id))
                         {
-                                p_players.put(id, (AbstractAgent) sim.getPlayer(id));
+                                boolean check = false;
+                                for(String group_agent :  PublicEnvironmentConnection.getInstance().availableGroups())
+                                {
+                                        //if(!PublicEnvironmentConnection.getInstance().getAgentById(id).getName().equals(group_agent))
+                                                //check = true;
+                                }
+                                if (!check)
+                                    p_players.put(id, (AbstractAgent) sim.getPlayer(id));
+                                else
+                                    agent_groups.put(id, (AbstractAgent) sim.getPlayer(id));
+
                         }
 
 
@@ -202,12 +215,35 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
            
                drawGroupLines(g);
                drawLeaders(g);
+               drawAgentGroups(g);
 
             }
             catch (Exception e)
                 {
                         System.out.println("Error in mapping: " + e.getMessage());
                 }
+        }
+
+       /**
+        * Draws a rectangle representing an group-agent's political views location and lines representing the groups
+        * @param g Graphics objects
+        */
+        private void drawAgentGroups(Graphics g){
+//            try{
+//                for(Map.Entry<String, AbstractAgent> entry1 : agent_groups.entrySet())
+//                {
+//                        PublicAgentDataModel agent1_dm = entry1.getValue().getDataModel();
+//                        //drawLeader
+//                        float hue = getGroupColour(agent1_dm.getGroupId());
+//                        g.setColor(Color.getHSBColor( hue, 1, 1));
+//                        if (agent_groups.get(agent1_dm.getId()) != null)
+//                        drawRect(g, agent_groups.get(agent1_dm.getId()),3);
+//                }
+//             }
+//             catch (Exception e)
+//                    {
+//                            System.out.println("Error in leaders: " + e.getMessage());
+//                    }
         }
 
         /**

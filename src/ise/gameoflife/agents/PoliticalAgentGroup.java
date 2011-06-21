@@ -121,7 +121,7 @@ public class PoliticalAgentGroup extends AbstractAgent
 
         if(getConn().getAgentById(this.getId()).getGroupId() == null)
         {
-            System.out.println("Special agent needs special treetment: "+TestPoliticalAgent.special );
+            System.out.println("Agent-Group [ "+ this.getDataModel().getName() +  " ]enters Special Group: " + TestPoliticalAgent.special );
             return TestPoliticalAgent.special;
         }
         else return null;
