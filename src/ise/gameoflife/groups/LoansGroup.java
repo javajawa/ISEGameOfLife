@@ -338,18 +338,18 @@ public class LoansGroup extends AbstractGroupAgent {
         if(!inNeed.containsKey(this.getId()))
         {
             //DEBUGGING ONLY
-            System.out.println("------------------");
-            System.out.println(this.getDataModel().getName());
-            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
-            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
-            for (String s: loansTaken.keySet())
-            {
-                System.out.println("I owe "+getConn().getGroupById(s).getName());
-                for(Tuple<Double, Double> t: loansTaken.get(s))
-                {
-                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
-                }
-            }
+//            System.out.println("------------------");
+//            System.out.println(this.getDataModel().getName());
+//            System.out.println("Current reserved food: "+this.getDataModel().getCurrentReservedFood());
+//            System.out.println("I have " + loansTaken.size()+ " outstanding payments!");
+//            for (String s: loansTaken.keySet())
+//            {
+//                System.out.println("I owe "+getConn().getGroupById(s).getName());
+//                for(Tuple<Double, Double> t: loansTaken.get(s))
+//                {
+//                    System.out.println("    "+t.getKey()+ " units of food with interest rate "+t.getValue());
+//                }
+//            }
 //            System.out.println("*********************");
 //            System.out.println("I have " + loansGiven.size()+ " debtors!");
 //            for (String s: loansGiven.keySet())
@@ -386,6 +386,7 @@ public class LoansGroup extends AbstractGroupAgent {
             {
                 for (String creditor: loansTaken.keySet())
                 {
+                    if (getConn().getGroupById(creditor) == null) { loansTaken.remove(creditor); break;}
                     double totalAmountPaid = 0;
                     //Find the loans taken from this creditor and sort the in descending order
                     Collections.sort(loansTaken.get(creditor), loansComparator);
@@ -703,9 +704,13 @@ public class LoansGroup extends AbstractGroupAgent {
     public static Map<String, List<Tuple<Double, Double> > > getLoansGiven(PublicGroupDataModel dm)
     {
         if (!publicLoansGiven.containsKey(dm.getId()))
+        {
             return null;
+        }
         else
+        {
             return publicLoansGiven.get(dm.getId());
+        }
     }
     
 }

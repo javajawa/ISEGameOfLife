@@ -11,6 +11,7 @@ import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.groups.LoansGroup;
 import ise.gameoflife.models.Tuple;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.BufferedWriter;
@@ -18,6 +19,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -359,6 +362,38 @@ public class LoansInfo extends JPanel implements Plugin {
    @Override
    public void onSimulationComplete()
    {
+       data.add("==========================SUMMARY==========================");
+       data.add("Groups final score (food reserve)");
+       data.add("------------------------------------------------");
+       data.add("Group Name | Current reserve | Loans given " );
+       SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("group");
+       Iterator<String> iter = active_agent_ids.iterator();
+       PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
+       while(iter.hasNext())
+       {
+            String groupID = iter.next();
+            PublicGroupDataModel dm = ec.getGroupById(groupID);
+            Map<String, List<Tuple<Double, Double> > > loansGiven = LoansGroup.getLoansGiven(dm);
+            double totalAmountGiven = 0;
+            if (loansGiven == null)
+            {
+                data.add(dm.getName()+"   | "+dm.getCurrentReservedFood()+"   | "+0.0);
+            }
+            else
+            {
+                for (String debtors: loansGiven.keySet())
+                {
+                    if (ec.getGroupById(debtors) == null) break;
+                    double amountBorrowed = 0;
+                    for (Tuple<Double, Double> t: loansGiven.get(debtors))
+                    {
+                        amountBorrowed += t.getKey()*(1+t.getValue());
+                    }
+                    totalAmountGiven += amountBorrowed;
+                }
+               data.add(dm.getName()+"   | "+dm.getCurrentReservedFood()+"   | "+totalAmountGiven );
+            }
+       }
    }
 
      private void updateLoanPlayers(SortedSet<String> active_agent_ids, Iterator<String> itera)
