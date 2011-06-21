@@ -34,19 +34,29 @@ import java.util.Set;
 public class LoansGroup extends AbstractGroupAgent {
     private static final long serialVersionUID = 1L;
 
-
+    //The fee a group must pay to play the game
     private static final double priceToPlay = 100;
+    //This constant defines the maximum score a group can attain during this simulation
     private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
-    
+
+    //The greediness level of this group
+    private final double greediness = new Random().nextDouble();
+
+    //This structure stores the ids of the groups that are currently in need and the amount they request
     private static Map<String, Double> inNeed = new HashMap<String, Double>();
+
+    //Stores all the requests that have been accepted
     private static Map<String, HashMap<String, Tuple<Double, Double> >> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double> >>();
+    
+    //The elements of this structure is a signal to a group that someone has repaid for the loan
     private static Map<String, List<Tuple<String, Double> > > loanRepayments = new HashMap<String, List<Tuple<String, Double> > >();
 
-    private final double greediness = new Random().nextDouble();
+    //The following structures store the loans given and taken by this group along with the information for that loan
     private Map<String, List<Tuple<Double, Double> > > loansGiven = new HashMap<String, List<Tuple<Double, Double> > >();
     private Map<String, List<Tuple<Double, Double> > > loansTaken = new HashMap<String, List<Tuple<Double, Double> > >();
     private Map<String, List<Tuple<Double, Double> > > loansTakenHist = new HashMap<String, List<Tuple<Double, Double> > >();
 
+    //This structures provide public access to some information about this group
     private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansGiven = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
     private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansTaken = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
     private static Map<String, Double> publicGreediness = new HashMap<String, Double>();
@@ -98,7 +108,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
     @Override
     protected void onMemberLeave(String playerID, Reasons reason) {
-        //TODO: Reuse code from TestPoliticalGroup but it doesn't really matter because we don't care about politics
+        //Do nothing
     }
     
     @Override
@@ -118,15 +128,21 @@ public class LoansGroup extends AbstractGroupAgent {
             }
         }
 
+        //Here we check the economic status of a group
         theMoneyIsOK(getDataModel().getCurrentReservedFood());
+
+        //We update the group panel
         if (getDataModel().getMemberList().size() != 1)
         {
             List<String> newPanel = updatePanel();
             this.setPanel(newPanel);
         }
-        this.publicGreediness.put(this.getId(), greediness);
+
+        //We update the group's greediness. For now it is constant
+        publicGreediness.put(this.getId(), greediness);
     }    
 
+    
     @Override
     protected AgentType decideGroupStrategy() {
         //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
@@ -333,19 +349,28 @@ public class LoansGroup extends AbstractGroupAgent {
         }
     };
 
+    /**
+    * This method allows a group to spend money for either playing the game or for public service.
+    * The group can also repay some of its loans in this function
+    * @param none
+    * @return The new strategy (if they don't have money to play the sit out) and the new reserve after payments.
+    */
     @Override
     protected Tuple<AgentType, Double> makePayments()
     {   
         double currentFoodReserve;
         AgentType strategy = getDataModel().getGroupStrategy();
         
-        currentFoodReserve = getDataModel().getCurrentReservedFood();        
+        currentFoodReserve = getDataModel().getCurrentReservedFood();
+
+        //Check if the group is in need. If it doesn't then proceed with the payments
         if(!inNeed.containsKey(this.getId()))
         {   
-            //Spend money       
+            //Spend money for playing the game. The standard fee is defined in the data members
             if(strategy != null)
-            {  
-                currentFoodReserve -= priceToPlay;//pay, in theory, to join the game among groups
+            {
+                //pay, in theory, to join the game among groups
+                currentFoodReserve -= priceToPlay;
                 if(currentFoodReserve < priceToPlay)//if the theory is way to risky
                 {
                     currentFoodReserve += priceToPlay;//go back
@@ -353,14 +378,18 @@ public class LoansGroup extends AbstractGroupAgent {
                 }
             }
 
+            //Check you greediness against a random value. If your greediness is above that value spend.
+            //Groups with higher greediness value have higher chances of spending money
             if ( this.greediness > new Random().nextDouble() )
             {
-                double goalRatio = currentFoodReserve / achievementThreshold;//check how close you are to attaining achievement
+                //check how close you are to attaining achievement
+                double goalRatio = currentFoodReserve / achievementThreshold;
                 double percentDecrease;
                 percentDecrease = ( (1-getAverageHappiness(0)) * goalRatio) * currentFoodReserve;
                 currentFoodReserve -= percentDecrease;
             }
 
+            //After paying for the game and for public service check if you can repay any of the loans (if there are any)
             if (!loansTaken.isEmpty())
             {
                 //Set<String> creditorsSet = loansTaken.keySet();
@@ -375,24 +404,25 @@ public class LoansGroup extends AbstractGroupAgent {
                     //Iterate through the loans from this creditor
                     List<Tuple<Double, Double> > loanInfoList = loansTaken.get(creditorID);
                     Iterator<Tuple<Double, Double> > i = loanInfoList.iterator();
-
                     while(i.hasNext())
                     {
                         Tuple<Double, Double> loanInfo = i.next();
-
                         //Calculate the amount to pay (amount *(1+ interest))
                         double amountToPay = loanInfo.getKey()* (1+loanInfo.getValue());
                         //If the group has the money then it pays
                         if (currentFoodReserve > amountToPay + priceToPlay)
                         {
                             currentFoodReserve -= amountToPay;
-                            //We remove this loan from  since it is paid
+                            //We remove this loan since it is paid
                             i.remove();
                             totalAmountPaid += amountToPay;
                         }
                     }
-                    //If that was the only loan taken from this creditor then remove the creditor form the list
+                    //If that was the only (or the only non repaid) loan taken from this creditor then remove the creditor form the list
                     if (loansTaken.get(creditorID).isEmpty()) creditors.remove();
+
+                    //If the group has repaid any of the loans prepare a ticket and send it to the creditor
+                    //in order to process the payment. The ticket contains the id of the debtor and the loan information
                     if (totalAmountPaid != 0)
                     {
                         Tuple<String, Double> paymentReceipt = new Tuple<String, Double>();
@@ -418,10 +448,17 @@ public class LoansGroup extends AbstractGroupAgent {
         }
         return new Tuple<AgentType, Double>(strategy, currentFoodReserve);            
     }
-    
+
+    /**
+    * This method checks if the economic status of the group is good or bad.
+    * It is good if they have money to last at least another round and their reserve increases
+    * If the group is in trouble a loan is requested based on its needs.
+    * @param The current reserve
+    * @return Is the group in need?
+    */
     private boolean theMoneyIsOK(double mostRecentReserve)
     {
-        //is the reserve increasing or decreasing        
+        //is the reserve increasing or decreasing?
         double deltaFoodReserve;
         if (getDataModel().getReservedFoodHistory().size() > 1)
         {
@@ -435,6 +472,9 @@ public class LoansGroup extends AbstractGroupAgent {
         //check how close the group is to attaining achievement
         double goalRatio = mostRecentReserve / achievementThreshold;        
 
+        //If the group is already in the set of groups in need do nothing.
+        //Otherwise check for a sufficient amount of food and an incresing trend in their reserve
+        //If both conditions are not met declare this group as "a group in need"
         if(!inNeed.containsKey(this.getId()))
         {            
             if((goalRatio < 0.15)&&(deltaFoodReserve<0))
@@ -455,7 +495,12 @@ public class LoansGroup extends AbstractGroupAgent {
             return false;
         }
     }
-    
+
+    /**
+    * This method computes the average happiness for this group for a specific turn
+    * @param The number of turns ago
+    * @return The average happiness of the group at that time
+    */
     private double getAverageHappiness(int turnsAgo)
     {
         double average = 0;
@@ -494,6 +539,15 @@ public class LoansGroup extends AbstractGroupAgent {
         return average;
     }
 
+    /**
+    * After the group members return from hunting we gather the shared food. Then depending on
+    * the financial status of the group we decide the tax rate. We intercept the taxed amount and store
+    * it in the reserved food pool. The rest is distributed to the members.
+    * Before deciding the tax rate we must update the reserve if the group has received a payment from one of its
+    * debtors.
+    * @param The shared food for this round
+    * @return The new updated shared food and reserve
+    */
     @Override
     protected Tuple<Double, Double> updateTaxedPool(double sharedFood) {
         double currentFoodReserve; 
@@ -511,6 +565,7 @@ public class LoansGroup extends AbstractGroupAgent {
             {
                 Tuple<String, Double> currentPayment = i.next();
                 double amountReceived = currentPayment.getValue();
+                //Update the reserve
                 currentFoodReserve += amountReceived;
             }
             loanRepayments.remove(this.getId());
@@ -540,6 +595,13 @@ public class LoansGroup extends AbstractGroupAgent {
         return newSharedAndReserve;
     }
 
+    /**
+    * This method allows this group to interact with other groups. If it is in need, it can check
+    * if any of its loan request has been accepted. If the group is not in trouble it can check if there
+    * is any group which needs help. If it has enough money it can give them money (food). 
+    * @param none
+    * @return The interaction result and the new updated reserve (if they gave any loans)
+    */
     @Override
     protected Tuple<InteractionResult, Double> interactWithOtherGroups() {
 
@@ -587,6 +649,7 @@ public class LoansGroup extends AbstractGroupAgent {
                     existingLoans.add(currentLoanInfo);
                  }
 
+                 //Add this loan in the loans taken structure which is publicly accessible
                  publicLoansTaken.put(this.getId(), loansTakenHist);
 
                  loanRequestsAccepted.remove(this.getId());
