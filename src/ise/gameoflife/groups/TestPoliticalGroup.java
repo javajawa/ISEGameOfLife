@@ -247,6 +247,13 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             }
 	};
 
+    /**
+    * A political group can play the stag hunt game with another group. The panel must make a decision regarding
+    * their strategy. Important considerations for the decision is the social belief and the preferred strategy of
+    * the group and the panel.
+    * @param none
+    * @return The group's chosen strategy
+    */
     @Override
     protected AgentType decideGroupStrategy() {
         //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
@@ -289,7 +296,12 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         //quotum is very high (bottom of y axis - anarchism)
         return null;
     }
-
+    
+    /**
+    * This is a helper method which returns preferred startegies of a set of agents in descending order
+    * @param The set of agents
+    * @return A list of preferred startegies in descending order
+    */
     private List<Tuple<AgentType, Double>> getStrategyPreferences(List<String> agents) {
         
         int population = agents.size();
