@@ -443,7 +443,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                     chosenGroup = getConn().createGroup(gtype, myGroup, invitee);
 
-                    //ADDED THEO
+                    //****** ADDED THEO
                     //GROUP INTO AGENTS
                     special_no++;
                     //Create special group

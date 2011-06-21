@@ -345,25 +345,24 @@ public class PoliticalAgentGroup extends AbstractAgent
     protected double updateHappinessAfterHunt(double foodHunted,
                                     double foodReceived)
     {
-//        //NOTE: Free agents can update their happiness but not their loyalty (see next method)
-//
-//            //'entitelment' denotes the amount of food an agent wants to get, at the least
-//            double entitlement = getDataModel().getEconomicBelief() * foodHunted;
-//            double surplus = foodReceived - entitlement;
-//            Double currentHappiness = getDataModel().getCurrentHappiness();
-//
-//            if (currentHappiness == null)
-//                //By default we are all satisfied with the economic position
-//                //we start off in, unless you are always happy or just hate life
-//                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
-//
-//            //If surplus is >0 you're overjoyed and increase happiness
-//            //If surplus is <0 you are dissapointed and decrease your happiness
-//            //If surplus is zero nothing really changed
-//            currentHappiness = scale(currentHappiness, surplus, 0.1);
-//
-//            return currentHappiness;
-        return 0;
+        //NOTE: Free agents can update their happiness but not their loyalty (see next method)
+
+            //'entitelment' denotes the amount of food an agent wants to get, at the least
+            double entitlement = getDataModel().getEconomicBelief() * foodHunted;
+            double surplus = foodReceived - entitlement;
+            Double currentHappiness = getDataModel().getCurrentHappiness();
+
+            if (currentHappiness == null)
+                //By default we are all satisfied with the economic position
+                //we start off in, unless you are always happy or just hate life
+                currentHappiness = 0.5 * getDataModel().getEconomicBelief();
+
+            //If surplus is >0 you're overjoyed and increase happiness
+            //If surplus is <0 you are dissapointed and decrease your happiness
+            //If surplus is zero nothing really changed
+            currentHappiness = scale(currentHappiness, surplus, 0.1);
+
+            return currentHappiness;
     }
 
     /**
@@ -375,54 +374,55 @@ public class PoliticalAgentGroup extends AbstractAgent
     @Override
     protected double updateLoyaltyAfterHunt(double foodHunted, double foodReceived)
     {
-//            //Loyalty after hunting refines from how much more happy you are after the hunt
-//            //and from comparing your economic (sharing of food) belief with the group's belief.
-//            String groupId = getDataModel().getGroupId();
-//            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
-//            {
-//                //get change in economic beliefs
-//                double myEconomic = getDataModel().getEconomicBelief();
-//                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
-//
-//                //how close are you to the group's belief
-//                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
-//
-//                //get change in happiness
-//
-//                Double oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
-//
-//                //if there is no entry for happiness initialise it
-//                if (oneTurnAgoHappiness == null)
-//                {
-//                    oneTurnAgoHappiness = 0.5 * myEconomic;
-//                }
-//
-//                //Calculate difference in happiness between the current and the previous round
-//                Double currentHappiness = getDataModel().getCurrentHappiness();
-//                double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
-//
-//                //get new loyalty
-//                Double currentLoyalty = getDataModel().getCurrentLoyalty();
-//
-//                //As this if statement implies either entry to your first group or
-//                //entry to a new (but not necessarily your first) group then you're
-//                //loyal to the average sense (not too much and no too little)
-//                if (currentLoyalty == null || currentLoyalty == 0)
-//                {
-//                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
-//                }
-//
-//                //If deltaHappiness is < 0 you lose loyalty to the group. Otherwise if deltaHappiness is >0
-//                //you gain loyalty. If deltaHappiness is zero you don't change your loyalty
-//                currentLoyalty = scale(currentLoyalty, deltaHappiness, deltaEconomic);
-//
-//                return currentLoyalty;
-//            }
-//            else //agent doesnt belong to a group and so is not loyal to anyone
-//            {
-//                return 0;
-//            }
-        return 0;
+            //Loyalty after hunting refines from how much more happy you are after the hunt
+            //and from comparing your economic (sharing of food) belief with the group's belief.
+            String groupId = getDataModel().getGroupId();
+            if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
+            {
+                //get change in economic beliefs
+                double myEconomic = getDataModel().getEconomicBelief();
+                double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
+
+                //how close are you to the group's belief
+                double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
+                
+                Double oneTurnAgoHappiness = null;
+                //get change in happiness
+                if(this.getDataModel().getHappinessHistory().size() > 2)
+                    oneTurnAgoHappiness = this.getDataModel().getHappinessHistory().getValue(1);
+
+                //if there is no entry for happiness initialise it
+                if (oneTurnAgoHappiness == null)
+                {
+                    oneTurnAgoHappiness = 0.5 * myEconomic;
+                }
+
+                //Calculate difference in happiness between the current and the previous round
+                Double currentHappiness = getDataModel().getCurrentHappiness();
+                double deltaHappiness =  currentHappiness - oneTurnAgoHappiness ;//how much or less happy did you get
+
+                //get new loyalty
+                Double currentLoyalty = getDataModel().getCurrentLoyalty();
+
+                //As this if statement implies either entry to your first group or
+                //entry to a new (but not necessarily your first) group then you're
+                //loyal to the average sense (not too much and no too little)
+                if (currentLoyalty == null || currentLoyalty == 0)
+                {
+                    currentLoyalty = 0.5 * (oneTurnAgoHappiness + deltaEconomic);
+                }
+
+                //If deltaHappiness is < 0 you lose loyalty to the group. Otherwise if deltaHappiness is >0
+                //you gain loyalty. If deltaHappiness is zero you don't change your loyalty
+                currentLoyalty = scale(currentLoyalty, deltaHappiness, deltaEconomic);
+
+                return currentLoyalty;
+            }
+            else //agent doesnt belong to a group and so is not loyal to anyone
+            {
+                return 0;
+            }
+
     }
 
     /**
