@@ -331,7 +331,7 @@ public class LoansInfo extends JPanel implements Plugin {
                                 {
                                     amountBorrowed += t.getKey()*(1+t.getValue());
                                 }
-                                data.add("          This bebtor has borrowed: " + amountBorrowed + " units of food");
+                                data.add("          This debtor has borrowed: " + amountBorrowed + " units of food");
                             }
                         }
                         else
