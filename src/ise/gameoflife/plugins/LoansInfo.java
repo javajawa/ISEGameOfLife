@@ -331,8 +331,16 @@ public class LoansInfo extends JPanel implements Plugin {
                             Set<String> debtors = loansGiven.keySet();
                             for (String deb: debtors)
                             {
-                                if (PublicEnvironmentConnection.getInstance().getGroupById(deb) == null) break;
-                                data.add("---->Debtor: " + PublicEnvironmentConnection.getInstance().getGroupById(deb).getName()+" has been given: " + loansGiven.get(deb).size()+" loans from this group!");
+                                String gname;
+                                if (PublicEnvironmentConnection.getInstance().getGroupById(deb) == null)
+                                {
+                                    gname = "A DEAD GROUP";
+                                }
+                                else
+                                {
+                                    gname = PublicEnvironmentConnection.getInstance().getGroupById(deb).getName();
+                                }
+                                data.add("---->Debtor: " + gname+" has been given: " + loansGiven.get(deb).size()+" loans from this group!");
                                 double amountBorrowed = 0;
                                 for (Tuple<Double, Double> t: loansGiven.get(deb))
                                 {
@@ -354,8 +362,16 @@ public class LoansInfo extends JPanel implements Plugin {
                             Set<String> creditors = loansTaken.keySet();
                             for (String cred: creditors)
                             {
-                                if (PublicEnvironmentConnection.getInstance().getGroupById(cred) == null) break;
-                                data.add("---->Creditor: " + PublicEnvironmentConnection.getInstance().getGroupById(cred).getName()+" has given this group: " + loansTaken.get(cred).size()+" loans!");
+                                String gname;
+                                if (PublicEnvironmentConnection.getInstance().getGroupById(cred) == null)
+                                {
+                                    gname = "A DEAD GROUP";
+                                }
+                                else
+                                {
+                                    gname = PublicEnvironmentConnection.getInstance().getGroupById(cred).getName();
+                                }
+                                data.add("---->Creditor: " + gname+" has given this group: " + loansTaken.get(cred).size()+" loans!");
                                 double amountBorrowed = 0;
                                 for (Tuple<Double, Double> t: loansTaken.get(cred))
                                 {
@@ -392,7 +408,7 @@ public class LoansInfo extends JPanel implements Plugin {
        data.add("==========================SUMMARY==========================");
        data.add("Groups final score (food reserve)");
        data.add("------------------------------------------------");
-       data.add("Group Name 't'| Current reserve \t| Amount given \t| Amount borrowed \t| Average Happiness \t| Greediness" );
+       data.add("Group Name | Current reserve \t| Amount given \t| Amount borrowed \t| Average Happiness \t| Greediness" );
        SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("group");
        Iterator<String> iter = active_agent_ids.iterator();
        PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
@@ -406,7 +422,7 @@ public class LoansInfo extends JPanel implements Plugin {
             {
                 for (String debtors: loansGiven.keySet())
                 {
-                    if (ec.getGroupById(debtors) == null) break;
+                    //if (ec.getGroupById(debtors) == null) break;
                     double amountBorrowed = 0;
                     for (Tuple<Double, Double> t: loansGiven.get(debtors))
                     {
@@ -421,7 +437,7 @@ public class LoansInfo extends JPanel implements Plugin {
            {
                 for (String creditors: loansTaken.keySet())
                 {
-                    if (ec.getGroupById(creditors) == null) break;
+                    //if (ec.getGroupById(creditors) == null) break;
                     double amountBorrowed = 0;
                     for (Tuple<Double, Double> t: loansTaken.get(creditors))
                     {

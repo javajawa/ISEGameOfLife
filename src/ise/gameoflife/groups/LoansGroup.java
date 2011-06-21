@@ -393,7 +393,7 @@ public class LoansGroup extends AbstractGroupAgent {
             if (!loansTaken.isEmpty())
             {
                 //Set<String> creditorsSet = loansTaken.keySet();
-                //for (String creditor: creditorsSet)
+                //for (String creditorID: creditorsSet)
                 Iterator<String> creditors = loansTaken.keySet().iterator();
                 while(creditors.hasNext())
                 {
@@ -679,7 +679,7 @@ public class LoansGroup extends AbstractGroupAgent {
                     double interestRate = 0.05*greediness + (getConn().getGroupById(groupID).getCurrentReservedFood() / achievementThreshold);
 
                     //For now give a loan if u have the amount needed
-                    if (currentFoodReserve - amountNeeded >  priceToPlay+50)
+                    if ((currentFoodReserve - amountNeeded >  priceToPlay+50)&&(this.greediness < new Random().nextDouble()))
                     {
                         //Create a tuple containing the amount granted and the interest
                         Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();

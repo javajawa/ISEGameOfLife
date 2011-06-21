@@ -380,7 +380,6 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
     @Override
     protected Tuple<InteractionResult, Double> interactWithOtherGroups() {
-        //throw new UnsupportedOperationException("Not supported yet.");
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
         interactionResult.add(InteractionResult.NothingHappened, 0.0);
         return interactionResult;
