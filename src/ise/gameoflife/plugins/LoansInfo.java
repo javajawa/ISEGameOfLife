@@ -392,7 +392,7 @@ public class LoansInfo extends JPanel implements Plugin {
        data.add("==========================SUMMARY==========================");
        data.add("Groups final score (food reserve)");
        data.add("------------------------------------------------");
-       data.add("Group Name \t| Current reserve \t| Loans given \t| LoansTaken \t| Greediness" );
+       data.add("Group Name 't'| Current reserve \t| Amount given \t| Amount borrowed \t| Average Happiness \t| Greediness" );
        SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("group");
        Iterator<String> iter = active_agent_ids.iterator();
        PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
@@ -430,8 +430,19 @@ public class LoansInfo extends JPanel implements Plugin {
                     totalAmountTaken += amountBorrowed;
                 }
            }
-           String spaces = "                          ";
-           data.add(dm.getName()+spaces+Math.round(dm.getCurrentReservedFood())+spaces+Math.round(totalAmountGiven) + spaces + Math.round(totalAmountTaken)+ spaces + LoansGroup.getGreediness(dm));
+           double averageHappiness = 0;
+           for(String member: dm.getMemberList())
+           {
+               averageHappiness += ec.getAgentById(member).getCurrentHappiness();
+           }
+           averageHappiness = averageHappiness/ dm.getMemberList().size();
+           String spaces = "                               ";
+           data.add(dm.getName()+
+                   spaces+Math.round(dm.getCurrentReservedFood())+
+                   spaces+Math.round(totalAmountGiven) +
+                   spaces + Math.round(totalAmountTaken)+
+                   spaces + averageHappiness+
+                   spaces + LoansGroup.getGreediness(dm));
        }
    }
 

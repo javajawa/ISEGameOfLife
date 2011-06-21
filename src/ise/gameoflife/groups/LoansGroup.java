@@ -363,15 +363,17 @@ public class LoansGroup extends AbstractGroupAgent {
 
             if (!loansTaken.isEmpty())
             {
-                Set<String> creditorsSet = loansTaken.keySet();
-                for (String creditor: creditorsSet)
+                //Set<String> creditorsSet = loansTaken.keySet();
+                //for (String creditor: creditorsSet)
+                Iterator<String> creditors = loansTaken.keySet().iterator();
+                while(creditors.hasNext())
                 {
-                    if (getConn().getGroupById(creditor) == null) { loansTaken.remove(creditor); break;}
+                    String creditorID = creditors.next();
                     double totalAmountPaid = 0;
                     //Find the loans taken from this creditor and sort the in descending order
-                    Collections.sort(loansTaken.get(creditor), loansComparator);
+                    Collections.sort(loansTaken.get(creditorID), loansComparator);
                     //Iterate through the loans from this creditor
-                    List<Tuple<Double, Double> > loanInfoList = loansTaken.get(creditor);
+                    List<Tuple<Double, Double> > loanInfoList = loansTaken.get(creditorID);
                     Iterator<Tuple<Double, Double> > i = loanInfoList.iterator();
 
                     while(i.hasNext())
@@ -390,20 +392,20 @@ public class LoansGroup extends AbstractGroupAgent {
                         }
                     }
                     //If that was the only loan taken from this creditor then remove the creditor form the list
-                    if (loansTaken.get(creditor).isEmpty()) loansTaken.remove(creditor);
+                    if (loansTaken.get(creditorID).isEmpty()) creditors.remove();
                     if (totalAmountPaid != 0)
                     {
                         Tuple<String, Double> paymentReceipt = new Tuple<String, Double>();
                         paymentReceipt.add(this.getId(), totalAmountPaid);
-                        if (!loanRepayments.containsKey(creditor))
+                        if (!loanRepayments.containsKey(creditorID))
                         {
                             List<Tuple<String, Double> > existingPayments = new ArrayList<Tuple<String, Double> >();
                             existingPayments.add(paymentReceipt);
-                            loanRepayments.put(creditor, existingPayments);
+                            loanRepayments.put(creditorID, existingPayments);
                         }
                         else
                         {
-                            List<Tuple<String, Double> > existingPayments = loanRepayments.get(creditor);
+                            List<Tuple<String, Double> > existingPayments = loanRepayments.get(creditorID);
                             existingPayments.add(paymentReceipt);
                         }
                     }
