@@ -320,6 +320,7 @@ public class LoansInfo extends JPanel implements Plugin {
                         data.add("==============================="+name+"===============================");
                         data.add("Group population: " + p_players.get(id).getDataModel().getMemberList().size());
                         data.add("Current reserve: " + p_players.get(id).getDataModel().getCurrentReservedFood());
+                        data.add("Greediness: " + LoansGroup.getGreediness(p_players.get(id).getDataModel()));
                         data.add("++++++LOAN HISTORY OF THIS GROUP++++++");
 
                         //Display debtors / loans given
@@ -391,7 +392,7 @@ public class LoansInfo extends JPanel implements Plugin {
        data.add("==========================SUMMARY==========================");
        data.add("Groups final score (food reserve)");
        data.add("------------------------------------------------");
-       data.add("Group Name | Current reserve | Loans given " );
+       data.add("Group Name \t| Current reserve \t| Loans given \t| LoansTaken \t| Greediness" );
        SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("group");
        Iterator<String> iter = active_agent_ids.iterator();
        PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
@@ -401,11 +402,7 @@ public class LoansInfo extends JPanel implements Plugin {
             PublicGroupDataModel dm = ec.getGroupById(groupID);
             Map<String, List<Tuple<Double, Double> > > loansGiven = LoansGroup.getLoansGiven(dm);
             double totalAmountGiven = 0;
-            if (loansGiven == null)
-            {
-                data.add(dm.getName()+"   | "+dm.getCurrentReservedFood()+"   | "+0.0);
-            }
-            else
+            if (loansGiven != null)
             {
                 for (String debtors: loansGiven.keySet())
                 {
@@ -417,8 +414,24 @@ public class LoansInfo extends JPanel implements Plugin {
                     }
                     totalAmountGiven += amountBorrowed;
                 }
-               data.add(dm.getName()+"   | "+dm.getCurrentReservedFood()+"   | "+totalAmountGiven );
-            }
+           }
+           Map<String, List<Tuple<Double, Double> > > loansTaken = LoansGroup.getLoansTaken(dm);
+           double totalAmountTaken = 0;
+           if (loansTaken != null)
+           {
+                for (String creditors: loansTaken.keySet())
+                {
+                    if (ec.getGroupById(creditors) == null) break;
+                    double amountBorrowed = 0;
+                    for (Tuple<Double, Double> t: loansTaken.get(creditors))
+                    {
+                        amountBorrowed += t.getKey()*(1+t.getValue());
+                    }
+                    totalAmountTaken += amountBorrowed;
+                }
+           }
+           String spaces = "                          ";
+           data.add(dm.getName()+spaces+Math.round(dm.getCurrentReservedFood())+spaces+Math.round(totalAmountGiven) + spaces + Math.round(totalAmountTaken)+ spaces + LoansGroup.getGreediness(dm));
        }
    }
 
