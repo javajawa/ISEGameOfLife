@@ -155,10 +155,9 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             if (getDataModel().getMemberList().size() != 1)
             {
                 List<String> newPanel = updatePanel();
-                this.setPanel(newPanel);
-                this.setGroupStrategy(decideGroupStrategy());
-                
+                this.setPanel(newPanel);    
             }
+            this.setGroupStrategy(decideGroupStrategy());
 	}
         
     /**

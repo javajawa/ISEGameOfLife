@@ -6,6 +6,7 @@ import ise.gameoflife.actions.Hunt;
 import ise.gameoflife.actions.Proposal;
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote;
+import ise.gameoflife.agents.PoliticalAgentGroup;
 import ise.gameoflife.environment.EnvConnector;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.ApplicationResponse;
@@ -370,7 +371,7 @@ abstract public class AbstractAgent implements Participant
 
 		if (TurnType.firstTurn.equals(turn))
 		{
-			beforeNewRound();
+			beforeNewRound();                  
 			clearRoundData();
 		}
 
@@ -414,7 +415,14 @@ abstract public class AbstractAgent implements Participant
 
 	private void clearRoundData()
 	{
-		dm.newHistoryEntry();
+                       //ADDED THEO
+                    for (String dead_a: PoliticalAgentGroup.dead_agents){
+                        if (this.getId().equals(dead_a))
+                            ec.act(new Death(), this.getId(), authCode);
+                    }
+                    PoliticalAgentGroup.dead_agents.clear();
+                    //********
+                dm.newHistoryEntry();
 	}
 
 	private void doGroupSelect()

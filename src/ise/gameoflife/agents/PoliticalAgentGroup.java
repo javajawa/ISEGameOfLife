@@ -74,46 +74,10 @@ public class PoliticalAgentGroup extends AbstractAgent
 
     @Override
     protected void beforeNewRound() {
-        if (getConn().getGroupById(this.getId()) == null){
+        if (getConn().getGroupById(this.getDataModel().getName()) == null){
             //DEACTIVATE list
             dead_agents.add(this.getId());
-            System.out.println("Agent-Group must be killed : "+ this.getId());
-        }
-    }
-
-    /**
-    * This method assesses an agent's satisfaction in the group. If the agent is satisfied remains in the group
-    * otherwise it will request to leave the group.
-    * @param none
-    * @return Satisfied or not?
-    */
-    protected boolean SatisfiedInGroup() {
-        return true;
-    }
-
-    /**
-     * This procedure is primarily used right before an agent issues the choice to leave the group it
-     * is currently in. If the group it is leaving had only one other member then that member is stored
-     * in a dedicated tree structure 'membersToKickOut' so that it is known that this member will have
-     * to leave in the next turn. This is necessary as you cannot have a group characterised by only one member.
-     * @param none
-     * @return none
-    */
-    protected void checkToEvict() {
-        PublicGroupDataModel myGroup = getConn().getGroupById(getDataModel().getGroupId());
-
-        //Used when agent is about to issue the command to leave the group of only himself and another,
-        //it searches for the other agent and tells it leave the group as well
-        if (myGroup == null) return;
-
-        if(myGroup.getMemberList().size() == 2)
-        {
-             for(String member : myGroup.getMemberList())
-             {
-                //look for the other member of this group to kick out into free agent mode
-                if(!member.equals(getDataModel().getId()))
-                    membersToKickOut.add(member);
-             }
+            System.out.println("Agent-Group must be killed : "+ this.getId() + "Group: " + this.getDataModel().getName());
         }
     }
 
@@ -129,38 +93,37 @@ public class PoliticalAgentGroup extends AbstractAgent
     @Override
     protected String chooseGroup() {
 
-//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
-//        for (String agent : freeToGroup.descendingSet())
-//        {
-//            System.out.println(getConn().getAgentById(agent).getName());
-//        }
-//        System.out.println(freeToGroup.size());
-//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
-//        System.out.println();
-//        System.out.println();
-//
-//
-//        System.out.println("-------------START-GROUP---------------------------");
-//        for (String groupID : getConn().availableGroups())
-//        {
-//            int size = getConn().getGroupById(groupID).getMemberList().size();
-//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-//            for (String a: getConn().getGroupById(groupID).getMemberList())
-//            {
-//                System.out.println("    "+getConn().getAgentById(a).getName());
-//            }
-//        }
-//        System.out.println("--------------END-GROUP---------------------------");
-//        System.out.println();
-//        System.out.println();
+        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
+        for (String agent : freeToGroup.descendingSet())
+        {
+            System.out.println(getConn().getAgentById(agent).getName());
+        }
+        System.out.println(freeToGroup.size());
+        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
+        System.out.println();
+        System.out.println();
 
 
-//        boolean agentG = false;
-//        for (String ag : special_agents)
-//                if (this.getId().equals(ag))
-//                    agentG = true;
-        System.out.println("SPEcial agent needs special treetment: "+TestPoliticalAgent.special );
-        if(getConn().getAgentById(this.getId()).getGroupId() == null ) return TestPoliticalAgent.special;
+        System.out.println("-------------START-GROUP---------------------------");
+        for (String groupID : getConn().availableGroups())
+        {
+            int size = getConn().getGroupById(groupID).getMemberList().size();
+            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+            for (String a: getConn().getGroupById(groupID).getMemberList())
+            {
+                System.out.println("    "+getConn().getAgentById(a).getName());
+            }
+        }
+        System.out.println("--------------END-GROUP---------------------------");
+        System.out.println();
+        System.out.println();
+
+
+        if(getConn().getAgentById(this.getId()).getGroupId() == null ) 
+        {
+            System.out.println("Special agent needs special treetment: "+TestPoliticalAgent.special );
+            return TestPoliticalAgent.special;
+        }
         else return null;
         //return can either be null or a String (which is the group)
     }
@@ -279,31 +242,7 @@ public class PoliticalAgentGroup extends AbstractAgent
     @Override
     protected ProposalType makeProposal()
     {
-            //Note : No need to check if agent is in a group. This is done by doMakeProposal
-            String groupId = this.getDataModel().getGroupId();
-            if (getConn().getGroupById(groupId) == null) return ProposalType.staySame;
-            ProposalType proposal;
-
-            //Get the economic beliefs of the agent and the group
-            double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
-            double agentEconomicBelief = this.getDataModel().getEconomicBelief();
-
-            //Three cases: -> Agent economic belief = Group economic belief -> agent proposes to stay there
-            //             -> Agent economic belief > group economic belief -> agent prefers to move right (remember left is zero and right is one)
-            //             -> Agent economic belief < group economic belief -> agent prefers to move left
-            if (agentEconomicBelief > groupEconomicPosition)
-            {
-                    proposal = ProposalType.moveRight;
-            }
-            else if (agentEconomicBelief < groupEconomicPosition)
-            {
-                    proposal = ProposalType.moveLeft;
-            }
-            else
-            {
-                    proposal = ProposalType.staySame;
-            }
-            return proposal;
+            return ProposalType.staySame;
     }
 
     /**
@@ -315,52 +254,7 @@ public class PoliticalAgentGroup extends AbstractAgent
     @Override
     protected VoteType castVote(Proposition p)
     {
-            String groupId = this.getDataModel().getGroupId();
-            String proposerGroup = p.getOwnerGroup();
-            ProposalType agentProposal;
-            VoteType vote = null;
-
-            if (groupId != null && getConn().getGroupById(groupId).getMemberList().size() > 1)//check if is in a group
-            {
-                    if (groupId.equals(proposerGroup))  //check if agent is in the same group as the proposal
-                    {
-                            double groupEconomicPosition = this.getConn().getGroupById(groupId).getCurrentEconomicPoisition();
-                            double agentEconomicBelief = this.getDataModel().getEconomicBelief();
-
-                            //What this agent would propose...
-                            if (agentEconomicBelief > groupEconomicPosition)
-                            {
-                                 agentProposal = ProposalType.moveRight;
-                            }
-                            else if (agentEconomicBelief < groupEconomicPosition)
-                            {
-                                agentProposal = ProposalType.moveLeft;
-                            }
-                            else
-                            {
-                                agentProposal = ProposalType.staySame;
-                            }
-
-                            //Compare agent's possible proposal to the actual proposal.
-                            //If they agree obviously the agent will vote for.
-                            if (p.getType().equals(agentProposal))
-                            {
-                                vote = VoteType.For;
-                            }
-                            else
-                            {
-                                vote =  VoteType.Against;
-                            }
-                    }
-                    else{ //must never happen!!
-                        vote =  VoteType.Abstain;
-                    }
-            }
-            else //must never happen!!
-            {
-                vote =  VoteType.Abstain;
-            }
-            return vote;
+           return VoteType.Abstain;
     }
 
     /**
@@ -724,38 +618,14 @@ public class PoliticalAgentGroup extends AbstractAgent
         @Override
 	protected double updateSocialBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
         {
-            double currentSocial = getDataModel().getSocialBelief();
-            //Your social belief refines from how much more/less trust there is in the group
-            //after the vote. Whether or not your proposition passed reflects how much you
-            //want to trust the group to make decisions or a single dictator to make decisions.
-            String groupId = getDataModel().getGroupId();
-            if ((groupId != null)  && (getConn().getGroupById(groupId).getMemberList().size() > 1))
+            if (getConn().getGroupById(this.getDataModel().getName()) == null)
             {
-               //If this concerns you...
-                if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
-                {
-                    double groupSocial = getConn().getGroupById(getDataModel().getGroupId()).getEstimatedSocialLocation();
-                    double deltaSocial = groupSocial - currentSocial;//how close are you to the group's belief
-
-
-                    if (votes > 0)
-                    {   //you're social belief moves towards the group's social posistion
-                        currentSocial = scale(currentSocial, deltaSocial*10, Math.abs(overallMovement));
-                    }
-                    else if (votes < 0)
-
-                    {
-                        //you're social belief moves away from the group's social posistion
-                        currentSocial = scale(currentSocial, -deltaSocial*10, Math.abs(overallMovement));
-
-                    }
-                    //otherwise your social belief remains the same
-                }
-                return currentSocial;
+                //this.beforeNewRound();
+                return 0;
             }
             else
             {
-                return currentSocial;//agent doesnt belong to a group and does not vote
+                return getConn().getGroupById(this.getDataModel().getName()).getEstimatedSocialLocation();
             }
         }
 
@@ -769,46 +639,15 @@ public class PoliticalAgentGroup extends AbstractAgent
         @Override
         protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
         {
-//            double currentEconomic = getDataModel().getEconomicBelief();
-//            //Your economic belief refines from how much more/less happy you are after the vote
-//            //and from how loyal you are after the group made their decision after the vote.
-//            String groupId = getDataModel().getGroupId();
-//            if ((groupId != null)  && (getConn().getGroupById(groupId).getMemberList().size() > 1))
-//            {
-//               //If this concerns you...
-//                if (this.getDataModel().getGroupId().equals(proposition.getOwnerGroup()))
-//                {
-//                    double groupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
-//                    double deltaEconomic = groupEconomic - currentEconomic;//how close are you to the group's belief
-//
-//                    if (moreLoyal() && moreHappy())
-//
-//                    {
-//                        currentEconomic = scale(currentEconomic, deltaEconomic*10, Math.abs(overallMovement));
-//
-//                    }
-//                    else
-//                    {
-//                        if (deltaEconomic != 0)//if your beliefs are NOT the same as the group's beliefs
-//                        {
-//                            currentEconomic = scale(currentEconomic, -deltaEconomic*10, Math.abs(overallMovement));
-//                        }
-//                        else //if your beliefs are exactly the same with the group's beliefs
-//                        {
-//                            //move in any direction, for now
-//                            boolean random = uniformRandBoolean();
-//                            if (random)
-//                                currentEconomic = scale(currentEconomic, 1, Math.abs(overallMovement));
-//                            else
-//                                currentEconomic = scale(currentEconomic, -1, Math.abs(overallMovement));
-//                        }
-//                    }
-//                }
-//                return currentEconomic;
-//            }
-//            else
-//                return currentEconomic;//agent doesnt belong to a group and so is not loyal to anyone
-            return 0.0;
+                        if (getConn().getGroupById(this.getDataModel().getName()) == null)
+            {
+                //this.beforeNewRound();
+                return 0;
+            }
+            else
+            {
+                return getConn().getGroupById(this.getDataModel().getName()).getCurrentEconomicPoisition();
+            }
         }
 
     /**
@@ -874,102 +713,6 @@ public class PoliticalAgentGroup extends AbstractAgent
     return null;
     }
 
-    /**
-    * This method checks if the agent has become more loyal since last round
-    * @param none
-    * @return True for becoming more loyal and false otherwise
-    */
-    private boolean moreLoyal() {
-        String groupId = getDataModel().getGroupId();
-        if (groupId != null  && getConn().getGroupById(groupId).getMemberList().size() > 1)
-        {
-            //get change in economic beliefs
-            double myEconomic = getDataModel().getEconomicBelief();
-            double myGroupEconomic = getConn().getGroupById(getDataModel().getGroupId()).getCurrentEconomicPoisition();
-            double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);//how close are you to the group's belief
-
-            Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
-            if (oneTurnAgoHappiness == null)
-            {
-                oneTurnAgoHappiness = 0.5 * myEconomic;
-            }
-
-            Double curretnHappiness = getDataModel().getCurrentHappiness();
-            if (curretnHappiness == null)
-            {
-                curretnHappiness = 0.5 * myEconomic;
-            }
-
-            //get your loyalty and loyalty history
-            Double oneTurnAgoLoyalty = getDataModel().getLoyaltyHistory().getValue(1);
-            if (oneTurnAgoLoyalty == null)
-            {
-                oneTurnAgoLoyalty = 0.5 * (oneTurnAgoHappiness * deltaEconomic);
-            }
-
-            Double currentLoyalty = getDataModel().getCurrentLoyalty();
-            if (currentLoyalty == null)
-            {
-                currentLoyalty = 0.5 * (curretnHappiness * deltaEconomic);
-            }
-
-            double deltaLoyalty = currentLoyalty - oneTurnAgoLoyalty;//how much or less loyal did you get
-
-            if (deltaLoyalty > 0)
-            {
-                //you became more loyal to the group
-                return true;
-            }
-            else if(deltaLoyalty < 0)
-            {
-                //you became less loyal to the group
-                return false;
-            } else
-                //you just got in the group and for that you must be loyal to them, at the least
-                return true;
-        }
-        else
-            //not loyal to anyone
-            return false;
-    }
-
-    /**
-    * This method checks if the agent has become happier since last round
-    * @param none
-    * @return True for becoming happier and false otherwise
-    */
-    private boolean moreHappy() {
-            //get change in economic beliefs
-            double myEconomic = getDataModel().getEconomicBelief();
-
-            //get your loyalty and loyalty history
-            Double oneTurnAgoHappiness = getDataModel().getHappinessHistory().getValue(1);
-            if (oneTurnAgoHappiness == null)
-            {
-                oneTurnAgoHappiness = 0.5 * myEconomic;
-            }
-
-            Double currentHappiness = getDataModel().getCurrentHappiness();
-            if (currentHappiness == null)
-            {
-                currentHappiness = 0.5 * myEconomic;
-            }
-
-            double deltaHappiness = currentHappiness - oneTurnAgoHappiness;//how much or less loyal did you get
-
-            if (deltaHappiness > 0)
-            {
-                //you became more loyal to the group
-                return true;
-            }
-            else if(deltaHappiness < 0)
-            {
-                //you became less loyal to the group
-                return false;
-            } else
-                //you're not overjoyed but you're satisfied
-                return true;
-    }
 
     /**
     * This is a helper method and distinguishes what is the food type for cooperation and defection

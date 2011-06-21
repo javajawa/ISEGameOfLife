@@ -163,13 +163,7 @@ public abstract class AbstractGroupAgent implements Participant
 		{
 			beforeNewRound();
                         
-                        //ADDED THEO
-                        for (String dead_a: PoliticalAgentGroup.dead_agents){
-                            ec.act(new Death(), dead_a, authCode);
-
-                        }
-                        PoliticalAgentGroup.dead_agents.clear();
-			//********
+                        
 
                         clearRoundData();
 		}
@@ -204,6 +198,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	private void clearRoundData()
 	{
+                
 		huntResult = new HashMap<String, Double>();
 		voteResult = new HashMap<Proposition, Integer>();
 		dm.clearRoundData();
@@ -214,6 +209,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	private void doTeamSelect()
 	{
+               
 		List<HuntingTeam> teams = selectTeams();
 		// TODO: Remove non-group members from teams
 		List<String> memberList = this.dm.getMemberList();
@@ -223,7 +219,7 @@ public abstract class AbstractGroupAgent implements Participant
 			{
 				if (memberList.contains(agent))
 				{
-					ec.act(new GroupOrder(team, agent), getId(), authCode);
+					ec.act(new GroupOrder(team, agent), getId(),authCode);
 				}
 			}
 		}

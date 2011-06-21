@@ -443,17 +443,18 @@ public class TestPoliticalAgent extends AbstractAgent
                     Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                     chosenGroup = getConn().createGroup(gtype, myGroup, invitee);
 
+                    //ADDED THEO
                     //GROUP INTO AGENTS
                     special_no++;
                     //Create special group
                     if(special_no == 1){
 
-                        GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0);
+                        GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0.3);
                         special = getConn().createGroup(gtype, spGroup);
                         System.out.println("THis is the special group: "+special+ "name: "+getConn().getGroupById(special).getName());
                     }
                     //Creates a political Agent group
-                    getConn().createAgent(10, 0.5, getConn().getGroupById(special).getCurrentEconomicPoisition() , "A"+myGroup.getName()); //CREATE a new AGENT-Group
+                    getConn().createAgent(10, 0.3, getConn().getGroupById(special).getCurrentEconomicPoisition() , chosenGroup); //CREATE a new AGENT-Group
                     //*********
                     
                     groupFounders.put(this.getId(), chosenGroup);
