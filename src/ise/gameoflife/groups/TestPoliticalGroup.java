@@ -43,7 +43,8 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected boolean respondToJoinRequest(String playerID) {    
-                       
+
+
             if (getDataModel().getMemberList().isEmpty())
             {
                 //if empty then 'playerID' created the group so there is no need to compute a heuristic
@@ -54,6 +55,11 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 //if there is only one member then 'playerID' was invited and wants to accept the invitation
                 //so there is no need to compute a heuristic
                 return true;
+            }
+            else if (getConn().getAgentById(playerID) == null) //ADDED THE0
+            {
+                //agent does not exist so invitation is denied
+                return false;
             }
             else
             {

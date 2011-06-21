@@ -697,7 +697,9 @@ public class PoliticalAgentGroup extends AbstractAgent
 //        //about our opponent. Therefore this agent is the advisor.
 //        if (opponentID != null)
 //        {
-//            HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
+//            HuntingTeam opponentPreviousTeam = null;
+//            if (getConn().getRoundsPassed() > 26)
+//                opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
 //            if (opponentPreviousTeam != null)
 //            {
 //                for (String agent: opponentPreviousTeam.getMembers())
