@@ -2,14 +2,16 @@ package ise.gameoflife.simulations;
 
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.EnvironmentDataModel;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.genetics.EvolvableEntity;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.NameGenerator;
 import ise.gameoflife.participants.AbstractAgent;
-import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.simulations.evolution.SimulationGenome;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
+import ise.gameoflife.agents.GeneticAgent;
 import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.tokens.AgentType;
@@ -50,6 +52,8 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	private final EventScriptManager ms = new EventScriptManager();
 	private final PluginManager pm = new PluginManager();
 
+	private ArrayList<String> geneticAgentIds = new ArrayList<String>();
+
 	public LearningAgentSimulation(SimulationGenome genome)
 	{
 		super();
@@ -79,6 +83,24 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		this.simulation = new Simulation(presageConfig, agents, e, pm, ms);
 	}
 
+	public ArrayList<PublicAgentDataModel> agentDataModels()
+	{
+		if (geneticAgentIds.isEmpty())
+		{
+			return null;
+		}
+
+		ArrayList<PublicAgentDataModel> dataModels = new ArrayList<PublicAgentDataModel>();
+		PublicEnvironmentConnection envConn = PublicEnvironmentConnection.getInstance();
+
+		for (String id : geneticAgentIds)
+		{
+			dataModels.add((PublicAgentDataModel)envConn.getAgentById(id));
+		}
+
+		return dataModels;
+	}
+
 	protected void plugins(){}
 
 	protected void foods()
@@ -92,7 +114,11 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		Random rand = new Random(this.randomSeed);
 		for (int i = 0; i < 10; i++)
 		{
-			// this.addAgent(new LearningAgent(20, 2));
+			// genetic agents
+			GeneticAgent agent = new GeneticAgent(genome);
+			geneticAgentIds.add(agent.getId());
+			this.addAgent(agent);
+			// competing agents
 			this.addAgent(new TestPoliticalAgent
 				 (20, 2, AgentType.AC, rand.nextDouble(), rand.nextDouble()));
 			this.addAgent(new TestPoliticalAgent
@@ -134,9 +160,9 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	}
 
 	@Override
-	public void setFitness(double aFitness)
+	public void setFitness(double fitness)
 	{
-		this.fitness = aFitness;
+		this.fitness = fitness;
 	}
 
 	protected final void addFood(String name, double nutrition, int huntersRequired)

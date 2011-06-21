@@ -53,7 +53,7 @@ public class GenePool<EntityGenome extends Genome<EntityGenome>>
 		// can only do crossing with two or more
 		if (popSize < 2)
 		{
-			return (EntityGenome)pool().get(0);
+			return pool().get(0);
 		}
 
 		// select two distinct indices

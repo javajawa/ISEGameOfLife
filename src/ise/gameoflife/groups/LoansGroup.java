@@ -423,7 +423,7 @@ public class LoansGroup extends AbstractGroupAgent {
                         }
                         else
                         {
-                            List<Tuple<String, Double> > existingPayments = (List) loanRepayments.get(creditor);
+                            List<Tuple<String, Double> > existingPayments = loanRepayments.get(creditor);
                             existingPayments.add(paymentReceipt);
                         }
                     }
@@ -604,7 +604,7 @@ public class LoansGroup extends AbstractGroupAgent {
                  }
                 else
                 {
-                    List<Tuple<Double, Double> > existingLoans = (List) this.loansTaken.get(giverID.iterator().next());
+                    List<Tuple<Double, Double> > existingLoans = this.loansTaken.get(giverID.iterator().next());
                     existingLoans.add(currentLoanInfo);
                 }
 
@@ -652,7 +652,7 @@ public class LoansGroup extends AbstractGroupAgent {
                         }
                         else
                         {
-                            List<Tuple<Double, Double> > existingLoans = (List) this.loansGiven.get(groupID);
+                            List<Tuple<Double, Double> > existingLoans = this.loansGiven.get(groupID);
                             existingLoans.add(loanInfo);
                         }
 
@@ -700,12 +700,12 @@ public class LoansGroup extends AbstractGroupAgent {
         return sortedMap;
     }
 
-    public static HashMap<String, List<Tuple<Double, Double> > > getLoansGiven(PublicGroupDataModel dm)
+    public static Map<String, List<Tuple<Double, Double> > > getLoansGiven(PublicGroupDataModel dm)
     {
         if (!publicLoansGiven.containsKey(dm.getId()))
             return null;
         else
-            return (HashMap)publicLoansGiven.get(dm.getId());
+            return publicLoansGiven.get(dm.getId());
     }
     
 }

@@ -8,6 +8,7 @@ public class AgentSimulationEvolution
 {
 
 	private final float elitistProportion = 0.10f;
+	private long randSeed = System.currentTimeMillis();
 
 	@Override
 	protected LearningAgentSimulation newEntity(SimulationGenome genome)
@@ -18,7 +19,9 @@ public class AgentSimulationEvolution
 	@Override
 	protected SimulationGenome newGenome()
 	{
-		return new SimulationGenome();
+		SimulationGenome genome = new SimulationGenome();
+		genome.setRandomSeed(randSeed++);
+		return genome;
 	}
 
 	@Override
@@ -43,9 +46,6 @@ public class AgentSimulationEvolution
 		return false;
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args)
 	{
 		AgentSimulationEvolution evolution = new AgentSimulationEvolution();

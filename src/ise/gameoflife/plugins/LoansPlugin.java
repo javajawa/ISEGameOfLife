@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -68,7 +69,7 @@ public class LoansPlugin extends JPanel implements Plugin
                             happiness += PublicEnvironmentConnection.getInstance().getAgentById(member).getCurrentHappiness();
                         }
                         happiness = happiness / size;
-                        HashMap<String, List<Tuple<Double, Double> > > loansGivenByThisGroup = LoansGroup.getLoansGiven(gm);
+                        Map<String, List<Tuple<Double, Double> > > loansGivenByThisGroup = LoansGroup.getLoansGiven(gm);
 
                         JPanel dataPanel = new JPanel(new GridLayout(4, 2, 1, -1));
 
