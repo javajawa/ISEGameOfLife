@@ -37,7 +37,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void onActivate() {
-		// Do nothing.
+                this.setGroupStrategy(AgentType.R); //ADDED The0
             
 	}
 
@@ -133,13 +133,38 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         {
 		ArrayList<HuntingTeam> teams = new ArrayList <HuntingTeam>();
 		List<String> members = new ArrayList<String>(getDataModel().getMemberList());
+                List<String> members_with_strategy = new ArrayList<String>();
+                List<String> members_without_strategy = new ArrayList<String>();
                 Collections.sort(members, c);
-                int agents = members.size();
-                
+
+                //int agents = members.size();
+                //Check if they have a strategy  ADDED THE0
+                for (String mem : members)
+                {
+                    if (getConn().getAgentById(mem) != null)
+                    {
+                        if (getConn().getAgentById(mem).getAgentType() != null)
+                        {
+                            members_with_strategy.add(mem);
+                        }
+                        else
+                        {
+                            members_without_strategy.add(mem);
+                        }
+                    }
+                }
+                int agents = members_with_strategy.size();
+                int agents_no_s = members_without_strategy.size();
+
 		for(int i=0; i < agents; i += 2){
-			int ubound = (i + 2 >= agents) ? agents : i + 2;
-			teams.add(new HuntingTeam(members.subList(i, ubound)));
-            }
+			int ubound = (i + 2 >= agents) ? agents : i + 2;                  
+			teams.add(new HuntingTeam(members_with_strategy.subList(i, ubound)));
+                }
+
+                for(int i=0; i < agents_no_s; i += 2){
+			int ubound = (i + 2 >= agents_no_s) ? agents_no_s : i + 2;
+			teams.add(new HuntingTeam(members_without_strategy.subList(i, ubound)));
+                }
 
                 return teams;
 	}

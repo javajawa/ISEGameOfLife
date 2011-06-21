@@ -302,7 +302,7 @@ public class TestPoliticalAgent extends AbstractAgent
         for (String groupID: getConn().availableGroups())
         {
             //proceed, only if, this is a group with two members or more
-            if (getConn().getGroupById(groupID).getMemberList().size() >= 2)
+            if (getConn().getGroupById(groupID).getMemberList().size() >= 2 && !special.equals(groupID)) //ADDED THE0
             {
                 int numKnownTrustValues = 0;
                 double trustSum = 0;
@@ -448,13 +448,13 @@ public class TestPoliticalAgent extends AbstractAgent
                     special_no++;
                     //Create special group
                     if(special_no == 1){
-
-                        GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0.3);
+                        GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0.0);
                         special = getConn().createGroup(gtype, spGroup);
                         System.out.println("THis is the special group: "+special+ "name: "+getConn().getGroupById(special).getName());
                     }
-                    //Creates a political Agent group
-                    getConn().createAgent(10, 0.3, getConn().getGroupById(special).getCurrentEconomicPoisition() , chosenGroup); //CREATE a new AGENT-Group
+
+                    //Creates a political Agent-group
+                    getConn().createAgent(0, 0.5, getConn().getGroupById(special).getCurrentEconomicPoisition() , chosenGroup); //CREATE a new AGENT-Group
                     //*********
                     
                     groupFounders.put(this.getId(), chosenGroup);

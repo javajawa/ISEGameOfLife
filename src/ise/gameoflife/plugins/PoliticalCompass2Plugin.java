@@ -199,8 +199,9 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 }
                 
                  // Draw agent connections + groupped agents
-                drawGroupLines(g);
-                drawLeaders(g);
+           
+               drawGroupLines(g);
+               drawLeaders(g);
 
             }
             catch (Exception e)
@@ -312,7 +313,14 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 double x,y;
                 String name;
                 //name = p_player.getDataModel().getName() +"[" + p_player.getDataModel().getAgentType().name() + "]";
-                name = "[" + p_player.getDataModel().getAgentType().name() + "]";
+                if (p_player.getDataModel().getAgentType() == null)
+                {
+                    name = "No-Type";
+                }
+                else
+                {
+                    name = "[" + p_player.getDataModel().getAgentType().name() + "]";
+                }
                 x = p_player.getDataModel().getEconomicBelief() *(rect.width/correction);
                 y = p_player.getDataModel().getSocialBelief() * (rect.height/correction);
                 //draw the agents

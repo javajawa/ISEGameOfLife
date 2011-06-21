@@ -91,7 +91,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 		source.setRoles(roles);
 	}
 
-	/**
+        /**
 	 * Implemented in Presage and (currently) serves no purpose
 	 * @return a null string, at the moment
 	 */
@@ -223,5 +223,14 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	public AgentType getAgentType()
 	{
 		return source.getAgentType();
+	}
+        //Theo ADDED
+        /**
+         * Sets the agents type
+         * @param enum type to assign to agent
+         */
+	public void setAgentType(AgentType type)
+	{
+		source.setAgentType(type);
 	}
 }

@@ -410,6 +410,15 @@ class AgentDataModel extends APlayerDataModel
 		return socialBelief;
 	}
 
+        /**
+         * ADDED The0
+         * @param agentType
+         */
+        void setAgentType(AgentType type)
+	{
+		this.agentType = type;
+	}
+
 	/**
 	 * @return the agentType
 	 */

@@ -93,33 +93,33 @@ public class PoliticalAgentGroup extends AbstractAgent
     @Override
     protected String chooseGroup() {
 
-        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
-        for (String agent : freeToGroup.descendingSet())
-        {
-            System.out.println(getConn().getAgentById(agent).getName());
-        }
-        System.out.println(freeToGroup.size());
-        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
-        System.out.println();
-        System.out.println();
+//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
+//        for (String agent : freeToGroup.descendingSet())
+//        {
+//            System.out.println(getConn().getAgentById(agent).getName());
+//        }
+//        System.out.println(freeToGroup.size());
+//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
+//        System.out.println();
+//        System.out.println();
+//
+//
+//        System.out.println("-------------START-GROUP---------------------------");
+//        for (String groupID : getConn().availableGroups())
+//        {
+//            int size = getConn().getGroupById(groupID).getMemberList().size();
+//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
+//            for (String a: getConn().getGroupById(groupID).getMemberList())
+//            {
+//                System.out.println("    "+getConn().getAgentById(a).getName());
+//            }
+//        }
+//        System.out.println("--------------END-GROUP---------------------------");
+//        System.out.println();
+//        System.out.println();
 
 
-        System.out.println("-------------START-GROUP---------------------------");
-        for (String groupID : getConn().availableGroups())
-        {
-            int size = getConn().getGroupById(groupID).getMemberList().size();
-            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-            for (String a: getConn().getGroupById(groupID).getMemberList())
-            {
-                System.out.println("    "+getConn().getAgentById(a).getName());
-            }
-        }
-        System.out.println("--------------END-GROUP---------------------------");
-        System.out.println();
-        System.out.println();
-
-
-        if(getConn().getAgentById(this.getId()).getGroupId() == null ) 
+        if(getConn().getAgentById(this.getId()).getGroupId() == null)
         {
             System.out.println("Special agent needs special treetment: "+TestPoliticalAgent.special );
             return TestPoliticalAgent.special;
@@ -169,11 +169,23 @@ public class PoliticalAgentGroup extends AbstractAgent
             }
             //If the agent is not in a group or advisor didn't give a definitive answer then hunt
             //according to type
-                AgentType group_type = AgentType.AC;
-                if (this.getConn().getGroupById(special) != null)
-                    group_type = this.getConn().getGroupById(special).getGroupStrategy();
 
-            switch (group_type) /////THEO ADDED
+            AgentType group_type = AgentType.R;
+            if (getConn().getGroupById(this.getDataModel().getName()) == null){
+                System.out.println("Type for Agent-Group: " + this.getId() + " [" + this.getDataModel().getName()+ "] Not ");
+            }
+            else
+            {
+                group_type = this.getConn().getGroupById(this.getDataModel().getName()).getGroupStrategy();
+                this.getDataModel().setAgentType(group_type);
+                System.out.println("Type for Agent-Group [" + this.getDataModel().getName()+ "] : "+ group_type);
+
+                if (group_type == null)
+                {
+                    return null;
+                }
+            }
+            switch (group_type) /////THE0 ADDED
             {
                     //The choice is always to hunt stags
                     case AC:
@@ -639,7 +651,7 @@ public class PoliticalAgentGroup extends AbstractAgent
         @Override
         protected double updateEconomicBeliefAfterVotes(Proposition proposition, int votes, double overallMovement)
         {
-                        if (getConn().getGroupById(this.getDataModel().getName()) == null)
+            if (getConn().getGroupById(this.getDataModel().getName()) == null)
             {
                 //this.beforeNewRound();
                 return 0;
