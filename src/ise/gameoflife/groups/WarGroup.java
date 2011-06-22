@@ -10,14 +10,17 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
+import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.InteractionResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 /**
  *
@@ -26,6 +29,8 @@ import java.util.Random;
 public class WarGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;
 
+        public static Map<String, Double> socialBeliefs = new HashMap<String, Double>();
+        
 	@Deprecated
 	public WarGroup() {
 		super();
@@ -33,6 +38,7 @@ public class WarGroup extends AbstractGroupAgent {
 
 	public WarGroup(GroupDataInitialiser dm) {
 		super(dm);
+                
 	}
 
 	@Override
@@ -333,5 +339,13 @@ public class WarGroup extends AbstractGroupAgent {
         interactionResult.add(InteractionResult.NothingHappened, 0.0);
         return interactionResult;
     }
+
+//    public static double getSocialBelief(PublicGroupDataModel dm){
+//        if (socialBeliefs.get(dm.getId()) == null)
+//        {
+//            return 0;
+//        }
+//        return socialBeliefs.get(dm.getId());
+//    }
 }
 

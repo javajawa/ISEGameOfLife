@@ -7,6 +7,7 @@ package ise.gameoflife.agents;
 
 import ise.gameoflife.actions.Proposal.ProposalType;
 import ise.gameoflife.actions.Vote.VoteType;
+import ise.gameoflife.groups.WarGroup;
 import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.Food;
 import ise.gameoflife.models.HuntingTeam;
@@ -105,7 +106,7 @@ public class WarAgent extends AbstractAgent
             {
                 String groupID = i.next();
                 double deltaEconomic  = getDataModel().getEconomicBelief() - getConn().getGroupById(groupID).getCurrentEconomicPoisition();
-                double deltaSocial  = getDataModel().getSocialBelief() - getConn().getGroupById(groupID).getEstimatedSocialLocation();
+                double deltaSocial  = getDataModel().getSocialBelief() - WarGroup.socialBeliefs.get(groupID);
                 double vectorDistance = Math.sqrt(Math.pow(deltaEconomic, 2) + Math.pow(deltaSocial, 2));
                 if (vectorDistance < 0.1)
                 {
@@ -117,7 +118,10 @@ public class WarAgent extends AbstractAgent
         if (chosenGroup.equals(""))
         {
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-            return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
+            String newGroupID = getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
+            //TODO:The following line of code might solve the social position problem
+            WarGroup.socialBeliefs.put(newGroupID, getDataModel().getSocialBelief());
+            return newGroupID;
         }
 
         return chosenGroup;

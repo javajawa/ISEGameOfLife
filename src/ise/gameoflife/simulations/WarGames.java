@@ -13,6 +13,7 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
+import ise.gameoflife.plugins.GroupAgentInfo;
 import ise.gameoflife.plugins.GroupGraphs;
 import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
@@ -37,20 +38,19 @@ public class WarGames extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-                Random randomGenerator = new Random();
+                Random rand = new Random();
 
-addAgent(new WarAgent(20, 2, AgentType.AC, 0.1, 0.1));
-addAgent(new WarAgent(20, 2, AgentType.AC, 0.1, 0.12));
-addAgent(new WarAgent(20, 2, AgentType.AC, 0.99, 0.99));
-addAgent(new WarAgent(20, 2, AgentType.AC, 0.99, 0.97));
-//
-//		for (int i = 0; i < 5; i++)
-//		{
-//                        addAgent(new WarAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new WarAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new WarAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new WarAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//		}
+                //Communist group
+		for (int i = 0; i < 15; i++)
+		{
+                        addAgent(new WarAgent(20, 2, AgentType.AC, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+		}
+
+                //Fascist group
+                for (int i = 0; i < 15; i++)
+		{
+                        addAgent(new WarAgent(20, 2, AgentType.AC, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+		}
 
 	}
 
