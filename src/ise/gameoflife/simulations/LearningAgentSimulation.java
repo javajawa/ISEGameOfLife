@@ -49,8 +49,8 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	private final HashMap<String, Food> foods = new HashMap<String, Food>();
 	private final TreeMap<String, Participant> agents = new TreeMap<String, Participant>();
 	private final ArrayList<Class<? extends AbstractGroupAgent>> groups = new ArrayList<Class<? extends AbstractGroupAgent>>();
-	private final EventScriptManager ms = new EventScriptManager();
-	private final PluginManager pm = new PluginManager();
+	private final EventScriptManager scriptManager = new EventScriptManager();
+	private final PluginManager pluginManager = new PluginManager();
 
 	private ArrayList<String> geneticAgentIds = new ArrayList<String>();
 
@@ -70,8 +70,10 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		presageConfig.setAsync(false);
 		presageConfig.setEnvironmentClass(Environment.class);
 
-		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups, foodConsumedPerAdvice);
-		Environment e = new Environment(true, randomSeed, dm, BasicFreeAgentGroup.class);
+		EnvironmentDataModel envDataModel = new EnvironmentDataModel
+				(comment, foods, groups, foodConsumedPerAdvice);
+		Environment environment = new Environment
+				(true, randomSeed, envDataModel, BasicFreeAgentGroup.class);
 
 		NameGenerator.setRandomiser(new Random(randomSeed));
 		foods();
@@ -80,7 +82,8 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		plugins();
 		events();
 
-		this.simulation = new Simulation(presageConfig, agents, e, pm, ms);
+		this.simulation = new Simulation
+				(presageConfig, agents, environment, pluginManager, scriptManager);
 	}
 
 	public ArrayList<PublicAgentDataModel> agentDataModels()
@@ -174,7 +177,7 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	protected final void addAgent(AbstractAgent a)
 	{
 		agents.put(a.getId(), a);
-		ms.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
+		scriptManager.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
 	}
 
 	protected final void addGroup(Class<? extends AbstractGroupAgent> g)
@@ -184,7 +187,7 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 
 	protected final void addPlugin(Plugin p)
 	{
-		pm.addPlugin(p);
+		pluginManager.addPlugin(p);
 	}
 
 }
