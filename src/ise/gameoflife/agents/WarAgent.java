@@ -101,16 +101,17 @@ public class WarAgent extends AbstractAgent
 
         if(!groups.isEmpty())
         {
-            Iterator<String> i = groups.iterator();
-            while(i.hasNext())
+            for(String groupID : groups)
             {
-                String groupID = i.next();
-                double deltaEconomic  = getDataModel().getEconomicBelief() - getConn().getGroupById(groupID).getCurrentEconomicPoisition();
-                double deltaSocial  = getDataModel().getSocialBelief() - WarGroup.socialBeliefs.get(groupID);
-                double vectorDistance = Math.sqrt(Math.pow(deltaEconomic, 2) + Math.pow(deltaSocial, 2));
-                if (vectorDistance < 0.1)
+                if (!groupID.equals(WarAgent.special))
                 {
-                    chosenGroup = groupID;
+                        double deltaEconomic  = getDataModel().getEconomicBelief() - getConn().getGroupById(groupID).getCurrentEconomicPoisition();
+                        double deltaSocial  = getDataModel().getSocialBelief() - WarGroup.socialBeliefs.get(groupID);
+                        double vectorDistance = Math.sqrt(Math.pow(deltaEconomic, 2) + Math.pow(deltaSocial, 2));
+                        if (vectorDistance < 0.1)
+                        {
+                            chosenGroup = groupID;
+                        }
                 }
             }
         }
@@ -121,34 +122,30 @@ public class WarAgent extends AbstractAgent
             String newGroupID = getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
             //TODO:The following line of code might solve the social position problem
             WarGroup.socialBeliefs.put(newGroupID, getDataModel().getSocialBelief());
+            createGroupAgent(newGroupID); //Create the group agent
             return newGroupID;
         }
 
         return chosenGroup;
-  //Theo added
-//        boolean agentG = false;
-//        for (String ag : special_agents)
-//                if (this.getId().equals(ag))
-//                    agentG = true;
-//
-//        if(agentG) return special;
-//
+    }
 
-
-//                    //****** ADDED THEO
-//                    //GROUP INTO AGENTS
-//                    special_no++;
-//                    //Create special group
-//                    if(special_no == 1){
-//                        GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0.0);
-//                        special = getConn().createGroup(gtype, spGroup);
-//                        System.out.println("This is the special group: "+special+ "name: "+getConn().getGroupById(special).getName());
-//                    }
-//                    System.out.println("special number: " + special_no);
-//                    System.out.println("This is the special group: "+special+ "name: "+getConn().getGroupById(special).getName());
-//                    //Creates a political Agent-group
-//                    getConn().createAgent(0, 0.5, getConn().getGroupById(special).getCurrentEconomicPoisition() , chosenGroup); //CREATE a new AGENT-Group
-                    //*********
+    /**
+     * Creates the agent that represents a group
+     * @param chosenGroup : the name of the agent is equal to the group id representing
+     */
+    private void createGroupAgent(String chosenGroup){
+        //****** ADDED THEO
+        //GROUP INTO AGENTS
+        WarAgent.special_no++;
+        //Create special group
+        if(special_no == 1){
+            GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0.0);
+            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
+            WarAgent.special = getConn().createGroup(gtype, spGroup);
+        }
+        //Creates a political Agent-group
+        getConn().createAgent(0, 0.5, getConn().getGroupById(WarAgent.special).getCurrentEconomicPoisition() , chosenGroup); //CREATE a new AGENT-Group
+        //*********
 
     }
 
