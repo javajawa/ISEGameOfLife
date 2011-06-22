@@ -30,6 +30,7 @@ public class AgentSimulationEvolution
 	@Override
 	protected void evaluate(LearningAgentSimulation entity)
 	{
+		entity.run();
 		ArrayList<PublicAgentDataModel> agentDataModels = entity.agentDataModels();
 		for (PublicAgentDataModel dataModel : agentDataModels)
 		{
