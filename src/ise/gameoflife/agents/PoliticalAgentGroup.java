@@ -579,7 +579,14 @@ public class PoliticalAgentGroup extends AbstractAgent
             }
             else
             {
-                return getConn().getGroupById(this.getDataModel().getName()).getEstimatedSocialLocation();
+                List<String> group_members = getConn().getGroupById(this.getDataModel().getName()).getMemberList();
+                double size = group_members.size();
+                double social = 0;
+                for (String agentId : group_members)
+                {
+                      social += getConn().getAgentById(agentId).getSocialBelief();
+                }
+                return social/size;
             }
         }
 

@@ -5,6 +5,7 @@
 
 package ise.gameoflife.groups;
 
+import ise.gameoflife.agents.WarAgent;
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
@@ -54,6 +55,10 @@ public class WarGroup extends AbstractGroupAgent {
             {
                 //agent does not exist so invitation is denied
                 return false;
+            }
+            else if(this.getId().equals(WarAgent.special))
+            { //exception for the Special group
+                return true;
             }
             else
             {
@@ -125,6 +130,10 @@ public class WarGroup extends AbstractGroupAgent {
 
 	@Override
 	protected void onMemberLeave(String playerID, Reasons reason) {
+                if(this.getId().equals(WarAgent.special)){
+                    //do nothing
+                }
+                else{
                 //update economic belief of the group when the agent leaves the group
                 double size = this.getDataModel().getMemberList().size();
                 double economic = 0;
@@ -133,8 +142,9 @@ public class WarGroup extends AbstractGroupAgent {
                 }
                 economic = economic / (size);
                 this.setEconomicPosition(economic);
-                System.out.println("CANNOT HAPPEN: Agent: " + getConn().getAgentById(playerID).getName() + " left its group");
-	}
+                System.out.println("CANNOT HAPPEN: Agent: " + getConn().getAgentById(playerID).getName() + " left its group");	
+                }
+        }
 
 	@Override
 	protected void beforeNewRound() {

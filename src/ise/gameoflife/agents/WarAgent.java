@@ -139,12 +139,12 @@ public class WarAgent extends AbstractAgent
         WarAgent.special_no++;
         //Create special group
         if(special_no == 1){
-            GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0.0);
+            GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),1.0);
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             WarAgent.special = getConn().createGroup(gtype, spGroup);
         }
         //Creates a political Agent-group
-        getConn().createAgent(0, 0.5, getConn().getGroupById(WarAgent.special).getCurrentEconomicPoisition() , chosenGroup); //CREATE a new AGENT-Group
+        getConn().createAgent(0, getConn().getGroupById(WarAgent.special).getCurrentEconomicPoisition(),0.5 , chosenGroup); //CREATE a new AGENT-Group
         //*********
 
     }
