@@ -113,24 +113,27 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		this.addFood("Stag", 5, 2);
 	}
 
+	private int ordinal = 0;
+	private AgentType nextAgentType()
+	{
+		if (ordinal == AgentType.values().length)
+		{
+			ordinal = 0;
+		}
+		return AgentType.values()[ordinal++];
+	}
+
 	protected void agents()
 	{
 		Random rand = new Random(this.randomSeed);
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < genome.population()/2; i++)
 		{
 			// genetic agents
-			GeneticAgent agent = new GeneticAgent(genome);
-			geneticAgentIds.add(agent.getId());
-			this.addAgent(agent);
+			this.addAgent(new GeneticAgent(genome));
 			// competing agents
 			this.addAgent(new TestPoliticalAgent
-				 (20, 2, AgentType.AC, rand.nextDouble(), rand.nextDouble()));
-			this.addAgent(new TestPoliticalAgent
-				 (20, 2, AgentType.TFT, rand.nextDouble(), rand.nextDouble()));
-			this.addAgent(new TestPoliticalAgent
-				 (20, 2, AgentType.AD, rand.nextDouble(), rand.nextDouble()));
-			this.addAgent(new TestPoliticalAgent
-				 (20, 2, AgentType.R, rand.nextDouble(), rand.nextDouble()));
+				 (genome.initialFood(), genome.consumption(),
+				  this.nextAgentType(), rand.nextDouble(), rand.nextDouble()));
 		}
 	}
 
@@ -151,11 +154,6 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 	public void setGenome(SimulationGenome genome)
 	{
 		this.genome = genome;
-
-		if (null == genome)
-		{
-			return;
-		}
 
 		this.comment = genome.comment();
 		this.iterations = genome.iterations();
@@ -183,6 +181,13 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 
 	protected final void addAgent(AbstractAgent a)
 	{
+		// keep track of all genetic agents
+		// will need them to tell how well they performed
+		if (a.getClass() == GeneticAgent.class)
+		{
+			geneticAgentIds.add(a.getId());
+		}
+
 		agents.put(a.getId(), a);
 		scriptManager.addPreEvent(new ScriptedEvent(-1, new ActivateParticipant(a.getId())));
 	}
