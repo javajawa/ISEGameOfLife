@@ -27,17 +27,22 @@ public class SimulationEvolution
 		return genome;
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void evaluate(GeneticAgentSimulation entity)
 	{
 		entity.run();
-		ArrayList<PublicAgentDataModel> agentDataModels = entity.agentDataModels();
-		for (PublicAgentDataModel dataModel : agentDataModels)
+
+		double fitness = 0;
+
+		for (PublicAgentDataModel dataModel : entity.agentDataModels())
 		{
-			// dataModel.getHappinessHistory();
+			if (null == dataModel)
+			{
+				continue;
+			}
+			fitness += dataModel.getCurrentHappiness();
 		}
-		entity.setFitness(0); // TODO proper evaluation
+		entity.setFitness(fitness);
 	}
 
 	@Override
