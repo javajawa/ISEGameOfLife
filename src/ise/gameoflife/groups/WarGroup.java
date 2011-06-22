@@ -49,7 +49,26 @@ public class WarGroup extends AbstractGroupAgent {
 
 	@Override
 	protected boolean respondToJoinRequest(String playerID) {
-            return true;
+
+            if (getConn().getAgentById(playerID) == null) //ADDED THE0
+            {
+                //agent does not exist so invitation is denied
+                return false;
+            }
+            else
+            {
+                    //agent can join, so update economic beliefs
+                    double size = this.getDataModel().getMemberList().size();
+                    double economic = 0;
+                    for (String members : getDataModel().getMemberList()){
+                        if (getConn().getAgentById(members) != null)   //GIVES PROBLEMS
+                            economic += getConn().getAgentById(members).getEconomicBelief();
+                    }
+                    economic += getConn().getAgentById(playerID).getEconomicBelief();
+                    economic = economic / (size+1);
+                    setEconomicPosition(economic);
+                    return true;
+            }
 	}
 
 	private Comparator<String> c = new Comparator<String>() {
