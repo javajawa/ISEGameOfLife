@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package ise.gameoflife.groups;
 
-import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
@@ -21,28 +21,28 @@ import java.util.List;
 import java.util.Random;
 /**
  *
- * @author Aadil
+ * @author The0s
  */
-public class TestPoliticalGroup extends AbstractGroupAgent {
+public class WarGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;
 
 	@Deprecated
-	public TestPoliticalGroup() {
+	public WarGroup() {
 		super();
 	}
 
-	public TestPoliticalGroup(GroupDataInitialiser dm) {
+	public WarGroup(GroupDataInitialiser dm) {
 		super(dm);
 	}
 
 	@Override
 	protected void onActivate() {
                 this.setGroupStrategy(AgentType.R); //ADDED The0
-            
+
 	}
 
 	@Override
-	protected boolean respondToJoinRequest(String playerID) {    
+	protected boolean respondToJoinRequest(String playerID) {
 
 
             if (getDataModel().getMemberList().isEmpty())
@@ -133,14 +133,40 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         {
 		ArrayList<HuntingTeam> teams = new ArrayList <HuntingTeam>();
 		List<String> members = new ArrayList<String>(getDataModel().getMemberList());
+                List<String> members_with_strategy = new ArrayList<String>();
+                List<String> members_without_strategy = new ArrayList<String>();
                 Collections.sort(members, c);
 
+                //int agents = members.size();
+                //Check if they have a strategy  ADDED THE0
+//                for (String mem : members)
+//                {
+//                    if (getConn().getAgentById(mem) != null)
+//                    {
+//                        if (getConn().getAgentById(mem).getAgentType() != null)
+//                        {
+//                            members_with_strategy.add(mem);
+//                        }
+//                        else
+//                        {
+//                            members_without_strategy.add(mem);
+//                        }
+//                    }
+//                }
 
                 int agents = members.size();
+//                int agents_s = members_with_strategy.size();
+//                int agents_no_s = members_without_strategy.size();
+
 		for(int i=0; i < agents; i += 2){
-			int ubound = (i + 2 >= agents) ? agents : i + 2;                  
+			int ubound = (i + 2 >= agents) ? agents : i + 2;
 			teams.add(new HuntingTeam(members.subList(i, ubound)));
                 }
+
+//                for(int i=0; i < agents_no_s; i += 2){
+//			int ubound = (i + 2 >= agents_no_s) ? agents_no_s : i + 2;
+//			teams.add(new HuntingTeam(members_without_strategy.subList(i, ubound)));
+//                }
 
                 return teams;
 	}
@@ -162,11 +188,11 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             if (getDataModel().getMemberList().size() != 1)
             {
                 List<String> newPanel = updatePanel();
-                this.setPanel(newPanel);    
+                this.setPanel(newPanel);
             }
             this.setGroupStrategy(decideGroupStrategy());
 	}
-        
+
     /**
     * This method updates the panel for this group. The panel is the set of leaders in this group
     * The size of the panel depends on the social position of the group. If it is at the very top
@@ -175,7 +201,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     * @return The new panel members.
     */
         private List<String> updatePanel(){
-            
+
             double groupSocialPosition;
             int population, panelSize;
 
@@ -195,22 +221,22 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
 
             //STEP 2: Get the average trust of each agent in the group
             List< Tuple<String, Double> > panelCandidates = new LinkedList< Tuple<String, Double> >();
-            
+
             List<String> groupMembers = getDataModel().getMemberList();
 
             for (String candidate: groupMembers )
-            { 
+            {
                 double sum = 0;
                 int numKnownTrustValues = 0;
                 for (String member: groupMembers )
-                { 
+                {
                     if ((getConn().getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
                     {
                         sum += getConn().getAgentById(member).getTrust(candidate);
                         numKnownTrustValues++;
                     }
                 }
-                
+
                 Tuple<String, Double> tuple;
                 if (numKnownTrustValues != 0)
                 {
@@ -219,11 +245,11 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 }
             }
             //STEP 2 END
-            
+
             //STEP 3: Sort the agents in descending order of trust values
             Collections.sort(panelCandidates, d);
             //STEP 3 END
-            
+
             //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
             //Note that eventhough an agent is a candidate its trust must be above a threshold to become member of the panel.
             //The threshold is the social position. If the group is highly authoritarian then anyone with a trust value
@@ -242,7 +268,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
                 }
             }
             //STEP 4 END
-            
+
             return newPanel;
         }
 
@@ -300,7 +326,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     }
 
     private List<Tuple<AgentType, Double>> getStrategyPreferences(List<String> agents) {
-        
+
         int population = agents.size();
 
         Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
@@ -366,10 +392,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
     protected double decideTaxForReservePool() {
         return 0;
     }
-    
+
     @Override
     protected Tuple<AgentType, Double> makePayments()
-    {      
+    {
         return new Tuple<AgentType, Double>(this.getDataModel().getGroupStrategy(), this.getDataModel().getCurrentReservedFood());
     }
 
@@ -381,3 +407,4 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
         return interactionResult;
     }
 }
+

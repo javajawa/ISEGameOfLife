@@ -48,9 +48,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         private Environment en;
 
         // Set of political participants that are active
-        //private TreeMap<String, AbstractAgent> p_players = new TreeMap<String, AbstractAgent>();
         private TreeMap<String, AbstractAgent> p_players = new TreeMap<String, AbstractAgent>();
-
         private TreeMap<String, AbstractAgent> agent_groups = new TreeMap<String, AbstractAgent>();
 
         double correction = 1; //scale the agents
@@ -236,7 +234,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
             }
             catch (Exception e)
                 {
-                        System.out.println("Error in mapping: " + e.getMessage());
+                        System.out.println("Error in Drawing the agents,lines or groups: " + e.getMessage());
                 }
         }
 
@@ -248,24 +246,6 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
             try{
                  if (!agent_groups.isEmpty()){
                         drawGroupLines(g,Color.BLUE, agent_groups);
-//                        for(Map.Entry<String, AbstractAgent> entry1 : agent_groups.entrySet())
-//                        {
-//                            PublicAgentDataModel agent1_dm = entry1.getValue().getDataModel();
-//                           if(agent1_dm.getGroupId() != null && PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getMemberList().size() > 1)
-//                            {
-//                                for(Map.Entry<String, AbstractAgent> entry2 : agent_groups.entrySet())
-//                                {
-//                                    PublicAgentDataModel agent2_dm = entry2.getValue().getDataModel();
-//
-//                                }
-//
-//                            if ( sim.isParticipantActive(entry1.getValue().getId() )){
-//                                    //drawAgent-group
-//                                    float hue = getGroupColour(entry1.getValue().getDataModel().getGroupId());
-//                                    g.setColor(Color.getHSBColor( hue, 1, 1));
-//                                    if (entry1.getValue().getId() != null)
-//                                        drawAgent(g, entry1.getValue(),3);
-//                            }
                         }
                 }
          
@@ -278,6 +258,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
         /**
          * Draws a circle representing an agent's political views location and lines representing the groups
          * @param g Graphics objects
+         * @param agent_c colour of the lines joining the agents
+         * @param players TreeMap of the AbstractAgents to draw
          */
         private void drawGroupLines(Graphics g, Color agent_c, TreeMap<String,AbstractAgent> players){
                 double x1,y1,x2,y2;
@@ -473,7 +455,5 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	public void onSimulationComplete()
 	{
 
-
 	}
-
 }
