@@ -84,9 +84,9 @@ addAgent(new WarAgent(20, 2, AgentType.AC, 0.99, 0.97));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
-                addPlugin(new HunterInfo());
-                addPlugin(new GroupInfo());
-                addPlugin(new GroupGraphs());
+                //addPlugin(new HunterInfo());
+                //addPlugin(new GroupInfo());
+                //addPlugin(new GroupGraphs());
 	}
 
 	@Override
