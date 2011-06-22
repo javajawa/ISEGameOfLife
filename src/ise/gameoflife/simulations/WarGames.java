@@ -45,13 +45,13 @@ addAgent(new WarAgent(20, 2, AgentType.AC, 0.1, 0.12));
 addAgent(new WarAgent(20, 2, AgentType.AC, 0.99, 0.99));
 addAgent(new WarAgent(20, 2, AgentType.AC, 0.99, 0.97));
 //
-//		for (int i = 0; i < 5; i++)
-//		{
-//                        addAgent(new WarAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new WarAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new WarAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new WarAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//		}
+		for (int i = 0; i < 10; i++)
+		{
+                        addAgent(new WarAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new WarAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new WarAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new WarAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+		}
 
 	}
 
