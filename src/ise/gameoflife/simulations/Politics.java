@@ -32,8 +32,6 @@ public class Politics extends GenericSimulation
 	protected void agents()
 	{
                 Random randomGenerator = new Random();
-
-
               
 		for (int i = 0; i < 50; i++)
 		{

@@ -460,6 +460,7 @@ public class LoansInfo extends JPanel implements Plugin {
                    spaces + averageHappiness+
                    spaces + LoansGroup.getGreediness(dm));
        }
+       data.add("*Note: Amounts given and amounts borrowed may not balance because dead groups are not displayed in this summary");
    }
 
      private void updateLoanPlayers(SortedSet<String> active_agent_ids, Iterator<String> itera)
