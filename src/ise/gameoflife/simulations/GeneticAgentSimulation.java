@@ -207,6 +207,12 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		SimulationGenome genome = new SimulationGenome();
 		GeneticAgentSimulation sim = new GeneticAgentSimulation(genome);
 		sim.run();
+		ArrayList<PublicAgentDataModel> agentDataModels = sim.agentDataModels();
+		for (PublicAgentDataModel dataModel : agentDataModels)
+		{
+			if (null == dataModel) continue;
+			System.out.println(dataModel.getName() + ": " + dataModel.getCurrentHappiness());
+		}
 	}
 
 }
