@@ -13,6 +13,7 @@ import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
+import ise.gameoflife.plugins.GroupAgentInfo;
 import ise.gameoflife.plugins.GroupGraphs;
 import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
@@ -85,6 +86,7 @@ addAgent(new WarAgent(20, 2, AgentType.AC, 0.99, 0.97));
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
                 addPlugin(new HunterInfo());
+                addPlugin(new GroupAgentInfo());
                 addPlugin(new GroupInfo());
                 addPlugin(new GroupGraphs());
 	}

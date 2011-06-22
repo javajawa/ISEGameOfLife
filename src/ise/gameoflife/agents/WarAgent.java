@@ -223,16 +223,6 @@ public class WarAgent extends AbstractAgent
 
         String chosenGroup = "";
 
-  //Theo added
-//        boolean agentG = false;
-//        for (String ag : special_agents)
-//                if (this.getId().equals(ag))
-//                    agentG = true;
-//
-//        if(agentG) return special;
-
-
-
         //If you're not available to group and you are part of a group already
         //Note: an agent is allowed to not be free to group and not be part of a group,
         //      this agent would be waiting to receive an invitation or wants to return one
@@ -294,7 +284,7 @@ public class WarAgent extends AbstractAgent
         //Assess each group in turn
         for (String groupID: getConn().availableGroups())
         {
-            //proceed, only if, this is a group with two members or more
+            //proceed, only if, this is a group with two members or more And do not enter special
             if (getConn().getGroupById(groupID).getMemberList().size() >= 2 && !special.equals(groupID)) //ADDED THE0
             {
                 int numKnownTrustValues = 0;

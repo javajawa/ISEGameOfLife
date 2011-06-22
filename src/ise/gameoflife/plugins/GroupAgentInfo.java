@@ -30,7 +30,7 @@ import presage.Simulation;
  *
  * @author The0s
  */
-public class HunterInfo extends JPanel implements Plugin
+public class GroupAgentInfo extends JPanel implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 
@@ -146,7 +146,7 @@ public class HunterInfo extends JPanel implements Plugin
                 }
 	}
 
-	private final static String label = "Hunter Logs";
+	private final static String label = "GroupAgent Info";
 
 	private Simulation sim;
 	private PublicEnvironmentConnection ec = null;
@@ -158,7 +158,7 @@ public class HunterInfo extends JPanel implements Plugin
 	private int barWidth;
 	private int graphHeight = 50;
 
-	public HunterInfo()
+	public GroupAgentInfo()
 	{
 		// Nothing to see here. Move along, citizen!
 	}
@@ -173,13 +173,13 @@ public class HunterInfo extends JPanel implements Plugin
                 panels.clear();
                 //this.removeAll();
                 this.window.removeAll();
-                
+
                 TreeMap<String, String> name_id_map = new TreeMap<String, String>();
 
                 // Create a set sorted alphabetically by human readable name
 		for (String aid : sim.getactiveParticipantIdSet("hunter"))
 		{
-                        if( ec.getAgentById(aid).getGroupId() == null || !ec.getAgentById(aid).getGroupId().equals(WarAgent.special))
+                        if( ec.getAgentById(aid).getGroupId() != null && ec.getAgentById(aid).getGroupId().equals(WarAgent.special))
                             name_id_map.put(ec.getAgentById(aid).getName(), aid);
 		}
 
@@ -191,7 +191,7 @@ public class HunterInfo extends JPanel implements Plugin
 				panels.put(aid, new HunterPanel(ec.getAgentById(aid)));
                                 panels.get(aid).updateData();
                         }
-			
+
                 }
 		validate();
 

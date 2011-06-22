@@ -41,8 +41,8 @@ public class TestPoliticalAgent extends AbstractAgent
 
 	private static final long serialVersionUID = 1L;
 
-        public static String special= null;
-        private static int special_no=0;
+//        public static String special= null;
+//        private static int special_no=0;
 
         private String invitationToGroup = null;
        
@@ -302,7 +302,7 @@ public class TestPoliticalAgent extends AbstractAgent
         for (String groupID: getConn().availableGroups())
         {
             //proceed, only if, this is a group with two members or more
-            if (getConn().getGroupById(groupID).getMemberList().size() >= 2 && !special.equals(groupID)) //ADDED THE0
+            if (getConn().getGroupById(groupID).getMemberList().size() >= 2)// && !special.equals(groupID)) //ADDED THE0
             {
                 int numKnownTrustValues = 0;
                 double trustSum = 0;

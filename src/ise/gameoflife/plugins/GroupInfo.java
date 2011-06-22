@@ -5,6 +5,7 @@
 
 package ise.gameoflife.plugins;
 
+import ise.gameoflife.agents.WarAgent;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
@@ -107,7 +108,13 @@ public class GroupInfo extends JPanel implements Plugin
 
                         JPanel dataPanel = new JPanel(new GridLayout(4, 2, 1, -1));
 
-                        dataPanel.add(labelise(this.gm.getName(),8));
+                        String name = this.gm.getName();
+                        if (this.gm.getId() == null ? WarAgent.special == null : this.gm.getId().equals(WarAgent.special))
+                        {
+                            name = name + " - Special Group-Agents";
+                        }
+
+                        dataPanel.add(labelise(name,8));
 			dataPanel.add(labelise("Size: "+ this.gm.getMemberList().size()));
 
                         dataPanel.add(labelise("Economic: "+Economic));
