@@ -63,46 +63,46 @@ public class WarGroup extends AbstractGroupAgent {
             }
             else
             {
-                double maxDistance = Math.sqrt(2);
-                int numKnownTrustValues = 0;
-                double trustSum = 0;
-
-                //Retieve the trust value between requester and the group
-                for (String trustor : this.getDataModel().getMemberList())
-                {
-                        if (getConn().getAgentById(trustor).getTrust(playerID) != null)
-                        {
-                                trustSum += getConn().getAgentById(trustor).getTrust(playerID);
-                                numKnownTrustValues++;
-                        }
-                }
-
-                //Calculate the vector distance between these two agents socio-economic beliefs
-                double economic = getConn().getAgentById(playerID).getEconomicBelief() - getDataModel().getCurrentEconomicPoisition();//change in X
-                double social = getConn().getAgentById(playerID).getSocialBelief() - getDataModel().getEstimatedSocialLocation();//change in Y
-                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
-
-                //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
-                //higher probability of joining this group
-                double esFaction = 1 - (vectorDistance / maxDistance);
-
-                double heuristicValue;
-                if (numKnownTrustValues != 0)
-                {
-                    //The actual heuristic value is calculated. The politics is more important for compatibility than
-                    //trust when a group decides on the request, but trust does contribute signicantly
-                    heuristicValue = 0.4*(trustSum/numKnownTrustValues) + 0.6*esFaction;
-                }
-                else
-                {
-                    heuristicValue = 0.6*esFaction;
-                }
-
-                if (heuristicValue > 0.5)
-                {
+//                double maxDistance = Math.sqrt(2);
+//                int numKnownTrustValues = 0;
+//                double trustSum = 0;
+//
+//                //Retieve the trust value between requester and the group
+//                for (String trustor : this.getDataModel().getMemberList())
+//                {
+//                        if (getConn().getAgentById(trustor).getTrust(playerID) != null)
+//                        {
+//                                trustSum += getConn().getAgentById(trustor).getTrust(playerID);
+//                                numKnownTrustValues++;
+//                        }
+//                }
+//
+//                //Calculate the vector distance between these two agents socio-economic beliefs
+//                double economic = getConn().getAgentById(playerID).getEconomicBelief() - getDataModel().getCurrentEconomicPoisition();//change in X
+//                double social = getConn().getAgentById(playerID).getSocialBelief() - getDataModel().getEstimatedSocialLocation();//change in Y
+//                double vectorDistance = Math.sqrt(Math.pow(economic, 2) + Math.pow(social, 2));
+//
+//                //The longer the distance the lower the esFaction is. Therefore, agents close to group's beliefs have
+//                //higher probability of joining this group
+//                double esFaction = 1 - (vectorDistance / maxDistance);
+//
+//                double heuristicValue;
+//                if (numKnownTrustValues != 0)
+//                {
+//                    //The actual heuristic value is calculated. The politics is more important for compatibility than
+//                    //trust when a group decides on the request, but trust does contribute signicantly
+//                    heuristicValue = 0.4*(trustSum/numKnownTrustValues) + 0.6*esFaction;
+//                }
+//                else
+//                {
+//                    heuristicValue = 0.6*esFaction;
+//                }
+//
+//                if (heuristicValue > 0.5)
+//                {
                     //agent can join, so update economic beliefs
                     double size = this.getDataModel().getMemberList().size();
-                    economic = 0;
+                    double economic = 0;
                     for (String members : getDataModel().getMemberList()){
                         if (getConn().getAgentById(members) != null)   //GIVES PROBLEMS
                             economic += getConn().getAgentById(members).getEconomicBelief();
@@ -111,11 +111,11 @@ public class WarGroup extends AbstractGroupAgent {
                     economic = economic / (size+1);
                     setEconomicPosition(economic);
                     return true;
-                }
-                else
-                {
-                    return false;
-                }
+//                }
+//                else
+//                {
+//                    return false;
+//                }
             }
 	}
 
