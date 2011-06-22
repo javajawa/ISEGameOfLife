@@ -5,7 +5,8 @@
 
 package ise.gameoflife.simulations;
 
-import ise.gameoflife.agents.TestPoliticalAgent;
+import ise.gameoflife.agents.WarAgent;
+import ise.gameoflife.agents.WarAgent;
 import ise.gameoflife.groups.WarGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.models.GroupDataInitialiser;
@@ -38,17 +39,17 @@ public class WarGames extends GenericSimulation
 	{
                 Random randomGenerator = new Random();
 
-addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.1, 0.1));
-addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.1, 0.12));
-addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.99, 0.99));
-addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.99, 0.97));
+addAgent(new WarAgent(20, 2, AgentType.AC, 0.1, 0.1));
+addAgent(new WarAgent(20, 2, AgentType.AC, 0.1, 0.12));
+addAgent(new WarAgent(20, 2, AgentType.AC, 0.99, 0.99));
+addAgent(new WarAgent(20, 2, AgentType.AC, 0.99, 0.97));
 //
 //		for (int i = 0; i < 5; i++)
 //		{
-//                        addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-//			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//                        addAgent(new WarAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new WarAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new WarAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+//			addAgent(new WarAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 //		}
 
 	}

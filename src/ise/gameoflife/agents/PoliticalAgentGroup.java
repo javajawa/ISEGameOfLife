@@ -41,8 +41,8 @@ public class PoliticalAgentGroup extends AbstractAgent
 {
 
 	private static final long serialVersionUID = 1L;
-        private static String special= null;
-        private static int special_no=0;
+//        private static String special= null;
+//        private static int special_no=0;
 
         private String invitationToGroup = null;
 
@@ -121,8 +121,8 @@ public class PoliticalAgentGroup extends AbstractAgent
 
         if(getConn().getAgentById(this.getId()).getGroupId() == null)
         {
-            System.out.println("Agent-Group [ "+ this.getDataModel().getName() +  " ]enters Special Group: " + TestPoliticalAgent.special );
-            return TestPoliticalAgent.special;
+            System.out.println("Agent-Group [ "+ this.getDataModel().getName() +  " ]enters Special Group: " + WarAgent.special );
+            return WarAgent.special;
         }
         else return null;
         //return can either be null or a String (which is the group)
