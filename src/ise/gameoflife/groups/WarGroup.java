@@ -85,8 +85,8 @@ public class WarGroup extends AbstractGroupAgent {
         {
 		ArrayList<HuntingTeam> teams = new ArrayList <HuntingTeam>();
 		List<String> members = new ArrayList<String>(getDataModel().getMemberList());
-                List<String> members_with_strategy = new ArrayList<String>();
-                List<String> members_without_strategy = new ArrayList<String>();
+//                List<String> members_with_strategy = new ArrayList<String>();
+//                List<String> members_without_strategy = new ArrayList<String>();
                 Collections.sort(members, c);
 
                 //int agents = members.size();
@@ -133,6 +133,7 @@ public class WarGroup extends AbstractGroupAgent {
                 }
                 economic = economic / (size);
                 this.setEconomicPosition(economic);
+                System.out.println("CANNOT HAPPEN: Agent: " + getConn().getAgentById(playerID).getName() + " left its group");
 	}
 
 	@Override
