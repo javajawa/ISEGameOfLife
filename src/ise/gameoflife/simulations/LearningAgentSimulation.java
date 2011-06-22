@@ -66,8 +66,8 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		presageConfig.setComment(comment);
 		presageConfig.setIterations(iterations);
 		presageConfig.setRandomSeed(randomSeed);
-		presageConfig.setThreadDelay(1);
 		presageConfig.setAutorun(true);
+		presageConfig.setAsync(false);
 		presageConfig.setEnvironmentClass(Environment.class);
 
 		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups, foodConsumedPerAdvice);
