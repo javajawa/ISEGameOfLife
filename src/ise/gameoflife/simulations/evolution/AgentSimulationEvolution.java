@@ -1,6 +1,9 @@
 package ise.gameoflife.simulations.evolution;
 
+import java.util.ArrayList;
+
 import ise.gameoflife.genetics.Evolution;
+import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.simulations.LearningAgentSimulation;
 
 public class AgentSimulationEvolution
@@ -27,7 +30,12 @@ public class AgentSimulationEvolution
 	@Override
 	protected void evaluate(LearningAgentSimulation entity)
 	{
-		// TODO Evaluation of entity
+		ArrayList<PublicAgentDataModel> agentDataModels = entity.agentDataModels();
+		for (PublicAgentDataModel dataModel : agentDataModels)
+		{
+			// dataModel.getHappinessHistory();
+		}
+		entity.setFitness(0); // TODO proper evaluation
 	}
 
 	@Override
