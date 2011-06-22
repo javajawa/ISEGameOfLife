@@ -34,7 +34,7 @@ import presage.Simulation;
  * @author admko
  *
  */
-public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
+public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 {
 
 	private SimulationGenome genome = null;
@@ -44,6 +44,7 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	private int iterations = 0;
 	private double foodConsumedPerAdvice = 0;
 	private long randomSeed = 0;
+	@SuppressWarnings("unused")
 	private Simulation simulation;
 
 	private final HashMap<String, Food> foods = new HashMap<String, Food>();
@@ -54,7 +55,7 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 
 	private ArrayList<String> geneticAgentIds = new ArrayList<String>();
 
-	public LearningAgentSimulation(SimulationGenome genome)
+	public GeneticAgentSimulation(SimulationGenome genome)
 	{
 		super();
 		this.setGenome(genome);
@@ -150,6 +151,12 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	public void setGenome(SimulationGenome genome)
 	{
 		this.genome = genome;
+
+		if (null == genome)
+		{
+			return;
+		}
+
 		this.comment = genome.comment();
 		this.iterations = genome.iterations();
 		this.randomSeed = genome.randomSeed();
@@ -188,6 +195,13 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	protected final void addPlugin(Plugin p)
 	{
 		pluginManager.addPlugin(p);
+	}
+
+	public static void main(String[] args)
+	{
+		SimulationGenome genome = new SimulationGenome();
+		GeneticAgentSimulation sim = new GeneticAgentSimulation(genome);
+		sim.run();
 	}
 
 }

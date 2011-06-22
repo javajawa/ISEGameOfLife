@@ -4,19 +4,19 @@ import java.util.ArrayList;
 
 import ise.gameoflife.genetics.Evolution;
 import ise.gameoflife.participants.PublicAgentDataModel;
-import ise.gameoflife.simulations.LearningAgentSimulation;
+import ise.gameoflife.simulations.GeneticAgentSimulation;
 
-public class AgentSimulationEvolution
-	extends Evolution<SimulationGenome, LearningAgentSimulation>
+public class SimulationEvolution
+	extends Evolution<SimulationGenome, GeneticAgentSimulation>
 {
 
 	private final float elitistProportion = 0.10f;
 	private long randSeed = System.currentTimeMillis();
 
 	@Override
-	protected LearningAgentSimulation newEntity(SimulationGenome genome)
+	protected GeneticAgentSimulation newEntity(SimulationGenome genome)
 	{
-		return new LearningAgentSimulation(genome);
+		return new GeneticAgentSimulation(genome);
 	}
 
 	@Override
@@ -27,8 +27,9 @@ public class AgentSimulationEvolution
 		return genome;
 	}
 
+	@SuppressWarnings("unused")
 	@Override
-	protected void evaluate(LearningAgentSimulation entity)
+	protected void evaluate(GeneticAgentSimulation entity)
 	{
 		entity.run();
 		ArrayList<PublicAgentDataModel> agentDataModels = entity.agentDataModels();
@@ -40,7 +41,7 @@ public class AgentSimulationEvolution
 	}
 
 	@Override
-	protected boolean select(int rank, LearningAgentSimulation entity)
+	protected boolean select(int rank, GeneticAgentSimulation entity)
 	{
 		if (rank <= 1)
 		{
@@ -57,7 +58,7 @@ public class AgentSimulationEvolution
 
 	public static void main(String[] args)
 	{
-		AgentSimulationEvolution evolution = new AgentSimulationEvolution();
+		SimulationEvolution evolution = new SimulationEvolution();
 		evolution.setIterations(1000);
 		evolution.setPopulation(50);
 		evolution.evolve();
