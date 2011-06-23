@@ -31,6 +31,8 @@ public class WarGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;
 
         public static Map<String, Double> socialBeliefs = new HashMap<String, Double>();
+        private List< String > allyList = new LinkedList< String >();
+        private static final double priceToWar = 150;
         
 	@Deprecated
 	public WarGroup() {
@@ -351,6 +353,49 @@ public class WarGroup extends AbstractGroupAgent {
         }
     };
 
+    /*
+     * The following function would have to occur right after the group itself makes the decision,
+     * so right after decideGroupStrategy, I am assuming here that no one part of the alliance
+     * plays the game outside the alliance and the chance of war comes from only alliances.
+     * It's very simple at the moment and can be extenede to do alot more
+     */
+//    private AgentType considerAlly()
+//    {
+//        //all groups constantly update their ally list whenever one joins the alliance
+//        //the comparator is sorting their reserves in decreasing order
+//        Collections.sort(allyList, allyReserveComparator);
+//                
+//        if(!allyList.isEmpty())
+//        { 
+//            double bestAllyReserveValue = getConn().getGroupById(allyList.get(0)).getCurrentReservedFood();
+//            double myReserveValue = bestAllyReserveValue;
+//            double antiWarDesire;
+//
+//            //If you are not as wealthy or just as wealthy as the best ally
+//            if(bestAllyReserveValue >= myReserveValue)
+//            {        
+//                antiWarDesire = bestAllyReserveValue - myReserveValue;
+//                if(antiWarDesire < priceToWar)
+//                {
+//                    return getConn().getGroupById(allyList.get(0)).getGroupStrategy();
+//                }
+//                else
+//                {
+//                    return this.getDataModel().getGroupStrategy();
+//                }
+//            }
+//            else//otherwise you are the best of the alliance
+//            {
+//                return this.getDataModel().getGroupStrategy();
+//            }
+//        }
+//        else
+//        {
+//            //you dont have any allies
+//            return this.getDataModel().getGroupStrategy();
+//        }
+//    }    
+    
     @Override
     protected double decideTaxForReservePool() {
         return 0;
