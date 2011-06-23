@@ -26,11 +26,11 @@ final class BuildSimulations
 		DoubleAgent.class,
 		AgentsAndGroup.class,
 		Politics_old.class,
-                Politics.class,
-		CLIPolitics.class,
+		Politics.class,
+		Politics.class,
 		FreeAgentsTest.class,
-                Loans.class,
-                WarGames.class
+		Loans.class,
+		WarGames.class
 	};
 
 	private BuildSimulations()

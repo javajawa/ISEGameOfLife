@@ -33,18 +33,22 @@ abstract public class GenericSimulation
 	private final ArrayList<Class<? extends AbstractGroupAgent>> groups = new ArrayList<Class<? extends AbstractGroupAgent>>();
 	private final EventScriptManager ms = new EventScriptManager();
 	private final PluginManager pm = new PluginManager();
-	private String configPath;
-        
-        protected final long randomSeed;
+	private final String configPath;
+	protected final long randomSeed;
 	
 	protected final String comment;
 
-	@SuppressWarnings("OverridableMethodCallInConstructor")
 	GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice)
+	{
+		this(comment, iterations, randomSeed, foodConsumedPerAdvice, "");
+	}
+
+	@SuppressWarnings("OverridableMethodCallInConstructor")				
+	GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice, String suffix)
 	{
 		PresageConfig presageConfig = new PresageConfig();
 		this.comment = comment;
-                this.randomSeed = randomSeed;
+		this.randomSeed = randomSeed;
 		presageConfig.setComment(comment);
 		presageConfig.setIterations(iterations);
 		presageConfig.setRandomSeed(randomSeed);
@@ -52,8 +56,9 @@ abstract public class GenericSimulation
 		presageConfig.setAutorun(false);
 		presageConfig.setEnvironmentClass(Environment.class);
 
+		File rootFile = new File(System.getProperty("user.dir"));
 		// Path configuarations
-		File path = new File(System.getProperty("user.dir"), "simulations/" + this.getClass().getSimpleName());
+		File path = new File(rootFile, "simulations/" + this.getClass().getSimpleName() + suffix);
 		configPath = path.getAbsolutePath();
 
 		presageConfig.setPluginsConfigPath(configPath + "/plugins.xml");
@@ -103,7 +108,7 @@ abstract public class GenericSimulation
 		pm.addPlugin(p);
 	}
 
-	protected final String getPath()
+	public final String getPath()
 	{
 		return configPath;
 	}
