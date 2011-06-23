@@ -6,7 +6,9 @@
 package ise.gameoflife.simulations;
 
 import ise.gameoflife.agents.PoliticalAgent;
+import ise.gameoflife.groups.PoliticalGroup;
 import ise.gameoflife.groups.TestPoliticalGroup;
+import ise.gameoflife.groups.WarGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
@@ -40,7 +42,7 @@ public class Politics extends GenericSimulation
                 Random randomGenerator = new Random();
 
 
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 10; i++)
 		{
                         addAgent(new PoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			addAgent(new PoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
@@ -60,7 +62,8 @@ public class Politics extends GenericSimulation
 	@Override
 	protected void groups()
 	{
-              addGroup(TestPoliticalGroup.class);
+              addGroup(PoliticalGroup.class);
+              addGroup(WarGroup.class);
 	}
 
 	@Override

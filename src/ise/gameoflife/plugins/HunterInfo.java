@@ -5,7 +5,7 @@
 
 package ise.gameoflife.plugins;
 
-import ise.gameoflife.agents.WarAgent;
+import ise.gameoflife.agents.PoliticalAgentGroup;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
@@ -179,7 +179,7 @@ public class HunterInfo extends JPanel implements Plugin
                 // Create a set sorted alphabetically by human readable name
 		for (String aid : sim.getactiveParticipantIdSet("hunter"))
 		{
-                        if( ec.getAgentById(aid).getGroupId() == null || !ec.getAgentById(aid).getGroupId().equals(WarAgent.special))
+                        if( ec.getAgentById(aid).getGroupId() == null || !ec.getAgentById(aid).getGroupId().equals(PoliticalAgentGroup.special))
                             name_id_map.put(ec.getAgentById(aid).getName(), aid);
 		}
 

@@ -41,9 +41,6 @@ public class PoliticalAgent extends AbstractAgent
 
 	private static final long serialVersionUID = 1L;
 
-        public static String special;
-        private static int special_no;
-
         private String invitationToGroup = null;
 
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
@@ -230,15 +227,6 @@ public class PoliticalAgent extends AbstractAgent
 
         String chosenGroup = "";
 
-  //Theo added
-//        boolean agentG = false;
-//        for (String ag : special_agents)
-//                if (this.getId().equals(ag))
-//                    agentG = true;
-//
-//        if(agentG) return special;
-
-
 
         //If you're not available to group and you are part of a group already
         //Note: an agent is allowed to not be free to group and not be part of a group,
@@ -302,7 +290,7 @@ public class PoliticalAgent extends AbstractAgent
         for (String groupID: getConn().availableGroups())
         {
             //proceed, only if, this is a group with two members or more
-            if (getConn().getGroupById(groupID).getMemberList().size() >= 2)// && !special.equals(groupID)) //ADDED THE0
+            if (getConn().getGroupById(groupID).getMemberList().size() >= 2 && !PoliticalAgentGroup.special.equals(groupID)) //ADDED THE0
             {
                 int numKnownTrustValues = 0;
                 double trustSum = 0;
@@ -441,20 +429,7 @@ public class PoliticalAgent extends AbstractAgent
                     GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(),(this.getDataModel().getEconomicBelief() + getConn().getAgentById(invitee).getEconomicBelief())/2);
                     Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                     chosenGroup = getConn().createGroup(gtype, myGroup, invitee);
-
-//                    //****** ADDED THEO
-//                    //GROUP INTO AGENTS
-//                    special_no++;
-//                    //Create special group
-//                    if(special_no == 1){
-//                        GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0.0);
-//                        special = getConn().createGroup(gtype, spGroup);
-//                        System.out.println("THis is the special group: "+special+ "name: "+getConn().getGroupById(special).getName());
-//                    }
-//
-//                    //Creates a political Agent-group
-//                    getConn().createAgent(0, 0.5, getConn().getGroupById(special).getCurrentEconomicPoisition() , chosenGroup); //CREATE a new AGENT-Group
-//                    //*********
+                    createGroupAgent(chosenGroup); //Create the group agent
 
                     groupFounders.put(this.getId(), chosenGroup);
                     freeToGroup.remove(this.getId());
@@ -462,6 +437,26 @@ public class PoliticalAgent extends AbstractAgent
             }
         }
         return chosenGroup;
+    }
+
+        /**
+     * Creates the agent that represents a group
+     * @param chosenGroup : the name of the agent is equal to the group id representing
+     */
+    private void createGroupAgent(String chosenGroup){
+        //****** ADDED THEO
+        //GROUP INTO AGENTS
+        PoliticalAgentGroup.special_no++;
+        //Create special group
+        if(PoliticalAgentGroup.special_no == 1){
+            GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),1.0);
+            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(1);
+            PoliticalAgentGroup.special = getConn().createGroup(gtype, spGroup);
+        }
+        //Creates a political Agent-group
+        getConn().createAgent(0, getConn().getGroupById(PoliticalAgentGroup.special).getCurrentEconomicPoisition(),0.5 , chosenGroup); //CREATE a new AGENT-Group
+        //*********
+
     }
 
     /**

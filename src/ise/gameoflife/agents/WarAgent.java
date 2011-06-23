@@ -103,7 +103,7 @@ public class WarAgent extends AbstractAgent
         {
             for(String groupID : groups)
             {
-                if (!groupID.equals(WarAgent.special))
+                if (!groupID.equals(PoliticalAgentGroup.special))
                 {
                         double deltaEconomic  = getDataModel().getEconomicBelief() - getConn().getGroupById(groupID).getCurrentEconomicPoisition();
                         double deltaSocial  = getDataModel().getSocialBelief() - WarGroup.socialBeliefs.get(groupID);
@@ -136,15 +136,15 @@ public class WarAgent extends AbstractAgent
     private void createGroupAgent(String chosenGroup){
         //****** ADDED THEO
         //GROUP INTO AGENTS
-        WarAgent.special_no++;
+        PoliticalAgentGroup.special_no++;
         //Create special group
         if(special_no == 1){
             GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),1.0);
             Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-            WarAgent.special = getConn().createGroup(gtype, spGroup);
+            PoliticalAgentGroup.special = getConn().createGroup(gtype, spGroup);
         }
         //Creates a political Agent-group
-        getConn().createAgent(0, getConn().getGroupById(WarAgent.special).getCurrentEconomicPoisition(),0.5 , chosenGroup); //CREATE a new AGENT-Group
+        getConn().createAgent(0, getConn().getGroupById(PoliticalAgentGroup.special).getCurrentEconomicPoisition(),0.5 , chosenGroup); //CREATE a new AGENT-Group
         //*********
 
     }
