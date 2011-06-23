@@ -1,18 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ise.gameoflife.simulations;
 
-import ise.gameoflife.agents.PoliticalAgent;
+import ise.gameoflife.agents.TestPoliticalAgent;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
-import ise.gameoflife.plugins.GroupAgentInfo;
 import ise.gameoflife.plugins.GroupGraphs;
 import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
@@ -22,14 +16,15 @@ import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.tokens.AgentType;
 import java.util.Random;
+
 /**
  *
- * @author The0s
+ * @author george
  */
-public class Politics extends GenericSimulation
+public class Politics_old extends GenericSimulation
 {
-
-	public Politics()
+        
+	public Politics_old()
 	{
 		super("Basic Politics Testing Bed", 1000, 0, 0.1);
 	}
@@ -39,13 +34,13 @@ public class Politics extends GenericSimulation
 	{
                 Random randomGenerator = new Random();
 
-
+              
 		for (int i = 0; i < 50; i++)
 		{
-                        addAgent(new PoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new PoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new PoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new PoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+                        addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
@@ -76,12 +71,11 @@ public class Politics extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
-		//addPlugin(new DatabasePlugin(comment,false));
+		addPlugin(new DatabasePlugin(comment,true));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
                 addPlugin(new HunterInfo());
-                addPlugin(new GroupAgentInfo());
                 addPlugin(new GroupInfo());
                 addPlugin(new GroupGraphs());
 	}
@@ -92,4 +86,3 @@ public class Politics extends GenericSimulation
 	}
 
 }
-
