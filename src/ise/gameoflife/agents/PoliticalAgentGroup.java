@@ -172,19 +172,22 @@ public class PoliticalAgentGroup extends AbstractAgent
 
             AgentType group_type = null;
             if (getConn().getGroupById(this.getDataModel().getName()) == null){
-                System.out.println("Type for Agent-Group: " + this.getId() + " [" + this.getDataModel().getName()+ "] : No-Type ");
+                System.out.println("CANNOT HAPPEN: This Special Agent-Group: " + this.getId() + " [" + this.getDataModel().getName()+ "] : is not representing a Group");
                 return null;
             }
             else
             {
                 group_type = this.getConn().getGroupById(this.getDataModel().getName()).getGroupStrategy();
                 this.getDataModel().setAgentType(group_type);
-                System.out.println("Type for Agent-Group [" + this.getDataModel().getName()+ "] : "+ group_type);
+                
 
                 if (group_type == null)
                 {
                     return null;
                 }
+                else
+                    System.out.println("Type for Agent-Group [" + this.getDataModel().getName()+ "] : "+ group_type);
+
             }
             switch (group_type) /////THE0 ADDED
             {

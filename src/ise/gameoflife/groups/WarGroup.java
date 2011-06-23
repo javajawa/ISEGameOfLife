@@ -144,7 +144,7 @@ public class WarGroup extends AbstractGroupAgent {
                 }
                 economic = economic / (size);
                 this.setEconomicPosition(economic);
-                System.out.println("CANNOT HAPPEN: Agent: " + getConn().getAgentById(playerID).getName() + " left its group");	
+                System.out.println("CANNOT HAPPEN: Agent: " + getConn().getAgentById(playerID).getName() + " left its group (can only die)");
                 }
         }
 

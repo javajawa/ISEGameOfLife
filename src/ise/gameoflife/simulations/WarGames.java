@@ -44,18 +44,18 @@ public class WarGames extends GenericSimulation
 		for (int i = 0; i < 10; i++)
 		{
                         addAgent(new WarAgent(20, 2, AgentType.AC, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-                        addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-                        addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-                        addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+                        //addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+                        //addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+                        //addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
 		}
 
                 //Fascist group
                 for (int i = 0; i < 10; i++)
 		{
                         addAgent(new WarAgent(20, 2, AgentType.AC, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-                        addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-                        addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-                        addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+                        //addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+                        //addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+                        //addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
 		}
 
 	}
