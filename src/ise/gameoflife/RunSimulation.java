@@ -1,5 +1,6 @@
 package ise.gameoflife;
 
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.simulations.GenericSimulation;
 import java.io.File;
 import java.util.logging.Level;
@@ -16,7 +17,8 @@ import presage.gui.ControlCenter;
  */
 public class RunSimulation
 {
-
+	private final static Logger rootLogger = Logger.getLogger("");
+	
 	private RunSimulation()
 	{
 	}
@@ -36,7 +38,9 @@ public class RunSimulation
 		}
 		else
 		{
-			Logger.getLogger("").setLevel(Level.WARNING);
+			
+			rootLogger.setLevel(Level.WARNING);
+			PublicEnvironmentConnection.logger.setLevel(Level.WARNING);
 
 			if (args.length == 1)
 			{

@@ -18,27 +18,27 @@ public class CLIPolitics extends GenericSimulation
         
 	public CLIPolitics(long rand)
 	{
-		super("Basic Politics Testing Bed", 500, rand, 0.1, Long.toHexString(rand));
+		super("Basic Politics Testing Bed", 5000, rand, 0.1, Long.toHexString(rand));
 	}
 
 	@Override
 	protected void agents()
 	{
 		Random randomGenerator = new Random(this.randomSeed);
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 50; i++)
 		{
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.AC,  randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new TestPoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD,  randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new TestPoliticalAgent(20, 2, AgentType.R,   randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 	}
 
 	@Override
 	protected void foods()
 	{
-		addFood("Rabbit", 5, 1);
-		addFood("Stag", 20, 2);
+		addFood("Rabbit", 2, 1);
+		addFood("Stag", 10, 2);
 	}
 
 	@Override
