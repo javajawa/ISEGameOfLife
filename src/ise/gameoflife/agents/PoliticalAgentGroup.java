@@ -170,9 +170,10 @@ public class PoliticalAgentGroup extends AbstractAgent
             //If the agent is not in a group or advisor didn't give a definitive answer then hunt
             //according to type
 
-            AgentType group_type = AgentType.R;
+            AgentType group_type = null;
             if (getConn().getGroupById(this.getDataModel().getName()) == null){
-                System.out.println("Type for Agent-Group: " + this.getId() + " [" + this.getDataModel().getName()+ "] Not ");
+                System.out.println("Type for Agent-Group: " + this.getId() + " [" + this.getDataModel().getName()+ "] : No-Type ");
+                return null;
             }
             else
             {
@@ -742,7 +743,9 @@ public class PoliticalAgentGroup extends AbstractAgent
         //Get the preferred strategy for an agent i.e. its type and the strategy adopted by the panel
         //Positive or negative rating depends on the similarity of these two strategies
         AgentType groupStrategy = getConn().getGroupById(groupID).getGroupStrategy();
-        AgentType followerStrategy = getDataModel().getAgentType();
+
+        //Agent type is the group's strategy it represents !!!!!
+        AgentType followerStrategy = getConn().getGroupById(getDataModel().getName()).getGroupStrategy();
 
         //The rating weighting is a simple function of the group's population
         int population = getConn().getGroupById(groupID).getMemberList().size();
