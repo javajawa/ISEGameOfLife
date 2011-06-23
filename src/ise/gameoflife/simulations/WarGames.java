@@ -32,7 +32,7 @@ public class WarGames extends GenericSimulation
 
 	public WarGames()
 	{
-		super("Basic Politics Testing Bed", 1000, 0, 0.1);
+		super("Basic Politics Testing Bed", 10000, 0, 0.1);
 	}
 
 	@Override
@@ -41,15 +41,21 @@ public class WarGames extends GenericSimulation
                 Random rand = new Random();
 
                 //Communist group
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 10; i++)
 		{
                         addAgent(new WarAgent(20, 2, AgentType.AC, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+                        addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+                        addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+                        addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
 		}
 
                 //Fascist group
-                for (int i = 0; i < 15; i++)
+                for (int i = 0; i < 10; i++)
 		{
                         addAgent(new WarAgent(20, 2, AgentType.AC, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+                        addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+                        addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+                        addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
 		}
 
 	}

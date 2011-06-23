@@ -742,7 +742,9 @@ public class PoliticalAgentGroup extends AbstractAgent
         //Get the preferred strategy for an agent i.e. its type and the strategy adopted by the panel
         //Positive or negative rating depends on the similarity of these two strategies
         AgentType groupStrategy = getConn().getGroupById(groupID).getGroupStrategy();
-        AgentType followerStrategy = getDataModel().getAgentType();
+
+        //Agent type is the group's strategy it represents !!!!!
+        AgentType followerStrategy = getConn().getGroupById(getDataModel().getName()).getGroupStrategy();
 
         //The rating weighting is a simple function of the group's population
         int population = getConn().getGroupById(groupID).getMemberList().size();
