@@ -396,10 +396,6 @@ public class WarGroup extends AbstractGroupAgent {
 //        }
 //    }    
     
-    @Override
-    protected double decideTaxForReservePool() {
-        return 0;
-    }
 
     @Override
     protected Tuple<AgentType, Double> makePayments()
@@ -413,6 +409,13 @@ public class WarGroup extends AbstractGroupAgent {
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
         interactionResult.add(InteractionResult.NothingHappened, 0.0);
         return interactionResult;
+    }
+
+    @Override
+    protected Tuple<Double, Double> updateTaxedPool(double sharedFood) {
+        Tuple<Double, Double> newSharedAndReserve = new Tuple<Double,Double>();
+        newSharedAndReserve.add(sharedFood, 0.0);
+        return newSharedAndReserve;
     }
 
 //    public static double getSocialBelief(PublicGroupDataModel dm){

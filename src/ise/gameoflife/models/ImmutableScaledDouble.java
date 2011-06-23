@@ -6,6 +6,7 @@ package ise.gameoflife.models;
  */
 public class ImmutableScaledDouble extends ScaledDouble
 {
+	private static final long serialVersionUID = 1L;
 	private ScaledDouble source;
 
 	ImmutableScaledDouble(ScaledDouble source)

@@ -5,6 +5,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.models.Tuple;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +45,7 @@ class GroupDataModel extends APlayerDataModel
         private AgentType groupStrategy;
 
         private List<String> panel = new LinkedList<String>();
-        
+
         @Element
         private History<Double> reservedFoodHistory;
         
