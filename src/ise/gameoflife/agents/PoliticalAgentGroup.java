@@ -184,7 +184,8 @@ public class PoliticalAgentGroup extends AbstractAgent
 
                 if (group_type == null)
                 {
-                    return null;
+                    //return null;
+                    group_type = AgentType.AC;//CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 }
                 else
                     System.out.println("Type for Agent-Group [" + this.getDataModel().getName()+ "] : "+ group_type);
