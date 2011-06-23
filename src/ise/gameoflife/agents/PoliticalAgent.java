@@ -450,7 +450,7 @@ public class PoliticalAgent extends AbstractAgent
         //Create special group
         if(PoliticalAgentGroup.special_no == 1){
             GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),1.0);
-            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(1);
+            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
             PoliticalAgentGroup.special = getConn().createGroup(gtype, spGroup);
         }
         //Creates a political Agent-group
