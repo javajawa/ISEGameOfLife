@@ -239,31 +239,33 @@ public abstract class AbstractGroupAgent implements Participant
 			shared += value;
 		}
 
-System.out.println("----------------");
-System.out.println(getDataModel().getName());
-System.out.println("Before "+ shared);
+		double before = shared;
 
-                //Addition for the game between the leaders
-                for (String specialAgent: getConn().getAgents())
-                {
-                    if (getConn().getAgentById(specialAgent).getName().equals(getDataModel().getId()))
-                    {
-                        PublicAgentDataModel groupSpecialAgent = getConn().getAgentById(specialAgent);
-                        double foodAmount = groupSpecialAgent.getFoodAmount();
-                        double extraFood = foodAmount - previousAmountHunted;
-                        previousAmountHunted = foodAmount;
-                        shared += extraFood;
-                    }
-                    
-                }
-                //Addition for the game between the leaders
-System.out.println("After "+ shared);
 
-                //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
-                Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
-                this.setReservedFood(updatedSharedAndReserve.getValue());
-                shared = updatedSharedAndReserve.getKey();
-                //Loans simulation addition end
+		//Addition for the game between the leaders
+		for (String specialAgent : getConn().getAgents())
+		{
+			if (getConn().getAgentById(specialAgent).getName().equals(
+							getDataModel().getId()))
+			{
+				PublicAgentDataModel groupSpecialAgent = getConn().getAgentById(
+								specialAgent);
+				double foodAmount = groupSpecialAgent.getFoodAmount();
+				double extraFood = foodAmount - previousAmountHunted;
+				previousAmountHunted = foodAmount;
+				shared += extraFood;
+			}
+
+		}
+		//Addition for the game between the leaders
+		logger.log(Level.FINE, "{0} {1} -> {2}", new Object[]
+						{getDataModel().getName(),before, shared});
+
+		//Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
+		Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
+		this.setReservedFood(updatedSharedAndReserve.getValue());
+		shared = updatedSharedAndReserve.getKey();
+		//Loans simulation addition end
 
 		shared = shared * taxRate / dm.getMemberList().size();
 
