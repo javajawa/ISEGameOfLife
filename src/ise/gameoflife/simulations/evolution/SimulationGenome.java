@@ -20,12 +20,14 @@ public class SimulationGenome extends Genome<SimulationGenome>
 
 	private static final double initialFood = 20;
 	private static final double consumption = 3.2;
-	private static final AgentType type = null;
 	private static final String comment = "Genetic Agent";
 	private static final int iterations = 100;
 	private static final int population = 40;
 	private static final double foodConsumedPerAdvice = 0.1;
 
+	private double socialBelief = 0;
+	private double economicBelief = 0;
+	private AgentType type = null;
 	private NetworkGenome chooseFoodGenome = new NetworkGenome(7,8,2);
 
 	private long randomSeed;
@@ -41,6 +43,11 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	public void randomize()
 	{
 		chooseFoodGenome.randomize();
+
+		this.setSocialBelief(rand.nextDouble());
+		this.setEconomicBelief(rand.nextDouble());
+
+		this.setType(AgentType.values()[rand.nextInt(AgentType.values().length)]);
 	}
 
 	@Override
@@ -49,6 +56,17 @@ public class SimulationGenome extends Genome<SimulationGenome>
 		SimulationGenome genome = new SimulationGenome(randomSeed++);
 
 		genome.setChooseFoodGenome(chooseFoodGenome.mutate());
+		genome.setSocialBelief(socialBelief);
+		genome.setEconomicBelief(economicBelief);
+		genome.setType(type);
+
+		if (rand.nextDouble() < mutateRate)
+			genome.setSocialBelief(rand.nextDouble());
+		if (rand.nextDouble() < mutateRate)
+			genome.setEconomicBelief(rand.nextDouble());
+		if (rand.nextDouble() < mutateRate)
+			genome.setType(AgentType.values()[rand.nextInt(AgentType.values().length)]);
+
 		return genome;
 	}
 
@@ -58,8 +76,20 @@ public class SimulationGenome extends Genome<SimulationGenome>
 		SimulationGenome newGenome = new SimulationGenome(randomSeed++);
 
 		NetworkGenome newCFGenome = genome.chooseFoodGenome();
-		newCFGenome = chooseFoodGenome.crossOver(newCFGenome);
+		newCFGenome = this.chooseFoodGenome().crossOver(newCFGenome);
 		newGenome.setChooseFoodGenome(newCFGenome);
+
+		newGenome.setSocialBelief(socialBelief);
+		newGenome.setEconomicBelief(economicBelief);
+		newGenome.setType(type);
+
+		if (rand.nextDouble() < crossOverRate)
+			newGenome.setEconomicBelief(genome.economicBelief());
+		if (rand.nextDouble() < crossOverRate)
+			newGenome.setSocialBelief(genome.socialBelief());
+		if (rand.nextDouble() < crossOverRate)
+			newGenome.setType(genome.type());
+
 		return newGenome;
 	}
 
@@ -103,21 +133,34 @@ public class SimulationGenome extends Genome<SimulationGenome>
 		return consumption;
 	}
 
+	public void setType(AgentType type)
+	{
+		this.type = type;
+	}
+
 	public AgentType type()
 	{
 		return type;
 	}
 
+	public void setSocialBelief(double socialBelief)
+	{
+		this.socialBelief = socialBelief;
+	}
+
 	public double socialBelief()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return socialBelief;
+	}
+
+	public void setEconomicBelief(double economicBelief)
+	{
+		this.economicBelief = economicBelief;
 	}
 
 	public double economicBelief()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return economicBelief;
 	}
 
 	public void setChooseFoodGenome(NetworkGenome genome)
