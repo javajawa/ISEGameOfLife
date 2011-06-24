@@ -85,7 +85,8 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		plugins();
 		events();
 
-		Logger.getLogger("presage.Simulation").setLevel(Level.OFF);
+		Logger.getLogger("presage.Simulation").setLevel(Level.SEVERE);
+		Logger.getLogger("gameoflife.AbstractAgent").setLevel(Level.SEVERE);
 		this.simulation = new Simulation
 				(presageConfig, agents, environment, pluginManager, scriptManager);
 	}
