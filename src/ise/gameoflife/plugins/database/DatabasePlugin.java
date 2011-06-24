@@ -29,12 +29,14 @@ public class DatabasePlugin implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
-	private final static String name = "Database Plugin v2.3";
+	private final static String name = "Database Plugin v2.8";
 		
 	@Element
 	private final Boolean remote;
 	@Element
 	private final String comment;
+	@Element
+	private final Boolean docRemote;
 	
 	/**
 	 * Creates a new instance of the DatabasePlugin,
@@ -60,11 +62,28 @@ public class DatabasePlugin implements Plugin
 	})
 	public DatabasePlugin(String comment,Boolean remote)
 	{
-	    this.remote = remote;
-	    this.comment = comment;
+	    this(comment,remote,false);
 
 	}
+	 /**
+	 * Creates a new instance of the DatabasePlugin
+	 * with specified parameters.
+	 * @param comment Comment for simulation
+	 * @param remote Use remote db instead of local
+	 * @param docRemote Uses doc remote database
+	 * 
+	 */
 	
+	@PluginConstructor(
+	{
+		"comment","remote","docRemote"
+	})
+	public DatabasePlugin(String comment,Boolean remote, Boolean docRemote)
+	{
+	   this.comment = comment;
+	   this.remote = remote;
+	   this.docRemote = docRemote;
+	}
 
 	private ConnectionWrapper wrap;
 	private PublicEnvironmentConnection ec;
@@ -128,18 +147,23 @@ public class DatabasePlugin implements Plugin
 		String url; 
 		Properties connProperties = new java.util.Properties();		 
  		if(remote) {
-		    //url to remote db
-		     url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol";
-		     String dbUsername = "stratra1_isegol";
-		     String dbPassword = "ise4r3g00d";
-
-		     
+		    String dbUsername;
+		    String dbPassword;
+		    if (docRemote) {
+			//url to remote db
+			 url = "jdbc:mysql://icsflibsrv.su.ic.ac.uk:3306/gol";
+			 dbUsername = "gol";
+			 dbPassword = "gol";
+		    } else {		     
+			 url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol";
+			 dbUsername = "stratra1_isegol";
+			 dbPassword = "ise4r3g00d";
+		    }
 		     connProperties.put("user", dbUsername);
 		     connProperties.put("password", dbPassword);
 		     connProperties.put("autoReconnect", "true");
 		     connProperties.put("maxReconnects", "5");
-		    //url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol?user=stratra1_isegol&password=ise4r3g00d";
-		    logger.log(Level.INFO,"Connecting to remote database:");
+		     logger.log(Level.INFO,"Connecting to remote database:{0}",url);
 		}
 		else {
 		    //path to /Simulations folder
