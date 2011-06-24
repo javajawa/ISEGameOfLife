@@ -179,6 +179,16 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		this.fitness = fitness;
 	}
 
+	public long randomSeed()
+	{
+		return randomSeed;
+	}
+
+	public void setRandomSeed(long seed)
+	{
+		this.randomSeed = seed;
+	}
+
 	protected final void addFood(String name, double nutrition, int huntersRequired)
 	{
 		Food f = new Food(name, nutrition, huntersRequired);
@@ -210,7 +220,7 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 
 	public static void main(String[] args)
 	{
-		SimulationGenome genome = new SimulationGenome();
+		SimulationGenome genome = new SimulationGenome(System.currentTimeMillis());
 		genome.randomize();
 		GeneticAgentSimulation sim = new GeneticAgentSimulation(genome);
 		sim.run();

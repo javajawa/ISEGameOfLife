@@ -1,6 +1,7 @@
 package ise.gameoflife.simulations.evolution;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import ise.gameoflife.genetics.Evolution;
 import ise.gameoflife.participants.PublicAgentDataModel;
@@ -10,8 +11,9 @@ public class SimulationEvolution
 	extends Evolution<SimulationGenome, GeneticAgentSimulation>
 {
 
-	private final float elitistProportion = 0.10f;
+	private final float elitistProportion = 0.40f;
 	private long randSeed = System.currentTimeMillis();
+	private Random rand = new Random(randSeed);
 
 	@Override
 	protected GeneticAgentSimulation newEntity(SimulationGenome genome)
@@ -22,27 +24,31 @@ public class SimulationEvolution
 	@Override
 	protected SimulationGenome newGenome()
 	{
-		SimulationGenome genome = new SimulationGenome();
-		genome.setRandomSeed(randSeed++);
+		SimulationGenome genome = new SimulationGenome(randSeed++);
 		return genome;
 	}
 
 	@Override
 	protected void evaluate(GeneticAgentSimulation entity)
 	{
-		entity.run();
-
 		double fitness = 0;
-
-		for (PublicAgentDataModel dataModel : entity.agentDataModels())
+		for (int i = 0; i < 5; i++)
 		{
-			if (null == dataModel)
+			// not getting entropy but guarantees unbiased simulations
+			entity.setRandomSeed(rand.nextLong());
+			entity.run();
+			for (PublicAgentDataModel dataModel : entity.agentDataModels())
 			{
-				continue;
+				if (null == dataModel)
+				{
+					continue;
+				}
+				fitness += dataModel.getCurrentHappiness();
 			}
-			fitness += dataModel.getCurrentHappiness();
 		}
 		entity.setFitness(fitness);
+		// System.out.println("Iteration: " + this.currentIteration() +
+		//		",\tentity fitness: " + fitness);
 	}
 
 	@Override
@@ -65,7 +71,7 @@ public class SimulationEvolution
 	{
 		SimulationEvolution evolution = new SimulationEvolution();
 		evolution.setIterations(1000);
-		evolution.setPopulation(50);
+		evolution.setPopulation(20);
 		evolution.evolve();
 	}
 

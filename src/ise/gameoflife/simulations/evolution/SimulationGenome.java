@@ -1,7 +1,6 @@
-/**
- *
- */
 package ise.gameoflife.simulations.evolution;
+
+import java.util.Random;
 
 import ise.gameoflife.genetics.Genome;
 import ise.gameoflife.neuralnetworks.NetworkGenome;
@@ -16,6 +15,9 @@ public class SimulationGenome extends Genome<SimulationGenome>
 
 	private static final long serialVersionUID = 1L;
 
+	private static final double mutateRate = 0.10f;
+	private static final double crossOverRate = 0.50f;
+
 	private static final double initialFood = 20;
 	private static final double consumption = 3.2;
 	private static final AgentType type = null;
@@ -27,6 +29,13 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	private NetworkGenome chooseFoodGenome = new NetworkGenome(7,8,2);
 
 	private long randomSeed;
+	private Random rand = null;
+
+	public SimulationGenome(long seed)
+	{
+		this.setRandomSeed(seed);
+		rand = new Random(seed);
+	}
 
 	@Override
 	public void randomize()
@@ -37,7 +46,8 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	@Override
 	public SimulationGenome mutate()
 	{
-		SimulationGenome genome = new SimulationGenome();
+		SimulationGenome genome = new SimulationGenome(randomSeed++);
+
 		genome.setChooseFoodGenome(chooseFoodGenome.mutate());
 		return genome;
 	}
@@ -45,7 +55,8 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	@Override
 	public SimulationGenome crossOver(SimulationGenome genome)
 	{
-		SimulationGenome newGenome = new SimulationGenome();
+		SimulationGenome newGenome = new SimulationGenome(randomSeed++);
+
 		NetworkGenome newCFGenome = genome.chooseFoodGenome();
 		newCFGenome = chooseFoodGenome.crossOver(newCFGenome);
 		newGenome.setChooseFoodGenome(newCFGenome);
