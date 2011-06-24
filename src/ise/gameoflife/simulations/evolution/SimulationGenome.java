@@ -17,8 +17,8 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	private static final long serialVersionUID = 1L;
 
 	private static final double initialFood = 20;
-	private static final double consumption = 2;
-	private static final AgentType type = AgentType.AC;
+	private static final double consumption = 3.2;
+	private static final AgentType type = null;
 	private static final String comment = "Genetic Agent";
 	private static final int iterations = 100;
 	private static final int population = 40;
