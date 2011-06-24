@@ -6,9 +6,11 @@ import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import org.simpleframework.xml.Element;
 import java.io.File;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -123,10 +125,20 @@ public class DatabasePlugin implements Plugin
 
 	    try {
 		//selects database connection
-		String url;
-		if(remote) {
+		String url; 
+		Properties connProperties = new java.util.Properties();		 
+ 		if(remote) {
 		    //url to remote db
-		    url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol?user=stratra1_isegol&password=ise4r3g00d";
+		     url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol";
+		     String dbUsername = "stratra1_isegol";
+		     String dbPassword = "ise4r3g00d";
+
+		     
+		     connProperties.put("user", dbUsername);
+		     connProperties.put("password", dbPassword);
+		     connProperties.put("autoReconnect", "true");
+		     connProperties.put("maxReconnects", "5");
+		    //url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol?user=stratra1_isegol&password=ise4r3g00d";
 		    logger.log(Level.INFO,"Connecting to remote database:");
 		}
 		else {
@@ -137,7 +149,7 @@ public class DatabasePlugin implements Plugin
 		    logger.log(Level.INFO, "Connecting to local database at: {0}/Simulations.db", simDir);
 		}
 		//Establish connection to database
-		wrap = new ConnectionWrapper(url, comment, ec.getId(), remote);
+		wrap = new ConnectionWrapper(url, connProperties, comment, ec.getId(), remote);
 
 	    }   catch (SQLException ex) {
 		    logger.log(Level.SEVERE,"Initializing database error:", ex);
