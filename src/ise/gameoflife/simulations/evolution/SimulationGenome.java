@@ -4,6 +4,7 @@
 package ise.gameoflife.simulations.evolution;
 
 import ise.gameoflife.genetics.Genome;
+import ise.gameoflife.neuralnetworks.NetworkGenome;
 import ise.gameoflife.tokens.AgentType;
 
 /**
@@ -18,30 +19,37 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	private static final double initialFood = 20;
 	private static final double consumption = 2;
 	private static final AgentType type = AgentType.AC;
-	private static final String comment = "Learning Agent";
+	private static final String comment = "Genetic Agent";
 	private static final int iterations = 200;
 	private static final int population = 40;
 	private static final double foodConsumedPerAdvice = 0.1;
+
+	private NetworkGenome chooseFoodGenome = new NetworkGenome(7,8,2);
+
 	private long randomSeed;
 
 	@Override
 	public void randomize()
 	{
-		// TODO Auto-generated method stub
+		chooseFoodGenome.randomize();
 	}
 
 	@Override
 	public SimulationGenome mutate()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		SimulationGenome genome = new SimulationGenome();
+		genome.setChooseFoodGenome(chooseFoodGenome.mutate());
+		return genome;
 	}
 
 	@Override
 	public SimulationGenome crossOver(SimulationGenome genome)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		SimulationGenome newGenome = new SimulationGenome();
+		NetworkGenome newCFGenome = genome.chooseFoodGenome();
+		newCFGenome = chooseFoodGenome.crossOver(newCFGenome);
+		newGenome.setChooseFoodGenome(newCFGenome);
+		return newGenome;
 	}
 
 	public String comment()
@@ -99,6 +107,16 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	{
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public void setChooseFoodGenome(NetworkGenome genome)
+	{
+		this.chooseFoodGenome = genome;
+	}
+
+	public NetworkGenome chooseFoodGenome()
+	{
+		return chooseFoodGenome;
 	}
 
 }
