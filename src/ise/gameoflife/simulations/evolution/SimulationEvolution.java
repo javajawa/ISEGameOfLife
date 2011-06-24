@@ -11,7 +11,7 @@ public class SimulationEvolution
 	extends Evolution<SimulationGenome, GeneticAgentSimulation>
 {
 
-	private final float elitistProportion = 0.40f;
+	private final float elitistProportion = 0.20f;
 	private long randSeed = System.currentTimeMillis();
 	private Random rand = new Random(randSeed);
 
@@ -47,6 +47,7 @@ public class SimulationEvolution
 			}
 		}
 		entity.setFitness(fitness);
+		System.out.print(".");
 		// System.out.println("Iteration: " + this.currentIteration() +
 		//		",\tentity fitness: " + fitness);
 	}
@@ -56,7 +57,7 @@ public class SimulationEvolution
 	{
 		if (rank <= 1)
 		{
-			System.out.println("Iteration: " + this.currentIteration() +
+			System.out.print("\nIteration: " + this.currentIteration() +
 					",\tfitness: " + entity.fitness());
 		}
 
@@ -67,11 +68,17 @@ public class SimulationEvolution
 		return false;
 	}
 
+	@Override
+	protected void willBeginNextIteration()
+	{
+		System.out.print(",\tavg fit: " + this.avgFitness() + "\n");
+	}
+
 	public static void main(String[] args)
 	{
 		SimulationEvolution evolution = new SimulationEvolution();
 		evolution.setIterations(1000);
-		evolution.setPopulation(20);
+		evolution.setPopulation(25);
 		evolution.evolve();
 	}
 
