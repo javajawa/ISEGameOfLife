@@ -56,7 +56,8 @@ public class GeneticAgent extends TestPoliticalAgent
 		{
 			opponentHuntingHistory = opponent.getHuntingHistory();
 
-			if (null != opponentHuntingHistory)
+			if (null != opponentHuntingHistory &&
+				opponentHuntingHistory.size() > 1)
 			{
 				Food opponentLastHunt = opponentHuntingHistory.getValue(1);
 				opponentLastHuntStag = stag.equals(opponentLastHunt);
@@ -64,7 +65,7 @@ public class GeneticAgent extends TestPoliticalAgent
 				for (int i = 0; i < opponentHuntingHistory.size(); i++)
 				{
 					Food opponentFood = opponentHuntingHistory.getValue(i);
-					if (opponentFood.equals(stag))
+					if (stag.equals(opponentFood))
 					{
 						opponentStagStrategy++;
 					}
@@ -74,8 +75,12 @@ public class GeneticAgent extends TestPoliticalAgent
 		}
 
 		String groupId = player.getGroupId();
-		boolean hasGroup = (null != groupId);
-		hasGroup &= getConn().getGroupById(groupId).getMemberList().size() > 1;
+		boolean hasGroup = false;
+		if (null != groupId &&
+			getConn().getGroupById(groupId).getMemberList().size() > 1)
+		{
+			hasGroup = true;
+		}
 		boolean suggestedStag = false;
 		if (hasGroup)
 		{
@@ -83,18 +88,27 @@ public class GeneticAgent extends TestPoliticalAgent
 			double maxTrust = 0;
 			for (String member : members)
 			{
-				double trust = player.getTrust(member);
-				if (trust < maxTrust) continue;
+				Double trust = player.getTrust(member);
+				if (null == trust) continue;
+				double curTrust = trust.doubleValue();
+				if (curTrust < maxTrust) continue;
 				maxTrust = trust;
 				mostTrusted = member;
 			}
-			Food suggested = this.seekAvice(mostTrusted);
-			suggestedStag = stag.equals(suggested);
+			if (null != mostTrusted)
+			{
+				Food suggested = this.seekAvice(mostTrusted);
+				suggestedStag = stag.equals(suggested);
+			}
 		}
 
-		double happiness = player.getCurrentHappiness();
+		double happiness = .5;
+		double loyalty = .5;
+		if (null != player.getCurrentHappiness())
+			happiness = player.getCurrentHappiness().doubleValue();
+		if (null != player.getCurrentLoyalty())
+			loyalty = player.getCurrentLoyalty().doubleValue();
 		double foodVal = player.getFoodAmount();
-		double loyalty = player.getCurrentLoyalty();
 
 		double inVals[] = new double[]
 		{
