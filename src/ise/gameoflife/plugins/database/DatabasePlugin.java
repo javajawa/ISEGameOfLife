@@ -100,6 +100,7 @@ public class DatabasePlugin implements Plugin
 	    getGroupRoundData();
 	    
 	    
+	    
 	    //writes to db every 50 rounds (or 30 cycles) for local db
 	    //remote only writes at the end
 	    if(round%50==0 && !remote) 
@@ -242,10 +243,18 @@ public class DatabasePlugin implements Plugin
 
 	private void getGroupRoundData() 
 	{
-	    for(Map.Entry<String, PublicGroupDataModel> entry : trackedGroups.entrySet())
-		{
-		    wrap.groupRound(idMap.get(entry.getKey()), round, entry.getValue());
-		}
+	    
+		for(Map.Entry<String, PublicGroupDataModel> entry : trackedGroups.entrySet())
+		    {
+			try {
+			    wrap.groupRound(idMap.get(entry.getKey()), round, entry.getValue());
+			} catch (NullPointerException ex) {
+			    logger.log(Level.WARNING, "Null Exception: For group {0} for round {1}"
+			    + " ", new Object[]{entry.getValue().getName(), round});
+			}
+		    }
+	    
+	    
 	}
 
 	private void getAgentRoundData() 
