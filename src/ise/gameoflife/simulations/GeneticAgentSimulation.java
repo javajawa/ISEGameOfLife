@@ -205,6 +205,7 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 	public static void main(String[] args)
 	{
 		SimulationGenome genome = new SimulationGenome();
+		genome.randomize();
 		GeneticAgentSimulation sim = new GeneticAgentSimulation(genome);
 		sim.run();
 		ArrayList<PublicAgentDataModel> agentDataModels = sim.agentDataModels();
