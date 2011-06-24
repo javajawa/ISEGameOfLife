@@ -1277,7 +1277,7 @@ public class TestPoliticalAgent extends AbstractAgent
     * @param none
     * @return A list containing the food for cooperation and defection
     */
-        private List<Food> getFoodTypes(){
+        protected List<Food> getFoodTypes(){
             List<Food> foodArray = new LinkedList<Food>();
             List<Food> foodList = new LinkedList<Food>();
             Food cooperateFood, defectFood;
