@@ -142,6 +142,6 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable {
 		{
 			return source.size();
 		}
+                
 
-
-}
+    }                 

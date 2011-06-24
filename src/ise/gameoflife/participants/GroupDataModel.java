@@ -43,7 +43,7 @@ class GroupDataModel extends APlayerDataModel
 	private History<HashMap<Proposition,Integer>> propositionHistory;
 
         private AgentType groupStrategy;
-
+        
         private List<String> panel = new LinkedList<String>();
 
         @Element
@@ -251,5 +251,5 @@ class GroupDataModel extends APlayerDataModel
 		return memberList.size();
 	}
 
-
-}
+        
+        }        
