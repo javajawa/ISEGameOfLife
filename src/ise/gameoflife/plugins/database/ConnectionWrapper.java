@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,16 +34,19 @@ final class ConnectionWrapper
 	//private final PublicEnvironmentConnection envConn;
 	private final int simId;
 
-	ConnectionWrapper(String url, String comment, String sim_uuid, Boolean remote) throws SQLException, ClassNotFoundException
+	ConnectionWrapper(String url,Properties connProperties,String comment, String sim_uuid, Boolean remote) throws SQLException, ClassNotFoundException
 	{
-		if (!remote) Class.forName("org.sqlite.JDBC");
-		conn = DriverManager.getConnection(url);
-		//remote db needs autocommiting so as not to break foreign key constraints
 		if (!remote) {
+		    Class.forName("org.sqlite.JDBC");
+		    conn = DriverManager.getConnection(url); 
 		    //creates tables for database
 		    updateDatabaseStructure();
-		    conn.setAutoCommit(false);
+		} else {
+		   conn = DriverManager.getConnection(url, connProperties); 
 		}
+
+		conn.setAutoCommit(false);
+		
 		newAgent = conn.prepareStatement(Statements.addAgent.getPrototype());
 		dieAgent = conn.prepareStatement(Statements.dieAgent.getPrototype());
 		roundAgent = conn.prepareStatement(Statements.roundAgent.getPrototype());

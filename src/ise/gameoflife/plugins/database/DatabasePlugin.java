@@ -6,9 +6,11 @@ import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import org.simpleframework.xml.Element;
 import java.io.File;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -27,12 +29,14 @@ public class DatabasePlugin implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
-	private final static String name = "Database Plugin v2.3";
+	private final static String name = "Database Plugin v2.8";
 		
 	@Element
 	private final Boolean remote;
 	@Element
 	private final String comment;
+	@Element
+	private final Boolean docRemote;
 	
 	/**
 	 * Creates a new instance of the DatabasePlugin,
@@ -58,11 +62,28 @@ public class DatabasePlugin implements Plugin
 	})
 	public DatabasePlugin(String comment,Boolean remote)
 	{
-	    this.remote = remote;
-	    this.comment = comment;
+	    this(comment,remote,false);
 
 	}
+	 /**
+	 * Creates a new instance of the DatabasePlugin
+	 * with specified parameters.
+	 * @param comment Comment for simulation
+	 * @param remote Use remote db instead of local
+	 * @param docRemote Uses doc remote database
+	 * 
+	 */
 	
+	@PluginConstructor(
+	{
+		"comment","remote","docRemote"
+	})
+	public DatabasePlugin(String comment,Boolean remote, Boolean docRemote)
+	{
+	   this.comment = comment;
+	   this.remote = remote;
+	   this.docRemote = docRemote;
+	}
 
 	private ConnectionWrapper wrap;
 	private PublicEnvironmentConnection ec;
@@ -100,16 +121,18 @@ public class DatabasePlugin implements Plugin
 	    getGroupRoundData();
 	    
 	    
+	    
 	    //writes to db every 50 rounds (or 30 cycles) for local db
 	    //remote only writes at the end
-	    if(round%50==0 && !remote) 
+	    //no writes till the end
+	   /* if(round%50==0 && !remote) 
 	    {
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
 		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
 		wrap.flush(round);
 		logger.log(Level.INFO,"Database write complete");
 	    }
-	    
+	    */
 	}
 
 	@Override
@@ -121,11 +144,26 @@ public class DatabasePlugin implements Plugin
 
 	    try {
 		//selects database connection
-		String url;
-		if(remote) {
-		    //url to remote db
-		    url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol?user=stratra1_isegol&password=ise4r3g00d";
-		    logger.log(Level.INFO,"Connecting to remote database:");
+		String url; 
+		Properties connProperties = new java.util.Properties();		 
+ 		if(remote) {
+		    String dbUsername;
+		    String dbPassword;
+		    if (docRemote) {
+			//url to remote db
+			 url = "jdbc:mysql://icsflibsrv.su.ic.ac.uk:3306/gol";
+			 dbUsername = "gol";
+			 dbPassword = "gol";
+		    } else {		     
+			 url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol";
+			 dbUsername = "stratra1_isegol";
+			 dbPassword = "ise4r3g00d";
+		    }
+		     connProperties.put("user", dbUsername);
+		     connProperties.put("password", dbPassword);
+		     connProperties.put("autoReconnect", "true");
+		     connProperties.put("maxReconnects", "5");
+		     logger.log(Level.INFO,"Connecting to remote database:{0}",url);
 		}
 		else {
 		    //path to /Simulations folder
@@ -135,7 +173,7 @@ public class DatabasePlugin implements Plugin
 		    logger.log(Level.INFO, "Connecting to local database at: {0}/Simulations.db", simDir);
 		}
 		//Establish connection to database
-		wrap = new ConnectionWrapper(url, comment, ec.getId(), remote);
+		wrap = new ConnectionWrapper(url, connProperties, comment, ec.getId(), remote);
 
 	    }   catch (SQLException ex) {
 		    logger.log(Level.SEVERE,"Initializing database error:", ex);
@@ -242,10 +280,18 @@ public class DatabasePlugin implements Plugin
 
 	private void getGroupRoundData() 
 	{
-	    for(Map.Entry<String, PublicGroupDataModel> entry : trackedGroups.entrySet())
-		{
-		    wrap.groupRound(idMap.get(entry.getKey()), round, entry.getValue());
-		}
+	    
+		for(Map.Entry<String, PublicGroupDataModel> entry : trackedGroups.entrySet())
+		    {
+			try {
+			    wrap.groupRound(idMap.get(entry.getKey()), round, entry.getValue());
+			} catch (NullPointerException ex) {
+			    logger.log(Level.WARNING, "Null Exception: For group {0} for round {1}"
+			    + " ", new Object[]{entry.getValue().getName(), round});
+			}
+		    }
+	    
+	    
 	}
 
 	private void getAgentRoundData() 

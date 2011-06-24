@@ -18,7 +18,7 @@ public class CLIPolitics extends GenericSimulation
         
 	public CLIPolitics(long rand)
 	{
-		super("Basic Politics Testing Bed", 5000, rand, 0.1, Long.toHexString(rand));
+		super("Command Line Basic Politics Testing Bed " + rand, 5000, rand, 0.1, Long.toHexString(rand));
 	}
 
 	@Override
@@ -56,8 +56,10 @@ public class CLIPolitics extends GenericSimulation
 	@Override
 	protected void plugins()
 	{
-		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin(comment,false));
+		addPlugin(new HuntersAlivePlugin(getPath() + "/population" + Long.toHexString(randomSeed) + ".png", 1500, 1200));
+		//upload to remote, upload to docRemote
+		addPlugin(new DatabasePlugin(comment,true,true));
+		//addPlugin(new DatabasePlugin(comment,false));
 	}
 
 	@Override
