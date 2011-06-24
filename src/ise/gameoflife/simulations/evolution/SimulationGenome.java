@@ -20,7 +20,7 @@ public class SimulationGenome extends Genome<SimulationGenome>
 	private static final double consumption = 2;
 	private static final AgentType type = AgentType.AC;
 	private static final String comment = "Genetic Agent";
-	private static final int iterations = 200;
+	private static final int iterations = 100;
 	private static final int population = 40;
 	private static final double foodConsumedPerAdvice = 0.1;
 

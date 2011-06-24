@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import presage.events.CoreEvents.ActivateParticipant;
 import presage.EventScriptManager;
@@ -83,6 +85,7 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		plugins();
 		events();
 
+		Logger.getLogger("presage.Simulation").setLevel(Level.OFF);
 		this.simulation = new Simulation
 				(presageConfig, agents, environment, pluginManager, scriptManager);
 	}
