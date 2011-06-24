@@ -131,15 +131,16 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 	protected void agents()
 	{
 		Random rand = new Random(this.randomSeed);
-		for (int i = 0; i < genome.population()/2; i++)
+		for (int i = 0; i < genome.population()-1; i++)
 		{
-			// genetic agents
-			this.addAgent(new GeneticAgent(genome));
 			// competing agents
 			this.addAgent(new TestPoliticalAgent
 				 (genome.initialFood(), genome.consumption(),
 				  this.nextAgentType(), rand.nextDouble(), rand.nextDouble()));
 		}
+
+		// genetic agents
+		this.addAgent(new GeneticAgent(genome));
 	}
 
 	protected void groups()
