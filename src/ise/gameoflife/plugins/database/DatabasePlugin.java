@@ -103,14 +103,15 @@ public class DatabasePlugin implements Plugin
 	    
 	    //writes to db every 50 rounds (or 30 cycles) for local db
 	    //remote only writes at the end
-	    if(round%50==0 && !remote) 
+	    //no writes till the end
+	   /* if(round%50==0 && !remote) 
 	    {
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
 		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
 		wrap.flush(round);
 		logger.log(Level.INFO,"Database write complete");
 	    }
-	    
+	    */
 	}
 
 	@Override
