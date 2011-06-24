@@ -70,7 +70,7 @@ public class GeneticAgent extends TestPoliticalAgent
 						opponentStagStrategy++;
 					}
 				}
-				opponentStagStrategy /= opponentHuntingHistory.size();
+				opponentStagStrategy /= (double)opponentHuntingHistory.size();
 			}
 		}
 
