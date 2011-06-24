@@ -54,6 +54,16 @@ public abstract class Evolution
 	}
 
 	/**
+	 * This method is invoked before the next iteration of
+	 * evolution. This is useful for getting statistics after
+	 * current iteration of evolution.
+	 */
+	protected void willBeginNextIteration()
+	{
+
+	}
+
+	/**
 	 * A very basic procedure for fitness evaluation and selection
 	 * This two separate procedures are put together so the user can
 	 * have more flexibility over efficiency
@@ -72,13 +82,16 @@ public abstract class Evolution
 		ArrayList<Entity> newSpeciePool = new ArrayList<Entity>();
 
 		int rank = 0;
+		avgFitness = 0;
 		for (Entity entity : entityPool)
 		{
 			if (select(++rank, entity))
 			{
 				newSpeciePool.add(entity);
 			}
+			avgFitness += entity.fitness();
 		}
+		avgFitness /= entityPool.size();
 
 		return newSpeciePool;
 	}
@@ -130,6 +143,8 @@ public abstract class Evolution
 			while (genePool.size() < this.population);
 
 			this.setGenePool(genePool);
+
+			this.willBeginNextIteration();
 		}
 	}
 
@@ -219,6 +234,12 @@ public abstract class Evolution
 	public void setGenePool(GenePool<EntityGenome> pool)
 	{
 		genePool = pool;
+	}
+	// current average fitness
+	private double avgFitness = -1;
+	public double avgFitness()
+	{
+		return avgFitness;
 	}
 	// current iteration count
 	private int currentIteration = -1;
