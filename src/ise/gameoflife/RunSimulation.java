@@ -3,10 +3,12 @@ package ise.gameoflife;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.simulations.GenericSimulation;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import presage.gui.ControlCenter;
 
 /**
@@ -28,11 +30,34 @@ public class RunSimulation
 	 * decode the XML and make Multi-Agent magic happen
 	 * @param args Command line arguments
 	 */
-	public static void main(String args[]) throws Exception
+	public static void main(String args[]) throws InterruptedException
 	{
 		if (args.length == 0)
 		{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (ClassNotFoundException ex)
+			{
+				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+								ex);
+			}
+			catch (InstantiationException ex)
+			{
+				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+								ex);
+			}
+			catch (IllegalAccessException ex)
+			{
+				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+								ex);
+			}
+			catch (UnsupportedLookAndFeelException ex)
+			{
+				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+								ex);
+			}
 			BuildSimulations.main(args);
 			ControlCenter.main(args);
 		}
@@ -50,17 +75,55 @@ public class RunSimulation
 				
 			if (args.length == 2)
 			{
-				String name = args[0];
-				Class<?> sim = Class.forName("ise.gameoflife.simulations." + name);
-				assert(GenericSimulation.class.isAssignableFrom(sim));
+				try
+				{
+					String name = args[0];
+					Class<?> sim = Class.forName("ise.gameoflife.simulations." + name);
+					assert(GenericSimulation.class.isAssignableFrom(sim));
 
-				long x = Long.parseLong(args[1]);
-				GenericSimulation g = (GenericSimulation)sim.getConstructor(long.class).newInstance(x);
-				
-				name += Long.toHexString(x);
-				
-				presage.Presage.main(new String[]{g.getPath() + File.separator + "sim.xml"});
-				return;
+					long x = Long.parseLong(args[1]);
+					GenericSimulation g = (GenericSimulation)sim.getConstructor(long.class).newInstance(x);
+					
+					name += Long.toHexString(x);
+					
+					presage.Presage.main(new String[]{g.getPath() + File.separator + "sim.xml"});
+					return;
+				}
+				catch (InstantiationException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (IllegalAccessException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (IllegalArgumentException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (InvocationTargetException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (NoSuchMethodException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (SecurityException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (ClassNotFoundException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
 			}
 		}
 	}
