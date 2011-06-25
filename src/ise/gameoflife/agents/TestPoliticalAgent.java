@@ -202,43 +202,8 @@ public class TestPoliticalAgent extends AbstractAgent
     */
     @Override
     protected String chooseGroup() {
-
-//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
-//        for (String agent : freeToGroup.descendingSet())
-//        {
-//            System.out.println(getConn().getAgentById(agent).getName());
-//        }
-//        System.out.println(freeToGroup.size());
-//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
-//        System.out.println();
-//        System.out.println();
-//
-//
-//        System.out.println("-------------START-GROUP---------------------------");
-//        for (String groupID : getConn().availableGroups())
-//        {
-//            int size = getConn().getGroupById(groupID).getMemberList().size();
-//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-//            for (String a: getConn().getGroupById(groupID).getMemberList())
-//            {
-//                System.out.println("    "+getConn().getAgentById(a).getName());
-//            }
-//        }
-//        System.out.println("--------------END-GROUP---------------------------");
-//        System.out.println();
-//        System.out.println();
         
         String chosenGroup = "";
-
-  //Theo added
-//        boolean agentG = false;
-//        for (String ag : special_agents)
-//                if (this.getId().equals(ag))
-//                    agentG = true;
-//
-//        if(agentG) return special;
-
-
 
         //If you're not available to group and you are part of a group already
         //Note: an agent is allowed to not be free to group and not be part of a group,
@@ -353,7 +318,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
 
             //If top candidate has evaluation above the threshold then choose that group
-            if (topCandidateHeuristicValue > 0.4)
+            if (topCandidateHeuristicValue > 0.7)
             { 
                 chosenGroup = partnershipCandidates.get(0).getKey();
                 freeToGroup.remove(this.getId());                
@@ -422,7 +387,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
 
             //If top candidate has evaluation above the threshold then choose that group
-            if (topCandidateHeuristicValue > 0.3)
+            if (topCandidateHeuristicValue > 0.5)
             {
                 String invitee = partnershipCandidates.get(0).getKey();
                 
@@ -441,21 +406,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(),(this.getDataModel().getEconomicBelief() + getConn().getAgentById(invitee).getEconomicBelief())/2);
                     Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                     chosenGroup = getConn().createGroup(gtype, myGroup, invitee);
-
-//                    //****** ADDED THEO
-//                    //GROUP INTO AGENTS
-//                    special_no++;
-//                    //Create special group
-//                    if(special_no == 1){
-//                        GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),0.0);
-//                        special = getConn().createGroup(gtype, spGroup);
-//                        System.out.println("THis is the special group: "+special+ "name: "+getConn().getGroupById(special).getName());
-//                    }
-//
-//                    //Creates a political Agent-group
-//                    getConn().createAgent(0, 0.5, getConn().getGroupById(special).getCurrentEconomicPoisition() , chosenGroup); //CREATE a new AGENT-Group
-//                    //*********
-                    
+                   
                     groupFounders.put(this.getId(), chosenGroup);
                     freeToGroup.remove(this.getId());
                 }
@@ -942,11 +893,11 @@ public class TestPoliticalAgent extends AbstractAgent
 
                 if (foodHunted >0)
                 {
-                    advisorTrust = scale(advisorTrust, 10, randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, 1000, randomGenerator.nextDouble());
                 }
                 else
                 {
-                    advisorTrust = scale(advisorTrust, -10, randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, -1000, randomGenerator.nextDouble());
                 }
                 newTrustValue.put(previousAdvisor, advisorTrust);
             }
@@ -1420,13 +1371,13 @@ public class TestPoliticalAgent extends AbstractAgent
                 if (followerStrategy == groupStrategy)
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 100, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 1000, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
                 else
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -100, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -1000, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
             }
