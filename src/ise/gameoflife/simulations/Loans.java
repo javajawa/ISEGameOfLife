@@ -69,6 +69,8 @@ public class Loans extends GenericSimulation
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
 		addPlugin(new DatabasePlugin(comment,false));
+		addPlugin(new DatabasePlugin(comment,true,true));
+		//addPlugin(new DatabasePlugin(comment,true));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());

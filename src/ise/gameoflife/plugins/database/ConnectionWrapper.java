@@ -134,7 +134,7 @@ final class ConnectionWrapper
 		    newAgent.executeBatch();
 		    dieAgent.executeBatch();
 		    roundGroup.executeBatch();
-		    roundLoanGroup.executeBatch();
+		    //roundLoanGroup.executeBatch();
 		    roundAgent.executeBatch();
 		    trustAgent.executeBatch();
 		    if (!conn.getAutoCommit()) conn.commit();
@@ -251,7 +251,9 @@ final class ConnectionWrapper
 		 roundGroup.setInt(3,groupid);
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
-		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
+		 //roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
+		 //some yet unsolved error with economic position
+		 roundGroup.setDouble(6,-1);
 
 		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
 			//     new Object[]{group.getId(), round});
