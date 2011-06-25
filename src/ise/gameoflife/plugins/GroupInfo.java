@@ -33,10 +33,7 @@ public class GroupInfo extends JPanel implements Plugin
 	private class GroupPanel extends JPanel
 	{
 		private static final long serialVersionUID = 1L;
-//		private final XYSeries foodHistorySeries;
 		private final PublicGroupDataModel gm;
-//		private final ValueAxis domainAxis;
-//		private final ValueAxis rangeAxis;
 
 		private JLabel labelise(String s)
 		{
@@ -66,20 +63,12 @@ public class GroupInfo extends JPanel implements Plugin
                         double Food = 0;
                         String Leader = "Null";
 
-
-//                        List<String> members = this.gm.getMemberList();
                           double size = this.gm.getMemberList().size();
-//                        Iterator<String> iter = members.iterator();
-//                        while (iter.hasNext()) //iterate through available Groups
-//                        {
-//                            //String memberId =  iter.next();
                         for( String memberId : this.gm.getMemberList())
                         {
-                           //if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness() != null)
                                 Happiness += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness();
-                          //  if (PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty() != null)
                                 Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty();
-                            Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
+                                Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
                         }
                         Happiness= Happiness/size;
                         Loyalty = Loyalty/size;
@@ -115,39 +104,23 @@ public class GroupInfo extends JPanel implements Plugin
                         dataPanel.add(labelise("Average Food: "+Food));
                         dataPanel.add(labelise("Leaders: "+ Leader));
 
-
-			//chartPanel.setVisible(true);
-
 			this.setLayout(new GridLayout(1,1));
 			this.add(dataPanel);
-			//this.add(chartPanel);
 			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			window.add(this);
 			this.setPreferredSize(new Dimension(getWidth() - barWidth, 125));
 		}
 
-		void updateData()
-		{
-//			if (gm.getCurrentEconomicPoisition() > graphHeight) graphHeight += 25;
-//			foodHistorySeries.addOrUpdate(ec.getRoundsPassed(), gm.getCurrentEconomicPoisition());
-//			domainAxis.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
-//			rangeAxis.setRange(0, graphHeight);
-
-
-                }
 	}
 
 	private final static String label = "Group logs";
 
-	private Simulation sim;
 	private PublicEnvironmentConnection ec = null;
-
+        private Simulation sim;
 	private final JPanel window = new JPanel();
 	private final JScrollPane pane = new JScrollPane(window, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	//private final HashMap<String, GroupPanel> panels = new HashMap<String, GroupPanel>();
         private final TreeMap<String, GroupPanel> panels = new TreeMap<String, GroupPanel>();
 	private int barWidth;
-	private int graphHeight = 50;
 
 	public GroupInfo()
 	{
@@ -161,26 +134,18 @@ public class GroupInfo extends JPanel implements Plugin
 		if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
-              panels.clear();
-              this.window.removeAll();
+                panels.clear();
+                this.window.removeAll();
 		for (String aid : ec.availableGroups())
 		{       if (!panels.containsKey(aid) && ec.getGroupById(aid).getMemberList().size() > 0 )
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));
-                        
-                                panels.get(aid).updateData();
                         }
 		}
 		validate();
 
 
                 this.repaint();
-
-                //panels.clear();
-
-
-
-
 	}
 
 	@Override

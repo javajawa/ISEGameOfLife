@@ -8,7 +8,6 @@ package ise.gameoflife.plugins;
 import ise.gameoflife.agents.PoliticalAgentGroup;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.participants.PublicAgentDataModel;
-import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -37,10 +36,7 @@ public class HunterInfo extends JPanel implements Plugin
 	private class HunterPanel extends JPanel
 	{
 		private static final long serialVersionUID = 1L;
-		//private final XYSeries foodHistorySeries;
 		private final PublicAgentDataModel dm;
-		//private final ValueAxis domainAxis;
-		//private final ValueAxis rangeAxis;
 
 		private JLabel labelise(String s)
 		{
@@ -84,16 +80,6 @@ public class HunterInfo extends JPanel implements Plugin
                         else{
                             current = "Alive - Free";
                         }
-			//this.foodHistorySeries = new XYSeries(dm.getId());
-
-			//JFreeChart chart = ChartFactory.createXYLineChart(null, null, null,
-						//	new XYSeriesCollection(foodHistorySeries),
-						//	PlotOrientation.VERTICAL, false, false, false);
-			//ChartPanel chartPanel = new ChartPanel(chart);
-
-			//chart.getXYPlot().setBackgroundAlpha(1);
-			//domainAxis = chart.getXYPlot().getDomainAxis();
-			//rangeAxis = chart.getXYPlot().getRangeAxis();
 
                         String food= Double.toString(this.dm.getFoodAmount());
                         String Loyalty = "Null";
@@ -123,27 +109,12 @@ public class HunterInfo extends JPanel implements Plugin
 			dataPanel.add(labelise("Happiness: "+Happiness));
                         dataPanel.add(labelise("LastHunted: "+LastHunted));
 
-
-
-			//chartPanel.setVisible(true);
-
 			this.setLayout(new GridLayout(1,1));
 			this.add(dataPanel);
-			//this.add(chartPanel);
 			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			window.add(this);
 			this.setPreferredSize(new Dimension(getWidth() - barWidth, 125));
 		}
-
-		void updateData()
-		{
-			//if (dm.getFoodAmount() > graphHeight) graphHeight += 25;
-			//foodHistorySeries.addOrUpdate(ec.getRoundsPassed(), dm.getFoodAmount());
-			//domainAxis.setRange(ec.getRoundsPassed() - 25, ec.getRoundsPassed());
-			//rangeAxis.setRange(0, graphHeight);
-
-
-                }
 	}
 
 	private final static String label = "Hunter Logs";
@@ -153,10 +124,8 @@ public class HunterInfo extends JPanel implements Plugin
 
 	private final JPanel window = new JPanel();
 	private final JScrollPane pane = new JScrollPane(window, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	//private final HashMap<String, HunterPanel> panels = new HashMap<String, HunterPanel>();
         private final TreeMap<String, HunterPanel> panels = new TreeMap<String, HunterPanel>();
 	private int barWidth;
-	private int graphHeight = 50;
 
 	public HunterInfo()
 	{
@@ -189,16 +158,12 @@ public class HunterInfo extends JPanel implements Plugin
                         if (!panels.containsKey(aid))
 			{
 				panels.put(aid, new HunterPanel(ec.getAgentById(aid)));
-                                panels.get(aid).updateData();
                         }
 			
                 }
 		validate();
 
-
                 this.repaint();
-
-                //panels.clear();
 	}
 
 	@Override
