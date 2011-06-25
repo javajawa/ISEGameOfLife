@@ -916,6 +916,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     advisorTrust = scale(advisorTrust, -100, foodHunted);
                 }
                 newTrustValue.put(previousAdvisor, advisorTrust);
+                previousAdvisor = null;
             }
             
             newTrustValue.put(opponentID, trust);
