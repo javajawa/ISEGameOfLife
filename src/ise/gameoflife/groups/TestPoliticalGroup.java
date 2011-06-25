@@ -4,6 +4,7 @@
  */
 package ise.gameoflife.groups;
 
+import ise.gameoflife.agents.PoliticalAgentGroup;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
@@ -60,6 +61,10 @@ public class TestPoliticalGroup extends AbstractGroupAgent {
             {
                 //agent does not exist so invitation is denied
                 return false;
+            }
+            else if(this.getId().equals(PoliticalAgentGroup.special))
+            { //exception for the Special group
+                return true;
             }
             else
             {
