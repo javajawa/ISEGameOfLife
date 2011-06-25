@@ -882,7 +882,7 @@ public class PoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                            trust = scale(trust, -1, randomGenerator.nextDouble());
+                        trust = scale(trust, -1, randomGenerator.nextDouble());
                     }
                     else //Opponent cooperated
                     {
@@ -896,6 +896,8 @@ public class PoliticalAgent extends AbstractAgent
 
             newTrustValue.put(opponentID, trust);
 
+            //Agents must also increase or decrease their trusts for their advisors. If the advice was
+            //good then they increase trust.
             if (previousAdvisor != null)
             {
                 double advisorTrust;
@@ -910,11 +912,11 @@ public class PoliticalAgent extends AbstractAgent
                 
                 if (foodHunted >0)
                 {
-                    advisorTrust = scale(advisorTrust, 1, randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, 10, randomGenerator.nextDouble());
                 }
                 else
                 {
-                    advisorTrust = scale(advisorTrust, -1, randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, -10, randomGenerator.nextDouble());
                 }
                 newTrustValue.put(previousAdvisor, advisorTrust);
             }
@@ -1387,13 +1389,13 @@ public class PoliticalAgent extends AbstractAgent
                 if (followerStrategy == groupStrategy)
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 1, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 100, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
                 else
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -1, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -100, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
             }

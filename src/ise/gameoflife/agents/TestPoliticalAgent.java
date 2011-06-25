@@ -45,7 +45,7 @@ public class TestPoliticalAgent extends AbstractAgent
 //        private static int special_no=0;
 
         private String invitationToGroup = null;
-       
+        private static String previousAdvisor = null;
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
         private final static HashMap<String, String> groupFounders = new HashMap<String, String>();
         private final static TreeSet<String> membersToKickOut = new TreeSet<String>();        
@@ -914,16 +914,41 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                            trust = scale(trust, -1, 0.3);
+                            trust = scale(trust, -1, randomGenerator.nextDouble());
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1, 0.3);
+                        trust = scale(trust, 1, randomGenerator.nextDouble());
                     }
             }
             else    //Agent hunted rabbit so no trust issues
             {
                 trust = scale(trust, 0, 0.3);
+            }
+
+            //Agents must also increase or decrease their trusts for their advisors. If the advice was
+            //good then they increase trust.
+            if (previousAdvisor != null)
+            {
+                double advisorTrust;
+                if (getDataModel().getTrust(previousAdvisor) != null)
+                {
+                    advisorTrust = getDataModel().getTrust(previousAdvisor);
+                }
+                else
+                {
+                    advisorTrust = 0.1;
+                }
+
+                if (foodHunted >0)
+                {
+                    advisorTrust = scale(advisorTrust, 10, randomGenerator.nextDouble());
+                }
+                else
+                {
+                    advisorTrust = scale(advisorTrust, -10, randomGenerator.nextDouble());
+                }
+                newTrustValue.put(previousAdvisor, advisorTrust);
             }
             
             newTrustValue.put(opponentID, trust);
@@ -1046,7 +1071,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
                 //if votes > 0 we increase the trust for proposer
                 //if votes < 0 we decrease the trust for proposer
-                proposerTrust = scale(proposerTrust, votes, Math.abs(overallMovement));
+                proposerTrust = scale(proposerTrust, votes, randomGenerator.nextDouble());
                 newTrustValue.put(proposer, proposerTrust);
              }
              else
@@ -1206,6 +1231,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 {
                     if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
                     {
+                        previousAdvisor = agent;
                         return suggestedFood = seekAvice(agent);
                     }
                 }
@@ -1394,13 +1420,13 @@ public class TestPoliticalAgent extends AbstractAgent
                 if (followerStrategy == groupStrategy)
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 1, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 100, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
                 else
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -1, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -100, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
             }

@@ -255,11 +255,11 @@ public abstract class AbstractGroupAgent implements Participant
                         {
                             extraFood = specialAgentFoodAmount - previousAmountHunted.get(getId());
                         }
-                       
+
                         previousAmountHunted.put(getId(), specialAgentFoodAmount);
-                        shared += extraFood;
+                        shared += getDataModel().getMemberList().size()*extraFood;
                     }
-                    
+
                 }
                 
                 //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
