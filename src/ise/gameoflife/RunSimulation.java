@@ -1,11 +1,14 @@
 package ise.gameoflife;
 
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.simulations.GenericSimulation;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import presage.gui.ControlCenter;
 
 /**
@@ -16,7 +19,8 @@ import presage.gui.ControlCenter;
  */
 public class RunSimulation
 {
-
+	private final static Logger rootLogger = Logger.getLogger("");
+	
 	private RunSimulation()
 	{
 	}
@@ -26,17 +30,42 @@ public class RunSimulation
 	 * decode the XML and make Multi-Agent magic happen
 	 * @param args Command line arguments
 	 */
-	public static void main(String args[]) throws Exception
+	public static void main(String args[]) throws InterruptedException
 	{
 		if (args.length == 0)
 		{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (ClassNotFoundException ex)
+			{
+				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+								ex);
+			}
+			catch (InstantiationException ex)
+			{
+				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+								ex);
+			}
+			catch (IllegalAccessException ex)
+			{
+				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+								ex);
+			}
+			catch (UnsupportedLookAndFeelException ex)
+			{
+				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+								ex);
+			}
 			BuildSimulations.main(args);
 			ControlCenter.main(args);
 		}
 		else
 		{
-			Logger.getLogger("").setLevel(Level.WARNING);
+			
+			rootLogger.setLevel(Level.WARNING);
+			PublicEnvironmentConnection.logger.setLevel(Level.WARNING);
 
 			if (args.length == 1)
 			{
@@ -46,41 +75,55 @@ public class RunSimulation
 				
 			if (args.length == 2)
 			{
-				if (args[1].equalsIgnoreCase("--rebuild"))
+				try
 				{
 					String name = args[0];
-					if (name.lastIndexOf(File.separator) > -1)
-					{
-						name = name.substring(name.lastIndexOf(File.separator)+1);
-					}
-
 					Class<?> sim = Class.forName("ise.gameoflife.simulations." + name);
 					assert(GenericSimulation.class.isAssignableFrom(sim));
 
-					sim.newInstance();
-					presage.Presage.main(new String[]{args[0] + File.separator + "sim.xml"});
+					long x = Long.parseLong(args[1]);
+					GenericSimulation g = (GenericSimulation)sim.getConstructor(long.class).newInstance(x);
+					
+					name += Long.toHexString(x);
+					
+					presage.Presage.main(new String[]{g.getPath() + File.separator + "sim.xml"});
+					return;
 				}
-				else
+				catch (InstantiationException ex)
 				{
-					presage.Presage.main(new String[]{args[0] + File.separator + args[1] + File.separator + "sim.xml"});
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
 				}
-				return;
-			}
-
-			// Source dir, clasname, rebuild flag
-			if (args.length == 3)
-			{
-				String name = args[1];
-
-				if (args[2].equalsIgnoreCase("--rebuild"))
+				catch (IllegalAccessException ex)
 				{
-					Class<?> sim = Class.forName("ise.gameoflife.simulations." + name);
-					assert(GenericSimulation.class.isAssignableFrom(sim));
-
-					sim.newInstance();
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
 				}
-				presage.Presage.main(new String[]{args[0] + File.separator + name + File.separator + "sim.xml"});
-				return;
+				catch (IllegalArgumentException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (InvocationTargetException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (NoSuchMethodException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (SecurityException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
+				catch (ClassNotFoundException ex)
+				{
+					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
+									ex);
+				}
 			}
 		}
 	}

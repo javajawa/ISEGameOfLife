@@ -241,6 +241,7 @@ public abstract class AbstractGroupAgent implements Participant
 			shared += value;
 		}
 
+<<<<<<< HEAD
                 //The game between groups is played by the special agent which represent a group.
                 //The result of that game is added on the shared food amount and distributed back to
                 //the followers.

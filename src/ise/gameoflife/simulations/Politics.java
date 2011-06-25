@@ -7,6 +7,7 @@ package ise.gameoflife.simulations;
 
 import ise.gameoflife.agents.PoliticalAgent;
 import ise.gameoflife.groups.PoliticalGroup;
+import ise.gameoflife.groups.SpecialGroup;
 import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.WarGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
@@ -63,7 +64,7 @@ public class Politics extends GenericSimulation
 	protected void groups()
 	{
               addGroup(PoliticalGroup.class);
-              addGroup(WarGroup.class);
+              addGroup(SpecialGroup.class);
 	}
 
 	@Override
