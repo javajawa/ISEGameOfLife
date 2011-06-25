@@ -49,8 +49,6 @@ public class TestPoliticalAgent extends AbstractAgent
         private final static TreeSet<String> freeToGroup = new TreeSet<String>();                
 	private History<Double> satisfaction = new History<Double>(1);
 
-//        private static  List<String> special_agents = new LinkedList<String>();
-
         Random randomGenerator = new Random();
         
 	@Deprecated
@@ -315,7 +313,7 @@ public class TestPoliticalAgent extends AbstractAgent
             double topCandidateHeuristicValue = partnershipCandidates.get(0).getValue();
 
             //If top candidate has evaluation above the threshold then choose that group
-            if (topCandidateHeuristicValue > 0.7)
+            if (topCandidateHeuristicValue > 0.5)
             { 
                 chosenGroup = partnershipCandidates.get(0).getKey();
                 freeToGroup.remove(this.getId());                
@@ -909,11 +907,11 @@ public class TestPoliticalAgent extends AbstractAgent
 
                 if (foodHunted >0)
                 {
-                    advisorTrust = scale(advisorTrust, 100, foodHunted);
+                    advisorTrust = scale(advisorTrust, 100, foodHunted*randomGenerator.nextDouble());
                 }
                 else
                 {
-                    advisorTrust = scale(advisorTrust, -100, foodHunted);
+                    advisorTrust = scale(advisorTrust, -100, foodHunted*randomGenerator.nextDouble());
                 }
                 newTrustValue.put(previousAdvisor, advisorTrust);
                 previousAdvisor = null;
@@ -1205,6 +1203,19 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
             }
         }
+
+//        List<Tuple<String, Double>> trustValues = new LinkedList<Tuple<String, Double>>();
+//        for (String member: getConn().getGroupById(this.getDataModel().getGroupId()).getMemberList())
+//        {
+//            Tuple<String, Double> memberTrust = new Tuple<String, Double>();
+//            memberTrust.add(member, ((getDataModel().getTrust(member)!=null)?getDataModel().getTrust(member):0));
+//            trustValues.add(memberTrust);
+//        }
+//
+//        Collections.sort(trustValues, c);
+//        previousAdvisor = trustValues.get(0).getKey();
+//        return seekAvice(previousAdvisor);
+
         return suggestedFood;
     }
 

@@ -42,7 +42,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 	private static final long serialVersionUID = 1L;
 
 	private final static String title = "Political Compass2";
-        private final static String label = "Political Compass2";
+        private final static String label = "Political Compass(agents)";
 
 	private Simulation sim;
         private Environment en;
