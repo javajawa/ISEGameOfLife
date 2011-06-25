@@ -235,12 +235,7 @@ public abstract class AbstractGroupAgent implements Participant
 	private void doHandleHuntResults()
 	{
 		double shared = 0;
-		double taxRate = 1 - dm.getCurrentEconomicPoisition();
-		for (Double value : huntResult.values())
-		{
-			shared += value;
-		}
-
+                
                 //The game between groups is played by the special agent which represent a group.
                 //The result of that game is added on the shared food amount and distributed back to
                 //the followers.
@@ -261,13 +256,20 @@ public abstract class AbstractGroupAgent implements Participant
                     }
 
                 }
-                
+ 
                 //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
                 Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
                 this.setReservedFood(updatedSharedAndReserve.getValue());
                 shared = updatedSharedAndReserve.getKey();
-                //Loans simulation addition end
-
+                //Loans simulation addition end                
+                
+                
+		double taxRate = 1 - dm.getCurrentEconomicPoisition();
+		for (Double value : huntResult.values())
+		{
+			shared += value;
+		}
+            
 		shared = shared * taxRate / dm.getMemberList().size();
 
 		Map<String, Double> result = new HashMap<String, Double>(huntResult.size());
