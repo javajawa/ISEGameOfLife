@@ -251,9 +251,7 @@ final class ConnectionWrapper
 		 roundGroup.setInt(3,groupid);
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
-		 //roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
-		 //some yet unsolved error with economic position
-		 roundGroup.setDouble(6,-1);
+		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
 
 		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
 			//     new Object[]{group.getId(), round});
@@ -366,6 +364,7 @@ final class ConnectionWrapper
 		 roundGroup.setInt(3,0);
 		 roundGroup.setInt(4,pop);
 		 roundGroup.setDouble(5,-1);
+		 roundGroup.setDouble(6,-1);
 		 roundGroup.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, null, ex);
