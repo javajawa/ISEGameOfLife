@@ -87,6 +87,7 @@ public class DatabasePlugin implements Plugin
 
 	private ConnectionWrapper wrap;
 	private PublicEnvironmentConnection ec;
+	private Simulation sim;
 	//internal storage of roundsPassed()
 	private int round;
 	//used to generate simulation unique agentid and groupid
@@ -139,6 +140,7 @@ public class DatabasePlugin implements Plugin
 	public void initialise(Simulation sim)
 	{
 	    ec = PublicEnvironmentConnection.getInstance();
+	    this.sim = sim;
 	    if (ec == null) throw new IllegalStateException(
 		"Connection created before EnviromentConnection was accessible");
 
@@ -219,7 +221,8 @@ public class DatabasePlugin implements Plugin
 	private void findNewAgents()
 	{
 		// get all active agentsin simulation
-		TreeSet<String> newAgents = new TreeSet<String>(ec.getAgents());
+		//TreeSet<String> newAgents = new TreeSet<String>(ec.getAgents());
+		TreeSet<String> newAgents = new TreeSet<String>(sim.getactiveParticipantIdSet("hunter"));
 		//remove already tracked groups
 		newAgents.removeAll(trackedAgents.keySet());
 
@@ -238,6 +241,7 @@ public class DatabasePlugin implements Plugin
 	{
 		// get all active groups in simulation
 		TreeSet<String> newGroups = new TreeSet<String>(ec.availableGroups());
+		//TreeSet<String> newGroups = new TreeSet<String>(ec.isAgentId(name));
 		//remove already tracked groups
 		newGroups.removeAll(trackedGroups.keySet());
 		for (String g : newGroups)
@@ -268,7 +272,7 @@ public class DatabasePlugin implements Plugin
 	{
 		//Stop tracking dead agents
 		TreeSet<String> deadAgents = new TreeSet<String>(trackedAgents.keySet());
-		deadAgents.removeAll(ec.getAgents());
+		deadAgents.removeAll(sim.getactiveParticipantIdSet("hunter"));
 
 		for (String a : deadAgents)
 		{

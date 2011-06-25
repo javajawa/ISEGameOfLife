@@ -68,7 +68,9 @@ public abstract class AbstractGroupAgent implements Participant
 	private EnvironmentConnector tmp_ec;
 	private Map<String, Double> huntResult;
 	private Map<Proposition, Integer> voteResult;
-        private static double previousAmountHunted = 0;
+        
+        //TODO: Change that to a hash map
+        private static Map<String, Double> previousAmountHunted = new HashMap<String, Double>();
 
 	/**
 	 * 
@@ -239,33 +241,32 @@ public abstract class AbstractGroupAgent implements Participant
 			shared += value;
 		}
 
-		double before = shared;
+                //The game between groups is played by the special agent which represent a group.
+                //The result of that game is added on the shared food amount and distributed back to
+                //the followers.
+                for (String specialAgent: getConn().getAgents())
+                {
+                    if (getConn().getAgentById(specialAgent).getName().equals(getId()))
+                    {
+                        PublicAgentDataModel groupSpecialAgent = getConn().getAgentById(specialAgent);
+                        double specialAgentFoodAmount = groupSpecialAgent.getFoodAmount();
+                        double extraFood = 0;
+                        if (previousAmountHunted.get(getId()) != null)
+                        {
+                            extraFood = specialAgentFoodAmount - previousAmountHunted.get(getId());
+                        }
 
+                        previousAmountHunted.put(getId(), specialAgentFoodAmount);
+                        shared += getDataModel().getMemberList().size()*extraFood;
+                    }
 
-		//Addition for the game between the leaders
-		for (String specialAgent : getConn().getAgents())
-		{
-			if (getConn().getAgentById(specialAgent).getName().equals(
-							getDataModel().getId()))
-			{
-				PublicAgentDataModel groupSpecialAgent = getConn().getAgentById(
-								specialAgent);
-				double foodAmount = groupSpecialAgent.getFoodAmount();
-				double extraFood = foodAmount - previousAmountHunted;
-				previousAmountHunted = foodAmount;
-				shared += extraFood;
-			}
-
-		}
-		//Addition for the game between the leaders
-		logger.log(Level.FINE, "{0} {1} -> {2}", new Object[]
-						{getDataModel().getName(),before, shared});
-
-		//Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
-		Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
-		this.setReservedFood(updatedSharedAndReserve.getValue());
-		shared = updatedSharedAndReserve.getKey();
-		//Loans simulation addition end
+                }
+                
+                //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
+                Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
+                this.setReservedFood(updatedSharedAndReserve.getValue());
+                shared = updatedSharedAndReserve.getKey();
+                //Loans simulation addition end
 
 		shared = shared * taxRate / dm.getMemberList().size();
 
