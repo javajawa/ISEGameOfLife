@@ -26,7 +26,7 @@ public class Politics_old extends GenericSimulation
         
 	public Politics_old()
 	{
-		super("Basic Politics Testing Bed", 1000, 0, 0.1);
+		super("Basic Politics Testing Bed", 400, 0, 0.1);
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class Politics_old extends GenericSimulation
                 Random randomGenerator = new Random();
 
               
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 25; i++)
 		{
                         addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
