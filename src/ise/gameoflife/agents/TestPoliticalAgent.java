@@ -41,9 +41,6 @@ public class TestPoliticalAgent extends AbstractAgent
 
 	private static final long serialVersionUID = 1L;
 
-//        public static String special= null;
-//        private static int special_no=0;
-
         private String invitationToGroup = null;
         private static String previousAdvisor = null;
         private final static TreeSet<String> invitationHolders = new TreeSet<String>();
@@ -267,7 +264,7 @@ public class TestPoliticalAgent extends AbstractAgent
         for (String groupID: getConn().availableGroups())
         {
             //proceed, only if, this is a group with two members or more
-            if (getConn().getGroupById(groupID).getMemberList().size() >= 2)// && !special.equals(groupID)) //ADDED THE0
+            if (getConn().getGroupById(groupID).getMemberList().size() >= 2 && !PoliticalAgentGroup.special.equals(groupID)) //ADDED THE0
             {
                 int numKnownTrustValues = 0;
                 double trustSum = 0;
@@ -406,7 +403,7 @@ public class TestPoliticalAgent extends AbstractAgent
                     GroupDataInitialiser myGroup = new GroupDataInitialiser(this.uniformRandLong(),(this.getDataModel().getEconomicBelief() + getConn().getAgentById(invitee).getEconomicBelief())/2);
                     Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                     chosenGroup = getConn().createGroup(gtype, myGroup, invitee);
-                   
+                    createGroupAgent(chosenGroup); //Create the group agent
                     groupFounders.put(this.getId(), chosenGroup);
                     freeToGroup.remove(this.getId());
                 }
@@ -414,6 +411,25 @@ public class TestPoliticalAgent extends AbstractAgent
         }     
         return chosenGroup;
     }
+
+     /**
+     * Creates the agent that represents a group
+     * @param chosenGroup : the name of the agent is equal to the group id representing
+     */
+    private void createGroupAgent(String chosenGroup){
+        //GROUP INTO AGENTS
+        PoliticalAgentGroup.special_no++;
+        //Create special group
+        if(PoliticalAgentGroup.special_no == 1){
+            GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),1.0);
+            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(1);
+            PoliticalAgentGroup.special = getConn().createGroup(gtype, spGroup);
+        }
+        //Creates a political Agent-group
+        getConn().createAgent(0, getConn().getGroupById(PoliticalAgentGroup.special).getCurrentEconomicPoisition(),0.5 , chosenGroup); //CREATE a new AGENT-Group
+
+    }
+
 
     /**
     * This method enables agents who received an invitation to check if they want to accept that invitation
@@ -874,7 +890,7 @@ public class TestPoliticalAgent extends AbstractAgent
             }
             else    //Agent hunted rabbit so no trust issues
             {
-                trust = scale(trust, 0, 0.3);
+                trust = scale(trust, 0, randomGenerator.nextDouble());
             }
 
             //Agents must also increase or decrease their trusts for their advisors. If the advice was
@@ -893,11 +909,11 @@ public class TestPoliticalAgent extends AbstractAgent
 
                 if (foodHunted >0)
                 {
-                    advisorTrust = scale(advisorTrust, 1000, randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, 100, foodHunted);
                 }
                 else
                 {
-                    advisorTrust = scale(advisorTrust, -1000, randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, -100, foodHunted);
                 }
                 newTrustValue.put(previousAdvisor, advisorTrust);
             }
@@ -1022,7 +1038,7 @@ public class TestPoliticalAgent extends AbstractAgent
 
                 //if votes > 0 we increase the trust for proposer
                 //if votes < 0 we decrease the trust for proposer
-                proposerTrust = scale(proposerTrust, votes, randomGenerator.nextDouble());
+                proposerTrust = scale(proposerTrust, votes, 0.1);
                 newTrustValue.put(proposer, proposerTrust);
              }
              else
@@ -1371,13 +1387,13 @@ public class TestPoliticalAgent extends AbstractAgent
                 if (followerStrategy == groupStrategy)
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 1000, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 100, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
                 else
                 {
                      double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -1000, rating);
+                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -100, rating);
                      newTrustValues.put(panelMember, currentTrustForPanelMember);
                 }
             }
