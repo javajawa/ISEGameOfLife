@@ -5,6 +5,7 @@ import ise.gameoflife.inputs.Proposition;
 import ise.gameoflife.models.History;
 import ise.gameoflife.models.UnmodifiableHistory;
 import ise.gameoflife.models.GroupDataInitialiser;
+import ise.gameoflife.models.ScaledDouble;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.tokens.AgentType;
 import java.util.ArrayList;

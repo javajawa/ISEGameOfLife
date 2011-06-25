@@ -50,6 +50,7 @@ public class PoliticalAgent extends AbstractAgent
 	private History<Double> satisfaction = new History<Double>(1);
 
 //        private static  List<String> special_agents = new LinkedList<String>();
+        private static String previousAdvisor = null;
 
         Random randomGenerator = new Random();
 
@@ -199,34 +200,7 @@ public class PoliticalAgent extends AbstractAgent
     */
     @Override
     protected String chooseGroup() {
-
-//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
-//        for (String agent : freeToGroup.descendingSet())
-//        {
-//            System.out.println(getConn().getAgentById(agent).getName());
-//        }
-//        System.out.println(freeToGroup.size());
-//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
-//        System.out.println();
-//        System.out.println();
-//
-//
-//        System.out.println("-------------START-GROUP---------------------------");
-//        for (String groupID : getConn().availableGroups())
-//        {
-//            int size = getConn().getGroupById(groupID).getMemberList().size();
-//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-//            for (String a: getConn().getGroupById(groupID).getMemberList())
-//            {
-//                System.out.println("    "+getConn().getAgentById(a).getName());
-//            }
-//        }
-//        System.out.println("--------------END-GROUP---------------------------");
-//        System.out.println();
-//        System.out.println();
-
         String chosenGroup = "";
-
 
         //If you're not available to group and you are part of a group already
         //Note: an agent is allowed to not be free to group and not be part of a group,
@@ -795,7 +769,6 @@ public class PoliticalAgent extends AbstractAgent
             //If surplus is <0 you are dissapointed and decrease your happiness
             //If surplus is zero nothing really changed
             currentHappiness = scale(currentHappiness, surplus, 0.1);
-
             return currentHappiness;
     }
 
@@ -909,11 +882,11 @@ public class PoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                            trust = scale(trust, -1, 0.3);
+                            trust = scale(trust, -1, randomGenerator.nextDouble());
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1, 0.3);
+                        trust = scale(trust, 1, randomGenerator.nextDouble());
                     }
             }
             else    //Agent hunted rabbit so no trust issues
@@ -922,6 +895,30 @@ public class PoliticalAgent extends AbstractAgent
             }
 
             newTrustValue.put(opponentID, trust);
+
+            if (previousAdvisor != null)
+            {
+                double advisorTrust;
+                if (getDataModel().getTrust(previousAdvisor) != null)
+                {
+                    advisorTrust = getDataModel().getTrust(previousAdvisor);
+                }
+                else
+                {
+                    advisorTrust = 0.1;
+                }
+                
+                if (foodHunted >0)
+                {
+                    advisorTrust = scale(advisorTrust, 1, randomGenerator.nextDouble());
+                }
+                else
+                {
+                    advisorTrust = scale(advisorTrust, -1, randomGenerator.nextDouble());
+                }
+                newTrustValue.put(previousAdvisor, advisorTrust);
+            }
+            
             return  newTrustValue;
     }
 
@@ -1041,7 +1038,7 @@ public class PoliticalAgent extends AbstractAgent
 
                 //if votes > 0 we increase the trust for proposer
                 //if votes < 0 we decrease the trust for proposer
-                proposerTrust = scale(proposerTrust, votes, Math.abs(overallMovement));
+                proposerTrust = scale(proposerTrust, votes, randomGenerator.nextDouble());
                 newTrustValue.put(proposer, proposerTrust);
              }
              else
@@ -1201,6 +1198,7 @@ public class PoliticalAgent extends AbstractAgent
                 {
                     if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
                     {
+                        previousAdvisor = agent;
                         return suggestedFood = seekAvice(agent);
                     }
                 }
