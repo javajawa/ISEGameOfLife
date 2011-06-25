@@ -6,7 +6,7 @@ import ise.gameoflife.simulations.DoubleAgent;
 import ise.gameoflife.simulations.FreeAgentsTest;
 import ise.gameoflife.simulations.Loans;
 import ise.gameoflife.simulations.PoliticsExtended;
-import ise.gameoflife.simulations.SingleAgent;
+import ise.gameoflife.simulations.validation.SingleAgent;
 import ise.gameoflife.simulations.Politics;
 import ise.gameoflife.simulations.WarGames;
 import java.util.logging.Level;

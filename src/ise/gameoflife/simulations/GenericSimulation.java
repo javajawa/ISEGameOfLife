@@ -38,13 +38,13 @@ abstract public class GenericSimulation
 	
 	protected final String comment;
 
-	GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice)
+	public GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice)
 	{
 		this(comment, iterations, randomSeed, foodConsumedPerAdvice, "");
 	}
 
-	@SuppressWarnings("OverridableMethodCallInConstructor")				
-	GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice, String suffix)
+	@SuppressWarnings("OverridableMethodCallInConstructor")
+	public GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice, String suffix)
 	{
 		PresageConfig presageConfig = new PresageConfig();
 		this.comment = comment;

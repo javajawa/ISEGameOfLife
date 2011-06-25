@@ -1,4 +1,4 @@
-package ise.gameoflife.simulations;
+package ise.gameoflife.simulations.validation;
 
 import ise.gameoflife.agents.TestAgent;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
@@ -7,6 +7,7 @@ import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
+import ise.gameoflife.simulations.GenericSimulation;
 
 /**
  *
