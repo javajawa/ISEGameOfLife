@@ -1,8 +1,6 @@
 package ise.gameoflife;
 
 import ise.gameoflife.simulations.AgentsAndGroup;
-import ise.gameoflife.simulations.CLIPolitics;
-import ise.gameoflife.simulations.DoubleAgent;
 import ise.gameoflife.simulations.FreeAgentsTest;
 import ise.gameoflife.simulations.Loans;
 import ise.gameoflife.simulations.PoliticsExtended;
@@ -23,7 +21,6 @@ final class BuildSimulations
 	private static final Class[] simulationClasses =
 	{
 		SingleAgent.class,
-		DoubleAgent.class,
 		AgentsAndGroup.class,
 		Politics.class,
 		PoliticsExtended.class,
