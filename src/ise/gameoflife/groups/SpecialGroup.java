@@ -6,20 +6,17 @@
 package ise.gameoflife.groups;
 
 import ise.gameoflife.agents.PoliticalAgentGroup;
-import ise.gameoflife.agents.WarAgent;
 import ise.gameoflife.inputs.LeaveNotification.Reasons;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.models.HuntingTeam;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.AgentType;
 import ise.gameoflife.tokens.InteractionResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -91,41 +88,13 @@ public class SpecialGroup extends AbstractGroupAgent {
         {
 		ArrayList<HuntingTeam> teams = new ArrayList <HuntingTeam>();
 		List<String> members = new ArrayList<String>(getDataModel().getMemberList());
-//                List<String> members_with_strategy = new ArrayList<String>();
-//                List<String> members_without_strategy = new ArrayList<String>();
                 Collections.sort(members, c);
 
-                //int agents = members.size();
-                //Check if they have a strategy  ADDED THE0
-//                for (String mem : members)
-//                {
-//                    if (getConn().getAgentById(mem) != null)
-//                    {
-//                        if (getConn().getAgentById(mem).getAgentType() != null)
-//                        {
-//                            members_with_strategy.add(mem);
-//                        }
-//                        else
-//                        {
-//                            members_without_strategy.add(mem);
-//                        }
-//                    }
-//                }
-
                 int agents = members.size();
-//                int agents_s = members_with_strategy.size();
-//                int agents_no_s = members_without_strategy.size();
-
 		for(int i=0; i < agents; i += 2){
 			int ubound = (i + 2 >= agents) ? agents : i + 2;
 			teams.add(new HuntingTeam(members.subList(i, ubound)));
                 }
-
-//                for(int i=0; i < agents_no_s; i += 2){
-//			int ubound = (i + 2 >= agents_no_s) ? agents_no_s : i + 2;
-//			teams.add(new HuntingTeam(members_without_strategy.subList(i, ubound)));
-//                }
-
                 return teams;
 	}
 
