@@ -57,9 +57,7 @@ public class CLIPolitics extends GenericSimulation
 	protected void plugins()
 	{
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population" + Long.toHexString(randomSeed) + ".png", 1500, 1200));
-		//upload to remote, upload to docRemote
 		addPlugin(new DatabasePlugin(comment,true,true));
-		//addPlugin(new DatabasePlugin(comment,false));
 	}
 
 	@Override
