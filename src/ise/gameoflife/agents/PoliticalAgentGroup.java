@@ -646,51 +646,6 @@ public class PoliticalAgentGroup extends AbstractAgent
     */
     @Override
     protected Map<String, Double> updateTrustAfterLeadersHunt() {
-
-        String groupID = getDataModel().getGroupId();
-        //If this is a free agent then no leader to rate
-        if (groupID == null) return null;
-
-        //Get the current panel of te group that this agent belongs to
-        List<String> currentPanel = getConn().getGroupById(groupID).getPanel();
-
-        //If there is nobobdy to rate or this agent is member of the current panel do nothing
-        if (currentPanel.isEmpty()||(currentPanel.contains(getDataModel().getId()))) return null;
-
-        //Get the preferred strategy for an agent i.e. its type and the strategy adopted by the panel
-        //Positive or negative rating depends on the similarity of these two strategies
-        AgentType groupStrategy = getConn().getGroupById(groupID).getGroupStrategy();
-
-        //Agent type is the group's strategy it represents !!!!!
-        AgentType followerStrategy = getConn().getGroupById(getDataModel().getName()).getGroupStrategy();
-
-        //The rating weighting is a simple function of the group's population
-        int population = getConn().getGroupById(groupID).getMemberList().size();
-        double rating = 1/population;
-
-        Map<String, Double> newTrustValues = new HashMap<String, Double>();
-
-        //If the agent supports the group's strategy it will give a positive rating to every member of the panel
-        //The reward to a panel member is to increase its current trust value from this agent. Accordingly, the
-        //punishment for a bad decision is to decrease the trust value! Note that there is a threshold associated with a leader (panel member)
-        for (String panelMember: currentPanel)
-        {
-            if(getDataModel().getTrust(panelMember) != null)
-            {
-                if (followerStrategy == groupStrategy)
-                {
-                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, 1, rating);
-                     newTrustValues.put(panelMember, currentTrustForPanelMember);
-                }
-                else
-                {
-                     double currentTrustForPanelMember = getDataModel().getTrust(panelMember);
-                     currentTrustForPanelMember = scale(currentTrustForPanelMember, -1, rating);
-                     newTrustValues.put(panelMember, currentTrustForPanelMember);
-                }
-            }
-        }
-    return newTrustValues;
+        return null;
     }
 }

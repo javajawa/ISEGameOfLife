@@ -32,8 +32,6 @@ public class SpecialGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;
 
         public static Map<String, Double> socialBeliefs = new HashMap<String, Double>();
-        private List< String > allyList = new LinkedList< String >();
-        private static final double priceToWar = 150;
 
 	@Deprecated
 	public SpecialGroup() {
@@ -156,7 +154,6 @@ public class SpecialGroup extends AbstractGroupAgent {
                 List<String> newPanel = updatePanel();
                 this.setPanel(newPanel);
             }
-            //this.setGroupStrategy(decideGroupStrategy());
 	}
 
     /**
@@ -167,235 +164,14 @@ public class SpecialGroup extends AbstractGroupAgent {
     * @return The new panel members.
     */
         private List<String> updatePanel(){
-
-            double groupSocialPosition;
-            int population, panelSize;
-
-            //STEP 1:Find the size of the panel. It is the proportion of the total population that
-            // can be in the panel. It is calculated using the social position of the group.
-            population = getDataModel().getMemberList().size();
-            groupSocialPosition = getDataModel().getEstimatedSocialLocation();
-
-            //Round to the closest integer
-            panelSize = (int) Math.round(population * groupSocialPosition);
-            if (panelSize == 0) //The group is on the very top of the axis. Dictatorship
-            {
-                //Force panelSize to be at least one (dictator)
-                panelSize = 1;
-            }
-            //STEP 1 END
-
-            //STEP 2: Get the average trust of each agent in the group
-            List< Tuple<String, Double> > panelCandidates = new LinkedList< Tuple<String, Double> >();
-
-            List<String> groupMembers = getDataModel().getMemberList();
-
-            for (String candidate: groupMembers )
-            {
-                double sum = 0;
-                int numKnownTrustValues = 0;
-                for (String member: groupMembers )
-                {
-                    if ((getConn().getAgentById(member).getTrust(candidate) != null)&&(!member.equals(candidate)))
-                    {
-                        sum += getConn().getAgentById(member).getTrust(candidate);
-                        numKnownTrustValues++;
-                    }
-                }
-
-                Tuple<String, Double> tuple;
-                if (numKnownTrustValues != 0)
-                {
-                    tuple = new Tuple<String, Double>(candidate, sum/numKnownTrustValues);
-                    panelCandidates.add(tuple);
-                }
-            }
-            //STEP 2 END
-
-            //STEP 3: Sort the agents in descending order of trust values
-            Collections.sort(panelCandidates, d);
-            //STEP 3 END
-
-            //STEP 4: Populate the panel list with the most trusted agents in the group (i.e. the leaders)
-            //Note that eventhough an agent is a candidate its trust must be above a threshold to become member of the panel.
-            //The threshold is the social position. If the group is highly authoritarian then anyone with a trust value
-            //above zero can become a leader. In libertarian groups panel formations are rare since a relatively high trust value
-            //must be achieved! Also the threshold acts as a warning for current panel members. If their trust falls
-            //below this threshold due to bad decisions they will be ousted in the next round.
-            List<String> newPanel = new LinkedList<String>();
-            if (!panelCandidates.isEmpty()&&(panelCandidates.size() >= panelSize))//Panel is not empty and we have enough candidates to select leaders
-            {
-                for (int i = 0; i < panelSize; i++)
-                {
-                    if (panelCandidates.get(i).getValue() >= groupSocialPosition)
-                    {
-                        newPanel.add(panelCandidates.get(i).getKey());
-                    }
-                }
-            }
-            //STEP 4 END
-
-            return newPanel;
+            List<String> panel = new LinkedList<String>();
+            return panel;
         }
-
-        private Comparator< Tuple<String, Double> > d = new Comparator< Tuple<String, Double> >() {
-            @Override
-            public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
-            {
-                Double v1 = o1.getValue();
-                Double v2 = o2.getValue();
-            	return (v1>v2 ? -1 : 1);
-            }
-	};
 
     @Override
     protected AgentType decideGroupStrategy() {
-//        //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
-//        List<String> currentPanel = getDataModel().getPanel();
-//        int population = getDataModel().getMemberList().size();
-//
-//        if (currentPanel.isEmpty()||(population == 1))  return null;
-//
-//        List<Tuple<AgentType, Double> > followersTypeCounterList = new LinkedList<Tuple<AgentType, Double> >();
-//        List<Tuple<AgentType, Double> > panelTypeCounterList = new LinkedList<Tuple<AgentType, Double> >();
-//
-//        //We get lists containing panel's and followers' preferences in strategies in descending order
-//        followersTypeCounterList = getStrategyPreferences(getDataModel().getMemberList());
-//        panelTypeCounterList = getStrategyPreferences(currentPanel);
-//
-//        //Calculate the quotum. It is the number of supporters needed to pass a proposal. In this case proposal
-//        //is the strategy of the group. The quotum is a function of the social belief of the group
-//        double quotum = (population * getDataModel().getEstimatedSocialLocation())/population;
-//
-//        //Start with the most prefereed strategy of the panel (the strategy that the leader/leaders wish to follow
-//        //If this strategy is supported by a high enough number of followers (quotum) then we pick this strategy
-//        //Otherwise try the next best strategy. The lower the quotum the less easy is to get your proposal accepted
-//        //This is the case of dictatorship.
-//        Iterator<Tuple<AgentType, Double> > i = panelTypeCounterList.iterator();
-//        while(i.hasNext())
-//        {
-//            int n = 0;
-//            Tuple<AgentType, Double> panelPreference = i.next();
-//            while (panelPreference.getKey() != followersTypeCounterList.get(n).getKey())
-//            {
-//                n++;
-//            }
-//            double followerSupport = followersTypeCounterList.get(n).getValue();
-//            if (followerSupport >= quotum)
-//            {
-//                return panelPreference.getKey();
-//            }
-//        }
-        //If we have reached this statement then we have not found a well suported strategy probably because the
-        //quotum is very high (bottom of y axis - anarchism)
         return null;
     }
-
-//    private List<Tuple<AgentType, Double>> getStrategyPreferences(List<String> agents) {
-//
-//        int population = agents.size();
-//
-//        Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
-//        Tuple<AgentType, Double> acTypes = new Tuple<AgentType, Double>(AgentType.AC, 0.0);
-//        Tuple<AgentType, Double> adTypes = new Tuple<AgentType, Double>(AgentType.AD, 0.0);
-//        Tuple<AgentType, Double> rTypes = new Tuple<AgentType, Double>(AgentType.R, 0.0);
-//
-//        //Count types in agents list
-//        for (String agentID : agents)
-//        {
-//            switch(getConn().getAgentById(agentID).getAgentType())
-//            {
-//                case AC:
-//                    double oldCountAC = acTypes.getValue();
-//                    acTypes.setValue(oldCountAC+1);
-//                    break;
-//                case AD:
-//                    double oldCountAD = adTypes.getValue();
-//                    adTypes.setValue(oldCountAD+1);
-//                    break;
-//                case TFT:
-//                    double oldCountTFT = tftTypes.getValue();
-//                    tftTypes.setValue(oldCountTFT+1);
-//                    break;
-//                case R:
-//                    double oldCountR = rTypes.getValue();
-//                    rTypes.setValue(oldCountR+1);
-//                    break;
-//            }
-//        }
-//
-//        //Find the average of each type
-//        acTypes.setValue(acTypes.getValue()/population);
-//        adTypes.setValue(adTypes.getValue()/population);
-//        tftTypes.setValue(tftTypes.getValue()/population);
-//        rTypes.setValue(rTypes.getValue()/population);
-//
-//        List< Tuple<AgentType, Double> > preferencesRatioList = new LinkedList<Tuple<AgentType, Double> >();
-//
-//        //Add the ratios to the list
-//        preferencesRatioList.add(acTypes);
-//        preferencesRatioList.add(adTypes);
-//        preferencesRatioList.add(tftTypes);
-//        preferencesRatioList.add(rTypes);
-//
-//        //Sort the preferred startegies in descending order
-//        Collections.sort(preferencesRatioList, preferencesComparator);
-//
-//        return preferencesRatioList;
-//    }
-
-    private Comparator< Tuple<AgentType, Double> > preferencesComparator = new Comparator< Tuple<AgentType, Double> >() {
-        @Override
-        public int compare(Tuple<AgentType, Double> o1, Tuple<AgentType, Double> o2)
-        {
-            Double v1 = o1.getValue();
-            Double v2 = o2.getValue();
-            return (v1>v2 ? -1 : 1);
-        }
-    };
-
-    /*
-     * The following function would have to occur right after the group itself makes the decision,
-     * so right after decideGroupStrategy, I am assuming here that no one part of the alliance
-     * plays the game outside the alliance and the chance of war comes from only alliances.
-     * It's very simple at the moment and can be extenede to do alot more
-     */
-//    private AgentType considerAlly()
-//    {
-//        //all groups constantly update their ally list whenever one joins the alliance
-//        //the comparator is sorting their reserves in decreasing order
-//        Collections.sort(allyList, allyReserveComparator);
-//
-//        if(!allyList.isEmpty())
-//        {
-//            double bestAllyReserveValue = getConn().getGroupById(allyList.get(0)).getCurrentReservedFood();
-//            double myReserveValue = bestAllyReserveValue;
-//            double antiWarDesire;
-//
-//            //If you are not as wealthy or just as wealthy as the best ally
-//            if(bestAllyReserveValue >= myReserveValue)
-//            {
-//                antiWarDesire = bestAllyReserveValue - myReserveValue;
-//                if(antiWarDesire < priceToWar)
-//                {
-//                    return getConn().getGroupById(allyList.get(0)).getGroupStrategy();
-//                }
-//                else
-//                {
-//                    return this.getDataModel().getGroupStrategy();
-//                }
-//            }
-//            else//otherwise you are the best of the alliance
-//            {
-//                return this.getDataModel().getGroupStrategy();
-//            }
-//        }
-//        else
-//        {
-//            //you dont have any allies
-//            return this.getDataModel().getGroupStrategy();
-//        }
-//    }
 
 
     @Override
@@ -406,7 +182,6 @@ public class SpecialGroup extends AbstractGroupAgent {
 
     @Override
     protected Tuple<InteractionResult, Double> interactWithOtherGroups() {
-        //throw new UnsupportedOperationException("Not supported yet.");
         Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
         interactionResult.add(InteractionResult.NothingHappened, 0.0);
         return interactionResult;
@@ -418,12 +193,4 @@ public class SpecialGroup extends AbstractGroupAgent {
         newSharedAndReserve.add(sharedFood, 0.0);
         return newSharedAndReserve;
     }
-
-//    public static double getSocialBelief(PublicGroupDataModel dm){
-//        if (socialBeliefs.get(dm.getId()) == null)
-//        {
-//            return 0;
-//        }
-//        return socialBeliefs.get(dm.getId());
-//    }
 }
