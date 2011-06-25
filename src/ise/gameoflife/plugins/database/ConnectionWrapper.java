@@ -134,7 +134,7 @@ final class ConnectionWrapper
 		    newAgent.executeBatch();
 		    dieAgent.executeBatch();
 		    roundGroup.executeBatch();
-		    //roundLoanGroup.executeBatch();
+		    roundLoanGroup.executeBatch();
 		    roundAgent.executeBatch();
 		    trustAgent.executeBatch();
 		    if (!conn.getAutoCommit()) conn.commit();
