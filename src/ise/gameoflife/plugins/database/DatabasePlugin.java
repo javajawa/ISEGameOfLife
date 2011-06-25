@@ -1,12 +1,12 @@
 package ise.gameoflife.plugins.database;
 
 import ise.gameoflife.environment.PublicEnvironmentConnection;
+import ise.gameoflife.groups.LoansGroup;
 import ise.gameoflife.participants.PublicAgentDataModel;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import ise.gameoflife.tokens.TurnType;
 import org.simpleframework.xml.Element;
 import java.io.File;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class DatabasePlugin implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
-	private final static String name = "Database Plugin v2.8";
+	private final static String name = "Database Plugin v2.9";
 		
 	@Element
 	private final Boolean remote;
@@ -37,6 +37,8 @@ public class DatabasePlugin implements Plugin
 	private final String comment;
 	@Element
 	private final Boolean docRemote;
+	@Element
+	private final Boolean loans;
 	
 	/**
 	 * Creates a new instance of the DatabasePlugin,
@@ -62,16 +64,17 @@ public class DatabasePlugin implements Plugin
 	})
 	public DatabasePlugin(String comment,Boolean remote)
 	{
-	    this(comment,remote,false);
+	    this(comment,remote,false,false);
 
 	}
+	
 	 /**
 	 * Creates a new instance of the DatabasePlugin
 	 * with specified parameters.
 	 * @param comment Comment for simulation
 	 * @param remote Use remote db instead of local
 	 * @param docRemote Uses doc remote database
-	 * 
+	 * @param loans Should be used for simulating loans
 	 */
 	
 	@PluginConstructor(
@@ -80,6 +83,25 @@ public class DatabasePlugin implements Plugin
 	})
 	public DatabasePlugin(String comment,Boolean remote, Boolean docRemote)
 	{
+	   this(comment,remote,docRemote,false);
+	}
+	
+	 /**
+	 * Creates a new instance of the DatabasePlugin
+	 * with specified parameters.
+	 * @param comment Comment for simulation
+	 * @param remote Use remote db instead of local
+	 * @param docRemote Uses doc remote database
+	 * @param loans Should be used for simulating loans
+	 */
+	
+	@PluginConstructor(
+	{
+		"comment","remote","docRemote","loans"
+	})
+	public DatabasePlugin(String comment,Boolean remote, Boolean docRemote, Boolean loans)
+	{
+	   this.loans = loans;
 	   this.comment = comment;
 	   this.remote = remote;
 	   this.docRemote = docRemote;
@@ -91,17 +113,18 @@ public class DatabasePlugin implements Plugin
 	//internal storage of roundsPassed()
 	private int round;
 	//used to generate simulation unique agentid and groupid
-	private int idGenerator = 0;
+	private int agentIdGenerator = 0;
+	private int groupIdGenerator = 0;
 	
 	private final TreeMap<String, PublicGroupDataModel> trackedGroups 
 					= new TreeMap<String, PublicGroupDataModel>();
 	private final TreeMap<String, PublicAgentDataModel> trackedAgents
 					= new TreeMap<String, PublicAgentDataModel>();
-	
+		
 	//contains agentid and groupid that are used to represent participants in the database
 	//HashMap size should same order of magnitude as agents+groups set size for speed
-	private final Map<String,Integer> idMap = new HashMap<String,Integer>(100);
-
+	private final Map<String,Integer> agentIdMap = new HashMap<String,Integer>(100);
+	private final Map<String,Integer> groupIdMap = new HashMap<String,Integer>(100);
 
 	@Override
 	public void execute()
@@ -120,8 +143,7 @@ public class DatabasePlugin implements Plugin
 		getAgentRoundData();
 	    pruneOldGroups();
 	    getGroupRoundData();
-	    
-	    
+	    	    
 	    
 	    //writes to db every 50 rounds (or 30 cycles) for local db
 	    //remote only writes at the end
@@ -175,7 +197,7 @@ public class DatabasePlugin implements Plugin
 		    logger.log(Level.INFO, "Connecting to local database at: {0}/Simulations.db", simDir);
 		}
 		//Establish connection to database
-		wrap = new ConnectionWrapper(url, connProperties, comment, ec.getId(), remote);
+		wrap = new ConnectionWrapper(url, connProperties, comment, ec.getId(), remote, loans);
 
 	    }   catch (SQLException ex) {
 		    logger.log(Level.SEVERE,"Initializing database error:", ex);
@@ -229,9 +251,9 @@ public class DatabasePlugin implements Plugin
 		for (String a : newAgents)
 		{
 			PublicAgentDataModel agent = ec.getAgentById(a);
-			int agentid = ++idGenerator;
+			int agentid = ++agentIdGenerator;
 			wrap.agentAdd(a, agentid, round, agent.getName());
-			idMap.put(a, agentid);
+			agentIdMap.put(a, agentid);
 			//add the agent to tracked groups
 			trackedAgents.put(a, agent);
 		}
@@ -246,14 +268,16 @@ public class DatabasePlugin implements Plugin
 		newGroups.removeAll(trackedGroups.keySet());
 		for (String g : newGroups)
 		{
-			int groupid = ++idGenerator;
-			wrap.groupAdd(g, groupid, round);
-			idMap.put(g,groupid);
+			int groupid = ++groupIdGenerator;
+			if (!loans) wrap.groupAdd(g, groupid, round);
+			else wrap.groupAdd(g, groupid, round,LoansGroup.getGreediness(ec.getGroupById(g)));
+			groupIdMap.put(g,groupid);
 			//add the group to tracked groups
 			trackedGroups.put(g, ec.getGroupById(g));
+			//logger.log(Level.WARNING,"Name of the normal group:{0}, db id:{1}",new Object[] {ec.getGroupById(g).getName(),groupid});
+			
 		}
 	}
-
 	
 	private void pruneOldGroups()
 	{
@@ -263,7 +287,7 @@ public class DatabasePlugin implements Plugin
 		for (String g : oldGroups)
 		{
 			//queue group death sql statement
-			wrap.groupDie(idMap.remove(g), round);
+			wrap.groupDie(groupIdMap.remove(g), round);
 			trackedGroups.remove(g);
 		}
 	}
@@ -277,7 +301,7 @@ public class DatabasePlugin implements Plugin
 		for (String a : deadAgents)
 		{
 			//queue agent death sql statement
-			wrap.agentDie(idMap.remove(a), round);
+			wrap.agentDie(agentIdMap.remove(a), round);
 			trackedAgents.remove(a);
 		}
 	}
@@ -288,7 +312,10 @@ public class DatabasePlugin implements Plugin
 		for(Map.Entry<String, PublicGroupDataModel> entry : trackedGroups.entrySet())
 		    {
 			try {
-			    wrap.groupRound(idMap.get(entry.getKey()), round, entry.getValue());
+			    if (loans) {
+				wrap.loanGroupRound(groupIdMap.get(entry.getKey()), round, entry.getValue());
+			    }
+			    else wrap.groupRound(groupIdMap.get(entry.getKey()), round, entry.getValue());
 			} catch (NullPointerException ex) {
 			    logger.log(Level.WARNING, "Null Exception: For group {0} for round {1}"
 			    + " ", new Object[]{entry.getValue().getName(), round});
@@ -307,14 +334,14 @@ public class DatabasePlugin implements Plugin
 			//gets the agents groupid and maps it to database id for group
 			//if agent group is null, the map returns 0 groupid
 			
-			int groupid = idMap.get(agent.getGroupId());
-			int agentid = idMap.get(entry.getKey());
+			int groupid = groupIdMap.get(agent.getGroupId());
+			int agentid = agentIdMap.get(entry.getKey());
 			wrap.agentRound(agentid, groupid, round, agent);
 			for(Map.Entry<String, PublicAgentDataModel> entry2 : trackedAgents.entrySet()) 
 			{
 			    Double trust = agent.getTrust(entry2.getKey());
 			    if (trust != null) {
-				int agentid_other = idMap.get(entry2.getKey());
+				int agentid_other = agentIdMap.get(entry2.getKey());
 				wrap.agentTrust(agentid, agentid_other, trust, round);
 			    }
 			}
@@ -332,7 +359,7 @@ public class DatabasePlugin implements Plugin
 		int groupid = 0;
 		wrap.groupAdd("FreeAgentsGroup", groupid, round);
 		//required to allow idMap to work for agents with no group
-		idMap.put(null,groupid);
+		groupIdMap.put(null,groupid);
 	}
 
 }

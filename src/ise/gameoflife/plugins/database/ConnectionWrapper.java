@@ -29,12 +29,14 @@ final class ConnectionWrapper
 	private final PreparedStatement newGroup;
 	private final PreparedStatement dieGroup;
 	private final PreparedStatement roundGroup;
+	private final PreparedStatement roundLoanGroup;
 	private final PreparedStatement endGroup;
 	private final PreparedStatement endSim;
 	//private final PublicEnvironmentConnection envConn;
 	private final int simId;
+    
 
-	ConnectionWrapper(String url,Properties connProperties,String comment, String sim_uuid, Boolean remote) throws SQLException, ClassNotFoundException
+	ConnectionWrapper(String url,Properties connProperties,String comment, String sim_uuid, Boolean remote, Boolean loans) throws SQLException, ClassNotFoundException
 	{
 		if (!remote) {
 		    Class.forName("org.sqlite.JDBC");
@@ -55,13 +57,14 @@ final class ConnectionWrapper
 		newGroup = conn.prepareStatement(Statements.addGroup.getPrototype());
 		dieGroup = conn.prepareStatement(Statements.dieGroup.getPrototype());
 		roundGroup = conn.prepareStatement(Statements.roundGroup.getPrototype());
+		roundLoanGroup = conn.prepareStatement(Statements.roundLoanGroup.getPrototype());
 		endGroup = conn.prepareStatement(Statements.endGroup.getPrototype());
 		endSim = conn.prepareStatement(Statements.endSim.getPrototype());
 	
-		simId = initialiseSimulation(comment, sim_uuid, remote);
+		simId = initialiseSimulation(comment, sim_uuid, remote, loans);
 	}
 
-	private int initialiseSimulation(String comment, String sim_uuid, Boolean remote) throws SQLException
+	private int initialiseSimulation(String comment, String sim_uuid, Boolean remote, Boolean loans) throws SQLException
 	{
 		PreparedStatement simAdd = conn.prepareStatement(
 		    Statements.addSim.getPrototype());
@@ -94,6 +97,8 @@ final class ConnectionWrapper
 		}
 		
 		simAdd.setString(3,comment);
+		if (loans) simAdd.setInt(4,1);
+		else  simAdd.setInt(4,0);
 		simAdd.executeUpdate();
 		logger.log(Level.INFO, "Simulation comment: {0}", comment);
 		ResultSet rs = simAdd.getGeneratedKeys();
@@ -112,10 +117,10 @@ final class ConnectionWrapper
 		newGroup.setInt(1, simulationId);
 		dieGroup.setInt(2, simulationId);
 		roundGroup.setInt(1, simulationId);
+		roundLoanGroup.setInt(1, simulationId);
 		endAgent.setInt(2, simulationId);
 		endGroup.setInt(2, simulationId);
 		endSim.setInt(2, simulationId);
-		
 		return simulationId;
 	}
 	
@@ -129,6 +134,7 @@ final class ConnectionWrapper
 		    newAgent.executeBatch();
 		    dieAgent.executeBatch();
 		    roundGroup.executeBatch();
+		    roundLoanGroup.executeBatch();
 		    roundAgent.executeBatch();
 		    trustAgent.executeBatch();
 		    if (!conn.getAutoCommit()) conn.commit();
@@ -164,6 +170,8 @@ final class ConnectionWrapper
 		    newGroup.setInt(2, groupid);
 		    newGroup.setString(3, id);
 		    newGroup.setInt(4, round);
+		    //greediness not implemented in older sims
+		    newGroup.setDouble(5, -1);
 		    newGroup.addBatch();
 		}
 		catch (SQLException ex)
@@ -171,6 +179,24 @@ final class ConnectionWrapper
 		    logger.log(Level.WARNING, null, ex);
 		}
 	}
+	
+	//group add with loans
+	void groupAdd(String id,int groupid, int round, double greediness)
+	{
+		try
+		{
+		    newGroup.setInt(1, simId);
+		    newGroup.setInt(2, groupid);
+		    newGroup.setString(3, id);
+		    newGroup.setInt(4, round);
+		    newGroup.setDouble(5,greediness);
+		    newGroup.addBatch();
+		}
+		catch (SQLException ex)
+		{
+		    logger.log(Level.WARNING, null, ex);
+		}
+	}	
 
 	void groupDie(int groupid, int round)
 	{
@@ -226,9 +252,38 @@ final class ConnectionWrapper
 		 roundGroup.setInt(4,group.getMemberList().size());
 		 roundGroup.setDouble(5,group.getEstimatedSocialLocation());
 		 roundGroup.setDouble(6,group.getCurrentEconomicPoisition());
+
 		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
 			//     new Object[]{group.getId(), round});
 		 roundGroup.addBatch();
+	    } catch (SQLException ex) {
+		logger.log(Level.WARNING, "{0} (db groupid: {2}) error for round {1}:{3}"
+		    + " data not stored.", new Object[]{group.getName(), round, groupid, ex});
+	    }
+	}
+	
+	void loanGroupRound(int groupid, int round, PublicGroupDataModel group) {
+	     try {
+		 //for some reason, needs simId reassigned or error
+		 roundLoanGroup.setInt(1, simId);
+		 roundLoanGroup.setInt(2, round);
+		 roundLoanGroup.setInt(3,groupid);
+		 roundLoanGroup.setInt(4,group.getMemberList().size());
+		 roundLoanGroup.setDouble(5,group.getEstimatedSocialLocation());
+		 roundLoanGroup.setDouble(6,group.getCurrentEconomicPoisition());
+		 roundLoanGroup.setDouble(7,group.getCurrentEconomicPoisition());
+		 roundLoanGroup.setDouble(8,group.getCurrentEconomicPoisition());
+		 roundLoanGroup.setDouble(9,group.getCurrentEconomicPoisition());
+		 roundLoanGroup.setDouble(10,group.getCurrentEconomicPoisition());
+		 //getCurrentReservedFood()
+		 //average happiness?
+		 //totalgiven
+		 //totalborrowed
+		 
+
+		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
+			//     new Object[]{group.getId(), round});
+		 roundLoanGroup.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, "{0} (db groupid: {2}) error for round {1}:{3}"
 		    + " data not stored.", new Object[]{group.getName(), round, groupid, ex});
@@ -291,13 +346,14 @@ final class ConnectionWrapper
 		    stat.addBatch(Statements.createGroups.getPrototype());
 		    stat.addBatch(Statements.createAgents.getPrototype());
 		    stat.addBatch(Statements.createG_data.getPrototype());
+		    stat.addBatch(Statements.createLG_data.getPrototype());
 		    stat.addBatch(Statements.createA_data.getPrototype());
 		    stat.addBatch(Statements.createTrust.getPrototype());
 		    stat.executeBatch();
 		    stat.close();
 	    
 		} catch (SQLException ex) {
-		    logger.log(Level.WARNING,"Failed to create database tables", ex);
+		    logger.log(Level.WARNING,"Failed to create database tables. Try deleting the DB file to fix", ex);
 		}
 	}
 	void getFreeAgentGroupData(int round,int pop) {
@@ -308,7 +364,6 @@ final class ConnectionWrapper
 		 roundGroup.setInt(3,0);
 		 roundGroup.setInt(4,pop);
 		 roundGroup.setDouble(5,-1);
-		 roundGroup.setDouble(6,-1);
 		 roundGroup.addBatch();
 	    } catch (SQLException ex) {
 		logger.log(Level.WARNING, null, ex);
