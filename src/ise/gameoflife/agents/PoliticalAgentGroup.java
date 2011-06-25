@@ -94,32 +94,6 @@ public class PoliticalAgentGroup extends AbstractAgent
     @Override
     protected String chooseGroup() {
 
-//        System.out.println("-------------START-FREE-TO-GROUP-WITH--------------------");
-//        for (String agent : freeToGroup.descendingSet())
-//        {
-//            System.out.println(getConn().getAgentById(agent).getName());
-//        }
-//        System.out.println(freeToGroup.size());
-//        System.out.println("-------------END-FREE-TO-GROUP-WITH--------------------");
-//        System.out.println();
-//        System.out.println();
-//
-//
-//        System.out.println("-------------START-GROUP---------------------------");
-//        for (String groupID : getConn().availableGroups())
-//        {
-//            int size = getConn().getGroupById(groupID).getMemberList().size();
-//            System.out.println(getConn().getGroupById(groupID).getName() +" with size: " +size );
-//            for (String a: getConn().getGroupById(groupID).getMemberList())
-//            {
-//                System.out.println("    "+getConn().getAgentById(a).getName());
-//            }
-//        }
-//        System.out.println("--------------END-GROUP---------------------------");
-//        System.out.println();
-//        System.out.println();
-
-
         if(getConn().getAgentById(this.getId()).getGroupId() == null)
         {
             System.out.println("Agent-Group [ "+ this.getDataModel().getName() +  " ]enters Special Group: " + PoliticalAgentGroup.special );
@@ -151,45 +125,36 @@ public class PoliticalAgentGroup extends AbstractAgent
 
             //We assume there will only be two food sources (stags/rabbits)
             List<Food> foodArray = new LinkedList<Food>();
-            Food suggestedFood, cooperateFood, defectFood, choice;
+            Food cooperateFood, defectFood, choice;
 
             //Distinguish between stag (cooperate) and rabbit (defect)
             foodArray = this.getFoodTypes();
             cooperateFood = foodArray.get(0);
             defectFood = foodArray.get(1);
-
-            String groupID = this.getDataModel().getGroupId();
-            //If the agent belongs to a group then it can ask for advice
-            if (groupID != null && getConn().getGroupById(groupID).getMemberList().size() > 1)
-            {
-                suggestedFood = this.askAdvice(members);
-                if (suggestedFood != null)
-                {
-                    return suggestedFood;
-                }
-            }
-            //If the agent is not in a group or advisor didn't give a definitive answer then hunt
-            //according to type
-
+            
             AgentType group_type = null;
+
+            //Each group must have a representative in the special group. If this
+            //doesn't happen then something wrong is going on!
             if (getConn().getGroupById(this.getDataModel().getName()) == null){
                 System.out.println("CANNOT HAPPEN: This Special Agent-Group: " + this.getId() + " [" + this.getDataModel().getName()+ "] : is not representing a Group");
                 return null;
             }
             else
             {
+                //The special agent will follow the strategy decided by the panel of the group it represents
                 group_type = this.getConn().getGroupById(this.getDataModel().getName()).getGroupStrategy();
                 this.getDataModel().setAgentType(group_type);
-                
 
+                //If the group didn't make any decision (maybe anarchists) then do nothing. 
                 if (group_type == null)
                 {
                     //return null;
-                    group_type = AgentType.AC;//CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    group_type = AgentType.NOSTRATEGY;
+                    return null;
                 }
                 else
                     System.out.println("Type for Agent-Group [" + this.getDataModel().getName()+ "] : "+ group_type);
-
             }
             switch (group_type) /////THE0 ADDED
             {
@@ -627,59 +592,6 @@ public class PoliticalAgentGroup extends AbstractAgent
     {
     	invitationHolders.add(this.getId());
         this.invitationToGroup = group;
-    }
-
-    /**
-    * An agent which belongs to a group can consult another agent to choose what type of food to hunt
-    * given its current opponent
-    * @param none
-    * @return The suggested food type
-    */
-    private Food askAdvice(List<String> members) {
-//        Food suggestedFood = null;
-//        String opponentID = null;
-//
-//        //If the agent has no pair then no advice
-//        if (members.size() == 1) return null;
-//
-//        //Find opponent's ID
-//        if (members.get(0).equals(this.getId()))
-//        {
-//                if (getConn().getAgentById(members.get(1)) != null)
-//                {
-//                    opponentID = members.get(1);
-//                }
-//        }
-//        else
-//        {
-//                if (getConn().getAgentById(members.get(0)) != null)
-//                {
-//                    opponentID = members.get(0);
-//                }
-//        }
-//
-//
-//        //Get the hunting teams history of the opponent. Get the last hunting team of the opponent
-//        //and find out which agent was its opponent at that time. This agent has the latest information
-//        //about our opponent. Therefore this agent is the advisor.
-//        if (opponentID != null)
-//        {
-//            HuntingTeam opponentPreviousTeam = null;
-//            if (getConn().getRoundsPassed() > 26)
-//                opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
-//            if (opponentPreviousTeam != null)
-//            {
-//                for (String agent: opponentPreviousTeam.getMembers())
-//                {
-//                    if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
-//                    {
-//                        return suggestedFood = seekAvice(agent);
-//                    }
-//                }
-//            }
-//        }
-//        return suggestedFood;
-    return null;
     }
 
 

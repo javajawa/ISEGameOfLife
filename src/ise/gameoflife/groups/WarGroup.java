@@ -321,6 +321,9 @@ public class WarGroup extends AbstractGroupAgent {
                     double oldCountR = rTypes.getValue();
                     rTypes.setValue(oldCountR+1);
                     break;
+                case NOSTRATEGY:
+                    //DO nothing!
+                    
             }
         }
 
