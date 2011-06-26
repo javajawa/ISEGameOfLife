@@ -84,7 +84,7 @@ public class GroupInfo extends JPanel implements Plugin
                             
                         }
 
-                        JPanel dataPanel = new JPanel(new GridLayout(4, 2, 1, -1));
+                        JPanel dataPanel = new JPanel(new GridLayout(8, 1, 1, -1));
 
                         String name = this.gm.getName();
                         if (this.gm.getId() == null ? PoliticalAgentGroup.special == null : this.gm.getId().equals(PoliticalAgentGroup.special))

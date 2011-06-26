@@ -1,6 +1,7 @@
 package ise.gameoflife.simulations;
 import ise.gameoflife.agents.LoansAgent;
 import ise.gameoflife.groups.LoansGroup;
+import ise.gameoflife.groups.SpecialGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
@@ -52,6 +53,7 @@ public class Loans extends GenericSimulation
 	protected void groups()
 	{
               addGroup(LoansGroup.class);
+              addGroup(SpecialGroup.class);
 	}
 
 	@Override
@@ -70,12 +72,13 @@ public class Loans extends GenericSimulation
 		//doc db with loans:
 		//addPlugin(new DatabasePlugin(comment,true,true,true));
 		//robs remote db with loans
-		addPlugin(new DatabasePlugin(comment,true,false,true));
+		//addPlugin(new DatabasePlugin(comment,true,false,true));
 		//addPlugin(new HunterListPlugin());
-		//addPlugin(new PoliticalCompassPlugin());
-                //addPlugin(new PoliticalCompass2Plugin());
-                //addPlugin(new LoansInfo());
-		//addPlugin(new LoansPlugin());
+		addPlugin(new PoliticalCompassPlugin());
+                addPlugin(new PoliticalCompass2Plugin());
+                addPlugin(new LoansInfo());
+                addPlugin(new GroupInfo());
+
 	}
 
 	@Override

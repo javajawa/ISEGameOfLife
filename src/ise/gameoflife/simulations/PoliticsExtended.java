@@ -10,6 +10,7 @@ import ise.gameoflife.groups.PoliticalGroup;
 import ise.gameoflife.groups.SpecialGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
+import ise.gameoflife.plugins.CompassControl;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.GroupAgentInfo;
@@ -17,6 +18,7 @@ import ise.gameoflife.plugins.GroupGraphs;
 import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
 import ise.gameoflife.plugins.HunterListPlugin;
+import ise.gameoflife.plugins.LoansInfoPolitics;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import ise.gameoflife.tokens.AgentType;
@@ -80,10 +82,12 @@ public class PoliticsExtended extends GenericSimulation
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
+                addPlugin(new CompassControl());
                 addPlugin(new HunterInfo());
                 addPlugin(new GroupAgentInfo());
                 addPlugin(new GroupInfo());
                 addPlugin(new GroupGraphs());
+                addPlugin(new LoansInfoPolitics());                
 	}
 
 	@Override

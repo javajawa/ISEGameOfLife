@@ -469,7 +469,10 @@ public class PoliticalGroup extends AbstractGroupAgent {
         AgentType strategy = getDataModel().getGroupStrategy();
         
         currentFoodReserve = getDataModel().getCurrentReservedFood();
-
+        
+        if(this.getDataModel().getReservedFoodHistory().size() < 3)
+            return new Tuple<AgentType, Double>(strategy, 300.0);
+        
         //Check if the group is in need. If it doesn't then proceed with the payments
         if(!inNeed.containsKey(this.getId()))
         {   

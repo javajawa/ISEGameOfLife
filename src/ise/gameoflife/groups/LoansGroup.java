@@ -363,9 +363,13 @@ public class LoansGroup extends AbstractGroupAgent {
         
         currentFoodReserve = getDataModel().getCurrentReservedFood();
 
+        if((this.getDataModel().getGroupStrategy()!= null)&&(getDataModel().getCurrentReservedFood() == 0.0))
+        {
+            return new Tuple<AgentType, Double>(strategy, 200.0);
+        }
         //Check if the group is in need. If it doesn't then proceed with the payments
         if(!inNeed.containsKey(this.getId()))
-        {   
+        {
             //Spend money for playing the game. The standard fee is defined in the data members
             if(strategy != null)
             {

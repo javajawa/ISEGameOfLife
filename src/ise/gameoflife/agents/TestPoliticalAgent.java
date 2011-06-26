@@ -509,6 +509,8 @@ public class TestPoliticalAgent extends AbstractAgent
             
             String groupID = this.getDataModel().getGroupId();
             //If the agent belongs to a group then it can ask for advice
+            //Note that in the askAdvice method we examine if an agent has a trust entry for its current opponent
+            //If it does then we don't ask for advice since it is not neccessary (asking for advice costs food).
             if (groupID != null && getConn().getGroupById(groupID).getMemberList().size() > 1)
             {   
                 suggestedFood = this.askAdvice(members);
@@ -1140,7 +1142,7 @@ public class TestPoliticalAgent extends AbstractAgent
                 return currentEconomic;
             }
             else
-                return currentEconomic;//agent doesnt belong to a group and so is not loyal to anyone
+                return currentEconomic;//agent doesn't belong to a group and so is not loyal to anyone
         }
 
     /**
@@ -1184,39 +1186,48 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
         }
 
-
+        //If the agent has interacted with this opponent before it should have an entry in its history
+        //Therefore the agent doesn't need an advice
+        if (getDataModel().getTrust(opponentID)!= null)
+        {
+            //If the agent is experienced don't ask
+            if (getDataModel().getTrust(opponentID) > 0.5)
+            {
+                return null;
+            }
+        }
         //Get the hunting teams history of the opponent. Get the last hunting team of the opponent
         //and find out which agent was its opponent at that time. This agent has the latest information
         //about our opponent. Therefore this agent is the advisor.
-        if (opponentID != null)
+//        if (opponentID != null)
+//        {
+//            HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
+//            if (opponentPreviousTeam != null)
+//            {
+//                for (String agent: opponentPreviousTeam.getMembers())
+//                {
+//                    if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
+//                    {
+//                        previousAdvisor = agent;
+//                        return suggestedFood = seekAvice(agent);
+//                    }
+//                }
+//            }
+//        }
+
+        List<Tuple<String, Double>> trustValues = new LinkedList<Tuple<String, Double>>();
+        for (String member: getConn().getGroupById(this.getDataModel().getGroupId()).getMemberList())
         {
-            HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
-            if (opponentPreviousTeam != null)
-            {
-                for (String agent: opponentPreviousTeam.getMembers())
-                {
-                    if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
-                    {
-                        previousAdvisor = agent;
-                        return suggestedFood = seekAvice(agent);
-                    }
-                }
-            }
+            Tuple<String, Double> memberTrust = new Tuple<String, Double>();
+            memberTrust.add(member, ((getDataModel().getTrust(member)!=null)?getDataModel().getTrust(member):0));
+            trustValues.add(memberTrust);
         }
 
-//        List<Tuple<String, Double>> trustValues = new LinkedList<Tuple<String, Double>>();
-//        for (String member: getConn().getGroupById(this.getDataModel().getGroupId()).getMemberList())
-//        {
-//            Tuple<String, Double> memberTrust = new Tuple<String, Double>();
-//            memberTrust.add(member, ((getDataModel().getTrust(member)!=null)?getDataModel().getTrust(member):0));
-//            trustValues.add(memberTrust);
-//        }
-//
-//        Collections.sort(trustValues, c);
-//        previousAdvisor = trustValues.get(0).getKey();
-//        return seekAvice(previousAdvisor);
+        Collections.sort(trustValues, c);
+        previousAdvisor = trustValues.get(0).getKey();
+        return seekAvice(previousAdvisor);
 
-        return suggestedFood;
+        //return suggestedFood;
     }
 
     /**

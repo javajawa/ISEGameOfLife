@@ -9,7 +9,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import ise.gameoflife.environment.Environment;
 import ise.gameoflife.environment.PublicEnvironmentConnection;
-import ise.gameoflife.groups.LoansGroup;
+import ise.gameoflife.groups.PoliticalGroup;
 import ise.gameoflife.models.Tuple;
 import ise.gameoflife.participants.PublicGroupDataModel;
 import java.awt.BorderLayout;
@@ -34,18 +34,18 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import presage.Plugin;
 import presage.Simulation;
+
 /**
  *
- * @author george
+ * @author Aadil
  */
-
-public class LoansInfo extends JPanel implements Plugin {
+public class LoansInfoPolitics extends JPanel implements Plugin {
 /**
 * Class that creates a syncronised, type safe list that can be used with
 * a JList, and allow the list to be updated after creation.
 */
     // Set of political participants that are active
-    private TreeMap<String, LoansGroup> p_players = new TreeMap<String, LoansGroup>();
+    private TreeMap<String, PoliticalGroup> p_players = new TreeMap<String, PoliticalGroup>();
     
     double currentReserve = 0 ;
     int rounds= 0 ;
@@ -254,7 +254,7 @@ public class LoansInfo extends JPanel implements Plugin {
    /**
     * Default constructor   does nothing.
     */
-   public LoansInfo()
+   public LoansInfoPolitics()
    {
      super(new BorderLayout());
    }
@@ -309,7 +309,7 @@ public class LoansInfo extends JPanel implements Plugin {
        {
             data.add(" ==== Cycle " + sim.getTime() + " Begins (" + en.getRoundsPassed() + ':' + en.getCurrentTurnType() + ") ==== ");
             data.add("************************************************************************************************************ ");
-            for(Map.Entry<String,LoansGroup> entry : p_players.entrySet())
+            for(Map.Entry<String,PoliticalGroup> entry : p_players.entrySet())
             {
                 while (iter.hasNext())
                 {
@@ -320,12 +320,12 @@ public class LoansInfo extends JPanel implements Plugin {
                         data.add("==============================="+name+"===============================");
                         data.add("Group population: " + p_players.get(id).getDataModel().getMemberList().size());
                         data.add("Current reserve: " + p_players.get(id).getDataModel().getCurrentReservedFood());
-                        data.add("Greediness: " + LoansGroup.getGreediness(p_players.get(id).getDataModel()));
+                        data.add("Greediness: " + PoliticalGroup.getGreediness(p_players.get(id).getDataModel()));
                         data.add("++++++LOAN HISTORY OF THIS GROUP++++++");
 
                         //Display debtors / loans given
                         data.add("Debtors History-------------------------------");
-                        Map<String, List<Tuple<Double, Double>>> loansGiven = LoansGroup.getLoansGiven(p_players.get(id).getDataModel());
+                        Map<String, List<Tuple<Double, Double>>> loansGiven = PoliticalGroup.getLoansGiven(p_players.get(id).getDataModel());
                         if (loansGiven!= null)
                         {
                             Set<String> debtors = loansGiven.keySet();
@@ -356,7 +356,7 @@ public class LoansInfo extends JPanel implements Plugin {
                         
                         data.add("Creditors History-------------------------------");
                         //Display debtors / loans given
-                        Map<String, List<Tuple<Double, Double>>> loansTaken = LoansGroup.getLoansTaken(p_players.get(id).getDataModel());
+                        Map<String, List<Tuple<Double, Double>>> loansTaken = PoliticalGroup.getLoansTaken(p_players.get(id).getDataModel());
                         if (loansTaken!= null)
                         { 
                             Set<String> creditors = loansTaken.keySet();
@@ -416,7 +416,7 @@ public class LoansInfo extends JPanel implements Plugin {
        {
             String groupID = iter.next();
             PublicGroupDataModel dm = ec.getGroupById(groupID);
-            Map<String, List<Tuple<Double, Double> > > loansGiven = LoansGroup.getLoansGiven(dm);
+            Map<String, List<Tuple<Double, Double> > > loansGiven = PoliticalGroup.getLoansGiven(dm);
             double totalAmountGiven = 0;
             if (loansGiven != null)
             {
@@ -431,7 +431,7 @@ public class LoansInfo extends JPanel implements Plugin {
                     totalAmountGiven += amountBorrowed;
                 }
            }
-           Map<String, List<Tuple<Double, Double> > > loansTaken = LoansGroup.getLoansTaken(dm);
+           Map<String, List<Tuple<Double, Double> > > loansTaken = PoliticalGroup.getLoansTaken(dm);
            double totalAmountTaken = 0;
            if (loansTaken != null)
            {
@@ -458,14 +458,14 @@ public class LoansInfo extends JPanel implements Plugin {
                    spaces+Math.round(totalAmountGiven) +
                    spaces + Math.round(totalAmountTaken)+
                    spaces + averageHappiness+
-                   spaces + LoansGroup.getGreediness(dm));
+                   spaces + PoliticalGroup.getGreediness(dm));
        }
        data.add("*Note: Amounts given and amounts borrowed may not balance because dead groups are not displayed in this summary");
    }
 
      private void updateLoanPlayers(SortedSet<String> active_agent_ids, Iterator<String> itera)
      {
-         PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
+            PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
             // Add any new groups
             while(itera.hasNext())
             {
@@ -474,15 +474,15 @@ public class LoansInfo extends JPanel implements Plugin {
                 {
                     if(!sim.getPlayer(id).getClass().equals(ec.getAllowedGroupTypes().get(1)))
                     {
-                      p_players.put(id, (LoansGroup) sim.getPlayer(id));
-
+                      p_players.put(id, (PoliticalGroup) sim.getPlayer(id));
+                      
                     }
                 }
             }
 
            // Delete agents which are no longer active
             List<String> ids_to_remove = new LinkedList<String>();
-            for(Map.Entry<String, LoansGroup> entry : p_players.entrySet())
+            for(Map.Entry<String, PoliticalGroup> entry : p_players.entrySet())
             {
                     String id = entry.getKey();
                     if(!active_agent_ids.contains(id))
@@ -495,5 +495,5 @@ public class LoansInfo extends JPanel implements Plugin {
            {
                     p_players.remove(itera.next());
            }
-    }
- }
+    }    
+}

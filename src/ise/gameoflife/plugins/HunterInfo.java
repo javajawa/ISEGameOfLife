@@ -95,7 +95,7 @@ public class HunterInfo extends JPanel implements Plugin
                             LastHunted = this.dm.getLastHunted().getName();
                         }
 
-                        JPanel dataPanel = new JPanel(new GridLayout(3, 3, 1, -1));
+                        JPanel dataPanel = new JPanel(new GridLayout(9,1, 1, -1));
 
                         dataPanel.add(labelise(dm.getName(),8));
 			dataPanel.add(labelise(dm.getPlayerClass()));
