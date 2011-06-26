@@ -17,6 +17,7 @@ import ise.gameoflife.plugins.GroupGraphs;
 import ise.gameoflife.plugins.GroupInfo;
 import ise.gameoflife.plugins.HunterInfo;
 import ise.gameoflife.plugins.HunterListPlugin;
+import ise.gameoflife.plugins.LoansInfoPolitics;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
 import ise.gameoflife.tokens.AgentType;
@@ -84,6 +85,7 @@ public class PoliticsExtended extends GenericSimulation
                 addPlugin(new GroupAgentInfo());
                 addPlugin(new GroupInfo());
                 addPlugin(new GroupGraphs());
+                addPlugin(new LoansInfoPolitics());                
 	}
 
 	@Override

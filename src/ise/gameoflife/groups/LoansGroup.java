@@ -363,6 +363,9 @@ public class LoansGroup extends AbstractGroupAgent {
         
         currentFoodReserve = getDataModel().getCurrentReservedFood();
 
+        if(this.getDataModel().getReservedFoodHistory().size() < 3)
+            return new Tuple<AgentType, Double>(strategy, 200.0);
+        
         //Check if the group is in need. If it doesn't then proceed with the payments
         if(!inNeed.containsKey(this.getId()))
         {   
@@ -553,7 +556,18 @@ public class LoansGroup extends AbstractGroupAgent {
         double currentFoodReserve; 
         currentFoodReserve = getDataModel().getCurrentReservedFood();
         double tax = 0;
-
+        if (getDataModel().getGroupStrategy()!=null)
+        {
+            double rand = new Random().nextDouble();
+            if (rand >= 0.5)
+            {
+                currentFoodReserve += 2.5*getDataModel().getMemberList().size()*10;
+            }
+            else if((rand < 0.5)&&(rand>0.3))
+            {
+                currentFoodReserve += 2.0*getDataModel().getMemberList().size()*10;
+            }
+        }
         //If this groups has any debtors must check if any of them has paid back
         if(loanRepayments.containsKey(this.getId()))
         {
