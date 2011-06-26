@@ -27,29 +27,22 @@ import presage.abstractparticipant.APlayerDataModel;
 class GroupDataModel extends APlayerDataModel
 {
 	private static final long serialVersionUID = 1L;
-	
 	@Element
 	private String name;
-
 	/**
 	 * Array list of GroupDataModel members
 	 */
 	@ElementList
 	private ArrayList<String> memberList;
-
 	@Element
 	private History<Double> economicPosition;
-
 	@Element
-	private History<HashMap<Proposition,Integer>> propositionHistory;
+	private History<HashMap<Proposition, Integer>> propositionHistory;
+	private AgentType groupStrategy;
+	private List<String> panel = new LinkedList<String>();
+	@Element
+	private History<Double> reservedFoodHistory;
 
-        private AgentType groupStrategy;
-        
-        private List<String> panel = new LinkedList<String>();
-
-        @Element
-        private History<Double> reservedFoodHistory;
-        
 	@Deprecated
 	GroupDataModel()
 	{
@@ -74,8 +67,8 @@ class GroupDataModel extends APlayerDataModel
 		ret.economicPosition = new History<Double>(50);
 		ret.propositionHistory = new History<HashMap<Proposition, Integer>>(50);
 		ret.economicPosition.newEntry(init.getInitialEconomicBelief());
-                ret.reservedFoodHistory = new History<Double>(50);
-                ret.reservedFoodHistory.newEntry(0.0);
+		ret.reservedFoodHistory = new History<Double>(50);
+		ret.reservedFoodHistory.newEntry(0.0);
 		return ret;
 	}
 
@@ -99,13 +92,12 @@ class GroupDataModel extends APlayerDataModel
 		return economicPosition.getValue();
 	}
 
-
 	void setEconomicPosition(double pos)
 	{
 		economicPosition.setValue(pos);
 	}
 
-        UnmodifiableHistory<Double> getEconomicPoisition()
+	UnmodifiableHistory<Double> getEconomicPoisition()
 	{
 		return economicPosition.getUnmodifableHistory();
 	}
@@ -114,7 +106,7 @@ class GroupDataModel extends APlayerDataModel
 	{
 		economicPosition.newEntry(true);
 		propositionHistory.newEntry(null);
-                reservedFoodHistory.newEntry(true);
+		reservedFoodHistory.newEntry(true);
 	}
 
 	void addMember(String a)
@@ -132,7 +124,7 @@ class GroupDataModel extends APlayerDataModel
 	{
 		// Nothing to see here. Move along, citizen!
 	}
-        
+
 	/**
 	 * Get a re-distribution safe copy of this object. The returned object is
 	 * backed by this one, so their is no need to keep calling this to receive
@@ -179,7 +171,7 @@ class GroupDataModel extends APlayerDataModel
 		PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
 		if (ec == null) return 0.5;
 
-                // Find how trusted each agent is on average
+		// Find how trusted each agent is on average
 		for (String candidate : memberList)
 		{
 			int n = 0;
@@ -194,63 +186,68 @@ class GroupDataModel extends APlayerDataModel
 					++n;
 				}
 			}
-                        
+
 			if (n > 0) avg_trusts.add(sum / n);
 		}
 
 		int n = avg_trusts.size();
 
-                // No agents have any trust values for any other
+		// No agents have any trust values for any other
 		if (n == 0) return 0.5;
 
-                // Calculate the average overall trust for an agent
+		// Calculate the average overall trust for an agent
 		double sum = 0;
-		for (Double v : avg_trusts) sum += v;
+		for (Double v : avg_trusts)
+			sum += v;
 
 		double mu = sum / n;
 
-                // Calculate the std deviation of overall trust in agents
+		// Calculate the std deviation of overall trust in agents
 		double variance = 0;
-		for (Double v : avg_trusts) variance += (v - mu)*(v - mu);
+		for (Double v : avg_trusts)
+			variance += (v - mu) * (v - mu);
 
 		double st_dev = 2 * Math.sqrt(variance / n);
-		return 1- ScaledDouble.scale(st_dev, n, mu);
+		return 1 - ScaledDouble.scale(st_dev, n, mu);
 	}
 
-        List<String> getPanel(){
-            return this.panel;
-        }
+	List<String> getPanel()
+	{
+		return this.panel;
+	}
 
-        void setPanel(List<String> nPanel){
-            this.panel = nPanel;
-        }
-        
-        AgentType getGroupStrategy(){
-            return groupStrategy;
-        }
+	void setPanel(List<String> nPanel)
+	{
+		this.panel = nPanel;
+	}
 
-        void setGroupStrategy(AgentType strategy){
-            this.groupStrategy = strategy;
-        }
+	AgentType getGroupStrategy()
+	{
+		return groupStrategy;
+	}
 
-        void setReservedFoodHistory(double pooledFood){
-            reservedFoodHistory.setValue(pooledFood);
-        }
+	void setGroupStrategy(AgentType strategy)
+	{
+		this.groupStrategy = strategy;
+	}
+
+	void setReservedFoodHistory(double pooledFood)
+	{
+		reservedFoodHistory.setValue(pooledFood);
+	}
 
 	double getCurrentReservedFood()
 	{
 		return reservedFoodHistory.getValue();
 	}
-        
-        History<Double> getReservedFoodHistory()
+
+	History<Double> getReservedFoodHistory()
 	{
 		return reservedFoodHistory.getUnmodifableHistory();
-	}        
+	}
 
 	int size()
 	{
 		return memberList.size();
 	}
-
-        
-        }        
+}

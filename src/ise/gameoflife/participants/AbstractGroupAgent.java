@@ -46,7 +46,8 @@ import presage.environment.messages.ENVRegistrationResponse;
 public abstract class AbstractGroupAgent implements Participant
 {
 	private static final long serialVersionUID = 1L;
-	private final static Logger logger = Logger.getLogger("gameoflife.AbstractGroup");
+	private final static Logger logger = Logger.getLogger(
+					"gameoflife.AbstractGroup");
 	/**
 	 * The DataModel used by this agent.
 	 */
@@ -65,9 +66,8 @@ public abstract class AbstractGroupAgent implements Participant
 	private EnvironmentConnector tmp_ec;
 	private Map<String, Double> huntResult;
 	private Map<Proposition, Integer> voteResult;
-        
-        //TODO: Change that to a hash map
-        private static Map<String, Double> previousAmountHunted = new HashMap<String, Double>();
+	//TODO: Change that to a hash map
+	private static Map<String, Double> previousAmountHunted = new HashMap<String, Double>();
 
 	/**
 	 * 
@@ -162,25 +162,25 @@ public abstract class AbstractGroupAgent implements Participant
 		if (TurnType.firstTurn.equals(turn))
 		{
 			beforeNewRound();
-                        
-                        
 
-                        clearRoundData();
+
+
+			clearRoundData();
 		}
 
 		switch (turn)
 		{
 			case GroupSelect:
 				// Allow groups to "explore" their surroundings
-                                doInteractWithOtherGroups();
+				doInteractWithOtherGroups();
 				break;
 			case TeamSelect:
 				doTeamSelect();
 				break;
 			case GoHunt:
 				// The panel (if it exists) decides the group's strategy
-                                doLeadersHunt();
-                                break;
+				doLeadersHunt();
+				break;
 			case HuntResults:
 				doHandleHuntResults();
 				break;
@@ -198,7 +198,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	private void clearRoundData()
 	{
-                
+
 		huntResult = new HashMap<String, Double>();
 		voteResult = new HashMap<Proposition, Integer>();
 		dm.clearRoundData();
@@ -209,7 +209,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 */
 	private void doTeamSelect()
 	{
-               
+
 		List<HuntingTeam> teams = selectTeams();
 		// TODO: Remove non-group members from teams
 		List<String> memberList = this.dm.getMemberList();
@@ -219,7 +219,7 @@ public abstract class AbstractGroupAgent implements Participant
 			{
 				if (memberList.contains(agent))
 				{
-					ec.act(new GroupOrder(team, agent), getId(),authCode);
+					ec.act(new GroupOrder(team, agent), getId(), authCode);
 				}
 			}
 		}
@@ -232,41 +232,42 @@ public abstract class AbstractGroupAgent implements Participant
 	private void doHandleHuntResults()
 	{
 		double shared = 0;
-                
-                //The game between groups is played by the special agent which represent a group.
-                //The result of that game is added on the shared food amount and distributed back to
-                //the followers.
-                for (String specialAgent: getConn().getAgents())
-                {
-                    if (getConn().getAgentById(specialAgent).getName().equals(getId()))
-                    {
-                        PublicAgentDataModel groupSpecialAgent = getConn().getAgentById(specialAgent);
-                        double specialAgentFoodAmount = groupSpecialAgent.getFoodAmount();
-                        double extraFood = 0;
-                        if (previousAmountHunted.get(getId()) != null)
-                        {
-                            extraFood = specialAgentFoodAmount - previousAmountHunted.get(getId());
-                        }
 
-                        previousAmountHunted.put(getId(), specialAgentFoodAmount);
-                        shared += getDataModel().getMemberList().size()*extraFood;
-                    }
+		//The game between groups is played by the special agent which represent a group.
+		//The result of that game is added on the shared food amount and distributed back to
+		//the followers.
+		for (String specialAgent : getConn().getAgents())
+		{
+			if (getConn().getAgentById(specialAgent).getName().equals(getId()))
+			{
+				PublicAgentDataModel groupSpecialAgent = getConn().getAgentById(
+								specialAgent);
+				double specialAgentFoodAmount = groupSpecialAgent.getFoodAmount();
+				double extraFood = 0;
+				if (previousAmountHunted.get(getId()) != null)
+				{
+					extraFood = specialAgentFoodAmount - previousAmountHunted.get(getId());
+				}
 
-                }
- 
-                //Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
-                Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
-                this.setReservedFood(updatedSharedAndReserve.getValue());
-                shared = updatedSharedAndReserve.getKey();
-                //Loans simulation addition end                
-                
-                
+				previousAmountHunted.put(getId(), specialAgentFoodAmount);
+				shared += getDataModel().getMemberList().size() * extraFood;
+			}
+
+		}
+
+		//Loans simulation addition.In any other simulation tax = 0 always and shared will be the same
+		Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
+		this.setReservedFood(updatedSharedAndReserve.getValue());
+		shared = updatedSharedAndReserve.getKey();
+		//Loans simulation addition end                
+
+
 		double taxRate = 1 - dm.getCurrentEconomicPoisition();
 		for (Double value : huntResult.values())
 		{
 			shared += value;
 		}
-            
+
 		shared = shared * taxRate / dm.getMemberList().size();
 
 		Map<String, Double> result = new HashMap<String, Double>(huntResult.size());
@@ -328,11 +329,11 @@ public abstract class AbstractGroupAgent implements Participant
 			// TODO: Store each proposition and result in history?
 			props.put(p.getProposer(), p);
 		}
-                
+
 		// Calculate the groups new position
 		double change = dm.getCurrentEconomicPoisition();
 		if (motionsPassed > 0)
-		{  
+		{
 			dm.setEconomicPosition(scale(change, movement / motionsPassed, 0.1));
 			change = dm.getCurrentEconomicPoisition() - change;
 		}
@@ -342,41 +343,45 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 		// Inform each agent of how their vote went, and the overall group movement
 		for (String agent : props.keySet())
-                {
+		{
 			Proposition p = props.get(agent);
 			ec.act(new VoteResult(p, voteResult.get(p), change), getId(), authCode);
 		}
 	}
 
-        private void doLeadersHunt(){
-                AgentType strategy = decideGroupStrategy();
-                this.dm.setGroupStrategy(strategy);
+	private void doLeadersHunt()
+	{
+		AgentType strategy = decideGroupStrategy();
+		this.dm.setGroupStrategy(strategy);
 
-                Tuple<AgentType, Double> finalStrategy = makePayments();
-                if (finalStrategy.getValue() != getDataModel().getCurrentReservedFood())
-                {
-                    this.setReservedFood(finalStrategy.getValue());
-                }
-                this.dm.setGroupStrategy(finalStrategy.getKey());
-        }
+		Tuple<AgentType, Double> finalStrategy = makePayments();
+		if (finalStrategy.getValue() != getDataModel().getCurrentReservedFood())
+		{
+			this.setReservedFood(finalStrategy.getValue());
+		}
+		this.dm.setGroupStrategy(finalStrategy.getKey());
+	}
 
-        private void doInteractWithOtherGroups(){
-            Tuple<InteractionResult, Double> interactionResult = interactWithOtherGroups();
-            switch (interactionResult.getKey())
-            {
+	private void doInteractWithOtherGroups()
+	{
+		Tuple<InteractionResult, Double> interactionResult = interactWithOtherGroups();
+		switch (interactionResult.getKey())
+		{
 			case LoanTaken:
-                            this.setReservedFood(this.getDataModel().getCurrentReservedFood() + interactionResult.getValue());
-                            break;
-                        case LoanGiven:
-                            this.setReservedFood(this.getDataModel().getCurrentReservedFood() - interactionResult.getValue());
-                            break;
-                        case NothingHappened:
-                            //this.setReservedFood(this.getDataModel().getCurrentReservedFood());
-                            break;
-            }
-            
-        }
-        
+				this.setReservedFood(
+								this.getDataModel().getCurrentReservedFood() + interactionResult.getValue());
+				break;
+			case LoanGiven:
+				this.setReservedFood(
+								this.getDataModel().getCurrentReservedFood() - interactionResult.getValue());
+				break;
+			case NothingHappened:
+				//this.setReservedFood(this.getDataModel().getCurrentReservedFood());
+				break;
+		}
+
+	}
+
 	/**
 	 * Sets the number of cycles passed
 	 * @param cycle
@@ -411,7 +416,7 @@ public abstract class AbstractGroupAgent implements Participant
 		this.dm.setEconomicPosition(newPosition);
 	}
 
-        protected final void setGroupStrategy(AgentType strategy)
+	protected final void setGroupStrategy(AgentType strategy)
 	{
 		this.dm.setGroupStrategy(strategy);
 	}
@@ -421,7 +426,7 @@ public abstract class AbstractGroupAgent implements Participant
 		this.dm.setPanel(newPanel);
 	}
 
-        protected final void setReservedFood(double newAmount)
+	protected final void setReservedFood(double newAmount)
 	{
 		this.dm.setReservedFoodHistory(newAmount);
 	}
@@ -436,7 +441,7 @@ public abstract class AbstractGroupAgent implements Participant
 	{
 		if (input.getClass().equals(JoinRequest.class))
 		{
-		        final JoinRequest req = (JoinRequest)input;
+			final JoinRequest req = (JoinRequest)input;
 			boolean response = this.respondToJoinRequest(req.getAgent());
 			if (response) this.dm.addMember(req.getAgent());
 			ec.act(new RespondToApplication(req.getAgent(), response), this.getId(),
@@ -450,25 +455,25 @@ public abstract class AbstractGroupAgent implements Participant
 		}
 
 		if (input.getClass().equals(LeaveNotification.class))
-		{   
+		{
 			final LeaveNotification in = (LeaveNotification)input;
 
-                        dm.removeMember(in.getAgent());
+			dm.removeMember(in.getAgent());
 			this.onMemberLeave(in.getAgent(), in.getReason());
-                        //Bug fix
-                        ec.act(new RespondToApplication(in.getAgent(), false), this.getId(), authCode);
-                        //Bug fix end
+			//Bug fix
+			ec.act(new RespondToApplication(in.getAgent(), false), this.getId(),
+							authCode);
+			//Bug fix end
 			logger.log(Level.FINE, "{0} lost memeber {1} because of {2}", new Object[]
 							{
 								dm.getName(),
 								ec.nameof(in.getAgent()), in.getReason()
-
-							});                        
+							});
 
 			if (dm.getMemberList().isEmpty())
-                        {
+			{
 				ec.act(new Death(), dm.getId(), authCode);
-                        }
+			}
 			return;
 		}
 
@@ -517,7 +522,8 @@ public abstract class AbstractGroupAgent implements Participant
 	@Override
 	public final void enqueueInput(ArrayList<Input> input)
 	{
-		for (Input in : input) enqueueInput(in);
+		for (Input in : input)
+			enqueueInput(in);
 	}
 
 	/**
@@ -566,16 +572,15 @@ public abstract class AbstractGroupAgent implements Participant
 	abstract protected void onMemberLeave(String playerID,
 					LeaveNotification.Reasons reason);
 
+	abstract protected Tuple<AgentType, Double> makePayments();
 
+	abstract protected AgentType decideGroupStrategy();
 
-        abstract protected Tuple<AgentType, Double> makePayments();
-
-       
-        abstract protected AgentType decideGroupStrategy();
 	abstract protected Tuple<Double, Double> updateTaxedPool(double sharedFood);
-        abstract protected Tuple<InteractionResult, Double> interactWithOtherGroups();
 
-        /**
+	abstract protected Tuple<InteractionResult, Double> interactWithOtherGroups();
+
+	/**
 	 * Here you implement any code concerning data storage about the events
 	 * of this round before it is all deleted for a new round to begin.
 	 * N.B: a "round" occurs after all {@link TurnType turn types} have been
@@ -584,8 +589,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 * Alternatively, use of the unit "Harcourt" may also be used.
 	 * 1 Round = 1 Harcourt
 	 */
-        abstract protected void beforeNewRound();
-
+	abstract protected void beforeNewRound();
 
 	/**
 	 * @return the conn
