@@ -8,6 +8,9 @@ package ise.gameoflife.actions;
 public final class Death extends GenericAction
 {
 
+	/**
+	 * Serialisation ID
+	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

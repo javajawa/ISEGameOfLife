@@ -8,6 +8,10 @@ import ise.gameoflife.inputs.Proposition;
  */
 public class VoteResult extends GenericAction
 {
+
+	/**
+	 * Serialisation ID
+	 */
 	private static final long serialVersionUID = 1L;
 
 	private Proposition p;

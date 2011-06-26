@@ -8,6 +8,10 @@ import ise.gameoflife.inputs.Proposition;
  */
 public class Vote extends GenericAction
 {
+
+	/**
+	 * Serialisation ID
+	 */
 	private static final long serialVersionUID = 1L;
 	public enum VoteType
 	{

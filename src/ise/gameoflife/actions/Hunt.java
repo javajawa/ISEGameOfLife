@@ -10,6 +10,9 @@ import java.util.UUID;
 public final class Hunt extends GenericAction
 {
 
+	/**
+	 * Serialisation ID
+	 */
 	private static final long serialVersionUID = 1L;
 	private final UUID foodType;
 
