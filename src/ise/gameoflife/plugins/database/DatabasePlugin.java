@@ -311,14 +311,22 @@ public class DatabasePlugin implements Plugin
 	    
 		for(Map.Entry<String, PublicGroupDataModel> entry : trackedGroups.entrySet())
 		    {
+			PublicGroupDataModel group = entry.getValue();
 			try {
+			    
 			    if (loans) {
-				wrap.loanGroupRound(groupIdMap.get(entry.getKey()), round, entry.getValue());
+				double averageHappiness = 0;
+				for(String member: group.getMemberList())
+				{
+				   averageHappiness += ec.getAgentById(member).getCurrentHappiness();
+				}
+				averageHappiness = averageHappiness/ group.getMemberList().size();
+				wrap.loanGroupRound(groupIdMap.get(entry.getKey()), round, group, averageHappiness);
 			    }
-			    else wrap.groupRound(groupIdMap.get(entry.getKey()), round, entry.getValue());
+			    else wrap.groupRound(groupIdMap.get(entry.getKey()), round, group);
 			} catch (NullPointerException ex) {
-			    logger.log(Level.WARNING, "Null Exception: For group {0} for round {1}"
-			    + " ", new Object[]{entry.getValue().getName(), round});
+			    logger.log(Level.WARNING, "Null Exception: For group {0} for round {1}.Ex:{2}"
+			    + " ", new Object[]{group.getName(), round, ex});
 			}
 		    }
 	    

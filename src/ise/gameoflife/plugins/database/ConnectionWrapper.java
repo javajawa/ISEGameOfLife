@@ -1,7 +1,6 @@
 package ise.gameoflife.plugins.database;
 
 import ise.gameoflife.participants.PublicAgentDataModel;
-import ise.gameoflife.participants.PublicGroupDataModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,7 +10,11 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.Map;
+import ise.gameoflife.groups.LoansGroup;
+import ise.gameoflife.models.Tuple;
+import ise.gameoflife.participants.PublicGroupDataModel;
+import java.util.List;
 
 /**
  *
@@ -262,7 +265,7 @@ final class ConnectionWrapper
 	    }
 	}
 	
-	void loanGroupRound(int groupid, int round, PublicGroupDataModel group) {
+	void loanGroupRound(int groupid, int round, PublicGroupDataModel group, double averageHappiness) {
 	     try {
 		 //for some reason, needs simId reassigned or error
 		 roundLoanGroup.setInt(1, simId);
@@ -271,14 +274,46 @@ final class ConnectionWrapper
 		 roundLoanGroup.setInt(4,group.getMemberList().size());
 		 roundLoanGroup.setDouble(5,group.getEstimatedSocialLocation());
 		 roundLoanGroup.setDouble(6,group.getCurrentEconomicPoisition());
-		 roundLoanGroup.setDouble(7,group.getCurrentEconomicPoisition());
-		 roundLoanGroup.setDouble(8,group.getCurrentEconomicPoisition());
-		 roundLoanGroup.setDouble(9,group.getCurrentEconomicPoisition());
-		 roundLoanGroup.setDouble(10,group.getCurrentEconomicPoisition());
-		 //getCurrentReservedFood()
-		 //average happiness?
-		 //totalgiven
-		 //totalborrowed
+		 roundLoanGroup.setDouble(7,group.getCurrentReservedFood());
+	         roundLoanGroup.setDouble(8,averageHappiness);
+	       
+		//String groupID = group.getId();
+		 
+
+		Map<String, List<Tuple<Double, Double> > > loansGiven = LoansGroup.getLoansGiven(group);
+		double totalAmountGiven = 0;
+		if (loansGiven != null)
+		{
+		    for (String debtors: loansGiven.keySet())
+		    {
+			//if (ec.getGroupById(debtors) == null) break;
+			double amountBorrowed = 0;
+			for (Tuple<Double, Double> t: loansGiven.get(debtors))
+			{
+			    amountBorrowed += t.getKey()*(1+t.getValue());
+			}
+			totalAmountGiven += amountBorrowed;
+		    }
+	       }
+		roundLoanGroup.setDouble(9,totalAmountGiven);
+		
+		
+	       Map<String, List<Tuple<Double, Double> > > loansTaken = LoansGroup.getLoansTaken(group);
+	       double totalAmountTaken = 0;
+	       if (loansTaken != null)
+	       {
+		    for (String creditors: loansTaken.keySet())
+		    {
+			//if (ec.getGroupById(creditors) == null) break;
+			double amountBorrowed = 0;
+			for (Tuple<Double, Double> t: loansTaken.get(creditors))
+			{
+			    amountBorrowed += t.getKey()*(1+t.getValue());
+			}
+			totalAmountTaken += amountBorrowed;
+		    }
+	       }
+	       roundLoanGroup.setDouble(10,totalAmountTaken);
 		 
 
 		     //logger.log(Level.WARNING,"Economic position not defined for group {1} on round {2}. Set to -1 instead",
