@@ -114,25 +114,15 @@ public abstract class Evolution
 					this.population + ". It must be > 0");
 		}
 
-		ArrayList<Entity> entityPool;
-
 		// construct gene pool with random genomes
 		this.setGenePool(this.randomGenePool());
+		ArrayList<Entity> entityPool = this.speciePoolWithGenePool(this.genePool());
 
 		boolean bestFit = false;
 		for (currentIteration = 1;
 			 currentIteration <= this.iterations && !bestFit;
 			 currentIteration++)
 		{
-			entityPool = this.speciePoolWithGenePool(this.genePool());
-
-			// evaluate and select
-			entityPool = evaluateAndSelectFromPool(entityPool);
-
-			// determine if it's best we can get
-			Entity bestEntity = entityPool.get(0);
-			bestFit = achievedBestFit(bestEntity.fitness(), bestEntity);
-
 			GenePool<EntityGenome> genePool = genePoolWithSpeciePool(entityPool);
 
 			do
@@ -143,6 +133,14 @@ public abstract class Evolution
 			while (genePool.size() < this.population);
 
 			this.setGenePool(genePool);
+			entityPool = this.speciePoolWithGenePool(this.genePool());
+
+			// evaluate and select
+			entityPool = evaluateAndSelectFromPool(entityPool);
+
+			// determine if it's best we can get
+			Entity bestEntity = entityPool.get(0);
+			bestFit = achievedBestFit(bestEntity.fitness(), bestEntity);
 
 			this.willBeginNextIteration();
 		}
