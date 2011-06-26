@@ -1194,35 +1194,35 @@ public class TestPoliticalAgent extends AbstractAgent
         //Get the hunting teams history of the opponent. Get the last hunting team of the opponent
         //and find out which agent was its opponent at that time. This agent has the latest information
         //about our opponent. Therefore this agent is the advisor.
-        if (opponentID != null)
+//        if (opponentID != null)
+//        {
+//            HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
+//            if (opponentPreviousTeam != null)
+//            {
+//                for (String agent: opponentPreviousTeam.getMembers())
+//                {
+//                    if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
+//                    {
+//                        previousAdvisor = agent;
+//                        return suggestedFood = seekAvice(agent);
+//                    }
+//                }
+//            }
+//        }
+
+        List<Tuple<String, Double>> trustValues = new LinkedList<Tuple<String, Double>>();
+        for (String member: getConn().getGroupById(this.getDataModel().getGroupId()).getMemberList())
         {
-            HuntingTeam opponentPreviousTeam = getConn().getAgentById(opponentID).getTeamHistory().getValue(1);
-            if (opponentPreviousTeam != null)
-            {
-                for (String agent: opponentPreviousTeam.getMembers())
-                {
-                    if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
-                    {
-                        previousAdvisor = agent;
-                        return suggestedFood = seekAvice(agent);
-                    }
-                }
-            }
+            Tuple<String, Double> memberTrust = new Tuple<String, Double>();
+            memberTrust.add(member, ((getDataModel().getTrust(member)!=null)?getDataModel().getTrust(member):0));
+            trustValues.add(memberTrust);
         }
 
-//        List<Tuple<String, Double>> trustValues = new LinkedList<Tuple<String, Double>>();
-//        for (String member: getConn().getGroupById(this.getDataModel().getGroupId()).getMemberList())
-//        {
-//            Tuple<String, Double> memberTrust = new Tuple<String, Double>();
-//            memberTrust.add(member, ((getDataModel().getTrust(member)!=null)?getDataModel().getTrust(member):0));
-//            trustValues.add(memberTrust);
-//        }
-//
-//        Collections.sort(trustValues, c);
-//        previousAdvisor = trustValues.get(0).getKey();
-//        return seekAvice(previousAdvisor);
+        Collections.sort(trustValues, c);
+        previousAdvisor = trustValues.get(0).getKey();
+        return seekAvice(previousAdvisor);
 
-        return suggestedFood;
+        //return suggestedFood;
     }
 
     /**
