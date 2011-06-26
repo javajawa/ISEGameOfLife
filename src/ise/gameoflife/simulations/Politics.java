@@ -6,6 +6,7 @@ import ise.gameoflife.groups.TestPoliticalGroup;
 import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.gameoflife.models.GroupDataInitialiser;
 import ise.gameoflife.participants.AbstractFreeAgentGroup;
+import ise.gameoflife.plugins.CompassControl;
 import ise.gameoflife.plugins.HuntersAlivePlugin;
 import ise.gameoflife.plugins.DebugSwitchPlugin;
 import ise.gameoflife.plugins.GroupAgentInfo;
@@ -78,6 +79,7 @@ public class Politics extends GenericSimulation
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
+                addPlugin(new CompassControl());
                 addPlugin(new HunterInfo());
                 addPlugin(new GroupAgentInfo());
                 addPlugin(new GroupInfo());

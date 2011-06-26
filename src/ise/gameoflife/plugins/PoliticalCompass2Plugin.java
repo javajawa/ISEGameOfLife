@@ -26,6 +26,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import org.jfree.chart.ChartPanel;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.simpleframework.xml.Element;
 import presage.Plugin;
 import presage.Simulation;
@@ -216,20 +218,24 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
 
 
-                // Draw all agents agents
-          try{
-                for(Map.Entry<String,AbstractAgent> entry : p_players.entrySet())
-                {
-                        g.setColor(Color.BLUE);
-                        if (entry.getValue().getDataModel().getGroupId() == null)
-                            drawAgent(g, entry.getValue(),2);
-                }
-                
-                 // Draw agent connections + groupped agents
-           
-               drawGroupLines(g,Color.RED,p_players);
-               drawLeaders(g);
-               drawAgentGroups(g);
+                        // Draw all agents agents
+            try{
+                    if (CompassControl.agent_button)
+                    {
+                            for(Map.Entry<String,AbstractAgent> entry : p_players.entrySet())
+                            {
+                                    g.setColor(Color.BLUE);
+                                    if (entry.getValue().getDataModel().getGroupId() == null)
+                                        drawAgent(g, entry.getValue(),2);
+                            }
+
+                             // Draw agent connections + groupped agents
+
+                           drawGroupLines(g,Color.RED,p_players);
+                           drawLeaders(g);
+                    }
+                    if (CompassControl.group_button)
+                           drawAgentGroups(g);
 
             }
             catch (Exception e)
