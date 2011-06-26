@@ -214,6 +214,7 @@ class GroupDataModel extends APlayerDataModel
 		for (Double v : avg_trusts) variance += (v - mu)*(v - mu);
 
 		double st_dev = 2 * Math.sqrt(variance / n);
+                st_dev = ScaledDouble.scale(st_dev, n, mu);
 		return 1- st_dev;
 	}
 

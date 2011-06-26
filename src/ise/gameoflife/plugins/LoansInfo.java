@@ -465,13 +465,18 @@ public class LoansInfo extends JPanel implements Plugin {
 
      private void updateLoanPlayers(SortedSet<String> active_agent_ids, Iterator<String> itera)
      {
+         PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
             // Add any new groups
             while(itera.hasNext())
             {
                 String id = itera.next();
                 if(!p_players.containsKey(id))
                 {
-                    p_players.put(id, (LoansGroup) sim.getPlayer(id));
+                    if(!sim.getPlayer(id).getClass().equals(ec.getAllowedGroupTypes().get(1)))
+                    {
+                      p_players.put(id, (LoansGroup) sim.getPlayer(id));
+
+                    }
                 }
             }
 

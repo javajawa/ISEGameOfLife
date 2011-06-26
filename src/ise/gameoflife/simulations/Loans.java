@@ -26,7 +26,7 @@ public class Loans extends GenericSimulation
 
 	public Loans()
 	{
-		super("Basic Loans Testing Bed", 1400, 0, 0.1);
+		super("Basic Loans Testing Bed", 400, 0, 0.1);
 	}
 
 	@Override
@@ -74,10 +74,11 @@ public class Loans extends GenericSimulation
 		//robs remote db with loans
 		//addPlugin(new DatabasePlugin(comment,true,false,true));
 		//addPlugin(new HunterListPlugin());
-		//addPlugin(new PoliticalCompassPlugin());
-                //addPlugin(new PoliticalCompass2Plugin());
+		addPlugin(new PoliticalCompassPlugin());
+                addPlugin(new PoliticalCompass2Plugin());
                 addPlugin(new LoansInfo());
-		//addPlugin(new LoansPlugin());
+                addPlugin(new GroupInfo());
+
 	}
 
 	@Override
