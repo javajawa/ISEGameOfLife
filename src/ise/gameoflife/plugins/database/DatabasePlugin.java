@@ -186,6 +186,8 @@ public class DatabasePlugin implements Plugin
 		     connProperties.put("user", dbUsername);
 		     connProperties.put("password", dbPassword);
 		     connProperties.put("autoReconnect", "true");
+		     //15 seconds delay before each reconnect
+		     connProperties.put("initialTimeout", "15");
 		     connProperties.put("maxReconnects", "5");
 		     logger.log(Level.INFO,"Connecting to remote database:{0}",url);
 		}
