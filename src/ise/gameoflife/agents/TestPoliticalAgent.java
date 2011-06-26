@@ -509,6 +509,7 @@ public class TestPoliticalAgent extends AbstractAgent
             
             String groupID = this.getDataModel().getGroupId();
             //If the agent belongs to a group then it can ask for advice
+
             if (groupID != null && getConn().getGroupById(groupID).getMemberList().size() > 1)
             {   
                 suggestedFood = this.askAdvice(members);
@@ -1184,7 +1185,12 @@ public class TestPoliticalAgent extends AbstractAgent
                 }
         }
 
-
+        //If the agent has interacted with this opponent before it should have an entry in its history
+        //Therefore the agent doesn't need an advice
+        if (getDataModel().getTrust(opponentID)!= null)
+        {
+            return null;
+        }
         //Get the hunting teams history of the opponent. Get the last hunting team of the opponent
         //and find out which agent was its opponent at that time. This agent has the latest information
         //about our opponent. Therefore this agent is the advisor.
