@@ -15,20 +15,20 @@ public class SimulationGenome extends Genome<SimulationGenome>
 
 	private static final long serialVersionUID = 1L;
 
-	private static final double mutateRate = 0.10f;
-	private static final double crossOverRate = 0.50f;
+	private static final double mutateRate = 0.30f;
+	private static final double crossOverRate = 0.30f;
 
 	private static final double initialFood = 20;
-	private static final double consumption = 3.2;
+	private static final double consumption = 3.4;
 	private static final String comment = "Genetic Agent";
 	private static final int iterations = 100;
-	private static final int population = 40;
+	private static final int population = 8;
 	private static final double foodConsumedPerAdvice = 0.1;
 
 	private double socialBelief = 0;
 	private double economicBelief = 0;
 	private AgentType type = null;
-	private NetworkGenome chooseFoodGenome = new NetworkGenome(7,8,2);
+	private NetworkGenome chooseFoodGenome = new NetworkGenome(7,7,2);
 
 	private long randomSeed;
 	private Random rand = null;

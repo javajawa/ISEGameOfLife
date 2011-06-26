@@ -11,7 +11,7 @@ public class SimulationEvolution
 	extends Evolution<SimulationGenome, GeneticAgentSimulation>
 {
 
-	private final float elitistProportion = 0.20f;
+	private final float elitistProportion = 0.50f;
 	private long randSeed = System.currentTimeMillis();
 	private Random rand = new Random(randSeed);
 
@@ -24,7 +24,8 @@ public class SimulationEvolution
 	@Override
 	protected SimulationGenome newGenome()
 	{
-		SimulationGenome genome = new SimulationGenome(randSeed++);
+		// not getting entropy but guarantees unbiased simulations
+		SimulationGenome genome = new SimulationGenome(rand.nextLong());
 		return genome;
 	}
 
@@ -57,7 +58,7 @@ public class SimulationEvolution
 	{
 		if (rank <= 1)
 		{
-			System.out.print("\nIteration: " + this.currentIteration() +
+			System.out.print("\tIteration: " + this.currentIteration() +
 					",\tfitness: " + entity.fitness());
 		}
 
@@ -78,7 +79,7 @@ public class SimulationEvolution
 	{
 		SimulationEvolution evolution = new SimulationEvolution();
 		evolution.setIterations(1000);
-		evolution.setPopulation(25);
+		evolution.setPopulation(50);
 		evolution.evolve();
 	}
 
