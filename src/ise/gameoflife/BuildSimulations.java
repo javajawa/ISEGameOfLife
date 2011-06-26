@@ -18,6 +18,10 @@ import java.util.logging.Logger;
 final class BuildSimulations
 {
 
+	/**
+	 * The list of different simulation classes that can be built without
+	 * initialisation parameters.
+	 */
 	private static final Class[] simulationClasses =
 	{
 		SingleAgent.class,
@@ -30,6 +34,9 @@ final class BuildSimulations
 		WarGames.class
 	};
 
+	/**
+	 * Private constructor for a static main class
+	 */
 	private BuildSimulations()
 	{
 		// Nothing to see here. Move along, citizen!
@@ -37,7 +44,7 @@ final class BuildSimulations
 
 	/**
 	 * Build the automatically built classes
-	 * @param args Command line arguments
+	 * @param args Command line arguments - are ignored
 	 */
 	public static void main(String args[])
 	{

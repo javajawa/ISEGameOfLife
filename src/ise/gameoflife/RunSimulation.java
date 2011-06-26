@@ -5,7 +5,6 @@ import ise.gameoflife.simulations.GenericSimulation;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -17,18 +16,31 @@ import presage.gui.ControlCenter;
  * class will be build before the control centre is launched.
  * @author Benedict Harcourt
  */
+@SuppressWarnings("ClassWithMultipleLoggers")
 public class RunSimulation
 {
+	/**
+	 * Hard Reference to root logger to ensure warnings+ only in CLI mode
+	 */
 	private final static Logger rootLogger = Logger.getLogger("");
+	/**
+	 * Logger for this class
+	 */
+	private final static Logger logger = Logger.getLogger("ise.gameoflife.RunSimulation");
 	
+	/**
+	 * Private constructor for static main class
+	 */
 	private RunSimulation()
 	{
+		// Nothing to see here. Move along, citizen!
 	}
 
 	/**
 	 * Sets up everything necessary to create the GUI,
 	 * decode the XML and make Multi-Agent magic happen
 	 * @param args Command line arguments
+	 * @throws InterruptedException Thrown if CLI mode has a threading issue
 	 */
 	public static void main(String args[]) throws InterruptedException
 	{
@@ -38,26 +50,11 @@ public class RunSimulation
 			{
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			}
-			catch (ClassNotFoundException ex)
+			catch (Exception ex)
 			{
-				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-								ex);
+				logger.log(Level.SEVERE, "Error while setting UI mode", ex);
 			}
-			catch (InstantiationException ex)
-			{
-				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-								ex);
-			}
-			catch (IllegalAccessException ex)
-			{
-				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-								ex);
-			}
-			catch (UnsupportedLookAndFeelException ex)
-			{
-				Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-								ex);
-			}
+
 			BuildSimulations.main(args);
 			ControlCenter.main(args);
 		}
@@ -89,40 +86,9 @@ public class RunSimulation
 					presage.Presage.main(new String[]{g.getPath() + File.separator + "sim.xml"});
 					return;
 				}
-				catch (InstantiationException ex)
+				catch (Exception ex)
 				{
-					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-									ex);
-				}
-				catch (IllegalAccessException ex)
-				{
-					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-									ex);
-				}
-				catch (IllegalArgumentException ex)
-				{
-					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-									ex);
-				}
-				catch (InvocationTargetException ex)
-				{
-					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-									ex);
-				}
-				catch (NoSuchMethodException ex)
-				{
-					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-									ex);
-				}
-				catch (SecurityException ex)
-				{
-					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-									ex);
-				}
-				catch (ClassNotFoundException ex)
-				{
-					Logger.getLogger(RunSimulation.class.getName()).log(Level.SEVERE, null,
-									ex);
+					logger.log(Level.SEVERE, null, ex);
 				}
 			}
 		}
