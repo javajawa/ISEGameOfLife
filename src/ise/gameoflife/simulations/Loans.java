@@ -64,15 +64,16 @@ public class Loans extends GenericSimulation
 	protected void plugins()
 	{
 		addPlugin(new DebugSwitchPlugin());
-		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		//simulation comment and whether to store to remote db
-		//if having errors, delete your Simulations.db file to recreate db
-		addPlugin(new DatabasePlugin(comment,false));
-		addPlugin(new DatabasePlugin(comment,true,true));
-		//addPlugin(new DatabasePlugin(comment,true));
-		addPlugin(new HunterListPlugin());
-		addPlugin(new PoliticalCompassPlugin());
-                addPlugin(new PoliticalCompass2Plugin());
+		//addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
+		//local db with loans:
+		//addPlugin(new DatabasePlugin(comment,false,false,true));
+		//doc db with loans:
+		//addPlugin(new DatabasePlugin(comment,true,true,true));
+		//robs remote db with loans
+		addPlugin(new DatabasePlugin(comment,true,false,true));
+		//addPlugin(new HunterListPlugin());
+		//addPlugin(new PoliticalCompassPlugin());
+                //addPlugin(new PoliticalCompass2Plugin());
                 //addPlugin(new LoansInfo());
 		//addPlugin(new LoansPlugin());
 	}
