@@ -74,7 +74,7 @@ public class Loans extends GenericSimulation
 		//addPlugin(new HunterListPlugin());
 		//addPlugin(new PoliticalCompassPlugin());
                 //addPlugin(new PoliticalCompass2Plugin());
-                //addPlugin(new LoansInfo());
+                addPlugin(new LoansInfo());
 		//addPlugin(new LoansPlugin());
 	}
 
