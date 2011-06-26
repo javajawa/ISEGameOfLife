@@ -186,6 +186,7 @@ public class DatabasePlugin implements Plugin
 		     connProperties.put("user", dbUsername);
 		     connProperties.put("password", dbPassword);
 		     connProperties.put("autoReconnect", "true");
+		     //connProperties.put("useCompression", "true");
 		     //15 seconds delay before each reconnect
 		     connProperties.put("initialTimeout", "15");
 		     connProperties.put("maxReconnects", "5");
@@ -223,7 +224,7 @@ public class DatabasePlugin implements Plugin
 	public void onSimulationComplete()
 	{
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
-		else logger.log(Level.WARNING,"Writing data to remote database."
+		else logger.log(Level.INFO,"Writing data to remote database."
 			+ "\n ---= DO NOT CLOSE WINDOW (DATABASE UPLOAD IN PROGRESS) =---"
 			+ "\n\t (wait till upload complete message if you wish to upload whole of your simulation");
 		wrap.flush(round);
