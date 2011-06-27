@@ -52,5 +52,4 @@ public final class StepNeuron extends Neuron
 		}
 		return 0.0f;
 	}
-
 }
