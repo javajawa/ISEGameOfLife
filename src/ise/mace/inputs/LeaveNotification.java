@@ -5,7 +5,6 @@ package ise.mace.inputs;
  */
 public class LeaveNotification extends GenericInput
 {
-
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -37,7 +36,7 @@ public class LeaveNotification extends GenericInput
 	 * Sets up the Leave Notification, instantiating all the properties
 	 * @param time
 	 * @param reason
-	 * @param agent 
+	 * @param agent
 	 */
 	public LeaveNotification(long time, Reasons reason, String agent)
 	{
@@ -61,5 +60,4 @@ public class LeaveNotification extends GenericInput
 	{
 		return agent;
 	}
-
 }
