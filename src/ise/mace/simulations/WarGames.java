@@ -49,6 +49,7 @@ import java.util.Random;
  *   </ul>
  * </li>
  * <li>Database: None</li>
+ * <li>Default seed: 0</li>
  * </ul>
  */
 public class WarGames extends GenericSimulation
