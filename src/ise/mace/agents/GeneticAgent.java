@@ -12,28 +12,25 @@ import ise.mace.simulations.evolution.SimulationGenome;
 
 public class GeneticAgent extends AbstractAgent
 {
-
 	private static final long serialVersionUID = 1L;
 
 	public GeneticAgent(SimulationGenome genome)
 	{
 		super("Genetic Agent", genome.randomSeed(),
-				genome.initialFood(), genome.consumption(),
-				genome.type(), genome.socialBelief(), genome.economicBelief());
+						genome.initialFood(), genome.consumption(),
+						genome.type(), genome.socialBelief(), genome.economicBelief());
 	}
 
 	@Override
 	protected void onActivate()
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void beforeNewRound()
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -47,7 +44,6 @@ public class GeneticAgent extends AbstractAgent
 	protected void groupApplicationResponse(boolean accepted)
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -80,7 +76,7 @@ public class GeneticAgent extends AbstractAgent
 
 	@Override
 	protected double updateHappinessAfterHunt(double foodHunted,
-			double foodReceived)
+					double foodReceived)
 	{
 		// TODO Auto-generated method stub
 		return 0;
@@ -88,7 +84,7 @@ public class GeneticAgent extends AbstractAgent
 
 	@Override
 	protected double updateLoyaltyAfterHunt(double foodHunted,
-			double foodReceived)
+					double foodReceived)
 	{
 		// TODO Auto-generated method stub
 		return 0;
@@ -96,7 +92,7 @@ public class GeneticAgent extends AbstractAgent
 
 	@Override
 	protected Map<String, Double> updateTrustAfterHunt(double foodHunted,
-			double foodReceived)
+					double foodReceived)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -111,7 +107,7 @@ public class GeneticAgent extends AbstractAgent
 
 	@Override
 	protected double updateLoyaltyAfterVotes(Proposition proposition,
-			int votes, double overallMovement)
+					int votes, double overallMovement)
 	{
 		// TODO Auto-generated method stub
 		return 0;
@@ -119,7 +115,7 @@ public class GeneticAgent extends AbstractAgent
 
 	@Override
 	protected double updateHappinessAfterVotes(Proposition proposition,
-			int votes, double overallMovement)
+					int votes, double overallMovement)
 	{
 		// TODO Auto-generated method stub
 		return 0;
@@ -127,7 +123,7 @@ public class GeneticAgent extends AbstractAgent
 
 	@Override
 	protected double updateSocialBeliefAfterVotes(Proposition proposition,
-			int votes, double overallMovement)
+					int votes, double overallMovement)
 	{
 		// TODO Auto-generated method stub
 		return 0;
@@ -135,7 +131,7 @@ public class GeneticAgent extends AbstractAgent
 
 	@Override
 	protected double updateEconomicBeliefAfterVotes(Proposition proposition,
-			int votes, double overallMovement)
+					int votes, double overallMovement)
 	{
 		// TODO Auto-generated method stub
 		return 0;
@@ -143,7 +139,7 @@ public class GeneticAgent extends AbstractAgent
 
 	@Override
 	protected Map<String, Double> updateTrustAfterVotes(
-			Proposition proposition, int votes, double overallMovement)
+					Proposition proposition, int votes, double overallMovement)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -153,7 +149,5 @@ public class GeneticAgent extends AbstractAgent
 	protected void onInvite(String group)
 	{
 		// TODO Auto-generated method stub
-
 	}
-
 }
