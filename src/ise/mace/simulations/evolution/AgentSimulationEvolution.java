@@ -4,9 +4,8 @@ import ise.mace.genetics.Evolution;
 import ise.mace.simulations.LearningAgentSimulation;
 
 public class AgentSimulationEvolution
-	extends Evolution<SimulationGenome, LearningAgentSimulation>
+				extends Evolution<SimulationGenome, LearningAgentSimulation>
 {
-
 	private final float elitistProportion = 0.10f;
 	private long randSeed = System.currentTimeMillis();
 
@@ -35,8 +34,8 @@ public class AgentSimulationEvolution
 	{
 		if (rank <= 1)
 		{
-			System.out.println("Iteration: " + this.currentIteration() +
-					",\tfitness: " + entity.fitness());
+			System.out.println("Iteration: " + this.currentIteration()
+							+ ",\tfitness: " + entity.fitness());
 		}
 
 		if (rank <= this.population() * elitistProportion)
@@ -53,5 +52,4 @@ public class AgentSimulationEvolution
 		evolution.setPopulation(50);
 		evolution.evolve();
 	}
-
 }
