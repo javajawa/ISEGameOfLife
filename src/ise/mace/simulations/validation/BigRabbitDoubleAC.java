@@ -6,7 +6,6 @@ import ise.mace.participants.AbstractFreeAgentGroup;
 import ise.mace.plugins.DebugSwitchPlugin;
 import ise.mace.plugins.HunterListPlugin;
 import ise.mace.plugins.HuntersAlivePlugin;
-import ise.mace.plugins.PoliticalCompassPlugin;
 import ise.mace.simulations.GenericSimulation;
 import ise.mace.tokens.AgentType;
 
@@ -40,7 +39,6 @@ import ise.mace.tokens.AgentType;
  */
 public class BigRabbitDoubleAC extends GenericSimulation
 {
-
 	/**
 	 * Crates the Big Rabbit Validation Simulation
 	 * @see BigRabbitDoubleAC Big Rabbit Simulation
@@ -60,8 +58,8 @@ public class BigRabbitDoubleAC extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-		 addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-                 addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
+		addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
+		addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
 	}
 
 	@Override
@@ -79,15 +77,12 @@ public class BigRabbitDoubleAC extends GenericSimulation
 	protected void plugins()
 	{
 		addPlugin(new DebugSwitchPlugin());
-		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 300, 200));
-		//addPlugin(new DatabasePlugin("Simulation comment",false));
+		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		addPlugin(new HunterListPlugin());
-		addPlugin(new PoliticalCompassPlugin());
 	}
 
 	@Override
 	protected void events()
 	{
 	}
-
 }
