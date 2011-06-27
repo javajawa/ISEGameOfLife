@@ -16,6 +16,9 @@ public class DistributeFood extends GenericAction
 	 * the Agent receiving food
 	 */
 	private String agent;
+	/**
+	 * The amount of food the agent succeeded in hunting
+	 */
 	private double amountHunted;
 	/**
 	 * Amount of food agent receives
@@ -53,6 +56,10 @@ public class DistributeFood extends GenericAction
 		return amountHunted;
 	}
 
+	/**
+	 * Returns the amount of food the agent succeeded in hunting
+	 * @return The amount of food the agent succeeded in hunting
+	 */
 	public double getAmountRecieved()
 	{
 		return amountRecieved;
