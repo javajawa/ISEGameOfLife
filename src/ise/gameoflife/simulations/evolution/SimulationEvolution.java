@@ -80,7 +80,7 @@ public class SimulationEvolution
 	{
 		SimulationEvolution evolution = new SimulationEvolution();
 		evolution.setIterations(1000);
-		evolution.setPopulation(50);
+		evolution.setPopulation(20);
 		evolution.evolve();
 	}
 
