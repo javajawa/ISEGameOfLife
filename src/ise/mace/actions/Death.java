@@ -6,7 +6,6 @@ package ise.mace.actions;
  */
 public final class Death extends GenericAction
 {
-
 	/**
 	 * Serialisation ID
 	 */
@@ -27,5 +26,4 @@ public final class Death extends GenericAction
 	{
 		return super.toString();
 	}
-
 }
