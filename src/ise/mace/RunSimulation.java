@@ -3,11 +3,9 @@ package ise.mace;
 import ise.mace.environment.PublicEnvironmentConnection;
 import ise.mace.simulations.GenericSimulation;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import presage.gui.ControlCenter;
 
 /**
@@ -27,7 +25,7 @@ public class RunSimulation
 	 * Logger for this class
 	 */
 	private final static Logger logger = Logger.getLogger("mace.RunSimulation");
-	
+
 	/**
 	 * Private constructor for static main class
 	 */
@@ -60,7 +58,7 @@ public class RunSimulation
 		}
 		else
 		{
-			
+
 			rootLogger.setLevel(Level.WARNING);
 			PublicEnvironmentConnection.logger.setLevel(Level.WARNING);
 
@@ -69,22 +67,25 @@ public class RunSimulation
 				presage.Presage.main(args);
 				return;
 			}
-				
+
 			if (args.length == 2)
 			{
 				try
 				{
 					String name = args[0];
 					Class<?> sim = Class.forName("ise.mace.simulations." + name);
-					assert(GenericSimulation.class.isAssignableFrom(sim));
+					assert (GenericSimulation.class.isAssignableFrom(sim));
 
 					long x = Long.parseLong(args[1]);
-					GenericSimulation g = (GenericSimulation)sim.getConstructor(long.class).newInstance(x);
-					
+					GenericSimulation g = (GenericSimulation)sim.
+									getConstructor(long.class).newInstance(x);
+
 					name += Long.toHexString(x);
-					
-					presage.Presage.main(new String[]{g.getPath() + File.separator + "sim.xml"});
-					return;
+
+					presage.Presage.main(new String[]
+									{
+										g.getPath() + File.separator + "sim.xml"
+									});
 				}
 				catch (Exception ex)
 				{
@@ -93,5 +94,4 @@ public class RunSimulation
 			}
 		}
 	}
-
 }
