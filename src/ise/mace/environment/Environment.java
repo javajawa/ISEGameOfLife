@@ -10,7 +10,6 @@ import ise.mace.actions.RespondToApplication;
 import ise.mace.actions.Vote;
 import ise.mace.actions.VoteResult;
 import ise.mace.agents.PoliticalAgentGroup;
-import ise.mace.agents.TestPoliticalAgent;
 import ise.mace.inputs.ApplicationResponse;
 import ise.mace.inputs.ConsumeFood;
 import ise.mace.inputs.GroupInvite;
@@ -58,7 +57,6 @@ import presage.environment.messages.ENVRegistrationResponse;
  */
 public class Environment extends AbstractEnvironment
 {
-
 	/**
 	 * Passes on group applications
 	 */
@@ -80,23 +78,32 @@ public class Environment extends AbstractEnvironment
 
 				if (old_group != null)
 				{
-					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, actorID));
+					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(
+									sim.getTime(), LeaveNotification.Reasons.Other, actorID));
 				}
-				logger.log(Level.FINE, "Agent {0} has rejoined the free agents group.", nameOf(actorID));
+				logger.log(Level.FINE, "Agent {0} has rejoined the free agents group.",
+								nameOf(actorID));
 			}
 			else
 			{
-				sim.getPlayer(app.getGroup()).enqueueInput(new JoinRequest(sim.getTime(), actorID));
-				logger.log(Level.FINE, "Agent {0} has attempted to join group {1}", new Object[]{nameOf(actorID),
-								nameOf(app.getGroup())});
+				sim.getPlayer(app.getGroup()).enqueueInput(new JoinRequest(sim.getTime(),
+								actorID));
+				logger.log(Level.FINE, "Agent {0} has attempted to join group {1}",
+								new Object[]
+								{
+									nameOf(actorID),
+									nameOf(app.getGroup())
+								});
 			}
 			return null;
 		}
 
-		ApplyToGroupHandler(){
+		ApplyToGroupHandler()
+		{
 			//Nothing to see here, move along citizen.
 		}
 	}
+
 	/**
 	 * Kills (deActivates) Agents
 	 */
@@ -117,13 +124,18 @@ public class Environment extends AbstractEnvironment
 				if (group != null)
 				{
 					sim.getPlayer(group).enqueueInput(
-						new LeaveNotification(dmodel.time, LeaveNotification.Reasons.Death, actorID));
+									new LeaveNotification(dmodel.time,
+									LeaveNotification.Reasons.Death, actorID));
 				}
-				logger.log(Level.FINE, "Agent {0} has died. So long, and thanks for all the fish.", nameOf(actorID));
+				logger.log(Level.FINE,
+								"Agent {0} has died. So long, and thanks for all the fish.",
+								nameOf(actorID));
 			}
 			else
 			{
-				logger.log(Level.FINE, "Group {0} is empty. So long, and thanks for all the fish.", nameOf(actorID));
+				logger.log(Level.FINE,
+								"Group {0} is empty. So long, and thanks for all the fish.",
+								nameOf(actorID));
 			}
 			sim.deActivateParticipant(actorID);
 			return null;
@@ -134,6 +146,7 @@ public class Environment extends AbstractEnvironment
 			// Nothing to see here. Move along, citizen.
 		}
 	}
+
 	/**
 	 * Issues instructions of what to hunt from group to environment which then
 	 * passes the order onto agents.
@@ -147,24 +160,31 @@ public class Environment extends AbstractEnvironment
 		}
 
 		@Override
-		public Input handle(Action action, String actorID){
+		public Input handle(Action action, String actorID)
+		{
 			final GroupOrder order = (GroupOrder)action;
-			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(), order.getTeam()));
-			logger.log(Level.FINE, "Group {0} has created team {1} including {2}", new Object[]{nameOf(actorID),
-							order.getTeam().hashCode(), nameOf(order.getAgent())});
+			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(),
+							order.getTeam()));
+			logger.log(Level.FINE, "Group {0} has created team {1} including {2}",
+							new Object[]
+							{
+								nameOf(actorID),
+								order.getTeam().hashCode(), nameOf(order.getAgent())
+							});
 			return null;
 		}
 
-		GroupOrderHandler(){
+		GroupOrderHandler()
+		{
 			// Nothing to see here. Move along, citizen.
 		}
 	}
+
 	/**
 	 * Performs Hunt Action, returns new food total, depending on result of Hunt
 	 */
 	private class HuntHandler implements AbstractEnvironment.ActionHandler
 	{
-
 		@Override
 		public boolean canHandle(Action action)
 		{
@@ -185,7 +205,8 @@ public class Environment extends AbstractEnvironment
 				Input result;
 				if (food.getHuntersRequired() <= 1)
 				{
-					result = new HuntResult(actorID, food.getNutrition(), food.getNutrition(), dmodel.getTime());
+					result = new HuntResult(actorID, food.getNutrition(),
+									food.getNutrition(), dmodel.getTime());
 				}
 				else
 				{
@@ -197,13 +218,18 @@ public class Environment extends AbstractEnvironment
 			{
 				if (!storedHuntResults.containsKey(am.getHuntingTeam()))
 				{
-					storedHuntResults.put(am.getHuntingTeam(), new LinkedList<TeamHuntEvent>());
+					storedHuntResults.put(am.getHuntingTeam(),
+									new LinkedList<TeamHuntEvent>());
 				}
-				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act, actorID));
+				storedHuntResults.get(am.getHuntingTeam()).add(new TeamHuntEvent(act,
+								actorID));
 			}
-			logger.log(Level.FINE, "Agent {0} hunted {1}{2}", new Object[]{nameOf(actorID),
-							food.getName(),
-							am.getHuntingTeam() == null ? " alone." : " with team " + am.getHuntingTeam().hashCode()});
+			logger.log(Level.FINE, "Agent {0} hunted {1}{2}", new Object[]
+							{
+								nameOf(actorID),
+								food.getName(),
+								am.getHuntingTeam() == null ? " alone." : " with team " + am.getHuntingTeam().hashCode()
+							});
 			return null;
 		}
 
@@ -212,10 +238,12 @@ public class Environment extends AbstractEnvironment
 			// Nothing to see here. Move along, citizen.
 		}
 	}
+
 	/**
 	 * Responds to a group application, indicating success or failure
 	 */
-	private class RespondToApplicationHandler implements AbstractEnvironment.ActionHandler
+	private class RespondToApplicationHandler implements
+					AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -224,32 +252,44 @@ public class Environment extends AbstractEnvironment
 		}
 
 		@Override
-		public Input handle(Action action, String actorID){
+		public Input handle(Action action, String actorID)
+		{
 			RespondToApplication application = (RespondToApplication)action;
 
-			sim.getPlayer(application.getAgent()).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, application.wasAccepted()));
+			sim.getPlayer(application.getAgent()).enqueueInput(new ApplicationResponse(
+							sim.getTime(), actorID, application.wasAccepted()));
 			if (application.wasAccepted())
 			{
 				String old_group = dmodel.getAgentById(application.getAgent()).getGroupId();
 				if (old_group != null)
 				{
-					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, application.getAgent()));
+					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(
+									sim.getTime(), LeaveNotification.Reasons.Other,
+									application.getAgent()));
 				}
 			}
-			logger.log(Level.FINE, "Agent {0} has attempted to join group {1}, and the result was: {2}", new Object[]{nameOf(application.getAgent()),
-							nameOf(actorID), application.wasAccepted()});
+			logger.log(Level.FINE,
+							"Agent {0} has attempted to join group {1}, and the result was: {2}",
+							new Object[]
+							{
+								nameOf(application.getAgent()),
+								nameOf(actorID), application.wasAccepted()
+							});
 			return null;
 		}
 
-		RespondToApplicationHandler(){
+		RespondToApplicationHandler()
+		{
 			// Nothing to see here. Move along, citizen.
 		}
 	}
+
 	/**
 	 * Issues instructions of what to hunt from group to environment which then
 	 * passes the order onto agents.
 	 */
-	private class DistributeFoodHandler implements AbstractEnvironment.ActionHandler
+	private class DistributeFoodHandler implements
+					AbstractEnvironment.ActionHandler
 	{
 		@Override
 		public boolean canHandle(Action action)
@@ -258,18 +298,27 @@ public class Environment extends AbstractEnvironment
 		}
 
 		@Override
-		public Input handle(Action action, String actorID){
+		public Input handle(Action action, String actorID)
+		{
 			final DistributeFood result = (DistributeFood)action;
-			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID, result.getAmountHunted(), result.getAmountRecieved(), sim.getTime()));
-			logger.log(Level.FINE, "Agent {0} was allocated {1} units of food", new Object[]{nameOf(result.getAgent()),
-							result.getAmountRecieved()});
+			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID,
+							result.getAmountHunted(), result.getAmountRecieved(),
+							sim.getTime()));
+			logger.log(Level.FINE, "Agent {0} was allocated {1} units of food",
+							new Object[]
+							{
+								nameOf(result.getAgent()),
+								result.getAmountRecieved()
+							});
 			return null;
 		}
 
-		DistributeFoodHandler(){
+		DistributeFoodHandler()
+		{
 			// Nothing to see here. Move along, citizen.
 		}
 	}
+
 	private class ProposalHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
@@ -279,13 +328,19 @@ public class Environment extends AbstractEnvironment
 		}
 
 		@Override
-		public Input handle(Action action, String actorID){
+		public Input handle(Action action, String actorID)
+		{
 			final Proposal prop = (Proposal)action;
-			final Proposition p = new Proposition(prop.getType(), actorID, prop.getForGroup(), dmodel.time);
+			final Proposition p = new Proposition(prop.getType(), actorID,
+							prop.getForGroup(), dmodel.time);
 
-			logger.log(Level.FINE, "Agent {0} proposed a motion of  {1} to group {2}", new Object[]{nameOf(actorID),
-							prop.getType(), nameOf(prop.getForGroup())});
-                        if(dmodel.getGroupById(prop.getForGroup()) == null) return null;
+			logger.log(Level.FINE, "Agent {0} proposed a motion of  {1} to group {2}",
+							new Object[]
+							{
+								nameOf(actorID),
+								prop.getType(), nameOf(prop.getForGroup())
+							});
+			if (dmodel.getGroupById(prop.getForGroup()) == null) return null;
 			for (String member : dmodel.getGroupById(prop.getForGroup()).getMemberList())
 			{
 				sim.getPlayer(member).enqueueInput(p);
@@ -294,10 +349,12 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
-		ProposalHandler(){
+		ProposalHandler()
+		{
 			// Nothing to see here. Move along, citizen.
 		}
 	}
+
 	private class VoteHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
@@ -307,21 +364,30 @@ public class Environment extends AbstractEnvironment
 		}
 
 		@Override
-		public Input handle(Action action, String actorID){
+		public Input handle(Action action, String actorID)
+		{
 			final Vote vote = (Vote)action;
-			final ise.mace.inputs.Vote v = new ise.mace.inputs.Vote(vote, dmodel.time, actorID);
+			final ise.mace.inputs.Vote v = new ise.mace.inputs.Vote(vote, dmodel.time,
+							actorID);
 
-			logger.log(Level.FINE, "Agent {0} voted {1} on a motion of  {2} to group {3}", new Object[]{nameOf(actorID),
-							vote.getVote(), vote.getProposition().getType(),
-							nameOf(vote.getProposition().getOwnerGroup())});
+			logger.log(Level.FINE,
+							"Agent {0} voted {1} on a motion of  {2} to group {3}",
+							new Object[]
+							{
+								nameOf(actorID),
+								vote.getVote(), vote.getProposition().getType(),
+								nameOf(vote.getProposition().getOwnerGroup())
+							});
 			sim.getPlayer(vote.getProposition().getOwnerGroup()).enqueueInput(v);
 			return null;
 		}
 
-		VoteHandler(){
+		VoteHandler()
+		{
 			// Nothing to see here. Move along, citizen.
 		}
 	}
+
 	private class VoteResultHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
@@ -331,15 +397,18 @@ public class Environment extends AbstractEnvironment
 		}
 
 		@Override
-		public Input handle(Action action, String actorID){
+		public Input handle(Action action, String actorID)
+		{
 			final VoteResult vote = (VoteResult)action;
-			final ise.mace.inputs.VoteResult v = new ise.mace.inputs.VoteResult(vote, dmodel.time);
+			final ise.mace.inputs.VoteResult v = new ise.mace.inputs.VoteResult(vote,
+							dmodel.time);
 
 			sim.getPlayer(vote.getProposition().getProposer()).enqueueInput(v);
 			return null;
 		}
 
-		VoteResultHandler(){
+		VoteResultHandler()
+		{
 			// Nothing to see here. Move along, citizen.
 		}
 	}
@@ -373,17 +442,14 @@ public class Environment extends AbstractEnvironment
 	@Element
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
 	private EnvironmentDataModel dmodel;
-
-	@Element(required=false)
+	@Element(required = false)
 	private Class<? extends AbstractFreeAgentGroup> freeAgentHandler;
 	private AbstractFreeAgentGroup fAGroup;
-
 	/**
 	 * Reference to the list that backs the ErrorLog view plugin.
 	 */
 	private final static Logger logger = Logger.getLogger("mace.Main");
 	private final static Logger rootLogger = Logger.getLogger("mace");
-
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
 
 	@Deprecated
@@ -392,8 +458,14 @@ public class Environment extends AbstractEnvironment
 		super();
 	}
 
-	@EnvironmentConstructor({"queueactions","randomseed","dmodel"})
-	public Environment(boolean queueactions, long randomseed,	EnvironmentDataModel dmodel, Class<? extends AbstractFreeAgentGroup> freeAgentHandler) {
+	@EnvironmentConstructor(
+	{
+		"queueactions", "randomseed", "dmodel"
+	})
+	public Environment(boolean queueactions, long randomseed,
+					EnvironmentDataModel dmodel,
+					Class<? extends AbstractFreeAgentGroup> freeAgentHandler)
+	{
 		super(queueactions, randomseed);
 		this.dmodel = dmodel;
 		this.freeAgentHandler = freeAgentHandler;
@@ -402,19 +474,27 @@ public class Environment extends AbstractEnvironment
 	@Override
 	public boolean deregister(ENVDeRegisterRequest deregistrationObject)
 	{
-		if (!authenticator.get(deregistrationObject.getParticipantID()).equals(deregistrationObject.getParticipantAuthCode()))
+		if (!authenticator.get(deregistrationObject.getParticipantID()).equals(
+						deregistrationObject.getParticipantAuthCode()))
 		{
-			logger.log(Level.FINE, "Illegal deregister request from {0}", nameOf(deregistrationObject.getParticipantID()));
+			logger.log(Level.FINE, "Illegal deregister request from {0}",
+							nameOf(deregistrationObject.getParticipantID()));
 			return false;
 		}
 
-		boolean succeeded = dmodel.removeParticipant(deregistrationObject.getParticipantID());
-		logger.log(Level.FINE, "Deregister request from {0} reutrned {1}", new Object[]{nameOf(deregistrationObject.getParticipantID()), succeeded});
+		boolean succeeded = dmodel.removeParticipant(
+						deregistrationObject.getParticipantID());
+		logger.log(Level.FINE, "Deregister request from {0} reutrned {1}",
+						new Object[]
+						{
+							nameOf(deregistrationObject.getParticipantID()), succeeded
+						});
 		return succeeded;
 	}
 
 	@Override
-	public ENVRegistrationResponse onRegister(ENVRegisterRequest registrationObject)
+	public ENVRegistrationResponse onRegister(
+					ENVRegisterRequest registrationObject)
 	{
 		if (registrationObject instanceof RegistrationRequest)
 		{
@@ -434,7 +514,8 @@ public class Environment extends AbstractEnvironment
 		}
 		UUID id = UUID.randomUUID();
 		authenticator.put(registrationObject.getParticipantID(), id);
-		return new RegistrationResponse(registrationObject.getParticipantID(), id, new EnvConnector(this));
+		return new RegistrationResponse(registrationObject.getParticipantID(), id,
+						new EnvConnector(this));
 	}
 
 	@Override
@@ -471,7 +552,9 @@ public class Environment extends AbstractEnvironment
 			}
 			catch (Exception ex)
 			{
-				logger.log(Level.SEVERE, "Evver whilst trying to load FreeAgentGroup class" + freeAgentHandler.getCanonicalName(), ex);
+				logger.log(Level.SEVERE,
+								"Evver whilst trying to load FreeAgentGroup class" + freeAgentHandler.getCanonicalName(),
+								ex);
 			}
 		}
 
@@ -497,8 +580,13 @@ public class Environment extends AbstractEnvironment
 				for (String agent : team.getMembers())
 				{
 					sim.getPlayer(agent).enqueueInput(new HuntOrder(sim.getTime(), team));
-					logger.log(Level.FINE, "FreeAgentsGroup has created team {0} including {1}", new Object[]{team.hashCode(),
-									nameOf(agent)});
+					logger.log(Level.FINE,
+									"FreeAgentsGroup has created team {0} including {1}",
+									new Object[]
+									{
+										team.hashCode(),
+										nameOf(agent)
+									});
 				}
 			}
 		}
@@ -525,7 +613,7 @@ public class Environment extends AbstractEnvironment
 		{
 			// Reorganise each team into what they hunted
 			// And who hunted it
-			Map<Food,List<String>> hunters = new HashMap<Food, List<String>>();
+			Map<Food, List<String>> hunters = new HashMap<Food, List<String>>();
 			for (TeamHuntEvent h : storedHuntResults.get(team))
 			{
 				if (!hunters.containsKey(h.getFood()))
@@ -555,7 +643,8 @@ public class Environment extends AbstractEnvironment
 				{
 					for (String agent : agents)
 					{
-						sim.getPlayer(agent).enqueueInput(new HuntResult(agent, foodGained, foodGained, dmodel.time));
+						sim.getPlayer(agent).enqueueInput(new HuntResult(agent, foodGained,
+										foodGained, dmodel.time));
 					}
 				}
 				else
@@ -598,16 +687,19 @@ public class Environment extends AbstractEnvironment
 		return dmodel.getCyclesPassed();
 	}
 
-        //ADDED The0
-        public String createGroupAgent(double food,double economic, double social, String name){
-            AbstractAgent a = new PoliticalAgentGroup(food, 0, AgentType.R, economic, social, name);
-            a.initialise(new EnvironmentConnector(this));
-            sim.addParticipant(a.getId(),a);
-            sim.activateParticipant(a.getId());
-            return a.getId();
-        }
+	String createGroupAgent(double food, double economic, double social,
+					String name)
+	{
+		AbstractAgent a = new PoliticalAgentGroup(food, 0, AgentType.R, economic,
+						social, name);
+		a.initialise(new EnvironmentConnector(this));
+		sim.addParticipant(a.getId(), a);
+		sim.activateParticipant(a.getId());
+		return a.getId();
+	}
 
-	String createGroup(Class<? extends AbstractGroupAgent> groupType, GroupDataInitialiser init)
+	String createGroup(Class<? extends AbstractGroupAgent> groupType,
+					GroupDataInitialiser init)
 	{
 		AbstractGroupAgent g = dmodel.createGroup(groupType, init);
 		g.initialise(new EnvironmentConnector(this));
@@ -616,7 +708,8 @@ public class Environment extends AbstractEnvironment
 		return g.getId();
 	}
 
-	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init, String... invitees)
+	String createGroup(Class<? extends AbstractGroupAgent> type,
+					GroupDataInitialiser init, String... invitees)
 	{
 		String gid = createGroup(type, init);
 		if (gid != null)
@@ -647,7 +740,8 @@ public class Environment extends AbstractEnvironment
 	boolean isGroupId(String gid)
 	{
 		if (gid == null) return false;
-		if (sim.isParticipantActive(gid)){
+		if (sim.isParticipantActive(gid))
+		{
 			if (sim.getPlayer(gid) instanceof AbstractGroupAgent)
 			{
 				return true;
@@ -666,15 +760,17 @@ public class Environment extends AbstractEnvironment
 		return dmodel.getAvailableGroups();
 	}
 
-	Food seekAdvice(String agent, UUID authToken, String fromAgent,	HuntingTeam agentsTeam)
+	Food seekAdvice(String agent, UUID authToken, String fromAgent,
+					HuntingTeam agentsTeam)
 	{
-		if (authenticator.get(agent) != authToken) throw new IllegalAccessError("Incorrect access credentials");
+		if (authenticator.get(agent) != authToken) throw new IllegalAccessError(
+							"Incorrect access credentials");
 		AbstractAgent a = (AbstractAgent)sim.getPlayer(fromAgent);
 		AbstractAgent b = (AbstractAgent)sim.getPlayer(agent);
 
 		String ga = a.getDataModel().getGroupId();
 		String gb = b.getDataModel().getGroupId();
-		if (ga == null ? gb != null : !ga.equals(gb))	return null;
+		if (ga == null ? gb != null : !ga.equals(gb)) return null;
 
 		return a.advise(agent, agentsTeam);
 	}
