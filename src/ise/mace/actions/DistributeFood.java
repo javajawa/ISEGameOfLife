@@ -5,12 +5,10 @@ package ise.mace.actions;
  */
 public class DistributeFood extends GenericAction
 {
-
 	/**
 	 * Serialisation ID
 	 */
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * the Agent receiving food
 	 */
@@ -26,9 +24,9 @@ public class DistributeFood extends GenericAction
 
 	/**
 	 * Distributes food to agent
-	 * @param agent agent receiving food
-	 * @param amountHunted 
-	 * @param amountReceived amount of food received
+	 * @param agent Agent receiving food
+	 * @param amountHunted Amount of food the agent hunted
+	 * @param amountReceived Amount of food the agent received
 	 */
 	public DistributeFood(String agent, double amountHunted, double amountReceived)
 	{
@@ -63,5 +61,4 @@ public class DistributeFood extends GenericAction
 	{
 		return amountRecieved;
 	}
-
 }
