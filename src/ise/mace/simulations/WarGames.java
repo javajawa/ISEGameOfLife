@@ -33,6 +33,7 @@ import java.util.Random;
  *         <li>Democrats:  (0.5,0.5) to (0.6, 0.6)</li>
  *         <li>Anarchists: (0.5,0.9) to (0.6, 1.0)</li>
  *       </ul>
+ *     </li>
  *   </ul>
  * <li>Advice Consumption: 0.1</li>
  * <li>Free Group: {@link BasicFreeAgentGroup}</li>
