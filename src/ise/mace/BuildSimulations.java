@@ -4,7 +4,7 @@ import ise.mace.simulations.AgentsAndGroup;
 import ise.mace.simulations.FreeAgentsTest;
 import ise.mace.simulations.Loans;
 import ise.mace.simulations.PoliticsExtended;
-import ise.mace.simulations.validation.SingleAgent;
+import ise.mace.simulations.validation.HungryAgent;
 import ise.mace.simulations.Politics;
 import ise.mace.simulations.WarGames;
 import java.util.logging.Level;
@@ -32,7 +32,7 @@ final class BuildSimulations
 	 */
 	private static final Class[] simulationClasses =
 	{
-		SingleAgent.class,
+		HungryAgent.class,
 		AgentsAndGroup.class,
 		Politics.class,
 		PoliticsExtended.class,

@@ -7,7 +7,7 @@ import ise.mace.plugins.HuntersAlivePlugin;
 import ise.mace.simulations.GenericSimulation;
 
 /**
- * <p>Single Agent Simulation</p>
+ * <p>The Hungry Agent Simulation</p>
  * <p><strong>Proposition:</strong> A solitary agent which requires x units of
  * food per turn,with the rabbit’s value less than x, will die in a finite
  * amount of time.</p>
@@ -35,16 +35,16 @@ import ise.mace.simulations.GenericSimulation;
  * <li>Database: None</li>
  * </ul>
  */
-public class SingleAgent extends GenericSimulation
+public class HungryAgent extends GenericSimulation
 {
 
 	/**
-	 * Creates a new {@link SingleAgent} simulation
-	 * @see SingleAgent
+	 * Creates a new {@link HungryAgent} simulation
+	 * @see HungryAgent
 	 */
-	public SingleAgent()
+	public HungryAgent()
 	{
-		super("Single agent starving to death", 100, 0, 0);
+		super("'The Hungry Agent' Validation Simulation", 100, 0, 0);
 	}
 
 	@Override
