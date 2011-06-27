@@ -1,32 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ise.mace.plugins;
 
 import ise.mace.environment.Environment;
-import ise.mace.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.SortedSet;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.data.xy.XYSeries;
-import org.simpleframework.xml.Element;
 import presage.Plugin;
 import presage.Simulation;
-import presage.annotations.PluginConstructor;
 
 /**Control the functionality of the compass on real time
  *
@@ -47,27 +29,11 @@ public class CompassControl extends JPanel implements Plugin
         public static boolean agent_button = true;
         public static boolean group_button = true;
 
-	/**
-	 * SimpleXML no-arg Constructor. Do not use this constructor, it is only for
-	 * the purpose of SimpleXML being able to create the object through inflection
-	 * @deprecated Serialisation constructor
-	 */
-	@Deprecated
 	public CompassControl()
 	{
 		// Nothing to see here. Move along, citizen.
 	}
 
-	/**
-	 * Creates a new instance of the CompassControl
-	 * @param outputpath Path to write the final image to
-	 * @param outputwidth Width of the outputted image
-	 * @param outputheight Height of the outputted image
-	 */
-	@PluginConstructor(
-	{
-		"outputpath", "outputwidth", "outputheight"
-	})
 	@Override
 	public void execute()
 	{
@@ -181,10 +147,10 @@ public class CompassControl extends JPanel implements Plugin
 
 		control.add(ShowAgentButton);
                 control.add(HideAgentButton);
-                
+
                 control2.add(ShowGroupButton);
                 control2.add(HideGroupButton);
-                
+
                 this.setLayout(new BorderLayout());
 		add(control,BorderLayout.NORTH);
                 add(control2, BorderLayout.CENTER);
