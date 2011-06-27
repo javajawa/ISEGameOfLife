@@ -37,7 +37,6 @@ import ise.mace.simulations.GenericSimulation;
  */
 public class HungryAgent extends GenericSimulation
 {
-
 	/**
 	 * Creates a new {@link HungryAgent} simulation
 	 * @see HungryAgent
@@ -82,5 +81,4 @@ public class HungryAgent extends GenericSimulation
 	protected void events()
 	{
 	}
-
 }
