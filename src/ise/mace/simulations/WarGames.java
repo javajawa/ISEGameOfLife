@@ -17,13 +17,48 @@ import ise.mace.tokens.AgentType;
 import java.util.Random;
 
 /**
+ * <p>War Games Simulation</p>
  *
+ * <ul>
+ * <li>Cycles: 500</li>
+ * <li>Agents: 80 {@link WarAgent}s
+ *   <ul>
+ *     <li>Strategy: {@link AgentType#AC Always Co-operate}</li>
+ *     <li>Initial Food: 20</li>
+ *     <li>Default Consumption: 2</li>
+ *     <li>Beliefs: 20 * 4 Types
+ *       <ul>
+ *         <li>Communist:  (0.1,0.1) to (0.2, 0.2)</li>
+ *         <li>Fascist:    (0.9,0.1) to (1.0, 0.2)</li>
+ *         <li>Democrats:  (0.5,0.5) to (0.6, 0.6)</li>
+ *         <li>Anarchists: (0.5,0.9) to (0.6, 1.0)</li>
+ *       </ul>
+ *   </ul>
+ * <li>Advice Consumption: 0.1</li>
+ * <li>Free Group: {@link BasicFreeAgentGroup}</li>
+ * <li>Groups:
+ *   <ul>
+ *     <li>{@link WarGroup}</li>
+ *   </ul>
+ * </li>
+ * <li>Foods:
+ *   <ul>
+ *     <li>Rabbit: 2 from 1</li>
+ *     <li>Stag: 5 from 2</li>
+ *   </ul>
+ * </li>
+ * <li>Database: None</li>
+ * </ul>
  */
 public class WarGames extends GenericSimulation
 {
+	/**
+	 * Creates a new War Games Simulation
+	 * @see WarGames
+	 */
 	public WarGames()
 	{
-		super("Basic Politics Testing Bed", 10000, 0, 0.1);
+		super("War Games Simulation", 10000, 0, 0.1);
 	}
 
 	@Override
