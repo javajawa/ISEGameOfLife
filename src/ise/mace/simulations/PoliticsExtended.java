@@ -47,6 +47,7 @@ import java.util.Random;
  *   </ul>
  * </li>
  * <li>Database: Primary Remote. +Politics, +Loans</li>
+ * <li>Default seed: 0</li>
  * </ul>
  */
 public class PoliticsExtended extends GenericSimulation
