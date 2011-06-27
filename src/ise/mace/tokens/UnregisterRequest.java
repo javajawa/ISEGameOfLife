@@ -1,0 +1,30 @@
+package ise.mace.tokens;
+
+import java.util.UUID;
+import presage.environment.messages.ENVDeRegisterRequest;
+
+/**
+ *
+ */
+public class UnregisterRequest extends ENVDeRegisterRequest
+{
+	private static final long serialVersionUID = 1L;
+
+	public UnregisterRequest(String id, UUID authCode)
+	{
+		super(id, authCode);
+	}
+
+	@Override
+	public UUID getParticipantAuthCode()
+	{
+		return super.getParticipantAuthCode();
+	}
+
+	@Override
+	public String getParticipantID()
+	{
+		return super.getParticipantID();
+	}
+
+}
