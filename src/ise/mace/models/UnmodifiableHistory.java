@@ -51,5 +51,4 @@ public class UnmodifiableHistory<T extends Serializable> extends History<T>
 	{
 		return this;
 	}
-
 }
