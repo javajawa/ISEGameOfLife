@@ -5,7 +5,6 @@ package ise.mace.actions;
  */
 public class RespondToApplication extends GenericAction
 {
-
 	/**
 	 * Serialisation ID
 	 */
@@ -47,5 +46,4 @@ public class RespondToApplication extends GenericAction
 	{
 		return accepted;
 	}
-
 }
