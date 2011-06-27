@@ -67,7 +67,6 @@ public class TestGroupableAgent extends AbstractAgent
 		// Nothing to see here. Move along, citizen!
 	}
 
-
 	@Override
 	protected void beforeNewRound()
 	{
@@ -83,8 +82,11 @@ public class TestGroupableAgent extends AbstractAgent
 		if (groups.isEmpty())
 		{
 			if (getConn().getAllowedGroupTypes().isEmpty()) return null;
-			Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-			return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
+			Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(
+							0);
+			return getConn().createGroup(gtype,
+							new GroupDataInitialiser(this.uniformRandLong(),
+							getDataModel().getEconomicBelief()));
 		}
 
 		return groups.iterator().next();
@@ -174,10 +176,10 @@ public class TestGroupableAgent extends AbstractAgent
 		return 0.5;
 	}
 
-    @Override
-    protected Map<String, Double> updateTrustAfterLeadersHunt() {
-        return null;
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+	@Override
+	protected Map<String, Double> updateTrustAfterLeadersHunt()
+	{
+		return null;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
 }
