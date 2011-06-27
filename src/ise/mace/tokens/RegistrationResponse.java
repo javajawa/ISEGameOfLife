@@ -10,7 +10,6 @@ import presage.environment.messages.ENVRegistrationResponse;
 public class RegistrationResponse extends ENVRegistrationResponse
 {
 	private static final long serialVersionUID = 1L;
-	
 	protected EnvConnector ec;
 
 	public RegistrationResponse(String id, UUID authCode, EnvConnector ec)
