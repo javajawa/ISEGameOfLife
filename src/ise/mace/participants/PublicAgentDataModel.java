@@ -14,7 +14,6 @@ import java.io.Serializable;
  */
 public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 {
-
 	private static final long serialVersionUID = 1L;
 	/**
 	 * Data Model which backs this public data model
@@ -90,7 +89,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 		source.setRoles(roles);
 	}
 
-        /**
+	/**
 	 * Implemented in Presage and (currently) serves no purpose
 	 * @return a null string, at the moment
 	 */
@@ -176,6 +175,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getLoyaltyHistory();
 	}
+
 	/**
 	 * Gets the current Economic Belief of the agent
 	 * @return The agent's current Economic belief
@@ -223,11 +223,12 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 	{
 		return source.getAgentType();
 	}
-        //Theo ADDED
-        /**
-         * Sets the agents type
-         * @param enum type to assign to agent
-         */
+	//Theo ADDED
+
+	/**
+	 * Sets the agents type
+	 * @param enum type to assign to agent
+	 */
 	public void setAgentType(AgentType type)
 	{
 		source.setAgentType(type);
