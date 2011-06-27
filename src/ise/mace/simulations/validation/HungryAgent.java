@@ -13,7 +13,7 @@ import ise.mace.simulations.GenericSimulation;
  * amount of time.</p>
  *
  * <ul>
- * <li>Cycles: 500</li>
+ * <li>Cycles: 100</li>
  * <li>Agents: 1 {@link TestAgent}
  *   <ul>
  *     <li>Initial Food: 20</li>
