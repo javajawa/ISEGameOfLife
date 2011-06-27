@@ -10,7 +10,6 @@ public class Layer
 	 * The neurons this layer has.
 	 */
 	private Neuron neurons[] = null;
-
 	/**
 	 * The weights of all neurons in this layer.
 	 * A 2d weights array, the first
@@ -19,19 +18,16 @@ public class Layer
 	 * the respective input.
 	 */
 	private double weights[][] = null;
-
 	/**
 	 * The offsets of all neurons in this layer.
 	 * An array of offsets, with the ith element
 	 * corresponds to the offset value of the ith neuron.
 	 */
 	private double offsets[] = null;
-
 	/**
 	 * The number of input ports this layer has.
 	 */
 	private int inputs;
-
 	/**
 	 * The number of output ports this layer has.
 	 */
@@ -43,7 +39,6 @@ public class Layer
 	 */
 	public Layer()
 	{
-
 	}
 
 	/**
@@ -206,7 +201,8 @@ public class Layer
 		// output size check for weights
 		if (neurons.length != weights.length)
 		{
-			throw new RuntimeException("Number of neurons and length of weights mismatch.");
+			throw new RuntimeException(
+							"Number of neurons and length of weights mismatch.");
 		}
 
 		if (null == offsets)
@@ -217,7 +213,8 @@ public class Layer
 		// offsets size check
 		if (offsets.length != neurons.length)
 		{
-			throw new RuntimeException("Number of offsets and number of neurons mismatch.");
+			throw new RuntimeException(
+							"Number of offsets and number of neurons mismatch.");
 		}
 	}
 
@@ -302,5 +299,4 @@ public class Layer
 	{
 		return outputs;
 	}
-
 }
