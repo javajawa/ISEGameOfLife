@@ -30,7 +30,6 @@ import presage.annotations.PluginConstructor;
 
 /**Control the functionality of the compass on real time
  *
- * @author The0s
  */
 public class CompassControl extends JPanel implements Plugin
 {

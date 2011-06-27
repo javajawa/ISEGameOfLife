@@ -5,7 +5,6 @@ import java.util.UUID;
 
 /**
  * Creates an action that represents an agent going off on a hunting trip
- * @author Benedict
  */
 public final class Hunt extends GenericAction
 {

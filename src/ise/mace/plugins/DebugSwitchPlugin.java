@@ -32,7 +32,6 @@ import presage.Simulation;
 
 /**
  *
- * @author Benedict
  */
 public class DebugSwitchPlugin extends JPanel implements Plugin
 {

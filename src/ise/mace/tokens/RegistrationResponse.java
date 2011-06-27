@@ -6,7 +6,6 @@ import presage.environment.messages.ENVRegistrationResponse;
 
 /**
  *
- * @author Benedict
  */
 public class RegistrationResponse extends ENVRegistrationResponse
 {

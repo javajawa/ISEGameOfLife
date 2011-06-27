@@ -19,7 +19,6 @@ import java.util.Random;
 
 /**
  *
- * @author george
  */
 public class Loans extends GenericSimulation
 {

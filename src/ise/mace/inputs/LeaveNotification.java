@@ -2,7 +2,6 @@ package ise.mace.inputs;
 
 /**
  * GenericInput class used to specify the desire to leave the system
- * @author Benedict Harcourt
  */
 public class LeaveNotification extends GenericInput
 {

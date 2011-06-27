@@ -21,7 +21,6 @@ import presage.annotations.PluginConstructor;
  * Draws a representation of the agents and groups on the political
  * compass, using information from the simulation and its history.
  *
- * @author Harry Eakins
  */
 public class PoliticalCompassPlugin extends JPanel implements Plugin
 {

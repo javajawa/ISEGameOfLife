@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.Random;
 /**
  *
- * @author The0s
  */
 public class PoliticalGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;

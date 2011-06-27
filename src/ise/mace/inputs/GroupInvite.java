@@ -2,7 +2,6 @@ package ise.mace.inputs;
 
 /**
  *
- * @author Benedict
  */
 public class GroupInvite extends GenericInput
 {

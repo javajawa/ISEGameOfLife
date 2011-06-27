@@ -27,7 +27,6 @@ import presage.annotations.PluginConstructor;
  * Simple graph plugin, based on the org.jfree.chart libraries, that plots a
  * line graph of population vs simulation time. The graph is save to a file on
  * the completion of the simulation
- * @author Harry Eakins
  */
 public final class HuntersAlivePlugin extends JPanel implements Plugin
 {

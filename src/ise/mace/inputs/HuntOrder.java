@@ -5,7 +5,6 @@ import ise.mace.models.HuntingTeam;
 /**
  * Used to send hunt order instructions for the leader
  * of the current group to each member in that group
- * @author Benedict
  */
 public class HuntOrder extends GenericInput
 {

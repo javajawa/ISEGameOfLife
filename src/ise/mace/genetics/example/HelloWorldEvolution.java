@@ -6,7 +6,6 @@ import ise.mace.genetics.EvolvableEntity;
 /**
  * An example runnable evolution
  * that evolves random strings into a Hello World string
- * @author Xitong Gao
  */
 public class HelloWorldEvolution extends Evolution
 	<HelloWorldGenome, EvolvableEntity<HelloWorldGenome>>

@@ -13,7 +13,6 @@ import java.util.Set;
 
 /**
  * Test agent of joy!
- * @author Benedict
  */
 public class TestGroupableAgent extends AbstractAgent
 {

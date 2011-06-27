@@ -9,7 +9,6 @@ import org.simpleframework.xml.ElementList;
 /**
  * Class dealing with Hunting Teams - ie, sub-groups of Agents who play the 
  * Stag Hunt game
- * @author Benedict Harcourt
  */
 public class HuntingTeam implements Serializable
 {

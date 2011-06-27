@@ -1,7 +1,6 @@
 package ise.mace.neuralnetworks;
 
 /**
- * @author Xitong Gao
  * TanhLayer doc
  */
 public final class TanhLayer extends Layer

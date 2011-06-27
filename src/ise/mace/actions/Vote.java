@@ -4,7 +4,6 @@ import ise.mace.inputs.Proposition;
 
 /**
  *
- * @author benedict
  */
 public class Vote extends GenericAction
 {

@@ -5,7 +5,6 @@ import ise.mace.models.HuntingTeam;
 /**
  * An Action performed by Group that represents the Group putting an agent in
  * a team, and the order that that team is given
- * @author Benedict Harcourt
  */
 public class GroupOrder extends GenericAction
 {

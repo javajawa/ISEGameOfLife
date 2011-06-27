@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Random;
 /**
  *
- * @author Aadil
  */
 public class TestPoliticalGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;

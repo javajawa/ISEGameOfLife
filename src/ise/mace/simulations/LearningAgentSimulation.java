@@ -31,7 +31,6 @@ import presage.ScriptedEvent;
 import presage.Simulation;
 
 /**
- * @author admko
  *
  */
 public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>

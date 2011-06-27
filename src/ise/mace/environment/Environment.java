@@ -55,7 +55,6 @@ import presage.environment.messages.ENVRegistrationResponse;
 /**
  * The primary environment code for the games that we define. This will
  * contain a list of all the groups, food etc. etc. that exist in the world.
- * @author Benedict Harcourt
  */
 public class Environment extends AbstractEnvironment
 {

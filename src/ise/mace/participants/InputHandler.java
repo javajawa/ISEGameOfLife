@@ -3,7 +3,6 @@ package ise.mace.participants;
 import presage.Input;
 
 /**
- * @author Benedict
  */
 interface InputHandler
 {

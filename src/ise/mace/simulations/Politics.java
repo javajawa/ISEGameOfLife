@@ -22,7 +22,6 @@ import java.util.Random;
 
 /**
  *
- * @author george
  */
 public class Politics extends GenericSimulation
 {

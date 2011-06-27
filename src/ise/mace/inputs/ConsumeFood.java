@@ -3,7 +3,6 @@ package ise.mace.inputs;
 /**
  * Used to initiate an action telling the agent to consume an amount of food
  * specified by the environment controller
- * @author christopherfonseka
  */
 public final class ConsumeFood extends GenericInput
 {

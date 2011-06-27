@@ -24,7 +24,6 @@ import presage.Plugin;
 import presage.Simulation;
 /**
  *
- * @author The0s
  */
 public class GroupInfo extends JPanel implements Plugin
 {

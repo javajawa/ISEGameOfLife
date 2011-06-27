@@ -6,7 +6,6 @@ import java.util.Comparator;
 
 /**
  * This class provides the framework for iterative evolution
- * @author Xitong Gao
  */
 public abstract class Evolution
 	<EntityGenome extends Genome<EntityGenome>,

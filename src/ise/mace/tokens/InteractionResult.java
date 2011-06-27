@@ -7,7 +7,6 @@ package ise.mace.tokens;
 
 /**
  *
- * @author george
  */
 public enum InteractionResult {
     LoanGiven, //Loan has been given to another group

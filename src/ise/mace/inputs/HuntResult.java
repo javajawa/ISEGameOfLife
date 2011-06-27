@@ -2,7 +2,6 @@ package ise.mace.inputs;
 
 /**
  *
- * @author Olly
  */
 public final class HuntResult extends GenericInput
 {

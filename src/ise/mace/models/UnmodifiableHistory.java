@@ -6,7 +6,6 @@ import java.util.LinkedList;
 /**
  * Allows classes to easily store historical values in a type safe, controlled way
  * @param <T> The type of things being recorded historically
- * @author Benedict
  */
 public class UnmodifiableHistory<T extends Serializable> extends History<T>
 {

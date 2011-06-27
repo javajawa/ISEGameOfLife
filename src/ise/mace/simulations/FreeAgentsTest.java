@@ -12,7 +12,6 @@ import ise.mace.plugins.PoliticalCompassPlugin;
 
 /**
  *
- * @author Benedict Harcourt
  */
 public class FreeAgentsTest extends GenericSimulation
 {

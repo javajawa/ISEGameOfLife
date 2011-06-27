@@ -10,7 +10,6 @@ import java.util.Map;
 
 /**
  * Test agent of joy!
- * @author Benedict
  */
 public class TestAgent extends AbstractAgent
 {

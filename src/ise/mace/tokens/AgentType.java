@@ -7,7 +7,6 @@ package ise.mace.tokens;
 
 /**
  *
- * @author george
  */
 public enum AgentType {
     AC, //Always Cooperate strategy

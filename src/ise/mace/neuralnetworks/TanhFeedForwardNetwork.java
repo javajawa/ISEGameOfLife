@@ -3,7 +3,6 @@ package ise.mace.neuralnetworks;
 import java.util.Random;
 
 /**
- * @author Xitong
  * TODO TFFN doc
  */
 public class TanhFeedForwardNetwork extends Network

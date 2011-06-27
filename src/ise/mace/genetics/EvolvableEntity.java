@@ -2,7 +2,6 @@ package ise.mace.genetics;
 
 /**
  * An entity which conforms to the Evolvable interface
- * @author Xitong Gao
  */
 public class EvolvableEntity
 	<EntityGenome extends Genome<EntityGenome>>

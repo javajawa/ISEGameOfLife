@@ -29,7 +29,6 @@ import java.util.Set;
 
 /**
  *
- * @author george
  */
 public class LoansGroup extends AbstractGroupAgent {
     private static final long serialVersionUID = 1L;

@@ -3,7 +3,6 @@ package ise.mace.genetics;
 /**
  * An evolvable being that can be evaluated for fitness.
  * Its behaviour is defined by a Genome instance of its own type.
- * @author Xitong Gao
  */
 public interface Evolvable<EntityGenome extends Genome<EntityGenome>>
 {

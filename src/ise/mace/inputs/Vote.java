@@ -4,7 +4,6 @@ import ise.mace.actions.Vote.VoteType;
 
 /**
  *
- * @author benedict
  */
 public class Vote extends GenericInput
 {

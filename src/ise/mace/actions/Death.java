@@ -3,7 +3,6 @@ package ise.mace.actions;
 /**
  * Represents a death action which, when sent, will cause the Environment to
  * remove an agent from the Simulation's processing loop by deactivating it
- * @author Olly Hill
  */
 public final class Death extends GenericAction
 {

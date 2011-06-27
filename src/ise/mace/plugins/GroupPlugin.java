@@ -6,7 +6,6 @@ import presage.Simulation;
 
 /**
  *
- * @author Benedict
  */
 public class GroupPlugin extends JPanel implements Plugin
 {

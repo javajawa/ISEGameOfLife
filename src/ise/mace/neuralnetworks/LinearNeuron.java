@@ -1,7 +1,6 @@
 package ise.mace.neuralnetworks;
 
 /**
- * @author Xitong Gao
  * LinearNeuron is a class of {@link Neuron}
  * with a linear activation function.
  */

@@ -1,7 +1,6 @@
 package ise.mace.neuralnetworks;
 
 /**
- * @author Xitong Gao
  * StepNeuron is a class of {@link Neuron}
  * with an activation function which is a
  * step function.

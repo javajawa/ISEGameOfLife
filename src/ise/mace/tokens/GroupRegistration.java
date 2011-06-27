@@ -11,7 +11,6 @@ import presage.environment.messages.ENVRegisterRequest;
 
 /**
  *
- * @author benedict
  */
 public class GroupRegistration extends ENVRegisterRequest
 {

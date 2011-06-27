@@ -22,7 +22,6 @@ import presage.abstractparticipant.APlayerDataModel;
 
 /**
  * Stub for groups
- * @author Olly
  */
 class GroupDataModel extends APlayerDataModel
 {

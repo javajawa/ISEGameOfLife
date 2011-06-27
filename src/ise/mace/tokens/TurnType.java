@@ -2,7 +2,6 @@ package ise.mace.tokens;
 
 /**
  * Used to control which turn type it is
- * @author Benedict
  */
 public enum TurnType
 {

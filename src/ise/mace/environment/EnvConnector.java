@@ -15,7 +15,6 @@ import presage.EnvironmentConnector;
 
 /**
  *
- * @author Benedict
  */
 public class EnvConnector extends EnvironmentConnector
 {

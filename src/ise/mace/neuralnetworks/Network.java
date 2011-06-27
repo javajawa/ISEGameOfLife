@@ -4,7 +4,6 @@ package ise.mace.neuralnetworks;
  * The Network is a class which is a feed
  * forward neural network consists of
  * {@link Layer}s.
- * @author Xitong Gao
  */
 public class Network
 {

@@ -18,7 +18,6 @@ import java.util.List;
 
 /**
  *
- * @author Valdas
  */
 final class ConnectionWrapper
 {

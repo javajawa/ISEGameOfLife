@@ -6,7 +6,6 @@ import org.simpleframework.xml.Element;
 
 /**
  *
- * @author Christopher Fonseka
  */
 public class Food implements Serializable
 {

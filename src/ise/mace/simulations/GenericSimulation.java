@@ -23,7 +23,6 @@ import static presage.configure.ConfigurationWriter.write;
 
 /**
  *
- * @author Benedict
  */
 abstract public class GenericSimulation
 {

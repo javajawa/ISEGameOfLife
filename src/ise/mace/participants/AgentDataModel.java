@@ -13,7 +13,6 @@ import presage.abstractparticipant.APlayerDataModel;
 
 /**
  *
- * @author Christopher Fonseka
  */
 class AgentDataModel extends APlayerDataModel
 {

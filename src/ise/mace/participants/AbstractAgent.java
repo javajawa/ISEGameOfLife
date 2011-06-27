@@ -42,7 +42,6 @@ import presage.util.InputQueue;
  * control the overall interface.
  *
  * All agents which extend this class should be in the agents package
- * @author Benedict Harcourt
  * @see ise.mace.agents 
  */
 abstract public class AbstractAgent implements Participant

@@ -4,7 +4,6 @@ import java.util.Random;
 
 /**
  *
- * @author Benedict
  */
 public class NameGenerator
 {

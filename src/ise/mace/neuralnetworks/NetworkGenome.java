@@ -6,7 +6,6 @@ import java.util.Random;
 /**
  * NetworkGenome is a {@link Genome} subclass which
  * represents the genome of {@link Network}.
- * @author Xitong Gao
  */
 public class NetworkGenome extends Genome<NetworkGenome>
 {

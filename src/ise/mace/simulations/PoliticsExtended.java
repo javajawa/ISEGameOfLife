@@ -25,7 +25,6 @@ import ise.mace.tokens.AgentType;
 import java.util.Random;
 /**
  *
- * @author The0s
  */
 public class PoliticsExtended extends GenericSimulation
 {

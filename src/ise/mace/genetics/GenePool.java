@@ -6,7 +6,6 @@ import java.util.Random;
 /**
  * A gene pool is a collection of genomes
  * Can reproduce new genomes from this pool
- * @author Xitong Gao
  */
 public class GenePool<EntityGenome extends Genome<EntityGenome>>
 {

@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Random;
 /**
  *
- * @author The0s
  */
 public class SpecialGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;

@@ -11,7 +11,6 @@ import java.util.Random;
 
 /**
  *
- * @author george
  */
 public class CLIPolitics extends GenericSimulation
 {

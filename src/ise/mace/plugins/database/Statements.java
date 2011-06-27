@@ -2,7 +2,6 @@ package ise.mace.plugins.database;
 
 /**
  *
- * @author Valdas
  */
 enum Statements
 {   

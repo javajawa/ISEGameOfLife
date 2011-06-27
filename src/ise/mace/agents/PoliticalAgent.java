@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author The0s
  */
 public class PoliticalAgent extends AbstractAgent
 {

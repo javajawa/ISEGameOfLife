@@ -1,7 +1,6 @@
 package ise.mace.neuralnetworks;
 
 /**
- * @author Xitong Gao
  * TODO NetworkGenomeDelegate doc
  */
 public interface NetworkGenomeDelegate

@@ -2,7 +2,6 @@ package ise.mace.models;
 
 /**
  *
- * @author benedict
  */
 public class ImmutableScaledDouble extends ScaledDouble
 {

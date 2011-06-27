@@ -32,7 +32,6 @@ import java.util.Random;
 import java.util.Set;
 /**
  *
- * @author The0s
  */
 public class WarAgent extends AbstractAgent
 {

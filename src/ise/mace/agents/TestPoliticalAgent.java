@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author george
  */
 
 public class TestPoliticalAgent extends AbstractAgent

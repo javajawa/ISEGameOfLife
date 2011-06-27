@@ -8,7 +8,6 @@ import java.io.Serializable;
  * and it needs to be publically accessible for Evolvable intances to produce
  * behaviours from the data structure.
  * All methods must be overridden.
- * @author Xitong Gao
  */
 public abstract class Genome
 	<DerivedGenome extends Genome<DerivedGenome>> implements Serializable

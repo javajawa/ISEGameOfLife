@@ -11,7 +11,6 @@ import ise.mace.simulations.GenericSimulation;
 
 /**
  *
- * @author Benedict
  */
 public class SingleAgent extends GenericSimulation
 {

@@ -6,7 +6,6 @@ import java.lang.String;
 
 /**
  * A simple Hello World Genome
- * @author Xitong Gao
  */
 public class HelloWorldGenome extends Genome<HelloWorldGenome>
 {

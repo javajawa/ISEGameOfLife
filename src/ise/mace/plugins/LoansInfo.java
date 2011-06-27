@@ -36,7 +36,6 @@ import presage.Plugin;
 import presage.Simulation;
 /**
  *
- * @author george
  */
 
 public class LoansInfo extends JPanel implements Plugin {

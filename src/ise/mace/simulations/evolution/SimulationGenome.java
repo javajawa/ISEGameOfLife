@@ -7,7 +7,6 @@ import ise.mace.genetics.Genome;
 import ise.mace.tokens.AgentType;
 
 /**
- * @author admko
  *
  */
 public class SimulationGenome extends Genome<SimulationGenome>

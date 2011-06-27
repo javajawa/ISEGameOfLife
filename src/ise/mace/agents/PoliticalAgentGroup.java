@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 import presage.Simulation;
 /**
  *
- * @author The0s
  */
 public class PoliticalAgentGroup extends AbstractAgent
 {

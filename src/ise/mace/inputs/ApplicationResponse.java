@@ -2,7 +2,6 @@ package ise.mace.inputs;
 
 /**
  * Input Class that deals with responses to application to groups
- * @author Benedict
  */
 public class ApplicationResponse extends GenericInput
 {

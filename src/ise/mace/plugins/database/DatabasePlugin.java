@@ -23,7 +23,6 @@ import presage.annotations.PluginConstructor;
 
 /**
  * Updated version of DatabasePlugin that is more more more more... just better.
- * @author Valdas
  */
 public class DatabasePlugin implements Plugin
 {

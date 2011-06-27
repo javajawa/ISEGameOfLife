@@ -28,7 +28,6 @@ import presage.Simulation;
 
 /**
  * 
- * @author Benedict
  */
 public class HunterListPlugin extends JPanel implements Plugin
 {

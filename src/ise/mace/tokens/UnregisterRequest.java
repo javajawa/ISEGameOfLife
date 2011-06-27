@@ -5,7 +5,6 @@ import presage.environment.messages.ENVDeRegisterRequest;
 
 /**
  *
- * @author Benedict
  */
 public class UnregisterRequest extends ENVDeRegisterRequest
 {

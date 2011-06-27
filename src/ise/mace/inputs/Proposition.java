@@ -5,7 +5,6 @@ import ise.mace.actions.Proposal.ProposalType;
 
 /**
  *
- * @author benedict
  */
 public class Proposition extends GenericInput
 {

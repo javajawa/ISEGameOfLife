@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  *
- * @author Benedict
  */
 public abstract class AbstractFreeAgentGroup
 {

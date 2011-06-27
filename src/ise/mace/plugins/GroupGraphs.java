@@ -31,7 +31,6 @@ import presage.Plugin;
 import presage.Simulation;
 /**
  *
- * @author The0s
  */
 public class GroupGraphs extends JPanel implements Plugin
 {

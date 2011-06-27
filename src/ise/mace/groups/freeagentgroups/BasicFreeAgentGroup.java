@@ -10,7 +10,6 @@ import java.util.Random;
 
 /**
  *
- * @author Benedict
  */
 public class BasicFreeAgentGroup extends AbstractFreeAgentGroup
 {

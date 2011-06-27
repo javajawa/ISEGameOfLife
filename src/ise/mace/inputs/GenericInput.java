@@ -5,7 +5,6 @@ import presage.Input;
 
 /**
  * Generic class for inputs
- * @author Benedict Harcourt
  */
 abstract public class GenericInput implements Input, Serializable
 {

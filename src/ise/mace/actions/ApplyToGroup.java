@@ -2,7 +2,6 @@ package ise.mace.actions;
 
 /**
  * Action to be performed by a Hunter in order to join a group.
- * @author Benedict
  */
 public class ApplyToGroup extends GenericAction
 {

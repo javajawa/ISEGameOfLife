@@ -7,7 +7,6 @@ package ise.mace.models;
 
 /**
  *
- * @author george
  */
 public class Tuple<K, V> {
     private K key;

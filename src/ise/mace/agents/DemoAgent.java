@@ -14,7 +14,6 @@ import java.util.Map;
 
 /**
  *
- * @author christopherfonseka
  */
 
 public class DemoAgent extends AbstractAgent

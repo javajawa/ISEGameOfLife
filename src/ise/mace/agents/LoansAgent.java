@@ -29,7 +29,6 @@ import java.util.TreeSet;
 
 /**
  *
- * @author george
  */
 public class LoansAgent extends AbstractAgent{
 

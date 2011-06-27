@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 /**
  * Used to access any information available to objects about the environment
- * @author Benedict
  */
 public class PublicEnvironmentConnection
 {

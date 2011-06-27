@@ -3,7 +3,6 @@ package ise.mace.models;
 /**
  * Group data intialiser is an object that contains all the information used
  * to create a new group.
- * @author Benedict
  */
 public class GroupDataInitialiser
 {

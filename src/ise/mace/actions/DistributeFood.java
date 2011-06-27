@@ -2,7 +2,6 @@ package ise.mace.actions;
 
 /**
  * Send the food that an agent is allocated by a group to the agent
- * @author Benedict
  */
 public class DistributeFood extends GenericAction
 {

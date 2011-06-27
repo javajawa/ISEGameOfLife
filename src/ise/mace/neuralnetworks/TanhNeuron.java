@@ -1,7 +1,6 @@
 package ise.mace.neuralnetworks;
 
 /**
- * @author Xitong Gao
  * TanhNeuron is a class of {@link Neuron}
  * with an activation function which is a
  * tanh function.

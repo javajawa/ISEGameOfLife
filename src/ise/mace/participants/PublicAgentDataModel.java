@@ -11,7 +11,6 @@ import java.io.Serializable;
 
 /**
  * The amount of information an Agent can find out about another agent
- * @author Benedict Harcourt
  */
 public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 {

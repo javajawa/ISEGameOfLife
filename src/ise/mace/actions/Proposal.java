@@ -3,7 +3,6 @@ package ise.mace.actions;
 /**
  * Class representing the types of Proposal an Agent can make with respect to
  * changed in Group Policy
- * @author Benedict
  */
 public class Proposal extends GenericAction
 {

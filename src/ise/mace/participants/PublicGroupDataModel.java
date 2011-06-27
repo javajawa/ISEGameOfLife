@@ -15,7 +15,6 @@ import presage.PlayerDataModel;
 
 /**
  * Used by objects to access data about a desired group
- * @author Benedict
  */
 public class PublicGroupDataModel implements PlayerDataModel, Serializable
 {

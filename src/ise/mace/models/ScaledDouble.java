@@ -2,7 +2,6 @@ package ise.mace.models;
 
 /**
  *
- * @author Benedict
  */
 public class ScaledDouble extends Number implements Comparable<Number>
 {

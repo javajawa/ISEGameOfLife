@@ -4,7 +4,6 @@ package ise.mace.inputs;
  * After considering the balance between work and play, this class specified
  * how an agent goes about choosing a group to be with for their term in
  * the game
- * @author Benedict
  */
 public class JoinRequest extends GenericInput
 {

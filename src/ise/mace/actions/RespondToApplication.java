@@ -2,7 +2,6 @@ package ise.mace.actions;
 
 /**
  * Allows Groups to respond to ApplicationRequest inputs
- * @author Benedict Harcourt
  */
 public class RespondToApplication extends GenericAction
 {

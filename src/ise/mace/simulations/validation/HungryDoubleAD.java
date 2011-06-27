@@ -12,7 +12,6 @@ import ise.mace.tokens.AgentType;
 
 /**
  *
- * @author Benedict
  */
 public class HungryDoubleAD extends GenericSimulation
 {

@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Random;
 /**
  *
- * @author The0s
  */
 public class WarGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;

@@ -27,7 +27,6 @@ import presage.Simulation;
 
 /**Display useful info about each hunter
  *
- * @author The0s
  */
 public class GroupAgentInfo extends JPanel implements Plugin
 {

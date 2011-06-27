@@ -25,7 +25,6 @@ import presage.environment.AEnvDataModel;
 
 /**
  * TODO: Maybe some documentation here sometime
- * @author Benedict Harcourt
  */
 public class EnvironmentDataModel extends AEnvDataModel
 {

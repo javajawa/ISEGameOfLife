@@ -41,7 +41,6 @@ import presage.environment.messages.ENVRegistrationResponse;
 /**
  * Abstract Group agent describes form of a group. Implemented as an agent for
  * ease of compatibility with presage, since their functionalities overlap a lot
- * @author Benedict
  */
 public abstract class AbstractGroupAgent implements Participant
 {

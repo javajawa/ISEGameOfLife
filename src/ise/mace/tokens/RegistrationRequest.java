@@ -6,7 +6,6 @@ import presage.environment.messages.ENVRegisterRequest;
 
 /**
  *
- * @author Benedict
  */
 public final class RegistrationRequest extends ENVRegisterRequest
 {
