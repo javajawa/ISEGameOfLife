@@ -24,12 +24,10 @@ import presage.annotations.PluginConstructor;
  */
 public class PoliticalCompassPlugin extends JPanel implements Plugin
 {
-
 	private static final long serialVersionUID = 1L;
-	private final static Logger logger = Logger.getLogger("mace.Plugins.GroupCompass");
-
+	private final static Logger logger = Logger.getLogger(
+					"mace.Plugins.GroupCompass");
 	private final static String label = "Political Compass(groups)";
-
 	@Element(required = false)
 	private String outputdirectory;
 	private int framecount = 0;
@@ -45,7 +43,10 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 	 * Creates a new instance of the PoliticalCompassPlugin
 	 * @param outputdirectory Path to write the final video to
 	 */
-	@PluginConstructor({"outputdirectory"})
+	@PluginConstructor(
+	{
+		"outputdirectory"
+	})
 	public PoliticalCompassPlugin(String outputdirectory)
 	{
 		super();
@@ -85,7 +86,8 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 		}
 		catch (Exception e)
 		{
-			System.out.println("Error writing political compass image: " + this.framecount);
+			System.out.println(
+							"Error writing political compass image: " + this.framecount);
 		}
 	}
 
@@ -113,10 +115,14 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 		{
 			PublicGroupDataModel dm = ec.getGroupById(group);
 			double size = 2 * Math.sqrt((double)dm.size());
-			logger.log(Level.INFO, "{0} [{1}] '{'{2},{3},{4}'}'", new Object[]{group,
-							dm.getName(), dm.getCurrentEconomicPoisition(),
-							dm.getEstimatedSocialLocation(), dm.size()});
-			drawAgent(g, dm.getEstimatedSocialLocation(), dm.getCurrentEconomicPoisition(), (int)size, dm.getName());
+			logger.log(Level.INFO, "{0} [{1}] '{'{2},{3},{4}'}'", new Object[]
+							{
+								group,
+								dm.getName(), dm.getCurrentEconomicPoisition(),
+								dm.getEstimatedSocialLocation(), dm.size()
+							});
+			drawAgent(g, dm.getEstimatedSocialLocation(),
+							dm.getCurrentEconomicPoisition(), (int)size, dm.getName());
 		}
 
 	}
@@ -126,7 +132,8 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 	 * @param g Graphics objects
 	 * @param p_player SimplifiedPoliticalPlayer object to draw
 	 */
-	private void drawAgent(Graphics g, double social, double economic, int size, String name)
+	private void drawAgent(Graphics g, double social, double economic, int size,
+					String name)
 	{
 		Rectangle rect = g.getClipBounds();
 		int c_x = (int)(economic * rect.width);
@@ -188,5 +195,4 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 	public void onSimulationComplete()
 	{
 	}
-
 }
