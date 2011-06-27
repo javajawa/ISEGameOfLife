@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ise.mace.plugins;
 
 import ise.mace.agents.PoliticalAgentGroup;
@@ -22,6 +21,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import presage.Plugin;
 import presage.Simulation;
+
 /**
  *
  */
@@ -41,7 +41,8 @@ public class GroupInfo extends JPanel implements Plugin
 			ret.setFont(ret.getFont().deriveFont(6));
 			return ret;
 		}
-                private JLabel labelise(String s,int font)
+
+		private JLabel labelise(String s, int font)
 		{
 			JLabel ret = new JLabel(s);
 			ret.setHorizontalAlignment(SwingConstants.CENTER);
@@ -52,73 +53,77 @@ public class GroupInfo extends JPanel implements Plugin
 		@SuppressWarnings("LeakingThisInConstructor")
 		GroupPanel(PublicGroupDataModel gm)
 		{
-                        this.gm = gm;
+			this.gm = gm;
 
-                        String Social = Double.toString(this.gm.getEstimatedSocialLocation());
-                        String Economic = Double.toString(this.gm.getCurrentEconomicPoisition());
+			String Social = Double.toString(this.gm.getEstimatedSocialLocation());
+			String Economic = Double.toString(this.gm.getCurrentEconomicPoisition());
 
-                        double Happiness = 0;
-                        double Loyalty = 0;
-                        double Food = 0;
-                        String Leader = "Null";
+			double Happiness = 0;
+			double Loyalty = 0;
+			double Food = 0;
+			String Leader = "Null";
 
-                          double size = this.gm.getMemberList().size();
-                        for( String memberId : this.gm.getMemberList())
-                        {
-                                Happiness += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentHappiness();
-                                Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getCurrentLoyalty();
-                                Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
-                        }
-                        Happiness= Happiness/size;
-                        Loyalty = Loyalty/size;
-                        Food = Food/size;
+			double size = this.gm.getMemberList().size();
+			for (String memberId : this.gm.getMemberList())
+			{
+				Happiness += PublicEnvironmentConnection.getInstance().getAgentById(
+								memberId).getCurrentHappiness();
+				Loyalty += PublicEnvironmentConnection.getInstance().getAgentById(
+								memberId).getCurrentLoyalty();
+				Food += PublicEnvironmentConnection.getInstance().getAgentById(memberId).getFoodAmount();
+			}
+			Happiness = Happiness / size;
+			Loyalty = Loyalty / size;
+			Food = Food / size;
 
-                        //Leaders
-                        for (String ldr : this.gm.getPanel()){
-                            if (Leader.equals("Null") && !this.gm.getPanel().isEmpty())
-                                Leader= "";
+			//Leaders
+			for (String ldr : this.gm.getPanel())
+			{
+				if (Leader.equals("Null") && !this.gm.getPanel().isEmpty())
+					Leader = "";
 
-                            if (ec.getAgentById(ldr) != null)
-                                Leader = Leader + ec.getAgentById(ldr).getName() + "  ";
+				if (ec.getAgentById(ldr) != null)
+					Leader = Leader + ec.getAgentById(ldr).getName() + "  ";
 
-                        }
+			}
 
-                        JPanel dataPanel = new JPanel(new GridLayout(8, 1, 1, -1));
+			JPanel dataPanel = new JPanel(new GridLayout(8, 1, 1, -1));
 
-                        String name = this.gm.getName();
-                        if (this.gm.getId() == null ? PoliticalAgentGroup.special == null : this.gm.getId().equals(PoliticalAgentGroup.special))
-                        {
-                            name = name + " - Special Group-Agents";
-                        }
+			String name = this.gm.getName();
+			if (this.gm.getId() == null ? PoliticalAgentGroup.special == null : this.gm.getId().equals(
+							PoliticalAgentGroup.special))
+			{
+				name = name + " - Special Group-Agents";
+			}
 
-                        dataPanel.add(labelise(name,8));
-			dataPanel.add(labelise("Size: "+ this.gm.getMemberList().size()));
+			dataPanel.add(labelise(name, 8));
+			dataPanel.add(labelise("Size: " + this.gm.getMemberList().size()));
 
-                        dataPanel.add(labelise("Economic: "+Economic));
-                        dataPanel.add(labelise("Social: "+Social));
+			dataPanel.add(labelise("Economic: " + Economic));
+			dataPanel.add(labelise("Social: " + Social));
 
-			dataPanel.add(labelise("Average Loyalty: "+Loyalty));
-			dataPanel.add(labelise("Average Happiness: "+Happiness));
+			dataPanel.add(labelise("Average Loyalty: " + Loyalty));
+			dataPanel.add(labelise("Average Happiness: " + Happiness));
 
-                        dataPanel.add(labelise("Average Food: "+Food));
-                        dataPanel.add(labelise("Leaders: "+ Leader));
+			dataPanel.add(labelise("Average Food: " + Food));
+			dataPanel.add(labelise("Leaders: " + Leader));
 
-			this.setLayout(new GridLayout(1,1));
+			this.setLayout(new GridLayout(1, 1));
 			this.add(dataPanel);
 			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			window.add(this);
 			this.setPreferredSize(new Dimension(getWidth() - barWidth, 125));
 		}
-
 	}
 
 	private final static String label = "Group logs";
-
 	private PublicEnvironmentConnection ec = null;
-        private Simulation sim;
+	private Simulation sim;
 	private final JPanel window = new JPanel();
-	private final JScrollPane pane = new JScrollPane(window, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        private final TreeMap<String, GroupPanel> panels = new TreeMap<String, GroupPanel>();
+	private final JScrollPane pane = new JScrollPane(window,
+					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	private final TreeMap<String, GroupPanel> panels = new TreeMap<String, GroupPanel>();
 	private int barWidth;
 
 	public GroupInfo()
@@ -133,18 +138,19 @@ public class GroupInfo extends JPanel implements Plugin
 		if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
-                panels.clear();
-                this.window.removeAll();
+		panels.clear();
+		this.window.removeAll();
 		for (String aid : ec.getGroups())
-		{       if (!panels.containsKey(aid) && ec.getGroupById(aid).getMemberList().size() > 0 )
+		{
+			if (!panels.containsKey(aid) && ec.getGroupById(aid).getMemberList().size() > 0)
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));
-                        }
+			}
 		}
 		validate();
 
 
-                this.repaint();
+		this.repaint();
 	}
 
 	@Override
@@ -180,5 +186,4 @@ public class GroupInfo extends JPanel implements Plugin
 	{
 		return label;
 	}
-
 }
