@@ -46,7 +46,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
     //Stores all the requests that have been accepted
     private static Map<String, HashMap<String, Tuple<Double, Double> >> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double> >>();
-    
+
     //The elements of this structure is a signal to a group that someone has repaid for the loan
     private static Map<String, List<Tuple<String, Double> > > loanRepayments = new HashMap<String, List<Tuple<String, Double> > >();
 
@@ -59,7 +59,7 @@ public class LoansGroup extends AbstractGroupAgent {
     private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansGiven = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
     private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansTaken = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
     private static Map<String, Double> publicGreediness = new HashMap<String, Double>();
-    
+
     @Deprecated
     public LoansGroup() {
     	super();
@@ -76,7 +76,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
     @Override
     protected boolean respondToJoinRequest(String playerID) {
-        //To keep it simple always accept agents no matter what 
+        //To keep it simple always accept agents no matter what
         return true;
     }
 
@@ -109,13 +109,13 @@ public class LoansGroup extends AbstractGroupAgent {
     protected void onMemberLeave(String playerID, Reasons reason) {
         //Do nothing
     }
-    
+
     @Override
     protected void beforeNewRound() {
         //If a group in need has died then we have to remove it from the set.
-        if(!getConn().availableGroups().containsAll(inNeed.keySet()))
+        if(!getConn().getGroups().containsAll(inNeed.keySet()))
         {
-            Set<String> available = getConn().availableGroups();
+            Set<String> available = getConn().getGroups();
             Iterator<String> i = inNeed.keySet().iterator();
             while(i.hasNext())
             {
@@ -139,9 +139,9 @@ public class LoansGroup extends AbstractGroupAgent {
 
         //We update the group's greediness. For now it is constant
         publicGreediness.put(this.getId(), greediness);
-    }    
+    }
 
-    
+
     @Override
     protected AgentType decideGroupStrategy() {
         //Check if this group has leader/leaders. If leaders have not emerge yet then no decision at all
@@ -185,9 +185,9 @@ public class LoansGroup extends AbstractGroupAgent {
         //other groups
         return null;
     }
-    
+
     private List<Tuple<AgentType, Double>> getStrategyPreferences(List<String> agents) {
-        
+
         int population = agents.size();
 
         Tuple<AgentType, Double> tftTypes = new Tuple<AgentType, Double>(AgentType.TFT, 0.0);
@@ -238,7 +238,7 @@ public class LoansGroup extends AbstractGroupAgent {
 
         return preferencesRatioList;
     }
-    
+
     private Comparator< Tuple<AgentType, Double> > preferencesComparator = new Comparator< Tuple<AgentType, Double> >() {
         @Override
         public int compare(Tuple<AgentType, Double> o1, Tuple<AgentType, Double> o2)
@@ -356,10 +356,10 @@ public class LoansGroup extends AbstractGroupAgent {
     */
     @Override
     protected Tuple<AgentType, Double> makePayments()
-    {   
+    {
         double currentFoodReserve;
         AgentType strategy = getDataModel().getGroupStrategy();
-        
+
         currentFoodReserve = getDataModel().getCurrentReservedFood();
 
         if((this.getDataModel().getGroupStrategy()!= null)&&(getDataModel().getCurrentReservedFood() == 0.0))
@@ -449,7 +449,7 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             strategy = null;
         }
-        return new Tuple<AgentType, Double>(strategy, currentFoodReserve);            
+        return new Tuple<AgentType, Double>(strategy, currentFoodReserve);
     }
 
     /**
@@ -473,16 +473,16 @@ public class LoansGroup extends AbstractGroupAgent {
         }
 
         //check how close the group is to attaining achievement
-        double goalRatio = mostRecentReserve / achievementThreshold;        
+        double goalRatio = mostRecentReserve / achievementThreshold;
 
         //If the group is already in the set of groups in need do nothing.
         //Otherwise check for a sufficient amount of food and an incresing trend in their reserve
         //If both conditions are not met declare this group as "a group in need"
         if(!inNeed.containsKey(this.getId()))
-        {            
+        {
             if((goalRatio < 0.15)&&(deltaFoodReserve<0))
             {
-                //if group is only 15% of the way then the group needs help      
+                //if group is only 15% of the way then the group needs help
                 inNeed.put(this.getId(), 150 - mostRecentReserve);
                 return false;
             }
@@ -525,7 +525,7 @@ public class LoansGroup extends AbstractGroupAgent {
                     }
                     if(happiness != null)//otherwise add nothing
                     {
-                        average += happiness;                   
+                        average += happiness;
                     }
                 }
                 else
@@ -533,8 +533,8 @@ public class LoansGroup extends AbstractGroupAgent {
                     happiness = getConn().getAgentById(member).getCurrentHappiness();
                     if(happiness != null)//otherwise add nothing
                     {
-                        average += happiness;                   
-                    }                    
+                        average += happiness;
+                    }
                 }
             }
             average = average / getDataModel().getMemberList().size();
@@ -553,7 +553,7 @@ public class LoansGroup extends AbstractGroupAgent {
     */
     @Override
     protected Tuple<Double, Double> updateTaxedPool(double sharedFood) {
-        double currentFoodReserve; 
+        double currentFoodReserve;
         currentFoodReserve = getDataModel().getCurrentReservedFood();
         double tax = 0;
 
@@ -562,7 +562,7 @@ public class LoansGroup extends AbstractGroupAgent {
         {
             List<Tuple<String, Double> > paymentsInfo = new  ArrayList<Tuple<String, Double> >();
             paymentsInfo = loanRepayments.get(this.getId());
-            
+
             Iterator<Tuple<String, Double> > i = paymentsInfo.iterator();
             while(i.hasNext())
             {
@@ -580,7 +580,7 @@ public class LoansGroup extends AbstractGroupAgent {
         if(inNeed.containsKey(this.getId()))
         {
             //the group is in trouble and needs to tax high
-            tax = 1 - goalRatio;//since you're far away from your achievement, tax high 
+            tax = 1 - goalRatio;//since you're far away from your achievement, tax high
         }
         else
         {
@@ -591,7 +591,7 @@ public class LoansGroup extends AbstractGroupAgent {
         //The actual taxation happens here
         currentFoodReserve = currentFoodReserve + sharedFood*tax;
         sharedFood = sharedFood - sharedFood*tax;
-        
+
         Tuple<Double, Double> newSharedAndReserve = new Tuple<Double,Double>();
         newSharedAndReserve.add(sharedFood, currentFoodReserve);
 
@@ -601,7 +601,7 @@ public class LoansGroup extends AbstractGroupAgent {
     /**
     * This method allows this group to interact with other groups. If it is in need, it can check
     * if any of its loan request has been accepted. If the group is not in trouble it can check if there
-    * is any group which needs help. If it has enough money it can give them money (food). 
+    * is any group which needs help. If it has enough money it can give them money (food).
     * @param none
     * @return The interaction result and the new updated reserve (if they gave any loans)
     */
@@ -671,7 +671,7 @@ public class LoansGroup extends AbstractGroupAgent {
         if (!inNeed.isEmpty())
         {
             Map<String, Double> inNeedSorted = new HashMap<String, Double>();
-            inNeedSorted = sortHashMap(inNeed);            
+            inNeedSorted = sortHashMap(inNeed);
             for (String groupID: inNeedSorted.keySet() )
             {
                 //if someone else accepted their requests do nothing!
@@ -702,7 +702,7 @@ public class LoansGroup extends AbstractGroupAgent {
                         }
 
                         publicLoansGiven.put(this.getId(), loansGiven);
-                        
+
                         //Use the same structure to send a receipt to the requester to store it in his records
                         HashMap<String, Tuple<Double, Double> > loanRecord = new HashMap<String, Tuple<Double, Double> >();
                         loanRecord.put(this.getId(), loanInfo);
@@ -716,7 +716,7 @@ public class LoansGroup extends AbstractGroupAgent {
         interactionResult.add(InteractionResult.NothingHappened, 0.0);
         return interactionResult;
     }
-    
+
     private HashMap<String, Double> sortHashMap(Map<String, Double> unsorted){
         Map<String, Double> tempMap = new HashMap<String, Double>();
         for (String key : unsorted.keySet())
@@ -727,17 +727,17 @@ public class LoansGroup extends AbstractGroupAgent {
         //make sure to get the data
         List<String> unsortedKeys = new ArrayList<String>(tempMap.keySet());
         List<Double> unsortedValues = new ArrayList<Double>(tempMap.values());
-        
+
         //make our result ready
         HashMap<String, Double> sortedMap = new LinkedHashMap<String, Double>();
-        
+
         //put the values in a tree set, they are immediately orderd, then put them in an array
-        TreeSet<Double> sortedSet = new TreeSet<Double>(unsortedValues);       
+        TreeSet<Double> sortedSet = new TreeSet<Double>(unsortedValues);
         Object[] sortedArray = sortedSet.toArray();
-        
+
         //sort them in a map
         for (int i = 0; i < sortedArray.length; i++){
-            sortedMap.put(unsortedKeys.get(unsortedValues.indexOf(sortedArray[i])), 
+            sortedMap.put(unsortedKeys.get(unsortedValues.indexOf(sortedArray[i])),
                           (Double)sortedArray[i]);
         }
         return sortedMap;
@@ -771,6 +771,6 @@ public class LoansGroup extends AbstractGroupAgent {
     {
         return publicGreediness.get(dm.getId());
     }
-    
+
 }
 

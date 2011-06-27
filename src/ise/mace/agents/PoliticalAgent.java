@@ -234,7 +234,7 @@ public class PoliticalAgent extends AbstractAgent
             else//Otherwise, you have to look for a grouping:
             {
                 //If you're here then you're still a free agent, so, firstly try to find an optimal group to join with
-                if(freeToGroup.contains(this.getId()) && !getConn().availableGroups().isEmpty())
+                if(freeToGroup.contains(this.getId()) && !getConn().getGroups().isEmpty())
                 {
                     chosenGroup = agentGroupGrouping();//returns either "" or a new String (which is the group)
                 }
@@ -260,7 +260,7 @@ public class PoliticalAgent extends AbstractAgent
         List< Tuple<String, Double> > partnershipCandidates = new LinkedList< Tuple<String, Double> >();
 
         //Assess each group in turn
-        for (String groupID: getConn().availableGroups())
+        for (String groupID: getConn().getGroups())
         {
             //proceed, only if, this is a group with two members or more
             if (getConn().getGroupById(groupID).getMemberList().size() >= 2 && !PoliticalAgentGroup.special.equals(groupID)) //ADDED THE0
@@ -908,7 +908,7 @@ public class PoliticalAgent extends AbstractAgent
                 {
                     advisorTrust = 0.1;
                 }
-                
+
                 if (foodHunted >0)
                 {
                     advisorTrust = scale(advisorTrust, 10, randomGenerator.nextDouble());
@@ -919,7 +919,7 @@ public class PoliticalAgent extends AbstractAgent
                 }
                 newTrustValue.put(previousAdvisor, advisorTrust);
             }
-            
+
             return  newTrustValue;
     }
 

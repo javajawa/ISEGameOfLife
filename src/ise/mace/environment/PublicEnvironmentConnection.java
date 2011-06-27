@@ -81,9 +81,9 @@ public class PublicEnvironmentConnection
 	/**
 	 * @return set of all current groups in the simulation
 	 */
-	public Set<String> availableGroups()
+	public Set<String> getGroups()
 	{
-		return ec.getAvailableGroups();
+		return ec.getGroups();
 	}
 
         //ADDED The0

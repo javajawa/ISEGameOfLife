@@ -62,7 +62,7 @@ public class HunterInfo extends JPanel implements Plugin
                             current = "Dead";
                         }
 
-                        else if(Conn.availableGroups() != null && dm.getGroupId() != null && Conn.getGroupById(this.dm.getGroupId()) != null)
+                        else if(Conn.getGroups() != null && dm.getGroupId() != null && Conn.getGroupById(this.dm.getGroupId()) != null)
                         {
                             String Leader="";
                             //Leaders
@@ -141,7 +141,7 @@ public class HunterInfo extends JPanel implements Plugin
                 panels.clear();
                 //this.removeAll();
                 this.window.removeAll();
-                
+
                 TreeMap<String, String> name_id_map = new TreeMap<String, String>();
 
                 // Create a set sorted alphabetically by human readable name
@@ -158,7 +158,7 @@ public class HunterInfo extends JPanel implements Plugin
 			{
 				panels.put(aid, new HunterPanel(ec.getAgentById(aid)));
                         }
-			
+
                 }
 		validate();
 

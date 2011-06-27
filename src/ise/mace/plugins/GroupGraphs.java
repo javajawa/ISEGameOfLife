@@ -60,7 +60,7 @@ public class GroupGraphs extends JPanel implements Plugin
                 private final ValueAxis domainAxis5;
 		private final ValueAxis rangeAxis5;
 
-                
+
 
 		private JLabel labelise(String s)
 		{
@@ -277,7 +277,7 @@ public class GroupGraphs extends JPanel implements Plugin
              //panels.clear();
               //this.removeAll();
               //this.window.removeAll();
-		for (String aid : ec.availableGroups())
+		for (String aid : ec.getGroups())
 		{       if (!panels.containsKey(aid))
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));

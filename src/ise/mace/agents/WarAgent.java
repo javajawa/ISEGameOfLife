@@ -91,12 +91,12 @@ public class WarAgent extends AbstractAgent
     */
     @Override
     protected String chooseGroup() {
-        
+
         if (this.getDataModel().getGroupId() != null) return null;
 
         String chosenGroup = "";
 
-        Set<String> groups = getConn().availableGroups();
+        Set<String> groups = getConn().getGroups();
 
         if(!groups.isEmpty())
         {

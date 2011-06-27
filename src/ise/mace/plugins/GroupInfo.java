@@ -75,12 +75,12 @@ public class GroupInfo extends JPanel implements Plugin
 
                         //Leaders
                         for (String ldr : this.gm.getPanel()){
-                            if (Leader.equals("Null") && !this.gm.getPanel().isEmpty()) 
+                            if (Leader.equals("Null") && !this.gm.getPanel().isEmpty())
                                 Leader= "";
 
                             if (ec.getAgentById(ldr) != null)
                                 Leader = Leader + ec.getAgentById(ldr).getName() + "  ";
-                            
+
                         }
 
                         JPanel dataPanel = new JPanel(new GridLayout(8, 1, 1, -1));
@@ -135,7 +135,7 @@ public class GroupInfo extends JPanel implements Plugin
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
                 panels.clear();
                 this.window.removeAll();
-		for (String aid : ec.availableGroups())
+		for (String aid : ec.getGroups())
 		{       if (!panels.containsKey(aid) && ec.getGroupById(aid).getMemberList().size() > 0 )
 			{
 				panels.put(aid, new GroupPanel(ec.getGroupById(aid)));

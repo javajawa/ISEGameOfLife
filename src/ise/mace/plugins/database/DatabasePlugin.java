@@ -29,7 +29,7 @@ public class DatabasePlugin implements Plugin
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger("mace.DatabasePlugin");
 	private final static String name = "Database Plugin v2.9";
-		
+
 	@Element
 	private final Boolean remote;
 	@Element
@@ -38,24 +38,24 @@ public class DatabasePlugin implements Plugin
 	private final Boolean docRemote;
 	@Element
 	private final Boolean loans;
-	
+
 	/**
 	 * Creates a new instance of the DatabasePlugin,
 	 * stores data in local db.
-	 * 
+	 *
 	 */
 	DatabasePlugin()
 	{
 	  //default parameters: local database
 	  this("No comment",false);
 	}
-	
+
 	 /**
 	 * Creates a new instance of the DatabasePlugin
 	 * with specified parameters.
 	 * @param comment Comment for simulation
 	 * @param remote Use remote db instead of local
-	 * 
+	 *
 	 */
 	@PluginConstructor(
 	{
@@ -66,7 +66,7 @@ public class DatabasePlugin implements Plugin
 	    this(comment,remote,false,false);
 
 	}
-	
+
 	 /**
 	 * Creates a new instance of the DatabasePlugin
 	 * with specified parameters.
@@ -75,7 +75,7 @@ public class DatabasePlugin implements Plugin
 	 * @param docRemote Uses doc remote database
 	 * @param loans Should be used for simulating loans
 	 */
-	
+
 	@PluginConstructor(
 	{
 		"comment","remote","docRemote"
@@ -84,7 +84,7 @@ public class DatabasePlugin implements Plugin
 	{
 	   this(comment,remote,docRemote,false);
 	}
-	
+
 	 /**
 	 * Creates a new instance of the DatabasePlugin
 	 * with specified parameters.
@@ -93,7 +93,7 @@ public class DatabasePlugin implements Plugin
 	 * @param docRemote Uses doc remote database
 	 * @param loans Should be used for simulating loans
 	 */
-	
+
 	@PluginConstructor(
 	{
 		"comment","remote","docRemote","loans"
@@ -114,12 +114,12 @@ public class DatabasePlugin implements Plugin
 	//used to generate simulation unique agentid and groupid
 	private int agentIdGenerator = 0;
 	private int groupIdGenerator = 0;
-	
-	private final TreeMap<String, PublicGroupDataModel> trackedGroups 
+
+	private final TreeMap<String, PublicGroupDataModel> trackedGroups
 					= new TreeMap<String, PublicGroupDataModel>();
 	private final TreeMap<String, PublicAgentDataModel> trackedAgents
 					= new TreeMap<String, PublicAgentDataModel>();
-		
+
 	//contains agentid and groupid that are used to represent participants in the database
 	//HashMap size should same order of magnitude as agents+groups set size for speed
 	private final Map<String,Integer> agentIdMap = new HashMap<String,Integer>(100);
@@ -138,16 +138,16 @@ public class DatabasePlugin implements Plugin
 	    wrap.getFreeAgentGroupData(round,ec.getUngroupedAgents().size());
 	    //disables agent round data collection for remote db, to speed it up
 	    //also updates trust table
-	    if (!remote) 
+	    if (!remote)
 		getAgentRoundData();
 	    pruneOldGroups();
 	    getGroupRoundData();
-	    	    
-	    
+
+
 	    //writes to db every 50 rounds (or 30 cycles) for local db
 	    //remote only writes at the end
 	    //no writes till the end
-	   /* if(round%50==0 && !remote) 
+	   /* if(round%50==0 && !remote)
 	    {
 		if (!remote) logger.log(Level.INFO,"Writing data to local database");
 		else logger.log(Level.INFO,"Writing data to remote database (could take a while)");
@@ -167,8 +167,8 @@ public class DatabasePlugin implements Plugin
 
 	    try {
 		//selects database connection
-		String url; 
-		Properties connProperties = new java.util.Properties();		 
+		String url;
+		Properties connProperties = new java.util.Properties();
  		if(remote) {
 		    String dbUsername;
 		    String dbPassword;
@@ -177,7 +177,7 @@ public class DatabasePlugin implements Plugin
 			 url = "jdbc:mysql://icsflibsrv.su.ic.ac.uk:3306/gol";
 			 dbUsername = "gol";
 			 dbPassword = "gol";
-		    } else {		     
+		    } else {
 			 url = "jdbc:mysql://69.175.26.66:3306/stratra1_isegol";
 			 dbUsername = "stratra1_isegol";
 			 dbPassword = "ise4r3g00d";
@@ -241,7 +241,7 @@ public class DatabasePlugin implements Plugin
 	{
 		return name;
 	}
-	
+
 	private void findNewAgents()
 	{
 		// get all active agentsin simulation
@@ -264,7 +264,7 @@ public class DatabasePlugin implements Plugin
 	private void findNewGroups()
 	{
 		// get all active groups in simulation
-		TreeSet<String> newGroups = new TreeSet<String>(ec.availableGroups());
+		TreeSet<String> newGroups = new TreeSet<String>(ec.getGroups());
 		//TreeSet<String> newGroups = new TreeSet<String>(ec.isAgentId(name));
 		//remove already tracked groups
 		newGroups.removeAll(trackedGroups.keySet());
@@ -277,15 +277,15 @@ public class DatabasePlugin implements Plugin
 			//add the group to tracked groups
 			trackedGroups.put(g, ec.getGroupById(g));
 			//logger.log(Level.WARNING,"Name of the normal group:{0}, db id:{1}",new Object[] {ec.getGroupById(g).getName(),groupid});
-			
+
 		}
 	}
-	
+
 	private void pruneOldGroups()
 	{
 		//Stop tracking old groups
 		TreeSet<String> oldGroups = new TreeSet<String>(trackedGroups.keySet());
-		oldGroups.removeAll(ec.availableGroups());
+		oldGroups.removeAll(ec.getGroups());
 		for (String g : oldGroups)
 		{
 			//queue group death sql statement
@@ -293,7 +293,7 @@ public class DatabasePlugin implements Plugin
 			trackedGroups.remove(g);
 		}
 	}
-	
+
 	private void pruneOldAgents()
 	{
 		//Stop tracking dead agents
@@ -308,14 +308,14 @@ public class DatabasePlugin implements Plugin
 		}
 	}
 
-	private void getGroupRoundData() 
+	private void getGroupRoundData()
 	{
-	    
+
 		for(Map.Entry<String, PublicGroupDataModel> entry : trackedGroups.entrySet())
 		    {
 			PublicGroupDataModel group = entry.getValue();
 			try {
-			    
+
 			    if (loans) {
 				double averageHappiness = 0;
 				for(String member: group.getMemberList())
@@ -331,11 +331,11 @@ public class DatabasePlugin implements Plugin
 			    + " ", new Object[]{group.getName(), round, ex});
 			}
 		    }
-	    
-	    
+
+
 	}
 
-	private void getAgentRoundData() 
+	private void getAgentRoundData()
 	{
 	    for(Map.Entry<String, PublicAgentDataModel> entry : trackedAgents.entrySet())
 		{
@@ -343,11 +343,11 @@ public class DatabasePlugin implements Plugin
 		    try {
 			//gets the agents groupid and maps it to database id for group
 			//if agent group is null, the map returns 0 groupid
-			
+
 			int groupid = groupIdMap.get(agent.getGroupId());
 			int agentid = agentIdMap.get(entry.getKey());
 			wrap.agentRound(agentid, groupid, round, agent);
-			for(Map.Entry<String, PublicAgentDataModel> entry2 : trackedAgents.entrySet()) 
+			for(Map.Entry<String, PublicAgentDataModel> entry2 : trackedAgents.entrySet())
 			{
 			    Double trust = agent.getTrust(entry2.getKey());
 			    if (trust != null) {
@@ -364,7 +364,7 @@ public class DatabasePlugin implements Plugin
 	/*
 	 * creates a group for free agents.
 	 */
-	private void createFreeAgentGroup() 
+	private void createFreeAgentGroup()
 	{
 		int groupid = 0;
 		wrap.groupAdd("FreeAgentsGroup", groupid, round);

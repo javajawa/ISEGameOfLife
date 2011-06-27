@@ -87,9 +87,9 @@ public class EnvConnector extends EnvironmentConnector
 		return e.getAllowedGroupTypes();
 	}
 
-	Set<String> getAvailableGroups()
+	Set<String> getGroups()
 	{
-		return e.getAvailableGroups();
+		return e.getGroups();
 	}
 
 

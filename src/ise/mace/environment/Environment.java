@@ -661,7 +661,7 @@ public class Environment extends AbstractEnvironment
 		return dmodel.getId();
 	}
 
-	Set<String> getAvailableGroups()
+	Set<String> getGroups()
 	{
 		return dmodel.getAvailableGroups();
 	}

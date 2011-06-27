@@ -57,7 +57,7 @@ public class LoansAgent extends AbstractAgent{
     @Override
     protected String chooseGroup() {
         Random randomGenerator = new Random();
-        
+
         if (this.getDataModel().getGroupId() != null) return null;
 
         if (randomGenerator.nextDouble() > 0.9)
@@ -70,7 +70,7 @@ public class LoansAgent extends AbstractAgent{
         else
         {
             //TODO: When there is no ungrouped agent left check for one membered groups and release their members
-            Set<String> groups = getConn().availableGroups();
+            Set<String> groups = getConn().getGroups();
             int randomIndex = (int)Math.round(randomGenerator.nextDouble()*groups.size());
             Iterator<String> i = groups.iterator();
             String groupID = null;
@@ -99,7 +99,7 @@ public class LoansAgent extends AbstractAgent{
         getConn().createAgent(0, getConn().getGroupById(PoliticalAgentGroup.special).getCurrentEconomicPoisition(),0.5 , chosenGroup); //CREATE a new AGENT-Group
 
     }
-    
+
     @Override
     protected void groupApplicationResponse(boolean accepted) {
         //TODO: Reuse the code of TestPoliticalAgent. No change here

@@ -32,7 +32,7 @@ import java.util.Random;
  */
 public class PoliticalGroup extends AbstractGroupAgent {
 	private static final long serialVersionUID = 1L;
-        
+
         //The fee a group must pay to play the game
         private static final double priceToPlay = 100;
         //This constant defines the maximum score a group can attain during this simulation
@@ -58,7 +58,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
         //This structures provide public access to some information about this group
         private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansGiven = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
         private static Map<String, Map<String, List<Tuple<Double, Double> > > > publicLoansTaken = new HashMap<String, Map<String, List<Tuple<Double, Double> > > >();
-        private static Map<String, Double> publicGreediness = new HashMap<String, Double>();        
+        private static Map<String, Double> publicGreediness = new HashMap<String, Double>();
 
 	@Deprecated
 	public PoliticalGroup() {
@@ -188,7 +188,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
             if(this.getId().equals(PoliticalAgentGroup.special)){
                 //do nothing
             }
-            else{            
+            else{
                 //update economic belief of the group when the agent leaves the group
                 double size = this.getDataModel().getMemberList().size();
                 double economic = 0;
@@ -208,11 +208,11 @@ public class PoliticalGroup extends AbstractGroupAgent {
                 this.setPanel(newPanel);
             }
             this.setGroupStrategy(decideGroupStrategy());
-            
+
             //If a group in need has died then we have to remove it from the set.
-            if(!getConn().availableGroups().containsAll(inNeed.keySet()))
+            if(!getConn().getGroups().containsAll(inNeed.keySet()))
             {
-                Set<String> available = getConn().availableGroups();
+                Set<String> available = getConn().getGroups();
                 Iterator<String> i = inNeed.keySet().iterator();
                 while(i.hasNext())
                 {
@@ -235,7 +235,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
             }
 
             //We update the group's greediness. For now it is constant
-            publicGreediness.put(this.getId(), greediness);            
+            publicGreediness.put(this.getId(), greediness);
 	}
 
     /**
@@ -444,7 +444,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
             return (v1>v2 ? -1 : 1);
         }
     };
-    
+
     private Comparator< Tuple<Double, Double> > loansComparator = new Comparator< Tuple<Double, Double> >() {
         @Override
         public int compare(Tuple<Double, Double> o1, Tuple<Double, Double> o2)
@@ -453,7 +453,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
             Double v2 = o2.getKey();
             return (v1>v2 ? -1 : 1);
         }
-    };    
+    };
 
     /**
     * This method allows a group to spend money for either playing the game or for public service.
@@ -463,18 +463,18 @@ public class PoliticalGroup extends AbstractGroupAgent {
     */
     @Override
     protected Tuple<AgentType, Double> makePayments()
-    {   
+    {
         double currentFoodReserve;
         AgentType strategy = getDataModel().getGroupStrategy();
-        
+
         currentFoodReserve = getDataModel().getCurrentReservedFood();
-        
+
         if(this.getDataModel().getReservedFoodHistory().size() < 3)
             return new Tuple<AgentType, Double>(strategy, 300.0);
-        
+
         //Check if the group is in need. If it doesn't then proceed with the payments
         if(!inNeed.containsKey(this.getId()))
-        {   
+        {
             //Spend money for playing the game. The standard fee is defined in the data members
             if(strategy != null)
             {
@@ -555,9 +555,9 @@ public class PoliticalGroup extends AbstractGroupAgent {
         {
             strategy = null;
         }
-        return new Tuple<AgentType, Double>(strategy, currentFoodReserve);            
+        return new Tuple<AgentType, Double>(strategy, currentFoodReserve);
     }
-    
+
     /**
     * This method computes the average happiness for this group for a specific turn
     * @param The number of turns ago
@@ -584,7 +584,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
                     }
                     if(happiness != null)//otherwise add nothing
                     {
-                        average += happiness;                   
+                        average += happiness;
                     }
                 }
                 else
@@ -592,15 +592,15 @@ public class PoliticalGroup extends AbstractGroupAgent {
                     happiness = getConn().getAgentById(member).getCurrentHappiness();
                     if(happiness != null)//otherwise add nothing
                     {
-                        average += happiness;                   
-                    }                    
+                        average += happiness;
+                    }
                 }
             }
             average = average / getDataModel().getMemberList().size();
         }
         return average;
-    }    
-    
+    }
+
     /**
     * This method checks if the economic status of the group is good or bad.
     * It is good if they have money to last at least another round and their reserve increases
@@ -622,16 +622,16 @@ public class PoliticalGroup extends AbstractGroupAgent {
         }
 
         //check how close the group is to attaining achievement
-        double goalRatio = mostRecentReserve / achievementThreshold;        
+        double goalRatio = mostRecentReserve / achievementThreshold;
 
         //If the group is already in the set of groups in need do nothing.
         //Otherwise check for a sufficient amount of food and an incresing trend in their reserve
         //If both conditions are not met declare this group as "a group in need"
         if(!inNeed.containsKey(this.getId()))
-        {            
+        {
             if((goalRatio < 0.15)&&(deltaFoodReserve<0))
             {
-                //if group is only 15% of the way then the group needs help      
+                //if group is only 15% of the way then the group needs help
                 inNeed.put(this.getId(), 150 - mostRecentReserve);
                 return false;
             }
@@ -646,8 +646,8 @@ public class PoliticalGroup extends AbstractGroupAgent {
             //you've been in need for quite a while, it would seem
             return false;
         }
-    }    
-    
+    }
+
     /**
     * After the group members return from hunting we gather the shared food. Then depending on
     * the financial status of the group we decide the tax rate. We intercept the taxed amount and store
@@ -659,7 +659,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
     */
     @Override
     protected Tuple<Double, Double> updateTaxedPool(double sharedFood) {
-        double currentFoodReserve; 
+        double currentFoodReserve;
         currentFoodReserve = getDataModel().getCurrentReservedFood();
         double tax = 0;
 
@@ -668,7 +668,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
         {
             List<Tuple<String, Double> > paymentsInfo = new  ArrayList<Tuple<String, Double> >();
             paymentsInfo = loanRepayments.get(this.getId());
-            
+
             Iterator<Tuple<String, Double> > i = paymentsInfo.iterator();
             while(i.hasNext())
             {
@@ -686,7 +686,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
         if(inNeed.containsKey(this.getId()))
         {
             //the group is in trouble and needs to tax high
-            tax = 1 - goalRatio;//since you're far away from your achievement, tax high 
+            tax = 1 - goalRatio;//since you're far away from your achievement, tax high
         }
         else
         {
@@ -697,7 +697,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
         //The actual taxation happens here
         currentFoodReserve = currentFoodReserve + sharedFood*tax;
         sharedFood = sharedFood - sharedFood*tax;
-        
+
         Tuple<Double, Double> newSharedAndReserve = new Tuple<Double,Double>();
         newSharedAndReserve.add(sharedFood, currentFoodReserve);
 
@@ -708,7 +708,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
 /**
     * This method allows this group to interact with other groups. If it is in need, it can check
     * if any of its loan request has been accepted. If the group is not in trouble it can check if there
-    * is any group which needs help. If it has enough money it can give them money (food). 
+    * is any group which needs help. If it has enough money it can give them money (food).
     * @param none
     * @return The interaction result and the new updated reserve (if they gave any loans)
     */
@@ -778,7 +778,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
         if (!inNeed.isEmpty())
         {
             Map<String, Double> inNeedSorted = new HashMap<String, Double>();
-            inNeedSorted = sortHashMap(inNeed);            
+            inNeedSorted = sortHashMap(inNeed);
             for (String groupID: inNeedSorted.keySet() )
             {
                 //if someone else accepted their requests do nothing!
@@ -809,7 +809,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
                         }
 
                         publicLoansGiven.put(this.getId(), loansGiven);
-                        
+
                         //Use the same structure to send a receipt to the requester to store it in his records
                         HashMap<String, Tuple<Double, Double> > loanRecord = new HashMap<String, Tuple<Double, Double> >();
                         loanRecord.put(this.getId(), loanInfo);
@@ -823,7 +823,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
         interactionResult.add(InteractionResult.NothingHappened, 0.0);
         return interactionResult;
     }
-    
+
     private HashMap<String, Double> sortHashMap(Map<String, Double> unsorted){
         Map<String, Double> tempMap = new HashMap<String, Double>();
         for (String key : unsorted.keySet())
@@ -834,22 +834,22 @@ public class PoliticalGroup extends AbstractGroupAgent {
         //make sure to get the data
         List<String> unsortedKeys = new ArrayList<String>(tempMap.keySet());
         List<Double> unsortedValues = new ArrayList<Double>(tempMap.values());
-        
+
         //make our result ready
         HashMap<String, Double> sortedMap = new LinkedHashMap<String, Double>();
-        
+
         //put the values in a tree set, they are immediately orderd, then put them in an array
-        TreeSet<Double> sortedSet = new TreeSet<Double>(unsortedValues);       
+        TreeSet<Double> sortedSet = new TreeSet<Double>(unsortedValues);
         Object[] sortedArray = sortedSet.toArray();
-        
+
         //sort them in a map
         for (int i = 0; i < sortedArray.length; i++){
-            sortedMap.put(unsortedKeys.get(unsortedValues.indexOf(sortedArray[i])), 
+            sortedMap.put(unsortedKeys.get(unsortedValues.indexOf(sortedArray[i])),
                           (Double)sortedArray[i]);
         }
         return sortedMap;
     }
-    
+
     public static Map<String, List<Tuple<Double, Double> > > getLoansGiven(PublicGroupDataModel dm)
     {
         if (!publicLoansGiven.containsKey(dm.getId()))
@@ -877,6 +877,6 @@ public class PoliticalGroup extends AbstractGroupAgent {
     public static Double getGreediness(PublicGroupDataModel dm)
     {
         return publicGreediness.get(dm.getId());
-    }    
+    }
 }
 

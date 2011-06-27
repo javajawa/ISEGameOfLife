@@ -38,7 +38,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 	 */
 	public PoliticalCompassPlugin()
 	{
-		this.outputdirectory = null; 
+		this.outputdirectory = null;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 		g.drawLine(0, rect.height / 2, rect.width, rect.height / 2);
 
 		// Draw agents
-		for (String group : PublicEnvironmentConnection.getInstance().availableGroups())
+		for (String group : PublicEnvironmentConnection.getInstance().getGroups())
 		{
 			PublicGroupDataModel dm = ec.getGroupById(group);
 			double size = 2 * Math.sqrt((double)dm.size());

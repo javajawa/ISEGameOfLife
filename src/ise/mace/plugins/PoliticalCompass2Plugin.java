@@ -54,7 +54,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
         double correction = 1; //scale the agents
         int shift = 5; //shift axes
-        
+
         // Contains hues for each group on the compass
         private TreeMap<String, Float> group_colors = new TreeMap<String, Float>();
         private float last_colour_assigned = 0;
@@ -130,7 +130,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 }
         }
 
-       
+
          /**
          * Adds new players and removes dead players since the last cycle.
          */
@@ -147,7 +147,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                         if(!p_players.containsKey(id))
                         {
                                 boolean check = false;
-                                for(String group_agent :  PublicEnvironmentConnection.getInstance().availableGroups())
+                                for(String group_agent :  PublicEnvironmentConnection.getInstance().getGroups())
                                 {
                                         if(!PublicEnvironmentConnection.getInstance().getAgentById(id).getName().equals(group_agent))
                                                 check = true;
@@ -161,7 +161,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
 
                 }
-                
+
                 // Delete agents which are no longer active
                 List<String> ids_to_remove = new LinkedList<String>();
                 for(Map.Entry<String, AbstractAgent> entry : p_players.entrySet())
@@ -193,7 +193,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                 {
                         agent_groups.remove(iter.next());
                 }
-                 
+
         }
 
 
@@ -253,7 +253,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
                         drawGroupLines(g,Color.BLUE, agent_groups);
                         }
                 }
-         
+
              catch (Exception e)
                     {
                             System.out.println("Error in agent-groups: " + e.getMessage());
@@ -277,7 +277,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
                         if(agent1_dm.getGroupId() != null && PublicEnvironmentConnection.getInstance().getGroupById(agent1_dm.getGroupId()).getMemberList().size() > 1)
                         {
-                                                    
+
                             for(Map.Entry<String,AbstractAgent> entry2 : players.entrySet())
                             {
                                PublicAgentDataModel agent2_dm = entry2.getValue().getDataModel();
@@ -315,8 +315,8 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
         private void drawLeaders(Graphics g){
          try{
-          if (PublicEnvironmentConnection.getInstance().availableGroups() != null){
-            Set<String> Groups = PublicEnvironmentConnection.getInstance().availableGroups();
+          if (PublicEnvironmentConnection.getInstance().getGroups() != null){
+            Set<String> Groups = PublicEnvironmentConnection.getInstance().getGroups();
 
             for (String GroupId : Groups)
                 {
@@ -342,14 +342,14 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin{
 
         }
         private float getGroupColour(String group_id) {
-            if(this.group_colors.containsKey(group_id)) 
+            if(this.group_colors.containsKey(group_id))
             {
                 return this.group_colors.get(group_id);
             }
             // Assign a colour
             this.last_colour_assigned = (float) ((this.last_colour_assigned + 0.3) % 1.0);
             this.group_colors.put(group_id, this.last_colour_assigned);
-            
+
             return this.last_colour_assigned;
         }
 

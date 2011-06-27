@@ -62,7 +62,7 @@ public class GroupAgentInfo extends JPanel implements Plugin
                             current = "Dead";
                         }
 
-                        else if(Conn.availableGroups() != null && dm.getGroupId() != null && Conn.getGroupById(this.dm.getGroupId()) != null)
+                        else if(Conn.getGroups() != null && dm.getGroupId() != null && Conn.getGroupById(this.dm.getGroupId()) != null)
                         {
                             String Leader="";
                             //Leaders

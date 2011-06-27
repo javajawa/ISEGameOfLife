@@ -79,7 +79,7 @@ public class TestGroupableAgent extends AbstractAgent
 	{
 		if (this.getDataModel().getGroupId() != null) return null;
 
-		Set<String> groups = getConn().availableGroups();
+		Set<String> groups = getConn().getGroups();
 		if (groups.isEmpty())
 		{
 			if (getConn().getAllowedGroupTypes().isEmpty()) return null;
@@ -179,5 +179,5 @@ public class TestGroupableAgent extends AbstractAgent
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
     }
-               
+
 }
