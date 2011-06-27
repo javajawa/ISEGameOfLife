@@ -5,12 +5,8 @@ import ise.mace.groups.LoansGroup;
 import ise.mace.groups.SpecialGroup;
 import ise.mace.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.mace.participants.AbstractFreeAgentGroup;
-import ise.mace.plugins.HuntersAlivePlugin;
 import ise.mace.plugins.DebugSwitchPlugin;
-import ise.mace.plugins.GroupGraphs;
 import ise.mace.plugins.GroupInfo;
-import ise.mace.plugins.HunterInfo;
-import ise.mace.plugins.HunterListPlugin;
 import ise.mace.plugins.LoansInfo;
 import ise.mace.plugins.PoliticalCompass2Plugin;
 import ise.mace.plugins.PoliticalCompassPlugin;
@@ -35,10 +31,18 @@ public class Loans extends GenericSimulation
 
 		for (int i = 0; i < 20; i++)
 		{
-			addAgent(new LoansAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new LoansAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new LoansAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new LoansAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new LoansAgent(20, 2, AgentType.AC,
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
+			addAgent(new LoansAgent(20, 2, AgentType.TFT,
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
+			addAgent(new LoansAgent(20, 2, AgentType.AD,
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
+			addAgent(new LoansAgent(20, 2, AgentType.R,
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 		}
 
 	}
@@ -75,8 +79,9 @@ public class Loans extends GenericSimulation
 		//robs remote db with loans
 		//addPlugin(new DatabasePlugin(comment,true,false,true));
 
-                //Upload Loans WITHOUT Politics
-		addPlugin(new DatabasePlugin("Loans - this is Loans WITHOUT Politcs",true,false,true));
+		//Upload Loans WITHOUT Politics
+		addPlugin(new DatabasePlugin("Loans - this is Loans WITHOUT Politcs", true,
+						false, true));
 
 		//addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
