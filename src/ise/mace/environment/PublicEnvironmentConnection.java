@@ -22,9 +22,7 @@ public class PublicEnvironmentConnection
 	{
 		return inst;
 	}
-
 	private final EnvConnector ec;
-
 
 	/**
 	 * instantiates the instance of itself and the environment connector it
@@ -86,19 +84,19 @@ public class PublicEnvironmentConnection
 		return ec.getGroups();
 	}
 
-        //ADDED The0
-        /**
-         * Function used to create a new agent-group
-         * @param average food amount of agents in group
-         * @param economic position
-         * @param social position
-         * @return the ID of the created agent
-         */
-        public String createAgent(double food,double economic, double social, String name)
-        {
-                return ec.createGroupAgent(food, economic, social, name);
-        }
-
+	//ADDED The0
+	/**
+	 * Function used to create a new agent-group
+	 * @param average food amount of agents in group
+	 * @param economic position
+	 * @param social position
+	 * @return the ID of the created agent
+	 */
+	public String createAgent(double food, double economic, double social,
+					String name)
+	{
+		return ec.createGroupAgent(food, economic, social, name);
+	}
 
 	/**
 	 * Function used to create a new group.
@@ -108,7 +106,8 @@ public class PublicEnvironmentConnection
 	 * @param init The initialisation parameters for the group
 	 * @return The ID of the created group
 	 */
-	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init)
+	public String createGroup(Class<? extends AbstractGroupAgent> type,
+					GroupDataInitialiser init)
 	{
 		return ec.createGroup(type, init);
 	}
@@ -122,11 +121,11 @@ public class PublicEnvironmentConnection
 	 * @param invitees Any agents you wish to invite to the new group
 	 * @return The ID of the created group
 	 */
-	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init, String... invitees)
+	public String createGroup(Class<? extends AbstractGroupAgent> type,
+					GroupDataInitialiser init, String... invitees)
 	{
 		return ec.createGroup(type, init, invitees);
 	}
-
 
 	/**
 	 * Determines whether a string represents the id of an active agent in this
