@@ -3,9 +3,8 @@ package ise.mace.genetics;
 /**
  * An entity which conforms to the Evolvable interface
  */
-public class EvolvableEntity
-	<EntityGenome extends Genome<EntityGenome>>
-	implements Evolvable<EntityGenome>
+public class EvolvableEntity<EntityGenome extends Genome<EntityGenome>>
+				implements Evolvable<EntityGenome>
 {
 	EntityGenome genome = null;
 	double fitness = -1;
@@ -38,5 +37,4 @@ public class EvolvableEntity
 	{
 		this.fitness = aFitness;
 	}
-
 }
