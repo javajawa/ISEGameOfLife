@@ -6,7 +6,6 @@ package ise.mace.inputs;
  */
 public final class ConsumeFood extends GenericInput
 {
-
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -25,5 +24,4 @@ public final class ConsumeFood extends GenericInput
 	{
 		return super.toString();
 	}
-
 }
