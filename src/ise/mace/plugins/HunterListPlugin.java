@@ -27,7 +27,7 @@ import presage.Plugin;
 import presage.Simulation;
 
 /**
- * 
+ *
  */
 public class HunterListPlugin extends JPanel implements Plugin
 {
@@ -91,12 +91,12 @@ public class HunterListPlugin extends JPanel implements Plugin
 	}
 
 	private final static String label = "Hunter Logs";
-	
 	private Simulation sim;
 	private PublicEnvironmentConnection ec = null;
-
 	private final JPanel window = new JPanel();
-	private final JScrollPane pane = new JScrollPane(window, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	private final JScrollPane pane = new JScrollPane(window,
+					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	private final HashMap<String, HunterPanel> panels = new HashMap<String, HunterPanel>();
 	private int barWidth;
 	private int graphHeight = 50;
@@ -105,7 +105,7 @@ public class HunterListPlugin extends JPanel implements Plugin
 	{
 		// Nothing to see here. Move along, citizen!
 	}
-	
+
 	@Override
 	public void execute()
 	{
@@ -114,23 +114,24 @@ public class HunterListPlugin extends JPanel implements Plugin
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
 
-		 TreeMap<String, String> name_id_map = new TreeMap<String, String>();
+		TreeMap<String, String> name_id_map = new TreeMap<String, String>();
 
-                // Create a set sorted alphabetically by human readable name
+		// Create a set sorted alphabetically by human readable name
 		for (String aid : sim.getactiveParticipantIdSet("hunter"))
 		{
-                        name_id_map.put(ec.getAgentById(aid).getName(), aid);
+			name_id_map.put(ec.getAgentById(aid).getName(), aid);
 		}
 
-                // Add panels in alphabetical order
-                for (Map.Entry<String, String> entry : name_id_map.entrySet()) {
-                        String aid = entry.getValue();
-                        if (!panels.containsKey(aid))
+		// Add panels in alphabetical order
+		for (Map.Entry<String, String> entry : name_id_map.entrySet())
+		{
+			String aid = entry.getValue();
+			if (!panels.containsKey(aid))
 			{
-				panels.put(aid, new HunterPanel(ec.getAgentById(aid))); 
-                        }
+				panels.put(aid, new HunterPanel(ec.getAgentById(aid)));
+			}
 			panels.get(aid).updateData();
-                }
+		}
 	}
 
 	@Override
@@ -166,5 +167,4 @@ public class HunterListPlugin extends JPanel implements Plugin
 	{
 		return label;
 	}
-	
 }
