@@ -8,7 +8,6 @@ import ise.mace.models.HuntingTeam;
  */
 public class GroupOrder extends GenericAction
 {
-
 	/**
 	 * Serialisation ID
 	 */
@@ -50,5 +49,4 @@ public class GroupOrder extends GenericAction
 	{
 		return agent;
 	}
-
 }
