@@ -6,11 +6,11 @@ package ise.mace.actions;
  */
 public class Proposal extends GenericAction
 {
-
 	/**
 	 * Serialisation ID
 	 */
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Enum that lists the different propositions that can be made in the voting
 	 * stage.
@@ -32,7 +32,6 @@ public class Proposal extends GenericAction
 		 * Move the group towards the economic right wing
 		 */
 		moveRight(1);
-
 		/**
 		 * The change in economic position
 		 */
@@ -94,5 +93,4 @@ public class Proposal extends GenericAction
 	{
 		return forGroup;
 	}
-
 }
