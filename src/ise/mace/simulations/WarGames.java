@@ -1,14 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ise.mace.simulations;
 
 import ise.mace.agents.WarAgent;
-import ise.mace.agents.WarAgent;
 import ise.mace.groups.WarGroup;
 import ise.mace.groups.freeagentgroups.BasicFreeAgentGroup;
-import ise.mace.models.GroupDataInitialiser;
 import ise.mace.participants.AbstractFreeAgentGroup;
 import ise.mace.plugins.HuntersAlivePlugin;
 import ise.mace.plugins.DebugSwitchPlugin;
@@ -19,7 +13,6 @@ import ise.mace.plugins.HunterInfo;
 import ise.mace.plugins.HunterListPlugin;
 import ise.mace.plugins.PoliticalCompass2Plugin;
 import ise.mace.plugins.PoliticalCompassPlugin;
-import ise.mace.plugins.database.DatabasePlugin;
 import ise.mace.tokens.AgentType;
 import java.util.Random;
 
@@ -38,42 +31,29 @@ public class WarGames extends GenericSimulation
 	{
 		Random rand = new Random(randomSeed);
 
-		//Communist group
-		for (int i = 0; i < 10; i++)
-		{
-			addAgent(new WarAgent(20, 2, AgentType.AC, 0.1 + rand.nextDouble() / 10,
-							0.1 + rand.nextDouble() / 10));
-			//addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-			//addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-			//addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-		}
 
-		//Fascist group
 		for (int i = 0; i < 10; i++)
 		{
-			addAgent(new WarAgent(20, 2, AgentType.AC, 0.1 + rand.nextDouble() / 10,
-							0.9 + rand.nextDouble() / 10));
-			//addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-			//addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-			//addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-		}
-		//Democrats
-		for (int i = 0; i < 10; i++)
-		{
-			addAgent(new WarAgent(20, 2, AgentType.AC, 0.5 + rand.nextDouble() / 10,
-							0.5 + rand.nextDouble() / 10));
-			//addAgent(new WarAgent(20, 2, AgentType.AD, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-			//addAgent(new WarAgent(20, 2, AgentType.R, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-			//addAgent(new WarAgent(20, 2, AgentType.TFT, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-		}
-		//Anarchists
-		for (int i = 0; i < 10; i++)
-		{
-			addAgent(new WarAgent(20, 2, AgentType.AC, 0.9 + rand.nextDouble() / 10,
-							0.5 + rand.nextDouble() / 10));
-			//addAgent(new WarAgent(20, 2, AgentType.AD, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-			//addAgent(new WarAgent(20, 2, AgentType.R, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-			//addAgent(new WarAgent(20, 2, AgentType.TFT, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
+			//Communist group
+			addAgent(new WarAgent(20, 2, AgentType.AC,
+							0.1 + rand.nextDouble() / 10,
+							0.1 + rand.nextDouble() / 10)
+							);
+			//Fascist group
+			addAgent(new WarAgent(20, 2, AgentType.AC,
+							0.1 + rand.nextDouble() / 10,
+							0.9 + rand.nextDouble() / 10)
+							);
+			//Democrats
+			addAgent(new WarAgent(20, 2, AgentType.AC,
+							0.5 + rand.nextDouble() / 10,
+							0.5 + rand.nextDouble() / 10)
+							);
+			//Anarchists
+			addAgent(new WarAgent(20, 2, AgentType.AC,
+							0.9 + rand.nextDouble() / 10,
+							0.5 + rand.nextDouble() / 10)
+							);
 		}
 	}
 
@@ -101,9 +81,6 @@ public class WarGames extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		//simulation comment and whether to store to remote db
-		//if having errors, delete your Simulations.db file to recreate db
-		//addPlugin(new DatabasePlugin(comment,false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
 		addPlugin(new PoliticalCompass2Plugin());
