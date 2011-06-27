@@ -14,7 +14,13 @@ public class GroupOrder extends GenericAction
 	 * Serialisation ID
 	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * The team that this agent is being ordered to hunt with
+	 */
 	private final HuntingTeam withTeam;
+	/**
+	 * The agent for which this order is destined
+	 */
 	private final String agent;
 
 	/**
