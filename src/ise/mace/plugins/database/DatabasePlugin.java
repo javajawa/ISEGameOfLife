@@ -28,7 +28,7 @@ import presage.annotations.PluginConstructor;
 public class DatabasePlugin implements Plugin
 {
 	private static final long serialVersionUID = 1L;
-	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
+	private final static Logger logger = Logger.getLogger("mace.DatabasePlugin");
 	private final static String name = "Database Plugin v2.9";
 		
 	@Element

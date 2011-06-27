@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class PublicEnvironmentConnection
 {
 	private static PublicEnvironmentConnection inst;
-	public final static Logger logger = Logger.getLogger("gameoflife.PublicLogger");
+	public final static Logger logger = Logger.getLogger("mace.PublicLogger");
 	
 	public static PublicEnvironmentConnection getInstance()
 	{

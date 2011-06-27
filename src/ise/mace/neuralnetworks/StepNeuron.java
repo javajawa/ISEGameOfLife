@@ -42,7 +42,7 @@ public final class StepNeuron extends Neuron
 
 	/**
 	 * {@inheritdoc}
-	 * @see ise.gameoflife.neuralnetworks.Neuron#activationFunction(double, double)
+	 * @see ise.mace.neuralnetworks.Neuron#activationFunction(double, double)
 	 */
 	@Override
 	public double activationFunction(double sum, double offset)

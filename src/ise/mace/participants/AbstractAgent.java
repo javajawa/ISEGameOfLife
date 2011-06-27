@@ -43,7 +43,7 @@ import presage.util.InputQueue;
  *
  * All agents which extend this class should be in the agents package
  * @author Benedict Harcourt
- * @see ise.gameoflife.agents 
+ * @see ise.mace.agents 
  */
 abstract public class AbstractAgent implements Participant
 {
@@ -225,7 +225,7 @@ abstract public class AbstractAgent implements Participant
 
 	}
 
-	private final static Logger logger = Logger.getLogger("gameoflife.AbstractAgent");
+	private final static Logger logger = Logger.getLogger("mace.AbstractAgent");
 	public final static String leaveGroup = UUID.randomUUID().toString();
 	/**
 	 * The DataModel used by this agent.

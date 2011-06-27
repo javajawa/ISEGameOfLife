@@ -22,7 +22,7 @@ import java.util.List;
  */
 final class ConnectionWrapper
 {
-	private final static Logger logger = Logger.getLogger("gameoflife.DatabasePlugin");
+	private final static Logger logger = Logger.getLogger("mace.DatabasePlugin");
 	private final Connection conn;
 	private final PreparedStatement newAgent;
 	private final PreparedStatement dieAgent;

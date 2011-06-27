@@ -47,7 +47,7 @@ public abstract class AbstractGroupAgent implements Participant
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger(
-					"gameoflife.AbstractGroup");
+					"mace.AbstractGroup");
 	/**
 	 * The DataModel used by this agent.
 	 */

@@ -53,7 +53,7 @@ import presage.environment.messages.ENVRegisterRequest;
 import presage.environment.messages.ENVRegistrationResponse;
 
 /**
- * The primary environment code for the GameOfLife that we define. This will
+ * The primary environment code for the games that we define. This will
  * contain a list of all the groups, food etc. etc. that exist in the world.
  * @author Benedict Harcourt
  */
@@ -382,8 +382,8 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Reference to the list that backs the ErrorLog view plugin.
 	 */
-	private final static Logger logger = Logger.getLogger("gameoflife.Main");
-	private final static Logger rootLogger = Logger.getLogger("gameoflife");
+	private final static Logger logger = Logger.getLogger("mace.Main");
+	private final static Logger rootLogger = Logger.getLogger("mace");
 
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
 

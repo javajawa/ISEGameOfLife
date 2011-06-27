@@ -26,7 +26,7 @@ public class RunSimulation
 	/**
 	 * Logger for this class
 	 */
-	private final static Logger logger = Logger.getLogger("ise.gameoflife.RunSimulation");
+	private final static Logger logger = Logger.getLogger("mace.RunSimulation");
 	
 	/**
 	 * Private constructor for static main class
@@ -75,7 +75,7 @@ public class RunSimulation
 				try
 				{
 					String name = args[0];
-					Class<?> sim = Class.forName("ise.gameoflife.simulations." + name);
+					Class<?> sim = Class.forName("ise.mace.simulations." + name);
 					assert(GenericSimulation.class.isAssignableFrom(sim));
 
 					long x = Long.parseLong(args[1]);
