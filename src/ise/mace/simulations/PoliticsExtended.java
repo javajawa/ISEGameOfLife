@@ -40,6 +40,12 @@ import java.util.Random;
  *     <li>{@link SpecialGroup}</li>
  *   </ul>
  * </li>
+ * <li>Foods:
+ *   <ul>
+ *     <li>Rabbit: 2 from 1</li>
+ *     <li>Stag: 5 from 2</li>
+ *   </ul>
+ * </li>
  * <li>Database: Primary Remote. +Politics, +Loans</li>
  * </ul>
  */
