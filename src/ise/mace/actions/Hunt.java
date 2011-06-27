@@ -8,7 +8,6 @@ import java.util.UUID;
  */
 public final class Hunt extends GenericAction
 {
-
 	/**
 	 * Serialisation ID
 	 */
@@ -21,7 +20,7 @@ public final class Hunt extends GenericAction
 	/**
 	 * Creates a new hunt action, which indicates that an agent is going to hunt
 	 * a particular type of food
-	 * @param type 
+	 * @param type The type of food to hunt
 	 */
 	public Hunt(Food type)
 	{
@@ -31,11 +30,10 @@ public final class Hunt extends GenericAction
 
 	/**
 	 * Returns the UUID that represents the type of food being hunted
-	 * @return A Food UUID
+	 * @return The universally unique identifier for this food
 	 */
 	public UUID getFoodTypeId()
 	{
 		return foodType;
 	}
-
 }
