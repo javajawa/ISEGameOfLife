@@ -26,5 +26,4 @@ public class UnregisterRequest extends ENVDeRegisterRequest
 	{
 		return super.getParticipantID();
 	}
-
 }
