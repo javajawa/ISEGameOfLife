@@ -17,19 +17,19 @@ public class PublicEnvironmentConnection
 {
 	private static PublicEnvironmentConnection inst;
 	public final static Logger logger = Logger.getLogger("mace.PublicLogger");
-	
+
 	public static PublicEnvironmentConnection getInstance()
 	{
 		return inst;
 	}
 
 	private final EnvConnector ec;
-	
-	
+
+
 	/**
 	 * instantiates the instance of itself and the environment connector it
 	 * uses to access environmental information
-	 * @param ec 
+	 * @param ec
 	 */
 	@SuppressWarnings("LeakingThisInConstructor")
 	PublicEnvironmentConnection(EnvConnector ec)
@@ -37,7 +37,7 @@ public class PublicEnvironmentConnection
 		this.ec = ec;
 		inst = this;
 	}
-	
+
 	/**
 	 * Gets the group object associated with a particular id
 	 * @param id The id to search for
@@ -67,17 +67,17 @@ public class PublicEnvironmentConnection
 	{
 		return ec.availableFoods();
 	}
-	
+
 	/**
 	 * All available groups as specified in a list because of limitations with java
-	 * {@link Class#forName(java.lang.String, boolean, java.lang.ClassLoader)} 
+	 * {@link Class#forName(java.lang.String, boolean, java.lang.ClassLoader)}
 	 * @return list of all group classes available in this simulation
 	 */
 	public List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
 	{
 		return ec.getAllowedGroupTypes();
 	}
-	
+
 	/**
 	 * @return set of all current groups in the simulation
 	 */
@@ -96,12 +96,12 @@ public class PublicEnvironmentConnection
          */
         public String createAgent(double food,double economic, double social, String name)
         {
-                return ec.createAgent(food, economic, social, name);
+                return ec.createGroupAgent(food, economic, social, name);
         }
 
 
 	/**
-	 * Function used to create a new group. 
+	 * Function used to create a new group.
 	 * Group data initialiser is an object that contains all the information used
 	 * to create a new group.
 	 * @param type The class of group to create
@@ -114,7 +114,7 @@ public class PublicEnvironmentConnection
 	}
 
 	/**
-	 * Function used to create a new group. 
+	 * Function used to create a new group.
 	 * Group data initialiser is an object that contains all the information used
 	 * to create a new group.
 	 * @param type The class of group to create

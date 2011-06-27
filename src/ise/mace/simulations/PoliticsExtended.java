@@ -38,7 +38,7 @@ public class PoliticsExtended extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-                Random randomGenerator = new Random();
+                Random randomGenerator = new Random(randomSeed);
 
 
 		for (int i = 0; i < 20; i++)
@@ -91,7 +91,7 @@ public class PoliticsExtended extends GenericSimulation
                 addPlugin(new GroupAgentInfo());
                 addPlugin(new GroupInfo());
                 addPlugin(new GroupGraphs());
-                addPlugin(new LoansInfoPolitics());                
+                addPlugin(new LoansInfoPolitics());
 	}
 
 	@Override

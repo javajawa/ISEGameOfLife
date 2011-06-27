@@ -53,8 +53,6 @@ public class PoliticalAgentGroup extends AbstractAgent
 	private History<Double> satisfaction = new History<Double>(1);
 
         public static  List<String> dead_agents = new LinkedList<String>();
-        
-    Random randomGenerator = new Random();
 
     @Deprecated
     public PoliticalAgentGroup()
@@ -130,7 +128,7 @@ public class PoliticalAgentGroup extends AbstractAgent
             foodArray = this.getFoodTypes();
             cooperateFood = foodArray.get(0);
             defectFood = foodArray.get(1);
-            
+
             AgentType group_type = null;
 
             //Each group must have a representative in the special group. If this
@@ -145,7 +143,7 @@ public class PoliticalAgentGroup extends AbstractAgent
                 group_type = this.getConn().getGroupById(this.getDataModel().getName()).getGroupStrategy();
                 this.getDataModel().setAgentType(group_type);
 
-                //If the group didn't make any decision (maybe anarchists) then do nothing. 
+                //If the group didn't make any decision (maybe anarchists) then do nothing.
                 if (group_type == null)
                 {
                     //return null;
@@ -355,7 +353,7 @@ public class PoliticalAgentGroup extends AbstractAgent
 
                 //how close are you to the group's belief
                 double deltaEconomic = Math.abs(myGroupEconomic - myEconomic);
-                
+
                 Double oneTurnAgoHappiness = null;
                 //get change in happiness
                 if(this.getDataModel().getHappinessHistory().size() > 2)

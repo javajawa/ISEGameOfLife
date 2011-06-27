@@ -48,8 +48,6 @@ public class TestPoliticalAgent extends AbstractAgent
         private final static TreeSet<String> freeToGroup = new TreeSet<String>();
 	private History<Double> satisfaction = new History<Double>(1);
 
-        Random randomGenerator = new Random();
-
 	@Deprecated
 	public TestPoliticalAgent()
 	{
@@ -880,16 +878,16 @@ public class TestPoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                            trust = scale(trust, -1, randomGenerator.nextDouble());
+                            trust = scale(trust, -1, this.uniformRand());
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1, randomGenerator.nextDouble());
+                        trust = scale(trust, 1, this.uniformRand());
                     }
             }
             else    //Agent hunted rabbit so no trust issues
             {
-                trust = scale(trust, 0, randomGenerator.nextDouble());
+                trust = scale(trust, 0, this.uniformRand());
             }
 
             //Agents must also increase or decrease their trusts for their advisors. If the advice was
@@ -908,11 +906,11 @@ public class TestPoliticalAgent extends AbstractAgent
 
                 if (foodHunted >0)
                 {
-                    advisorTrust = scale(advisorTrust, 100, foodHunted*randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, 100, foodHunted*this.uniformRand());
                 }
                 else
                 {
-                    advisorTrust = scale(advisorTrust, -100, foodHunted*randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, -100, foodHunted*this.uniformRand());
                 }
                 newTrustValue.put(previousAdvisor, advisorTrust);
                 previousAdvisor = null;

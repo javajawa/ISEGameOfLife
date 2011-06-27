@@ -56,11 +56,10 @@ public class LoansAgent extends AbstractAgent{
 
     @Override
     protected String chooseGroup() {
-        Random randomGenerator = new Random();
 
         if (this.getDataModel().getGroupId() != null) return null;
 
-        if (randomGenerator.nextDouble() > 0.9)
+        if (this.uniformRand() > 0.9)
         {
                 Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
                 String chosenGroup = getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
@@ -71,7 +70,7 @@ public class LoansAgent extends AbstractAgent{
         {
             //TODO: When there is no ungrouped agent left check for one membered groups and release their members
             Set<String> groups = getConn().getGroups();
-            int randomIndex = (int)Math.round(randomGenerator.nextDouble()*groups.size());
+            int randomIndex = (int)Math.round(this.uniformRand()*groups.size());
             Iterator<String> i = groups.iterator();
             String groupID = null;
             for(int j = 0; j<randomIndex; j++)

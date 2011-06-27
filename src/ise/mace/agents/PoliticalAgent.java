@@ -51,7 +51,6 @@ public class PoliticalAgent extends AbstractAgent
 //        private static  List<String> special_agents = new LinkedList<String>();
         private static String previousAdvisor = null;
 
-        Random randomGenerator = new Random();
 
 	@Deprecated
 	public PoliticalAgent()
@@ -881,11 +880,11 @@ public class PoliticalAgent extends AbstractAgent
             {
                     if (foodHunted == 0) //Agent has been betrayed
                     {
-                        trust = scale(trust, -1, randomGenerator.nextDouble());
+                        trust = scale(trust, -1, this.uniformRand());
                     }
                     else //Opponent cooperated
                     {
-                        trust = scale(trust, 1, randomGenerator.nextDouble());
+                        trust = scale(trust, 1, this.uniformRand());
                     }
             }
             else    //Agent hunted rabbit so no trust issues
@@ -911,11 +910,11 @@ public class PoliticalAgent extends AbstractAgent
 
                 if (foodHunted >0)
                 {
-                    advisorTrust = scale(advisorTrust, 10, randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, 10, this.uniformRand());
                 }
                 else
                 {
-                    advisorTrust = scale(advisorTrust, -10, randomGenerator.nextDouble());
+                    advisorTrust = scale(advisorTrust, -10, this.uniformRand());
                 }
                 newTrustValue.put(previousAdvisor, advisorTrust);
             }
@@ -1039,7 +1038,7 @@ public class PoliticalAgent extends AbstractAgent
 
                 //if votes > 0 we increase the trust for proposer
                 //if votes < 0 we decrease the trust for proposer
-                proposerTrust = scale(proposerTrust, votes, randomGenerator.nextDouble());
+                proposerTrust = scale(proposerTrust, votes, this.uniformRand());
                 newTrustValue.put(proposer, proposerTrust);
              }
              else

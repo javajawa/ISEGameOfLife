@@ -50,8 +50,6 @@ public class WarAgent extends AbstractAgent
 
 //        private static  List<String> special_agents = new LinkedList<String>();
 
-        Random randomGenerator = new Random();
-
 	@Deprecated
 	public WarAgent()
 	{

@@ -37,7 +37,7 @@ public class WarGames extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-                Random rand = new Random();
+                Random rand = new Random(randomSeed);
 
                 //Communist group
 		for (int i = 0; i < 10; i++)

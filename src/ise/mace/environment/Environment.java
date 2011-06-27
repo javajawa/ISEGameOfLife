@@ -69,7 +69,7 @@ public class Environment extends AbstractEnvironment
 		{
 			return (action.getClass().equals(ApplyToGroup.class));
 		}
-		
+
 		@Override
 		public Input handle(Action action, String actorID)
 		{
@@ -77,7 +77,7 @@ public class Environment extends AbstractEnvironment
 			if (app.getGroup().equals(AbstractAgent.leaveGroup))
 			{
 				String old_group = dmodel.getAgentById(actorID).getGroupId();
-                                
+
 				if (old_group != null)
 				{
 					sim.getPlayer(old_group).enqueueInput(new LeaveNotification(sim.getTime(),LeaveNotification.Reasons.Other, actorID));
@@ -92,7 +92,7 @@ public class Environment extends AbstractEnvironment
 			}
 			return null;
 		}
-		
+
 		ApplyToGroupHandler(){
 			//Nothing to see here, move along citizen.
 		}
@@ -107,7 +107,7 @@ public class Environment extends AbstractEnvironment
 		{
 			return (action.getClass().equals(Death.class));
 		}
-		
+
 		@Override
 		public Input handle(Action action, String actorID)
 		{
@@ -128,7 +128,7 @@ public class Environment extends AbstractEnvironment
 			sim.deActivateParticipant(actorID);
 			return null;
 		}
-		
+
 		DeathHandler()
 		{
 			// Nothing to see here. Move along, citizen.
@@ -145,7 +145,7 @@ public class Environment extends AbstractEnvironment
 		{
 			return (action.getClass().equals(GroupOrder.class));
 		}
-			
+
 		@Override
 		public Input handle(Action action, String actorID){
 			final GroupOrder order = (GroupOrder)action;
@@ -154,7 +154,7 @@ public class Environment extends AbstractEnvironment
 							order.getTeam().hashCode(), nameOf(order.getAgent())});
 			return null;
 		}
-			
+
 		GroupOrderHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
@@ -222,11 +222,11 @@ public class Environment extends AbstractEnvironment
 		{
 			return (action.getClass().equals(RespondToApplication.class));
 		}
-		
+
 		@Override
 		public Input handle(Action action, String actorID){
 			RespondToApplication application = (RespondToApplication)action;
-			
+
 			sim.getPlayer(application.getAgent()).enqueueInput(new ApplicationResponse(sim.getTime(), actorID, application.wasAccepted()));
 			if (application.wasAccepted())
 			{
@@ -240,7 +240,7 @@ public class Environment extends AbstractEnvironment
 							nameOf(actorID), application.wasAccepted()});
 			return null;
 		}
-		
+
 		RespondToApplicationHandler(){
 			// Nothing to see here. Move along, citizen.
 		}
@@ -599,7 +599,7 @@ public class Environment extends AbstractEnvironment
 	}
 
         //ADDED The0
-        public String createAgent(double food,double economic, double social, String name){
+        public String createGroupAgent(double food,double economic, double social, String name){
             AbstractAgent a = new PoliticalAgentGroup(food, 0, AgentType.R, economic, social, name);
             a.initialise(new EnvironmentConnector(this));
             sim.addParticipant(a.getId(),a);
@@ -652,7 +652,7 @@ public class Environment extends AbstractEnvironment
 			{
 				return true;
 			}
-		} 
+		}
 		return false;
 	}
 

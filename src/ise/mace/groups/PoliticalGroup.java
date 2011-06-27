@@ -39,7 +39,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
         private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
 
         //The greediness level of this group
-        private final double greediness = new Random().nextDouble();
+        private final double greediness;
 
         //This structure stores the ids of the groups that are currently in need and the amount they request
         private static Map<String, Double> inNeed = new HashMap<String, Double>();
@@ -63,10 +63,12 @@ public class PoliticalGroup extends AbstractGroupAgent {
 	@Deprecated
 	public PoliticalGroup() {
 		super();
+		this.greediness = 0; // Placeholder; dervivied at run time
 	}
 
 	public PoliticalGroup(GroupDataInitialiser dm) {
 		super(dm);
+		this.greediness = this.uniformRand();
 	}
 
 	@Override
@@ -489,7 +491,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
 
             //Check you greediness against a random value. If your greediness is above that value spend.
             //Groups with higher greediness value have higher chances of spending money
-            if ( this.greediness > new Random().nextDouble() )
+            if ( this.greediness > this.uniformRand() )
             {
                 //check how close you are to attaining achievement
                 double goalRatio = currentFoodReserve / achievementThreshold;
@@ -789,7 +791,7 @@ public class PoliticalGroup extends AbstractGroupAgent {
                     double interestRate = 0.05*greediness + (getConn().getGroupById(groupID).getCurrentReservedFood() / achievementThreshold);
 
                     //For now give a loan if u have the amount needed
-                    if ((currentFoodReserve - amountNeeded >  priceToPlay+50)&&(this.greediness < new Random().nextDouble()))
+                    if ((currentFoodReserve - amountNeeded >  priceToPlay+50)&&(this.greediness < this.uniformRand()))
                     {
                         //Create a tuple containing the amount granted and the interest
                         Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
