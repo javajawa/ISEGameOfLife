@@ -21,7 +21,7 @@ import ise.mace.tokens.AgentType;
 import java.util.Random;
 
 /**
- * Extended Politics Simulation
+ * <p>Extended Politics Simulation</p>
  *
  * <ul>
  * <li>Cycles: 500</li>
@@ -30,6 +30,7 @@ import java.util.Random;
  *     <li>20 of each Strategy in {@link AgentType}</li>
  *     <li>Initial Food: 20</li>
  *     <li>Default Consumption: 2</li>
+ *     <li>Beliefs: Randomised</li>
  *   </ul>
  * <li>Advice Consumption: 0.1</li>
  * <li>Free Group: {@link BasicFreeAgentGroup}</li>
@@ -41,7 +42,6 @@ import java.util.Random;
  * </li>
  * <li>Database: Primary Remote. +Politics, +Loans</li>
  * </ul>
- *
  */
 public class PoliticsExtended extends GenericSimulation
 {
