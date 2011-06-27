@@ -22,7 +22,7 @@ public final class Death extends GenericAction
 		super();
 	}
 
-	// Stops NEtbeans thinking this is a utility class
+	// Stops Netbeans thinking this is a utility class
 	@Override
 	public String toString()
 	{
