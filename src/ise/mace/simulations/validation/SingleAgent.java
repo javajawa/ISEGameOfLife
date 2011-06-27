@@ -8,6 +8,9 @@ import ise.mace.simulations.GenericSimulation;
 
 /**
  * <p>Single Agent Simulation</p>
+ * <p><strong>Proposition:</strong> A solitary agent which requires x units of
+ * food per turn,with the rabbit’s value less than x, will die in a finite
+ * amount of time.</p>
  *
  * <ul>
  * <li>Cycles: 500</li>
