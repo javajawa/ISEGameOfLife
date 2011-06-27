@@ -39,13 +39,17 @@ public class Politics extends GenericSimulation
 		for (int i = 0; i < 20; i++)
 		{
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.AC,
-							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT,
-							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.AD,
-							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 			addAgent(new TestPoliticalAgent(20, 2, AgentType.R,
-							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 		}
 
 	}
@@ -75,7 +79,8 @@ public class Politics extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin(comment + ": Politics ONLY",true,false,false));
+		addPlugin(
+						new DatabasePlugin(comment + ": Politics ONLY", true, false, false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
 		addPlugin(new PoliticalCompass2Plugin());
