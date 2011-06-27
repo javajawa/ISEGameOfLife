@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ise.mace.simulations;
 
 import ise.mace.agents.PoliticalAgent;
@@ -39,17 +35,20 @@ public class PoliticsExtended extends GenericSimulation
 	{
 		Random randomGenerator = new Random(randomSeed);
 
-
 		for (int i = 0; i < 20; i++)
 		{
 			addAgent(new PoliticalAgent(20, 2, AgentType.AC,
-							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 			addAgent(new PoliticalAgent(20, 2, AgentType.TFT,
-							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 			addAgent(new PoliticalAgent(20, 2, AgentType.AD,
-							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 			addAgent(new PoliticalAgent(20, 2, AgentType.R,
-							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+							randomGenerator.nextDouble(),
+							randomGenerator.nextDouble()));
 		}
 
 	}
@@ -79,13 +78,7 @@ public class PoliticsExtended extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		//simulation comment and whether to store to remote db
-		//if having errors, delete your Simulations.db file to recreate db
-		//addPlugin(new DatabasePlugin(comment,false));               
-                
-                //Upload Loans WITH Politics
-		addPlugin(new DatabasePlugin("Politics Extended - this is Loans WITH Politics",true,false,true));                
-                
+		addPlugin(new DatabasePlugin(comment + ": Loans, Politics",true,false,true));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
 		addPlugin(new PoliticalCompass2Plugin());
