@@ -30,25 +30,21 @@ import presage.annotations.PluginConstructor;
  */
 public final class HuntersAlivePlugin extends JPanel implements Plugin
 {
-
 	private static final long serialVersionUID = 1L;
-
 	private final static String title = "Population";
 	private final static String xaxis = "Simulation turn";
 	private final static String yaxis = "Population";
 	private final static String label = "Population";
-
 	private Simulation sim;
 	private Environment en;
-
-	@Element(required=false)
+	@Element(required = false)
 	private String outputpath;
 	@Element
 	private int outputwidth;
 	@Element
 	private int outputheight;
-
-	private final XYSeriesCollection data = new XYSeriesCollection();;
+	private final XYSeriesCollection data = new XYSeriesCollection();
+	;
 	private JPanel control = new JPanel();
 	private ChartPanel chartPanel;
 
@@ -79,7 +75,9 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		super();
 		if (outputpath != null)
 		{
-			if (outputwidth <= 0 || outputheight <= 0) throw new IllegalArgumentException("Height and Width must both be greater than 0");
+			if (outputwidth <= 0 || outputheight <= 0)
+				throw new IllegalArgumentException(
+								"Height and Width must both be greater than 0");
 			this.outputpath = outputpath;
 			this.outputwidth = outputwidth;
 			this.outputheight = outputheight;
@@ -106,7 +104,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 			try
 			{
 				data.getSeries("population").add(en.getRoundsPassed(), getNumHunters());
-				
+
 			}
 			catch (org.jfree.data.UnknownKeyException e)
 			{
@@ -165,7 +163,7 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 		synchronized (data)
 		{
 			JFreeChart chart = ChartFactory.createXYLineChart(title, xaxis, yaxis,
-						data, PlotOrientation.VERTICAL, true, true, false);
+							data, PlotOrientation.VERTICAL, true, true, false);
 
 			chartPanel = new ChartPanel(chart);
 			chartPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
@@ -178,13 +176,11 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 
 		updateButton.addActionListener(new ActionListener()
 		{
-
 			@Override
 			public void actionPerformed(ActionEvent ae)
 			{
 				updateChart();
 			}
-
 		});
 
 		//control.add(label);
@@ -225,7 +221,8 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 			File file = new File(outputpath);
 			synchronized (data)
 			{
-				ChartUtilities.saveChartAsPNG(file, chartPanel.getChart(), outputwidth, outputheight);
+				ChartUtilities.saveChartAsPNG(file, chartPanel.getChart(), outputwidth,
+								outputheight);
 			}
 		}
 		catch (Throwable e)
@@ -233,5 +230,4 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 			System.err.println("Erorr outputting '" + label + "' Graph: " + e);
 		}
 	}
-
 }
