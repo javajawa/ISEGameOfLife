@@ -26,7 +26,7 @@ public class Loans extends GenericSimulation
 
 	public Loans()
 	{
-		super("Basic Loans Testing Bed", 400, 0, 0.1);
+		super("Basic Loans Testing Bed", 500, 0, 0.1);
 	}
 
 	@Override
@@ -34,10 +34,12 @@ public class Loans extends GenericSimulation
 	{
                 Random randomGenerator = new Random();
 
-		for (int i = 0; i < 150; i++)
+		for (int i = 0; i < 20; i++)
 		{
                         addAgent(new LoansAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-                        //addAgent(new LoansAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new LoansAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new LoansAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new LoansAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
@@ -73,6 +75,10 @@ public class Loans extends GenericSimulation
 		//addPlugin(new DatabasePlugin(comment,true,true,true));
 		//robs remote db with loans
 		//addPlugin(new DatabasePlugin(comment,true,false,true));
+                
+                //Upload Loans WITHOUT Politics
+		addPlugin(new DatabasePlugin("Loans - this is Loans WITHOUT Politcs",true,false,true));                 
+                
 		//addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());

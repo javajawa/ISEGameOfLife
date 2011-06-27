@@ -21,6 +21,7 @@ import ise.gameoflife.plugins.HunterListPlugin;
 import ise.gameoflife.plugins.LoansInfoPolitics;
 import ise.gameoflife.plugins.PoliticalCompass2Plugin;
 import ise.gameoflife.plugins.PoliticalCompassPlugin;
+import ise.gameoflife.plugins.database.DatabasePlugin;
 import ise.gameoflife.tokens.AgentType;
 import java.util.Random;
 /**
@@ -32,7 +33,7 @@ public class PoliticsExtended extends GenericSimulation
 
 	public PoliticsExtended()
 	{
-		super("Basic Politics Testing Bed", 500, 0, 0.1);
+		super("Politics with Loans Testing Bed", 500, 0, 0.1);
 	}
 
 	@Override
@@ -78,7 +79,11 @@ public class PoliticsExtended extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		//simulation comment and whether to store to remote db
 		//if having errors, delete your Simulations.db file to recreate db
-		//addPlugin(new DatabasePlugin(comment,false));
+		//addPlugin(new DatabasePlugin(comment,false));               
+                
+                //Upload Loans WITH Politics
+		addPlugin(new DatabasePlugin("Politics Extended - this is Loans WITH Politics",true,false,true));                
+                
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
                 addPlugin(new PoliticalCompass2Plugin());
