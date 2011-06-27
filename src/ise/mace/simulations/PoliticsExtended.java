@@ -21,10 +21,34 @@ import ise.mace.tokens.AgentType;
 import java.util.Random;
 
 /**
+ * Extended Politics Simulation
+ *
+ * <ul>
+ * <li>Cycles: 500</li>
+ * <li>Agents: 80 {@link PoliticalAgent}s
+ *   <ul>
+ *     <li>20 of each Strategy in {@link AgentType}</li>
+ *     <li>Initial Food: 20</li>
+ *     <li>Default Consumption: 2</li>
+ *   </ul>
+ * <li>Advice Consumption: 0.1</li>
+ * <li>Free Group: {@link BasicFreeAgentGroup}</li>
+ * <li>Groups:
+ *   <ul>
+ *     <li>{@link PoliticalGroup}</li>
+ *     <li>{@link SpecialGroup}</li>
+ *   </ul>
+ * </li>
+ * <li>Database: Primary Remote. +Politics, +Loans</li>
+ * </ul>
  *
  */
 public class PoliticsExtended extends GenericSimulation
 {
+	/**
+	 * Creates a PoliticsExtended simulation
+	 * @see PoliticsExtended
+	 */
 	public PoliticsExtended()
 	{
 		super("Politics with Loans Testing Bed", 500, 0, 0.1);
@@ -78,7 +102,8 @@ public class PoliticsExtended extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin(comment + ": Loans, Politics",true,false,true));
+		addPlugin(new DatabasePlugin(comment + ": Loans, Politics", true, false,
+						true));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
 		addPlugin(new PoliticalCompass2Plugin());
