@@ -8,9 +8,8 @@ import presage.Input;
  */
 abstract public class GenericInput implements Input, Serializable
 {
-
 	/**
-	 * The time at which the input event occurred, in terms of 
+	 * The time at which the input event occurred, in terms of
 	 * simulation time
 	 */
 	private long timestamp;
@@ -60,5 +59,4 @@ abstract public class GenericInput implements Input, Serializable
 	{
 		return performative;
 	}
-
 }
