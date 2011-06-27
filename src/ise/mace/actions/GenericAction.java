@@ -9,12 +9,10 @@ import presage.Action;
  */
 public abstract class GenericAction implements Action, Serializable
 {
-
 	// To force this to be a class, not an interface
 	@Override
 	public String toString()
 	{
 		return super.toString();
 	}
-
 }
