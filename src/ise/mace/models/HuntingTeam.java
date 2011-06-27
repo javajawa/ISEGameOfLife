@@ -7,13 +7,12 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
 /**
- * Class dealing with Hunting Teams - ie, sub-groups of Agents who play the 
+ * Class dealing with Hunting Teams - ie, sub-groups of Agents who play the
  * Stag Hunt game
  */
 public class HuntingTeam implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-
 	@ElementList
 	private List<String> members;
 	@Element
@@ -40,5 +39,4 @@ public class HuntingTeam implements Serializable
 	{
 		return members;
 	}
-
 }
