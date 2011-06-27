@@ -47,5 +47,4 @@ public final class LinearNeuron extends Neuron
 	{
 		return sum + offset;
 	}
-
 }
