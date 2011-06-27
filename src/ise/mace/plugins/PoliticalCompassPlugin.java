@@ -27,7 +27,7 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 {
 
 	private static final long serialVersionUID = 1L;
-	private final static Logger logger = Logger.getLogger("gameofline.Plugins.GroupCompass");
+	private final static Logger logger = Logger.getLogger("mace.Plugins.GroupCompass");
 
 	private final static String label = "Political Compass(groups)";
 
