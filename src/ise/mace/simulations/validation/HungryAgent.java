@@ -33,6 +33,7 @@ import ise.mace.simulations.GenericSimulation;
  *   </ul>
  * </li>
  * <li>Database: None</li>
+ * <li>Default seed: 0</li>
  * </ul>
  */
 public class HungryAgent extends GenericSimulation
