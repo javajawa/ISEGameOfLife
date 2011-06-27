@@ -5,12 +5,10 @@ package ise.mace.actions;
  */
 public class ApplyToGroup extends GenericAction
 {
-
 	/**
 	 * Serialisation ID
 	 */
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * The group that is being applied to
 	 */
@@ -18,7 +16,7 @@ public class ApplyToGroup extends GenericAction
 
 	/**
 	 * Creates a new application, specifying the group that is being applied to
-	 * @param group 
+	 * @param group The group to apply to
 	 */
 	public ApplyToGroup(String group)
 	{
@@ -33,5 +31,4 @@ public class ApplyToGroup extends GenericAction
 	{
 		return group;
 	}
-
 }
