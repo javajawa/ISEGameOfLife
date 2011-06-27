@@ -10,6 +10,9 @@ import ise.gameoflife.models.HuntingTeam;
 public class GroupOrder extends GenericAction
 {
 
+	/**
+	 * Serialisation ID
+	 */
 	private static final long serialVersionUID = 1L;
 	private final HuntingTeam withTeam;
 	private final String agent;

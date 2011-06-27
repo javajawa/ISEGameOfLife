@@ -7,6 +7,10 @@ package ise.gameoflife.actions;
  */
 public class Proposal extends GenericAction
 {
+
+	/**
+	 * Serialisation ID
+	 */
 	private static final long serialVersionUID = 1L;
 	public enum ProposalType
 	{

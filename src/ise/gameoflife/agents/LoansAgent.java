@@ -64,7 +64,9 @@ public class LoansAgent extends AbstractAgent{
         if (randomGenerator.nextDouble() > 0.9)
         {
                 Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(0);
-                return getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
+                String chosenGroup = getConn().createGroup(gtype, new GroupDataInitialiser(this.uniformRandLong(), getDataModel().getEconomicBelief()));
+                createGroupAgent(chosenGroup); //Create the group agent
+                return chosenGroup;
         }
         else
         {
@@ -79,6 +81,24 @@ public class LoansAgent extends AbstractAgent{
             }
             return groupID;
         }
+    }
+
+     /**
+     * Creates the agent that represents a group
+     * @param chosenGroup : the name of the agent is equal to the group id representing
+     */
+    private void createGroupAgent(String chosenGroup){
+        //GROUP INTO AGENTS
+        PoliticalAgentGroup.special_no++;
+        //Create special group
+        if(PoliticalAgentGroup.special_no == 1){
+            GroupDataInitialiser spGroup = new GroupDataInitialiser(this.uniformRandLong(),1.0);
+            Class<? extends AbstractGroupAgent> gtype = getConn().getAllowedGroupTypes().get(1);
+            PoliticalAgentGroup.special = getConn().createGroup(gtype, spGroup);
+        }
+        //Creates a political Agent-group
+        getConn().createAgent(0, getConn().getGroupById(PoliticalAgentGroup.special).getCurrentEconomicPoisition(),0.5 , chosenGroup); //CREATE a new AGENT-Group
+
     }
     
     @Override

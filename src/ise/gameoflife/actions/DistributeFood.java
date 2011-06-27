@@ -7,6 +7,9 @@ package ise.gameoflife.actions;
 public class DistributeFood extends GenericAction
 {
 
+	/**
+	 * Serialisation ID
+	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
