@@ -7,7 +7,6 @@ import java.util.Random;
  */
 public class TanhFeedForwardNetwork extends Network
 {
-
 	public TanhFeedForwardNetwork(int... nodeCounts)
 	{
 		int layerCount = nodeCounts.length;
@@ -22,7 +21,7 @@ public class TanhFeedForwardNetwork extends Network
 		TanhLayer layers[] = new TanhLayer[layerCount - 1];
 		for (int i = 0; i < layerCount - 1; i++)
 		{
-			layers[i] = new TanhLayer(nodeCounts[i], nodeCounts[i+1]);
+			layers[i] = new TanhLayer(nodeCounts[i], nodeCounts[i + 1]);
 		}
 
 		this.setLayers(layers);
@@ -30,7 +29,7 @@ public class TanhFeedForwardNetwork extends Network
 
 	public static void main(String args[])
 	{
-		TanhFeedForwardNetwork net = new TanhFeedForwardNetwork(4,5,3);
+		TanhFeedForwardNetwork net = new TanhFeedForwardNetwork(4, 5, 3);
 		Random rand = new Random();
 		for (int i = 0; i < net.layers().length; i++)
 		{
@@ -92,7 +91,7 @@ public class TanhFeedForwardNetwork extends Network
 		}
 
 		// test setting values for the network
-		TanhFeedForwardNetwork net2 = new TanhFeedForwardNetwork(4,5,3);
+		TanhFeedForwardNetwork net2 = new TanhFeedForwardNetwork(4, 5, 3);
 		net2.setWeights(weights);
 		net2.setOffsets(offsets);
 		double out2[] = net2.out(in);
@@ -101,5 +100,4 @@ public class TanhFeedForwardNetwork extends Network
 			System.out.println("Out: " + val);
 		}
 	}
-
 }
