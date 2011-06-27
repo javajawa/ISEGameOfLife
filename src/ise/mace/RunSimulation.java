@@ -14,6 +14,7 @@ import presage.gui.ControlCenter;
  * class will be build before the control centre is launched.
  * @author Benedict Harcourt
  */
+// Keeps a static hard-reference to the root logger for logging control
 @SuppressWarnings("ClassWithMultipleLoggers")
 public class RunSimulation
 {
