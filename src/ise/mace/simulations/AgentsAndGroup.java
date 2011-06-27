@@ -10,13 +10,11 @@ import ise.mace.plugins.DebugSwitchPlugin;
 import ise.mace.plugins.HunterListPlugin;
 import ise.mace.plugins.PoliticalCompassPlugin;
 
-
 /**
  *
  */
 public class AgentsAndGroup extends GenericSimulation
 {
-
 	public AgentsAndGroup()
 	{
 		super("Simle Groups Testing Simulaton", 200, 0, 0);
@@ -56,7 +54,7 @@ public class AgentsAndGroup extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin("Simulation comment",false));
+		addPlugin(new DatabasePlugin("Simulation comment", false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
 	}
@@ -65,5 +63,4 @@ public class AgentsAndGroup extends GenericSimulation
 	protected void events()
 	{
 	}
-
 }

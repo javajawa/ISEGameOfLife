@@ -15,12 +15,10 @@ import ise.mace.agents.GeneticAgent;
 import ise.mace.agents.TestPoliticalAgent;
 import ise.mace.groups.TestPoliticalGroup;
 import ise.mace.tokens.AgentType;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
-
 import presage.events.CoreEvents.ActivateParticipant;
 import presage.EventScriptManager;
 import presage.Participant;
@@ -35,22 +33,18 @@ import presage.Simulation;
  */
 public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 {
-
 	private SimulationGenome genome = null;
 	private double fitness = -1;
-
 	private String comment = null;
 	private int iterations = 0;
 	private double foodConsumedPerAdvice = 0;
 	private long randomSeed = 0;
 	private Simulation simulation;
-
 	private final HashMap<String, Food> foods = new HashMap<String, Food>();
 	private final TreeMap<String, Participant> agents = new TreeMap<String, Participant>();
 	private final ArrayList<Class<? extends AbstractGroupAgent>> groups = new ArrayList<Class<? extends AbstractGroupAgent>>();
 	private final EventScriptManager ms = new EventScriptManager();
 	private final PluginManager pm = new PluginManager();
-
 	private ArrayList<String> geneticAgentIds = new ArrayList<String>();
 
 	public LearningAgentSimulation(SimulationGenome genome)
@@ -69,8 +63,10 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		presageConfig.setAutorun(true);
 		presageConfig.setEnvironmentClass(Environment.class);
 
-		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups, foodConsumedPerAdvice);
-		Environment e = new Environment(true, randomSeed, dm, BasicFreeAgentGroup.class);
+		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups,
+						foodConsumedPerAdvice);
+		Environment e = new Environment(true, randomSeed, dm,
+						BasicFreeAgentGroup.class);
 
 		NameGenerator.setRandomiser(new Random(randomSeed));
 		foods();
@@ -100,7 +96,9 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		return dataModels;
 	}
 
-	protected void plugins(){}
+	protected void plugins()
+	{
+	}
 
 	protected void foods()
 	{
@@ -118,14 +116,14 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 			geneticAgentIds.add(agent.getId());
 			this.addAgent(agent);
 			// competing agents
-			this.addAgent(new TestPoliticalAgent
-				 (20, 2, AgentType.AC, rand.nextDouble(), rand.nextDouble()));
-			this.addAgent(new TestPoliticalAgent
-				 (20, 2, AgentType.TFT, rand.nextDouble(), rand.nextDouble()));
-			this.addAgent(new TestPoliticalAgent
-				 (20, 2, AgentType.AD, rand.nextDouble(), rand.nextDouble()));
-			this.addAgent(new TestPoliticalAgent
-				 (20, 2, AgentType.R, rand.nextDouble(), rand.nextDouble()));
+			this.addAgent(new TestPoliticalAgent(20, 2, AgentType.AC,
+							rand.nextDouble(), rand.nextDouble()));
+			this.addAgent(new TestPoliticalAgent(20, 2, AgentType.TFT,
+							rand.nextDouble(), rand.nextDouble()));
+			this.addAgent(new TestPoliticalAgent(20, 2, AgentType.AD,
+							rand.nextDouble(), rand.nextDouble()));
+			this.addAgent(new TestPoliticalAgent(20, 2, AgentType.R, rand.nextDouble(),
+							rand.nextDouble()));
 		}
 	}
 
@@ -134,7 +132,9 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		this.addGroup(TestPoliticalGroup.class);
 	}
 
-	protected void events(){}
+	protected void events()
+	{
+	}
 
 	@Override
 	public SimulationGenome genome()
@@ -164,7 +164,8 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 		this.fitness = fitness;
 	}
 
-	protected final void addFood(String name, double nutrition, int huntersRequired)
+	protected final void addFood(String name, double nutrition,
+					int huntersRequired)
 	{
 		Food f = new Food(name, nutrition, huntersRequired);
 		this.foods.put(f.getId().toString(), f);
@@ -185,5 +186,4 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 	{
 		pm.addPlugin(p);
 	}
-
 }

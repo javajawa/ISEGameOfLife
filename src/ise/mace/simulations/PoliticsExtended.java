@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ise.mace.simulations;
 
 import ise.mace.agents.PoliticalAgent;
@@ -24,12 +23,12 @@ import ise.mace.plugins.PoliticalCompassPlugin;
 import ise.mace.plugins.database.DatabasePlugin;
 import ise.mace.tokens.AgentType;
 import java.util.Random;
+
 /**
  *
  */
 public class PoliticsExtended extends GenericSimulation
 {
-
 	public PoliticsExtended()
 	{
 		super("Politics with Loans Testing Bed", 500, 0, 0.1);
@@ -38,15 +37,19 @@ public class PoliticsExtended extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-                Random randomGenerator = new Random(randomSeed);
+		Random randomGenerator = new Random(randomSeed);
 
 
 		for (int i = 0; i < 20; i++)
 		{
-                        addAgent(new PoliticalAgent(20, 2, AgentType.AC, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new PoliticalAgent(20, 2, AgentType.TFT, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new PoliticalAgent(20, 2, AgentType.AD, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
-			addAgent(new PoliticalAgent(20, 2, AgentType.R, randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new PoliticalAgent(20, 2, AgentType.AC,
+							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new PoliticalAgent(20, 2, AgentType.TFT,
+							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new PoliticalAgent(20, 2, AgentType.AD,
+							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
+			addAgent(new PoliticalAgent(20, 2, AgentType.R,
+							randomGenerator.nextDouble(), randomGenerator.nextDouble()));
 		}
 
 	}
@@ -61,8 +64,8 @@ public class PoliticsExtended extends GenericSimulation
 	@Override
 	protected void groups()
 	{
-              addGroup(PoliticalGroup.class);
-              addGroup(SpecialGroup.class);
+		addGroup(PoliticalGroup.class);
+		addGroup(SpecialGroup.class);
 	}
 
 	@Override
@@ -85,19 +88,17 @@ public class PoliticsExtended extends GenericSimulation
                 
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
-                addPlugin(new PoliticalCompass2Plugin());
-                addPlugin(new CompassControl());
-                addPlugin(new HunterInfo());
-                addPlugin(new GroupAgentInfo());
-                addPlugin(new GroupInfo());
-                addPlugin(new GroupGraphs());
-                addPlugin(new LoansInfoPolitics());
+		addPlugin(new PoliticalCompass2Plugin());
+		addPlugin(new CompassControl());
+		addPlugin(new HunterInfo());
+		addPlugin(new GroupAgentInfo());
+		addPlugin(new GroupInfo());
+		addPlugin(new GroupGraphs());
+		addPlugin(new LoansInfoPolitics());
 	}
 
 	@Override
 	protected void events()
 	{
 	}
-
 }
-

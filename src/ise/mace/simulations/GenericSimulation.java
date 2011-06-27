@@ -26,7 +26,6 @@ import static presage.configure.ConfigurationWriter.write;
  */
 abstract public class GenericSimulation
 {
-
 	private final HashMap<String, Food> foods = new HashMap<String, Food>();
 	private final TreeMap<String, Participant> agents = new TreeMap<String, Participant>();
 	private final ArrayList<Class<? extends AbstractGroupAgent>> groups = new ArrayList<Class<? extends AbstractGroupAgent>>();
@@ -34,16 +33,17 @@ abstract public class GenericSimulation
 	private final PluginManager pm = new PluginManager();
 	private final String configPath;
 	protected final long randomSeed;
-	
 	protected final String comment;
 
-	public GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice)
+	public GenericSimulation(String comment, int iterations, long randomSeed,
+					double foodConsumedPerAdvice)
 	{
 		this(comment, iterations, randomSeed, foodConsumedPerAdvice, "");
 	}
 
 	@SuppressWarnings("OverridableMethodCallInConstructor")
-	public GenericSimulation(String comment, int iterations, long randomSeed, double foodConsumedPerAdvice, String suffix)
+	public GenericSimulation(String comment, int iterations, long randomSeed,
+					double foodConsumedPerAdvice, String suffix)
 	{
 		PresageConfig presageConfig = new PresageConfig();
 		this.comment = comment;
@@ -57,7 +57,8 @@ abstract public class GenericSimulation
 
 		File rootFile = new File(System.getProperty("user.dir"));
 		// Path configuarations
-		File path = new File(rootFile, "simulations/" + this.getClass().getSimpleName() + suffix);
+		File path = new File(rootFile,
+						"simulations/" + this.getClass().getSimpleName() + suffix);
 		configPath = path.getAbsolutePath();
 
 		presageConfig.setPluginsConfigPath(configPath + "/plugins.xml");
@@ -65,8 +66,10 @@ abstract public class GenericSimulation
 		presageConfig.setParticipantsConfigPath(configPath + "/participants.xml");
 		presageConfig.setEnvironmentConfigPath(configPath + "/environment.xml");
 
-		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups, foodConsumedPerAdvice);
-		Environment e = new Environment(true, randomSeed, dm, chooseFreeAgentHandler());
+		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups,
+						foodConsumedPerAdvice);
+		Environment e = new Environment(true, randomSeed, dm,
+						chooseFreeAgentHandler());
 
 		NameGenerator.setRandomiser(new Random(randomSeed));
 		foods();
@@ -79,13 +82,19 @@ abstract public class GenericSimulation
 	}
 
 	abstract protected void plugins();
+
 	abstract protected void foods();
+
 	abstract protected void agents();
+
 	abstract protected void groups();
+
 	abstract protected void events();
+
 	abstract protected Class<? extends AbstractFreeAgentGroup> chooseFreeAgentHandler();
 
-	protected final void addFood(String name, double nutrition, int huntersRequired)
+	protected final void addFood(String name, double nutrition,
+					int huntersRequired)
 	{
 		Food f = new Food(name, nutrition, huntersRequired);
 		this.foods.put(f.getId().toString(), f);

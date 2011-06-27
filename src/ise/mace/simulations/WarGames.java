@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ise.mace.simulations;
 
 import ise.mace.agents.WarAgent;
@@ -23,12 +22,12 @@ import ise.mace.plugins.PoliticalCompassPlugin;
 import ise.mace.plugins.database.DatabasePlugin;
 import ise.mace.tokens.AgentType;
 import java.util.Random;
+
 /**
  *
  */
 public class WarGames extends GenericSimulation
 {
-
 	public WarGames()
 	{
 		super("Basic Politics Testing Bed", 10000, 0, 0.1);
@@ -37,40 +36,44 @@ public class WarGames extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-                Random rand = new Random(randomSeed);
+		Random rand = new Random(randomSeed);
 
-                //Communist group
+		//Communist group
 		for (int i = 0; i < 10; i++)
 		{
-                        addAgent(new WarAgent(20, 2, AgentType.AC, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+			addAgent(new WarAgent(20, 2, AgentType.AC, 0.1 + rand.nextDouble() / 10,
+							0.1 + rand.nextDouble() / 10));
+			//addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+			//addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
+			//addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.1+rand.nextDouble()/10));
 		}
 
-                //Fascist group
-                for (int i = 0; i < 10; i++)
+		//Fascist group
+		for (int i = 0; i < 10; i++)
 		{
-                        addAgent(new WarAgent(20, 2, AgentType.AC, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+			addAgent(new WarAgent(20, 2, AgentType.AC, 0.1 + rand.nextDouble() / 10,
+							0.9 + rand.nextDouble() / 10));
+			//addAgent(new WarAgent(20, 2, AgentType.AD, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+			//addAgent(new WarAgent(20, 2, AgentType.R, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
+			//addAgent(new WarAgent(20, 2, AgentType.TFT, 0.1+rand.nextDouble()/10, 0.9+rand.nextDouble()/10));
 		}
-                //Democrats
-                                for (int i = 0; i < 10; i++)
+		//Democrats
+		for (int i = 0; i < 10; i++)
 		{
-                        addAgent(new WarAgent(20, 2, AgentType.AC, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.AD, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.R, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.TFT, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
+			addAgent(new WarAgent(20, 2, AgentType.AC, 0.5 + rand.nextDouble() / 10,
+							0.5 + rand.nextDouble() / 10));
+			//addAgent(new WarAgent(20, 2, AgentType.AD, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
+			//addAgent(new WarAgent(20, 2, AgentType.R, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
+			//addAgent(new WarAgent(20, 2, AgentType.TFT, 0.5+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
 		}
-                //Anarchists
-                for (int i = 0; i < 10; i++)
+		//Anarchists
+		for (int i = 0; i < 10; i++)
 		{
-                        addAgent(new WarAgent(20, 2, AgentType.AC, 0.9+rand.nextDouble()/10, 0.5    +rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.AD, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.R, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
-                        //addAgent(new WarAgent(20, 2, AgentType.TFT, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
+			addAgent(new WarAgent(20, 2, AgentType.AC, 0.9 + rand.nextDouble() / 10,
+							0.5 + rand.nextDouble() / 10));
+			//addAgent(new WarAgent(20, 2, AgentType.AD, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
+			//addAgent(new WarAgent(20, 2, AgentType.R, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
+			//addAgent(new WarAgent(20, 2, AgentType.TFT, 0.9+rand.nextDouble()/10, 0.5+rand.nextDouble()/10));
 		}
 	}
 
@@ -84,7 +87,7 @@ public class WarGames extends GenericSimulation
 	@Override
 	protected void groups()
 	{
-              addGroup(WarGroup.class);
+		addGroup(WarGroup.class);
 	}
 
 	@Override
@@ -103,17 +106,15 @@ public class WarGames extends GenericSimulation
 		//addPlugin(new DatabasePlugin(comment,false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
-                addPlugin(new PoliticalCompass2Plugin());
-                addPlugin(new HunterInfo());
-                addPlugin(new GroupAgentInfo());
-                addPlugin(new GroupInfo());
-                addPlugin(new GroupGraphs());
+		addPlugin(new PoliticalCompass2Plugin());
+		addPlugin(new HunterInfo());
+		addPlugin(new GroupAgentInfo());
+		addPlugin(new GroupInfo());
+		addPlugin(new GroupGraphs());
 	}
 
 	@Override
 	protected void events()
 	{
 	}
-
 }
-
