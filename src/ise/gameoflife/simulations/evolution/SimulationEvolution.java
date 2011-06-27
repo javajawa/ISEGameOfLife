@@ -1,6 +1,5 @@
 package ise.gameoflife.simulations.evolution;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import ise.gameoflife.genetics.Evolution;
@@ -10,6 +9,7 @@ import ise.gameoflife.simulations.GeneticAgentSimulation;
 public class SimulationEvolution
 	extends Evolution<SimulationGenome, GeneticAgentSimulation>
 {
+	private final int runs = 5;
 
 	private final float elitistProportion = 0.50f;
 	private long randSeed = System.currentTimeMillis();
@@ -33,7 +33,7 @@ public class SimulationEvolution
 	protected void evaluate(GeneticAgentSimulation entity)
 	{
 		double fitness = 0;
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < runs; i++)
 		{
 			// not getting entropy but guarantees unbiased simulations
 			entity.setRandomSeed(rand.nextLong());
@@ -47,8 +47,9 @@ public class SimulationEvolution
 				fitness += dataModel.getCurrentHappiness();
 			}
 		}
+		fitness /= runs;
 		entity.setFitness(fitness);
-		System.out.print(".");
+		// System.out.print(".");
 		// System.out.println("Iteration: " + this.currentIteration() +
 		//		",\tentity fitness: " + fitness);
 	}
@@ -58,8 +59,8 @@ public class SimulationEvolution
 	{
 		if (rank <= 1)
 		{
-			System.out.print("\tIteration: " + this.currentIteration() +
-					",\tfitness: " + entity.fitness());
+			System.out.print("\ti: " + this.currentIteration() +
+					",\tf: " + entity.fitness());
 		}
 
 		if (rank <= this.population() * elitistProportion)
@@ -72,7 +73,7 @@ public class SimulationEvolution
 	@Override
 	protected void willBeginNextIteration()
 	{
-		System.out.print(",\tavg fit: " + this.avgFitness() + "\n");
+		System.out.print(",\ta: " + this.avgFitness() + "\n");
 	}
 
 	public static void main(String[] args)
