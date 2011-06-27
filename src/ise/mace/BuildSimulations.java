@@ -16,7 +16,10 @@ import java.util.logging.Logger;
  */
 final class BuildSimulations
 {
-
+	/**
+	 * Logger for this class
+	 */
+	private final static Logger logger = Logger.getLogger("mace.SimBuilder");
 	/**
 	 * <p>The list of different simulation classes that can be built without
 	 * initialisation parameters.</p>
@@ -61,7 +64,7 @@ final class BuildSimulations
 			}
 			catch (Exception ex)
 			{
-				Logger.getLogger(BuildSimulations.class.getName()).log(Level.SEVERE, null, ex);
+				logger.log(Level.SEVERE, null, ex);
 			}
 		}
 	}
