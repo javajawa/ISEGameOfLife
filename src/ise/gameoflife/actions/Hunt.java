@@ -14,6 +14,9 @@ public final class Hunt extends GenericAction
 	 * Serialisation ID
 	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * ID of the type of food to hunt
+	 */
 	private final UUID foodType;
 
 	/**
