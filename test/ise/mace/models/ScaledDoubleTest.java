@@ -102,7 +102,7 @@ public class ScaledDoubleTest
 	public void testTinyNegativeValue()
 	{
 		ScaledDouble instance = new ScaledDouble(1000000);
-		
+
 		instance.setValue(-1);
 		double expResult = 0.5;
 		double result = instance.doubleValue();
