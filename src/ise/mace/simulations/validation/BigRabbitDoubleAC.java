@@ -12,6 +12,12 @@ import ise.mace.tokens.AgentType;
 /**
  * <p>The Big Rabbit Simulation</p>
  *
+ * <p><strong>Proposition:</strong> Two always co-operating agents will not
+ * co-operate if it is beneficial for them to hunt rabbits (because rabbit’s
+ * value is &gt; twice the stag’s value)</p>
+ * <p>The test is designed such that hunting stag will result in the agent's
+ * death before the end of the simulation</p>
+ *
  * <ul>
  * <li>Cycles: 500</li>
  * <li>Agents: 1 {@link TestPoliticalAgent}
