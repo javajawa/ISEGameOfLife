@@ -16,9 +16,11 @@ import java.util.logging.Logger;
 import presage.EnvironmentConnector;
 
 /**
- * The environment connection, which gives access to the {@link Environment}
+ * <p>The environment connection, which gives access to the {@link Environment}
  * from the framework layer, such as {@link AbstractAgent} and {@link
- * AbstractGroupAgent}
+ * AbstractGroupAgent}</p>
+ * <p>Public level access is handled by the {@link PublicEnvironmentConnection}
+ * </p>
  */
 public class EnvConnector extends EnvironmentConnector
 {
