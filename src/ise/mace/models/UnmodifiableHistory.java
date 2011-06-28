@@ -7,7 +7,7 @@ import java.util.LinkedList;
  * Allows classes to easily store historical values in a type safe, controlled way
  * @param <T> The type of things being recorded historically
  */
-public class UnmodifiableHistory<T extends Serializable> extends History<T>
+public final class UnmodifiableHistory<T extends Serializable> extends History<T>
 {
 	private static final long serialVersionUID = 1L;
 

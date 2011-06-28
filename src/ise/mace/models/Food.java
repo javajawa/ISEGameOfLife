@@ -7,7 +7,7 @@ import org.simpleframework.xml.Element;
 /**
  *
  */
-public class Food implements Serializable
+public final class Food implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	/**

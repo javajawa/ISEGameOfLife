@@ -3,7 +3,7 @@ package ise.mace.models;
 /**
  *
  */
-public class ImmutableScaledDouble extends ScaledDouble
+public final class ImmutableScaledDouble extends ScaledDouble
 {
 	private static final long serialVersionUID = 1L;
 	private ScaledDouble source;

@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  *
  */
-public class NameGenerator
+public final class NameGenerator
 {
 	private static class SortUtil
 	{

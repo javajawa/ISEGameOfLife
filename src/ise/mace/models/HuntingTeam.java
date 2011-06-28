@@ -10,7 +10,7 @@ import org.simpleframework.xml.ElementList;
  * Class dealing with Hunting Teams - ie, sub-groups of Agents who play the
  * Stag Hunt game
  */
-public class HuntingTeam implements Serializable
+public final class HuntingTeam implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	@ElementList
