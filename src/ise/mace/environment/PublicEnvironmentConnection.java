@@ -222,7 +222,7 @@ public class PublicEnvironmentConnection
 
 	/**
 	 * Returns the {@link Environment} Environment's id
-	 * @return The Evnironment's id
+	 * @return The Environment's id
 	 * @see Environment#getId()
 	 */
 	public String getId()
