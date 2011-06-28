@@ -37,11 +37,10 @@ final class BuildSimulations
 	private static final Class[] simulationClasses =
 	{
 		AgentsAndGroup.class,
-		Politics.class,
-		PoliticsExtended.class,
-		PoliticsExtended.class,
 		FreeAgentsTest.class,
 		Loans.class,
+		Politics.class,
+		PoliticsExtended.class,
 		WarGames.class,
 
 		HungryAgent.class,
