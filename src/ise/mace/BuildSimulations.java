@@ -7,6 +7,10 @@ import ise.mace.simulations.PoliticsExtended;
 import ise.mace.simulations.validation.HungryAgent;
 import ise.mace.simulations.Politics;
 import ise.mace.simulations.WarGames;
+import ise.mace.simulations.validation.BigRabbitDoubleAC;
+import ise.mace.simulations.validation.HungryDoubleAC;
+import ise.mace.simulations.validation.HungryDoubleAD;
+import ise.mace.simulations.validation.SatisfiedDoubleAC;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,14 +36,19 @@ final class BuildSimulations
 	 */
 	private static final Class[] simulationClasses =
 	{
-		HungryAgent.class,
 		AgentsAndGroup.class,
 		Politics.class,
 		PoliticsExtended.class,
 		PoliticsExtended.class,
 		FreeAgentsTest.class,
 		Loans.class,
-		WarGames.class
+		WarGames.class,
+
+		HungryAgent.class,
+		SatisfiedDoubleAC.class,
+		HungryDoubleAC.class,
+		HungryDoubleAD.class,
+		BigRabbitDoubleAC.class
 	};
 
 	/**
