@@ -23,10 +23,6 @@ import presage.EnvironmentConnector;
 public class EnvConnector extends EnvironmentConnector
 {
 	/**
-	 * The EnvironmentDataModel that the connection wraps
-	 */
-	private final EnvironmentDataModel dm;
-	/**
 	 * The Environment that the connection wraps
 	 */
 	private final Environment e;
@@ -39,7 +35,6 @@ public class EnvConnector extends EnvironmentConnector
 	{
 		super(e);
 		this.e = e;
-		this.dm = (EnvironmentDataModel)e.getDataModel();
 	}
 
 	/**
@@ -49,7 +44,7 @@ public class EnvConnector extends EnvironmentConnector
 	 */
 	public PublicGroupDataModel getGroupById(String id)
 	{
-		return dm.getGroupById(id);
+		return e.getGroupById(id);
 	}
 
 	/**
@@ -59,7 +54,7 @@ public class EnvConnector extends EnvironmentConnector
 	 */
 	public Food getFoodById(UUID id)
 	{
-		return dm.getFoodById(id);
+		return e.getFoodById(id);
 	}
 
 	/**
@@ -70,7 +65,7 @@ public class EnvConnector extends EnvironmentConnector
 	 */
 	public PublicAgentDataModel getAgentById(String id)
 	{
-		return dm.getAgentById(id);
+		return e.getAgentById(id);
 	}
 
 	/**
@@ -79,7 +74,7 @@ public class EnvConnector extends EnvironmentConnector
 	 */
 	public Set<Food> availableFoods()
 	{
-		return dm.availableFoods();
+		return e.availableFoods();
 	}
 
 	/**

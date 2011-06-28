@@ -25,6 +25,7 @@ import ise.mace.participants.PublicAgentDataModel;
 import ise.mace.participants.AbstractAgent;
 import ise.mace.participants.AbstractFreeAgentGroup;
 import ise.mace.participants.AbstractGroupAgent;
+import ise.mace.participants.PublicGroupDataModel;
 import ise.mace.tokens.AgentType;
 import ise.mace.tokens.GroupRegistration;
 import ise.mace.tokens.RegistrationRequest;
@@ -807,5 +808,25 @@ public class Environment extends AbstractEnvironment
 	List<String> getUngroupedAgents()
 	{
 		return dmodel.getUngroupedAgents();
+	}
+
+	PublicAgentDataModel getAgentById(String id)
+	{
+		return dmodel.getAgentById(id);
+	}
+
+	PublicGroupDataModel getGroupById(String id)
+	{
+		return dmodel.getGroupById(id);
+	}
+
+	Food getFoodById(UUID id)
+	{
+		return dmodel.getFoodById(id);
+	}
+
+	Set<Food> availableFoods()
+	{
+		return dmodel.availableFoods();
 	}
 }
