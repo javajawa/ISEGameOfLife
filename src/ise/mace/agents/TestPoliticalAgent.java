@@ -796,7 +796,12 @@ public class TestPoliticalAgent extends AbstractAgent
 		//If surplus is >0 you're overjoyed and increase happiness
 		//If surplus is <0 you are dissapointed and decrease your happiness
 		//If surplus is zero nothing really changed
-		currentHappiness = scale(currentHappiness, surplus, 0.1);
+                
+                /*
+                 * NOTE: We tried using the below statement to update happiness but now
+                 * feel that it is biased to move agents more Left on the plotical compass
+                 */                
+		//currentHappiness = scale(currentHappiness, surplus, 0.1);
 
 		return currentHappiness;
 	}
