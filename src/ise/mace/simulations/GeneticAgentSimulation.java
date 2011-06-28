@@ -1,20 +1,20 @@
-package ise.gameoflife.simulations;
+package ise.mace.simulations;
 
-import ise.gameoflife.environment.Environment;
-import ise.gameoflife.environment.EnvironmentDataModel;
-import ise.gameoflife.environment.PublicEnvironmentConnection;
-import ise.gameoflife.genetics.EvolvableEntity;
-import ise.gameoflife.models.Food;
-import ise.gameoflife.models.NameGenerator;
-import ise.gameoflife.participants.AbstractAgent;
-import ise.gameoflife.participants.AbstractGroupAgent;
-import ise.gameoflife.participants.PublicAgentDataModel;
-import ise.gameoflife.simulations.evolution.SimulationGenome;
-import ise.gameoflife.groups.freeagentgroups.BasicFreeAgentGroup;
-import ise.gameoflife.agents.GeneticAgent;
-import ise.gameoflife.agents.TestPoliticalAgent;
-import ise.gameoflife.groups.TestPoliticalGroup;
-import ise.gameoflife.tokens.AgentType;
+import ise.mace.environment.Environment;
+import ise.mace.environment.EnvironmentDataModel;
+import ise.mace.environment.PublicEnvironmentConnection;
+import ise.mace.genetics.EvolvableEntity;
+import ise.mace.models.Food;
+import ise.mace.models.NameGenerator;
+import ise.mace.participants.AbstractAgent;
+import ise.mace.participants.AbstractGroupAgent;
+import ise.mace.participants.PublicAgentDataModel;
+import ise.mace.simulations.evolution.SimulationGenome;
+import ise.mace.groups.freeagentgroups.BasicFreeAgentGroup;
+import ise.mace.agents.GeneticAgent;
+import ise.mace.agents.TestPoliticalAgent;
+import ise.mace.groups.TestPoliticalGroup;
+import ise.mace.tokens.AgentType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,13 +70,12 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		presageConfig.setIterations(iterations);
 		presageConfig.setRandomSeed(randomSeed);
 		presageConfig.setAutorun(true);
-		presageConfig.setAsync(false);
 		presageConfig.setEnvironmentClass(Environment.class);
 
 		EnvironmentDataModel envDataModel = new EnvironmentDataModel
 				(comment, foods, groups, foodConsumedPerAdvice);
 		Environment environment = new Environment
-				(true, randomSeed, envDataModel, BasicFreeAgentGroup.class);
+				(randomSeed, envDataModel, BasicFreeAgentGroup.class);
 
 		NameGenerator.setRandomiser(new Random(randomSeed));
 		foods();
