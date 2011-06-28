@@ -798,6 +798,7 @@ public class LoansGroup extends AbstractGroupAgent
 
 	public static Double getGreediness(PublicGroupDataModel dm)
 	{
+		if (dm == null) return null;
 		return publicGreediness.get(dm.getId());
 	}
 }

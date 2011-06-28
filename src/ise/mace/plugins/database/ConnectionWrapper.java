@@ -195,7 +195,7 @@ final class ConnectionWrapper
 	}
 
 	//group add with loans
-	void groupAdd(String id, int groupid, int round, double greediness)
+	void groupAdd(String id, int groupid, int round, Double greediness)
 	{
 		try
 		{
@@ -203,6 +203,7 @@ final class ConnectionWrapper
 			newGroup.setInt(2, groupid);
 			newGroup.setString(3, id);
 			newGroup.setInt(4, round);
+			if (greediness == null) greediness = -1.0;
 			newGroup.setDouble(5, greediness);
 			newGroup.addBatch();
 		}
