@@ -56,6 +56,7 @@ import presage.environment.messages.ENVRegistrationResponse;
  * The primary environment code for the games that we define. This will
  * contain a list of all the groups, food etc. etc. that exist in the world.
  */
+@SuppressWarnings("ClassWithMultipleLoggers")
 public class Environment extends AbstractEnvironment
 {
 	/**
@@ -504,16 +505,36 @@ public class Environment extends AbstractEnvironment
 	@Element
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
 	private EnvironmentDataModel dmodel;
+	/**
+	 * <p>Reference to the class that will be used as the {@link
+	 * AbstractFreeAgentGroup Free Agent Group}.</p>
+	 * <p>It may be null. It may not. If it is not, it is used to create
+	 * the {@link #fAGroup Free Agent Group} instance, and so it must has a
+	 * public no-args constructor</p>
+	 */
 	@Element(required = false)
 	private Class<? extends AbstractFreeAgentGroup> freeAgentHandler;
+	/**
+	 * The Free Agent Group, which is used to team up agents not in groups
+	 */
 	private AbstractFreeAgentGroup fAGroup;
 	/**
-	 * Reference to the list that backs the ErrorLog view plugin.
+	 * Reference to the main logger for the framework
 	 */
 	private final static Logger logger = Logger.getLogger("mace.Main");
+	/**
+	 * Reference to the root logger for mace
+	 */
 	private final static Logger rootLogger = Logger.getLogger("mace");
+	/**
+	 * Temporary storage of hunt data from agents hunting in teams
+	 */
 	private Map<HuntingTeam, List<TeamHuntEvent>> storedHuntResults;
 
+	/**
+	 * Public no-args constructor for serialisation
+	 * @deprecated For serialisation only
+	 */
 	@Deprecated
 	public Environment()
 	{
