@@ -22,17 +22,17 @@ public class PublicEnvironmentConnection
 	{
 		return inst;
 	}
-	private final EnvConnector ec;
+	private final Environment e;
 
 	/**
 	 * instantiates the instance of itself and the environment connector it
 	 * uses to access environmental information
-	 * @param ec
+	 * @param e
 	 */
-	@SuppressWarnings("LeakingThisInConstructor")
-	PublicEnvironmentConnection(EnvConnector ec)
+	@SuppressWarnings("LeakingThisInConstructor") // Used to create singleton instance
+	PublicEnvironmentConnection(Environment e)
 	{
-		this.ec = ec;
+		this.e = e;
 		inst = this;
 	}
 
@@ -43,7 +43,7 @@ public class PublicEnvironmentConnection
 	 */
 	public PublicGroupDataModel getGroupById(String id)
 	{
-		return ec.getGroupById(id);
+		return e.getGroupById(id);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class PublicEnvironmentConnection
 	 */
 	public PublicAgentDataModel getAgentById(String id)
 	{
-		return ec.getAgentById(id);
+		return e.getAgentById(id);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class PublicEnvironmentConnection
 	 */
 	public Set<Food> availableFoods()
 	{
-		return ec.availableFoods();
+		return e.availableFoods();
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class PublicEnvironmentConnection
 	 */
 	public List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
 	{
-		return ec.getAllowedGroupTypes();
+		return e.getAllowedGroupTypes();
 	}
 
 	/**
@@ -81,10 +81,9 @@ public class PublicEnvironmentConnection
 	 */
 	public Set<String> getGroups()
 	{
-		return ec.getGroups();
+		return e.getGroups();
 	}
 
-	//ADDED The0
 	/**
 	 * Function used to create a new agent-group
 	 * @param average food amount of agents in group
@@ -95,7 +94,7 @@ public class PublicEnvironmentConnection
 	public String createAgent(double food, double economic, double social,
 					String name)
 	{
-		return ec.createGroupAgent(food, economic, social, name);
+		return e.createGroupAgent(food, economic, social, name);
 	}
 
 	/**
@@ -109,7 +108,7 @@ public class PublicEnvironmentConnection
 	public String createGroup(Class<? extends AbstractGroupAgent> type,
 					GroupDataInitialiser init)
 	{
-		return ec.createGroup(type, init);
+		return e.createGroup(type, init);
 	}
 
 	/**
@@ -124,7 +123,7 @@ public class PublicEnvironmentConnection
 	public String createGroup(Class<? extends AbstractGroupAgent> type,
 					GroupDataInitialiser init, String... invitees)
 	{
-		return ec.createGroup(type, init, invitees);
+		return e.createGroup(type, init, invitees);
 	}
 
 	/**
@@ -135,7 +134,7 @@ public class PublicEnvironmentConnection
 	 */
 	public boolean isAgentId(String id)
 	{
-		return ec.isAgentId(id);
+		return e.isAgentId(id);
 	}
 
 	/**
@@ -146,7 +145,7 @@ public class PublicEnvironmentConnection
 	 */
 	public boolean isGroupId(String gid)
 	{
-		return ec.isGroupId(gid);
+		return e.isGroupId(gid);
 	}
 
 	/**
@@ -155,7 +154,7 @@ public class PublicEnvironmentConnection
 	 */
 	public String getId()
 	{
-		return ec.getId();
+		return e.getId();
 	}
 
 	/**
@@ -173,21 +172,21 @@ public class PublicEnvironmentConnection
 	 */
 	public Set<String> getAgents()
 	{
-		return ec.getAgents();
+		return e.getAgents();
 	}
 
 	public TurnType getCurrentTurnType()
 	{
-		return ec.getCurrentTurnType();
+		return e.getCurrentTurnType();
 	}
 
 	public int getRoundsPassed()
 	{
-		return ec.getRoundsPassed();
+		return e.getRoundsPassed();
 	}
 
 	public List<String> getUngroupedAgents()
 	{
-		return ec.getUngroupedAgents();
+		return e.getUngroupedAgents();
 	}
 }

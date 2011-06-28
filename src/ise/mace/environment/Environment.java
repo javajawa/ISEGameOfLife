@@ -547,7 +547,7 @@ public class Environment extends AbstractEnvironment
 		this.actionhandlers.add(new VoteHandler());
 		this.actionhandlers.add(new VoteResultHandler());
 
-		new PublicEnvironmentConnection(new EnvConnector(this));
+		new PublicEnvironmentConnection(this);
 
 		storedHuntResults = new HashMap<HuntingTeam, List<TeamHuntEvent>>();
 
