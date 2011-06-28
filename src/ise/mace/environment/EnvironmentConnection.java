@@ -32,6 +32,7 @@ public class EnvironmentConnection extends EnvironmentConnector
 	/**
 	 * Creates a new environment connection
 	 * @param e The environment on which the connection is backed
+	 * @see #getAgents()
 	 */
 	EnvironmentConnection(Environment e)
 	{
@@ -43,6 +44,7 @@ public class EnvironmentConnection extends EnvironmentConnector
 	 * Gets the group object associated with a particular id
 	 * @param id The id to search for
 	 * @return The group object, or null if not found
+	 * @see #getGroups()
 	 */
 	public PublicGroupDataModel getGroupById(String id)
 	{
@@ -53,6 +55,7 @@ public class EnvironmentConnection extends EnvironmentConnector
 	 * Gets the food object associated with a particular id
 	 * @param id The id to search for
 	 * @return The food object, or null if not found
+	 * @see #availableFoods()
 	 */
 	public Food getFoodById(UUID id)
 	{
@@ -64,6 +67,7 @@ public class EnvironmentConnection extends EnvironmentConnector
 	 * for being passed to other agents without giving them too much information
 	 * @param id The id to search for
 	 * @return The agent object, or null if not found
+	 * @see #getAgents()
 	 */
 	public PublicAgentDataModel getAgentById(String id)
 	{
@@ -73,6 +77,7 @@ public class EnvironmentConnection extends EnvironmentConnector
 	/**
 	 * Finds what food types are available to hunt
 	 * @return set of available food.
+	 * @see #getFoodById(java.util.UUID)
 	 */
 	public Set<Food> availableFoods()
 	{
