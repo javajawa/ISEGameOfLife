@@ -225,26 +225,54 @@ public class EnvironmentDataModel extends AEnvDataModel
 		}
 	}
 
-	Set<String> getAvailableGroups()
+	/**
+	 * Returns the set of all {@link AbstractGroupAgent groups} current active
+	 * @return IDs of all current groups
+	 * @see #getGroupById(java.lang.String)
+	 * @see #getAgents()
+	 */
+	Set<String> getGroups()
 	{
 		return Collections.unmodifiableSet(agentGroups.keySet());
 	}
 
+	/**
+	 * Returns the {@link Environment} Environment's id
+	 * @return The Environment's id
+	 * @see Environment#getId()
+	 */
 	public String getId()
 	{
 		return id;
 	}
 
+	/**
+	 * Gets the amount of food consumes by asking someone for advice
+	 * @return Amount of food
+	 * @see AbstractAgent#seekAvice(java.lang.String)
+	 */
 	double getFoodConsumedPerAdvice()
 	{
 		return foodConsumedPerAdvice;
 	}
 
+	/**
+	 * Returns the set of all {@link AbstractAgent agents} current alive
+	 * @return IDs of all current agents
+	 * @see #getAgentById(java.lang.String)
+	 * @see #getGroups()
+	 */
 	Set<String> getAgents()
 	{
 		return agents.keySet();
 	}
 
+	/**
+	 * Returns a list of all {@link AbstractAgent agents} that are not currently
+	 * part of a {@link AbstractGroupAgent group}
+	 * @return The IDs of all un-grouped agents
+	 * @see #getAgentById(java.lang.String) getAgentById
+	 */
 	List<String> getUngroupedAgents()
 	{
 		ArrayList<String> ret = new ArrayList<String>();
