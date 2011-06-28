@@ -450,22 +450,47 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 
+	/**
+	 * Stores information about a {@link Hunt} action which included a non-null
+	 * {@link HuntingTeam} so that the actions of the team can be reviewed
+	 * together bt {@link #processTeamHunts()}
+	 */
 	private class TeamHuntEvent
 	{
-		private final Food food;
+		/**
+		 * The agent
+		 */
 		private final String agent;
+		/**
+		 * The food that the agent hunted
+		 */
+		private final Food food;
 
+		/**
+		 * Creates a new Team Hunt Event record based off the data passed to the
+		 * {@link HuntHandler}, namely the Hunt and the ActorID
+		 * @param hunt The hunt object
+		 * @param actorID The hunter's id
+		 */
 		TeamHuntEvent(Hunt hunt, String actorID)
 		{
 			this.food = dmodel.getFoodById(hunt.getFoodTypeId());
 			this.agent = actorID;
 		}
 
+		/**
+		 * Returns the agent
+		 * @return The agent
+		 */
 		String getAgent()
 		{
 			return agent;
 		}
 
+		/**
+		 * Returns the food that was hunted
+		 * @return The food that was hunted
+		 */
 		Food getFood()
 		{
 			return food;
