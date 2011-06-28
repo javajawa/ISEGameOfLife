@@ -338,6 +338,9 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 
+	/**
+	 * Handles {@link Proposal}
+	 */
 	private class ProposalHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
@@ -377,6 +380,9 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 
+	/**
+	 * Handles {@link Vote}
+	 */
 	private class VoteHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
@@ -413,6 +419,9 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 
+	/**
+	 * Handles {@link VoteResult}
+	 */
 	private class VoteResultHandler implements AbstractEnvironment.ActionHandler
 	{
 		@Override
