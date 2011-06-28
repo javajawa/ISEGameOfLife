@@ -48,7 +48,7 @@ public class HungryDoubleAD extends GenericSimulation
 	 */
 	public HungryDoubleAD()
 	{
-		super("Single agent starving to death", 500, 0, 0);
+		super("Two agents starving to death", 500, 0, 0);
 	}
 
 	@Override

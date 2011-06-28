@@ -47,7 +47,7 @@ public class HungryDoubleAC extends GenericSimulation
 	 */
 	public HungryDoubleAC()
 	{
-		super("Single agent starving to death", 500, 0, 0);
+		super("Two agents starving to death", 500, 0, 0);
 	}
 
 	@Override
