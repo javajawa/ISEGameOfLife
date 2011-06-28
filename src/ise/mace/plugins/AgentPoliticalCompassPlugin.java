@@ -24,8 +24,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import org.jfree.chart.ChartPanel;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.simpleframework.xml.Element;
 import presage.Plugin;
 import presage.Simulation;
@@ -40,7 +38,7 @@ public class AgentPoliticalCompassPlugin extends JPanel implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static String title = "Political Compass2";
-	private final static String label = "Political Compass(agents)";
+	private final static String label = "Political Compass (agents)";
 	private Simulation sim;
 	private Environment en;
 	// Set of political participants that are active
@@ -129,65 +127,23 @@ public class AgentPoliticalCompassPlugin extends JPanel implements Plugin
 	 */
 	private void updatePoliticalPlayers()
 	{
-		SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("hunter");
-		Iterator<String> iter = active_agent_ids.iterator();
+		SortedSet<String> active_agent_ids = sim.getParticipantIdSet();
 
 		// Add any new agents
-		while (iter.hasNext())
+		for (String id : active_agent_ids)
 		{
-
-			String id = iter.next();
 			if (!p_players.containsKey(id))
 			{
-				boolean check = false;
-				for (String group_agent : PublicEnvironmentConnection.getInstance().getGroups())
-				{
-					if (!PublicEnvironmentConnection.getInstance().getAgentById(id).getName().equals(
-									group_agent))
-						check = true;
-				}
-				if (!check)
+				if (PublicEnvironmentConnection.getInstance().isAgentId(id))
 					p_players.put(id, (AbstractAgent)sim.getPlayer(id));
 				else
 					agent_groups.put(id, (AbstractAgent)sim.getPlayer(id));
-
 			}
-
-
 		}
 
 		// Delete agents which are no longer active
-		List<String> ids_to_remove = new LinkedList<String>();
-		for (Map.Entry<String, AbstractAgent> entry : p_players.entrySet())
-		{
-			String id = entry.getKey();
-			if (!active_agent_ids.contains(id))
-			{
-				ids_to_remove.add(id);
-			}
-		}
-		iter = ids_to_remove.iterator();
-		while (iter.hasNext())
-		{
-			p_players.remove(iter.next());
-		}
-
-		// Delete agents which are no longer active
-		List<String> ids_to_remove2 = new LinkedList<String>();
-		for (Map.Entry<String, AbstractAgent> entry2 : agent_groups.entrySet())
-		{
-			String id = entry2.getKey();
-			if (!active_agent_ids.contains(id))
-			{
-				ids_to_remove2.add(id);
-			}
-		}
-		iter = ids_to_remove2.iterator();
-		while (iter.hasNext())
-		{
-			agent_groups.remove(iter.next());
-		}
-
+		p_players.keySet().retainAll(active_agent_ids);
+		agent_groups.keySet().retainAll(active_agent_ids);
 	}
 
 	/**
@@ -204,7 +160,7 @@ public class AgentPoliticalCompassPlugin extends JPanel implements Plugin
 
 		// Draw social and economic axis
 		Rectangle rect = g.getClipBounds();
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(Color.YELLOW);
 		g.drawLine((int)(rect.width / (correction * 2)), 0,
 						(int)(rect.width / (correction * 2)), rect.height);
 		g.drawLine(0, (int)(rect.height / (correction * 2)), rect.width,
@@ -230,7 +186,9 @@ public class AgentPoliticalCompassPlugin extends JPanel implements Plugin
 				drawLeaders(g);
 			}
 			if (CompassControl.group_button)
+			{
 				drawAgentGroups(g);
+			}
 
 		}
 		catch (Exception e)
