@@ -11,10 +11,41 @@ import ise.mace.plugins.HunterListPlugin;
 import ise.mace.plugins.GroupPoliticalCompassPlugin;
 
 /**
+ * <p>Free Agents Simulation</p>
+ *
+ * <ul>
+ * <li>Cycles: 250</li>
+ * <li>Agents: 5 {@link TestGroupableAgent}s and 1 {@link TestAgent}
+ *   <ul>
+ *     <li>Initial Food: 20</li>
+ *     <li>Default Consumption: 2</li>
+ *   </ul>
+ * <li>Advice Consumption: 0.0</li>
+ * <li>Free Group: {@link BasicFreeAgentGroup}</li>
+ * <li>Groups:
+ *   <ul>
+ *			<li>None</li>
+ *   </ul>
+ * </li>
+ * <li>Foods:
+ *   <ul>
+ *     <li>Rabbit: 1 from 1</li>
+ *     <li>Stag: 5 from 2</li>
+ *   </ul>
+ * </li>
+ * <li>Database: Local Database</li>
+ * <li>Default seed: 0</li>
+ * </ul>
+ */
+/**
  *
  */
 public class FreeAgentsTest extends GenericSimulation
 {
+	/**
+	 * Creates a FreeAgentsTest simulation
+	 * @see FreeAgentsTest
+	 */
 	public FreeAgentsTest()
 	{
 		super("Test of Grouping of Free Agents", 250, 0, 0);
