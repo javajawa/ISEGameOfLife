@@ -99,6 +99,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		ApplyToGroupHandler()
 		{
 			//Nothing to see here, move along citizen.
@@ -142,6 +145,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		DeathHandler()
 		{
 			// Nothing to see here. Move along, citizen.
@@ -175,6 +181,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		GroupOrderHandler()
 		{
 			// Nothing to see here. Move along, citizen.
@@ -234,6 +243,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		HuntHandler()
 		{
 			// Nothing to see here. Move along, citizen.
@@ -279,6 +291,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		RespondToApplicationHandler()
 		{
 			// Nothing to see here. Move along, citizen.
@@ -314,6 +329,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		DistributeFoodHandler()
 		{
 			// Nothing to see here. Move along, citizen.
@@ -350,6 +368,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		ProposalHandler()
 		{
 			// Nothing to see here. Move along, citizen.
@@ -383,6 +404,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		VoteHandler()
 		{
 			// Nothing to see here. Move along, citizen.
@@ -408,6 +432,9 @@ public class Environment extends AbstractEnvironment
 			return null;
 		}
 
+		/**
+		 * Creates an instance of this action handler
+		 */
 		VoteResultHandler()
 		{
 			// Nothing to see here. Move along, citizen.
