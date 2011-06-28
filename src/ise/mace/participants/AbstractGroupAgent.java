@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,8 +70,8 @@ public abstract class AbstractGroupAgent implements Participant
 	private static Map<String, Double> previousAmountHunted = new HashMap<String, Double>();
 
 	/**
-	 * 
-	 * @deprecated 
+	 *
+	 * @deprecated
 	 */
 	@Deprecated
 	public AbstractGroupAgent()
@@ -81,11 +82,12 @@ public abstract class AbstractGroupAgent implements Participant
 	/**
 	 * Initialises itself with teh group data initialiser, which contains all
 	 * the necessary information to get a group started
-	 * @param init 
+	 * @param init
 	 */
 	public AbstractGroupAgent(GroupDataInitialiser init)
 	{
 		this.dm = GroupDataModel.createNew(init);
+		this.dm.random = new Random(this.dm.randomseed);
 	}
 
 	/**
@@ -113,7 +115,7 @@ public abstract class AbstractGroupAgent implements Participant
 
 	/**
 	 * Initialises the group
-	 * @param environmentConnector 
+	 * @param environmentConnector
 	 */
 	@Override
 	public void initialise(EnvironmentConnector environmentConnector)
@@ -123,7 +125,7 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 
 	/**
-	 * Function called when the group is activated, but has yet to be added to the 
+	 * Function called when the group is activated, but has yet to be added to the
 	 * environment
 	 */
 	@Override
@@ -258,7 +260,7 @@ public abstract class AbstractGroupAgent implements Participant
 		Tuple<Double, Double> updatedSharedAndReserve = updateTaxedPool(shared);
 		this.setReservedFood(updatedSharedAndReserve.getValue());
 		shared = updatedSharedAndReserve.getKey();
-		//Loans simulation addition end                
+		//Loans simulation addition end
 
 
 		double taxRate = 1 - dm.getCurrentEconomicPoisition();
@@ -433,7 +435,7 @@ public abstract class AbstractGroupAgent implements Participant
 	/**
 	 * This function puts the inputs into a queue to be processed at the end of
 	 * the cycle
-	 * @param input 
+	 * @param input
 	 */
 	@Override
 	public final void enqueueInput(Input input)
@@ -535,11 +537,11 @@ public abstract class AbstractGroupAgent implements Participant
 	}
 
 	/**
-	 * Called when the group has been activated, and when both the {@link 
+	 * Called when the group has been activated, and when both the {@link
 	 * GroupDataModel data model} and the {@link PublicEnvironmentConnection
 	 * environment connection} have been initialised
-	 * @see #getDataModel() 
-	 * @see #getConn() 
+	 * @see #getDataModel()
+	 * @see #getConn()
 	 */
 	abstract protected void onActivate();
 
@@ -552,9 +554,9 @@ public abstract class AbstractGroupAgent implements Participant
 
 	/**
 	 * Procedure to assign members to different teams, and get them to hunt food.
-	 * The list of different foods can be found using the {@link #getConn() 
-	 * environment connection}, and the list of current group members can be 
-	 * found in the {@link GroupDataModel dataModel} which can be accessed with 
+	 * The list of different foods can be found using the {@link #getConn()
+	 * environment connection}, and the list of current group members can be
+	 * found in the {@link GroupDataModel dataModel} which can be accessed with
 	 * {@link #getInternalDataModel() }
 	 * @return A map of all hunting teams, and the food they should be ordered to
 	 * hunt
