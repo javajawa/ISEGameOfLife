@@ -1,9 +1,13 @@
 package ise.mace.models;
 
+import java.util.Map;
+
 /**
  *
+ * @param <K>
+ * @param <V>
  */
-public class Tuple<K, V>
+public class Tuple<K, V> implements Map.Entry<K, V>
 {
 	private K key;
 	private V value;
@@ -29,9 +33,11 @@ public class Tuple<K, V>
 		return this.value;
 	}
 
-	public void setValue(V newValue)
+	public V setValue(V newValue)
 	{
+		V tmp = value;
 		this.value = newValue;
+		return tmp;
 	}
 
 	public void setKey(K newKey)
