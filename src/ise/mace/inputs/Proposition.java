@@ -13,7 +13,8 @@ public class Proposition extends GenericInput
 	private String proposer;
 	private String ownerGroup;
 
-	public Proposition(ProposalType type, String proposer, String ownerGroup, long timestamp)
+	public Proposition(ProposalType type, String proposer, String ownerGroup,
+					long timestamp)
 	{
 		super(timestamp, "proposition");
 		this.type = type;
@@ -35,5 +36,4 @@ public class Proposition extends GenericInput
 	{
 		return ownerGroup;
 	}
-
 }

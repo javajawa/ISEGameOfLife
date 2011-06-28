@@ -13,7 +13,6 @@ import java.util.Map;
  */
 public class TestAgent extends AbstractAgent
 {
-
 	private static final long serialVersionUID = 1L;
 
 	@Deprecated
@@ -34,7 +33,7 @@ public class TestAgent extends AbstractAgent
 
 	/**
 	 * Uses the user's magically specified heuristics to determine which food type
-	 * the player wishes to hunt for. 
+	 * the player wishes to hunt for.
 	 * @return The food they choose to hunt
 	 */
 	@Override
@@ -163,10 +162,10 @@ public class TestAgent extends AbstractAgent
 		return 0.5;
 	}
 
-    @Override
-    protected Map<String, Double> updateTrustAfterLeadersHunt() {
-        return null;
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
-        
+	@Override
+	protected Map<String, Double> updateTrustAfterLeadersHunt()
+	{
+		return null;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

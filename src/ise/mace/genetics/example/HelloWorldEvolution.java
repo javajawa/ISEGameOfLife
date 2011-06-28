@@ -7,8 +7,7 @@ import ise.mace.genetics.EvolvableEntity;
  * An example runnable evolution
  * that evolves random strings into a Hello World string
  */
-public class HelloWorldEvolution extends Evolution
-	<HelloWorldGenome, EvolvableEntity<HelloWorldGenome>>
+public class HelloWorldEvolution extends Evolution<HelloWorldGenome, EvolvableEntity<HelloWorldGenome>>
 {
 	private float elitistProportion = 0.10f;
 	private int strLen = 13;
@@ -64,9 +63,9 @@ public class HelloWorldEvolution extends Evolution
 	{
 		if (rank <= 1)
 		{
-			System.out.println("Iteration: " + this.currentIteration() +
-					",\tbest: " + entity.genome().geneString() +
-					",\tfitness: " + entity.fitness());
+			System.out.println("Iteration: " + this.currentIteration()
+							+ ",\tbest: " + entity.genome().geneString()
+							+ ",\tfitness: " + entity.fitness());
 		}
 
 		if (rank <= this.population() * elitistProportion)
@@ -85,7 +84,8 @@ public class HelloWorldEvolution extends Evolution
 	 * @param entity the best entity from current iteration
 	 * @return a boolean
 	 */
-	protected boolean achievedBestFit(double fitness, EvolvableEntity<HelloWorldGenome> entity)
+	protected boolean achievedBestFit(double fitness,
+					EvolvableEntity<HelloWorldGenome> entity)
 	{
 		if (fitness == strLen)
 		{

@@ -47,5 +47,4 @@ public class GroupPlugin extends JPanel implements Plugin
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
-	
 }

@@ -10,10 +10,10 @@ import presage.environment.messages.ENVRegisterRequest;
 public final class RegistrationRequest extends ENVRegisterRequest
 {
 	private static final long serialVersionUID = 1L;
-
 	private final PublicAgentDataModel model;
 
-	public RegistrationRequest(String id, ArrayList<String> roles, PublicAgentDataModel state)
+	public RegistrationRequest(String id, ArrayList<String> roles,
+					PublicAgentDataModel state)
 	{
 		super(id, roles);
 		this.model = state;

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ise.mace.plugins;
 
 import ise.mace.agents.PoliticalAgentGroup;
@@ -24,7 +23,6 @@ import javax.swing.border.BevelBorder;
 import presage.Plugin;
 import presage.Simulation;
 
-
 /**Display useful info about each hunter
  *
  */
@@ -44,7 +42,8 @@ public class HunterInfo extends JPanel implements Plugin
 			ret.setFont(ret.getFont().deriveFont(6));
 			return ret;
 		}
-                private JLabel labelise(String s,int font)
+
+		private JLabel labelise(String s, int font)
 		{
 			JLabel ret = new JLabel(s);
 			ret.setHorizontalAlignment(SwingConstants.CENTER);
@@ -56,59 +55,66 @@ public class HunterInfo extends JPanel implements Plugin
 		HunterPanel(PublicAgentDataModel dm)
 		{
 			this.dm = dm;
-                        PublicEnvironmentConnection Conn = PublicEnvironmentConnection.getInstance();
-                        String current = "Alive";
-                        if (!sim.isParticipantActive(dm.getId()) ){
-                            current = "Dead";
-                        }
+			PublicEnvironmentConnection Conn = PublicEnvironmentConnection.getInstance();
+			String current = "Alive";
+			if (!sim.isParticipantActive(dm.getId()))
+			{
+				current = "Dead";
+			}
+			else if (Conn.getGroups() != null && dm.getGroupId() != null && Conn.getGroupById(
+							this.dm.getGroupId()) != null)
+			{
+				String Leader = "";
+				//Leaders
+				if (Conn.getGroupById(this.dm.getGroupId()).getPanel() != null)
+				{
+					for (String ldr : Conn.getGroupById(this.dm.getGroupId()).getPanel())
+					{
+						if (ldr.equals(dm.getId()))
+						{
+							Leader = " - Leader";
+						}
+					}
+				}
+				if (Conn.getGroupById(dm.getGroupId()) != null)
+					current = "Alive - " + Conn.getGroupById(dm.getGroupId()).getName() + Leader;
+			}
+			else
+			{
+				current = "Alive - Free";
+			}
 
-                        else if(Conn.availableGroups() != null && dm.getGroupId() != null && Conn.getGroupById(this.dm.getGroupId()) != null)
-                        {
-                            String Leader="";
-                            //Leaders
-                            if (Conn.getGroupById(this.dm.getGroupId()).getPanel() != null){
-                                for (String ldr : Conn.getGroupById(this.dm.getGroupId()).getPanel()){
-                                        if (ldr.equals(dm.getId())){
-                                            Leader = " - Leader";
-                                        }
-                                 }
-                            }
-                            if (Conn.getGroupById(dm.getGroupId()) != null)
-                                current = "Alive - " + Conn.getGroupById(dm.getGroupId()).getName() + Leader;
-                        }
-                        else{
-                            current = "Alive - Free";
-                        }
+			String food = Double.toString(this.dm.getFoodAmount());
+			String Loyalty = "Null";
+			String Happiness = "Null";
+			if (this.dm.getGroupId() != null)
+			{ //exist only in groups
+				Loyalty = Double.toString(this.dm.getCurrentLoyalty());
+				Happiness = Double.toString(this.dm.getCurrentHappiness());
+			}
+			String Social = Double.toString(this.dm.getSocialBelief());
+			String Economic = Double.toString(this.dm.getEconomicBelief());
+			String LastHunted = "Null";
+			if (this.dm.getTime() > 4 && this.dm.getLastHunted() != null)
+			{
+				LastHunted = this.dm.getLastHunted().getName();
+			}
 
-                        String food= Double.toString(this.dm.getFoodAmount());
-                        String Loyalty = "Null";
-                        String Happiness = "Null";
-                        if (this.dm.getGroupId() != null ){ //exist only in groups
-                            Loyalty = Double.toString(this.dm.getCurrentLoyalty());
-                            Happiness = Double.toString(this.dm.getCurrentHappiness());
-                        }
-                        String Social = Double.toString(this.dm.getSocialBelief());
-                        String Economic = Double.toString(this.dm.getEconomicBelief());
-                        String LastHunted = "Null";
-                        if (this.dm.getTime() > 4 && this.dm.getLastHunted() != null ){
-                            LastHunted = this.dm.getLastHunted().getName();
-                        }
+			JPanel dataPanel = new JPanel(new GridLayout(9, 1, 1, -1));
 
-                        JPanel dataPanel = new JPanel(new GridLayout(9,1, 1, -1));
-
-                        dataPanel.add(labelise(dm.getName(),8));
+			dataPanel.add(labelise(dm.getName(), 8));
 			dataPanel.add(labelise(dm.getPlayerClass()));
-                        dataPanel.add(labelise(current));
+			dataPanel.add(labelise(current));
 
-			dataPanel.add(labelise("Food: "+food));
-                        dataPanel.add(labelise("Economic: "+Economic));
-                        dataPanel.add(labelise("Social: "+Social));
+			dataPanel.add(labelise("Food: " + food));
+			dataPanel.add(labelise("Economic: " + Economic));
+			dataPanel.add(labelise("Social: " + Social));
 
-                        dataPanel.add(labelise("Loyalty: "+Loyalty));
-			dataPanel.add(labelise("Happiness: "+Happiness));
-                        dataPanel.add(labelise("LastHunted: "+LastHunted));
+			dataPanel.add(labelise("Loyalty: " + Loyalty));
+			dataPanel.add(labelise("Happiness: " + Happiness));
+			dataPanel.add(labelise("LastHunted: " + LastHunted));
 
-			this.setLayout(new GridLayout(1,1));
+			this.setLayout(new GridLayout(1, 1));
 			this.add(dataPanel);
 			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 			window.add(this);
@@ -117,13 +123,13 @@ public class HunterInfo extends JPanel implements Plugin
 	}
 
 	private final static String label = "Hunter Logs";
-
 	private Simulation sim;
 	private PublicEnvironmentConnection ec = null;
-
 	private final JPanel window = new JPanel();
-	private final JScrollPane pane = new JScrollPane(window, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        private final TreeMap<String, HunterPanel> panels = new TreeMap<String, HunterPanel>();
+	private final JScrollPane pane = new JScrollPane(window,
+					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	private final TreeMap<String, HunterPanel> panels = new TreeMap<String, HunterPanel>();
 	private int barWidth;
 
 	public HunterInfo()
@@ -138,31 +144,33 @@ public class HunterInfo extends JPanel implements Plugin
 		if (ec.getCurrentTurnType() != TurnType.firstTurn) return;
 
 		barWidth = this.pane.getVerticalScrollBar().getWidth();
-                panels.clear();
-                //this.removeAll();
-                this.window.removeAll();
-                
-                TreeMap<String, String> name_id_map = new TreeMap<String, String>();
+		panels.clear();
+		//this.removeAll();
+		this.window.removeAll();
 
-                // Create a set sorted alphabetically by human readable name
+		TreeMap<String, String> name_id_map = new TreeMap<String, String>();
+
+		// Create a set sorted alphabetically by human readable name
 		for (String aid : sim.getactiveParticipantIdSet("hunter"))
 		{
-                        if( ec.getAgentById(aid).getGroupId() == null || !ec.getAgentById(aid).getGroupId().equals(PoliticalAgentGroup.special))
-                            name_id_map.put(ec.getAgentById(aid).getName(), aid);
+			if (ec.getAgentById(aid).getGroupId() == null || !ec.getAgentById(aid).getGroupId().equals(
+							PoliticalAgentGroup.special))
+				name_id_map.put(ec.getAgentById(aid).getName(), aid);
 		}
 
-                // Add panels in alphabetical order
-                for (Map.Entry<String, String> entry : name_id_map.entrySet()) {
-                        String aid = entry.getValue();
-                        if (!panels.containsKey(aid))
+		// Add panels in alphabetical order
+		for (Map.Entry<String, String> entry : name_id_map.entrySet())
+		{
+			String aid = entry.getValue();
+			if (!panels.containsKey(aid))
 			{
 				panels.put(aid, new HunterPanel(ec.getAgentById(aid)));
-                        }
-			
-                }
+			}
+
+		}
 		validate();
 
-                this.repaint();
+		this.repaint();
 	}
 
 	@Override
@@ -198,5 +206,4 @@ public class HunterInfo extends JPanel implements Plugin
 	{
 		return label;
 	}
-
 }

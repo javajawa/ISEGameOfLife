@@ -15,7 +15,6 @@ import ise.mace.tokens.AgentType;
  */
 public class HungryDoubleAC extends GenericSimulation
 {
-
 	public HungryDoubleAC()
 	{
 		super("Single agent starving to death", 500, 0, 0);
@@ -31,8 +30,8 @@ public class HungryDoubleAC extends GenericSimulation
 	@Override
 	protected void agents()
 	{
-		 addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
-                 addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
+		addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
+		addAgent(new TestPoliticalAgent(20, 2, AgentType.AC, 0.5, 0.5));
 	}
 
 	@Override
@@ -60,5 +59,4 @@ public class HungryDoubleAC extends GenericSimulation
 	protected void events()
 	{
 	}
-
 }

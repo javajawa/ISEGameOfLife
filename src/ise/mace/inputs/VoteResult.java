@@ -6,7 +6,6 @@ package ise.mace.inputs;
 public class VoteResult extends GenericInput
 {
 	private static final long serialVersionUID = 1L;
-
 	private Proposition p;
 	private int votes;
 	private double overallMovement;
@@ -33,5 +32,4 @@ public class VoteResult extends GenericInput
 	{
 		return overallMovement;
 	}
-
 }

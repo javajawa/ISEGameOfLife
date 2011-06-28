@@ -10,19 +10,16 @@ import org.simpleframework.xml.Element;
 public class Food implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * The ID for the food item
 	 */
 	private UUID id;
-	
 	/**
 	 * String that represent the UUID when in storage, as the UUID class is not
 	 * storable by the SimpleXML framework (lack of public no-arg constructor)
 	 */
 	@Element
 	private String id_string;
-	
 	/**
 	 * Name of food type
 	 */
@@ -50,7 +47,7 @@ public class Food implements Serializable
 	{
 		super();
 	}
-	
+
 	/**
 	 * Generate a new food type
 	 * @param name The displayable name of the food
@@ -93,7 +90,7 @@ public class Food implements Serializable
 	{
 		return huntersRequired;
 	}
-	
+
 	/**
 	 * Returns the universally unique identifier for this food, which is used to
 	 * identify it internally
@@ -110,5 +107,4 @@ public class Food implements Serializable
 	{
 		return "Food [" + getName() + ']';
 	}
-
 }

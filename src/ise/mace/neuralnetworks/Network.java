@@ -11,17 +11,14 @@ public class Network
 	 * The number of input ports this network has.
 	 */
 	private int inputs;
-
 	/**
 	 * The number of output ports this network has.
 	 */
 	private int outputs;
-
 	/**
 	 * The layers this network has.
 	 */
 	private Layer layers[] = null;
-
 	/**
 	 * The weights of all neurons in this layer.
 	 * A 3d weights array, the first
@@ -31,7 +28,6 @@ public class Network
 	 * the respective input on the neuron.
 	 */
 	private double weights[][][] = null;
-
 	/**
 	 * The offsets of all neurons in this layer.
 	 * A 2d array of offset values, where the
@@ -47,7 +43,6 @@ public class Network
 	 */
 	public Network()
 	{
-
 	}
 
 	/**
@@ -79,7 +74,7 @@ public class Network
 	{
 		this.setLayers(layers);
 		this.setInputs(layers[0].inputs());
-		this.setOutputs(layers[layers.length-1].outputs());
+		this.setOutputs(layers[layers.length - 1].outputs());
 	}
 
 	/**
@@ -277,11 +272,11 @@ public class Network
 		// input & output sizes match check
 		for (int i = 0; i < layers.length - 1; i++)
 		{
-			if (layers[i].outputs() != layers[i+1].inputs())
+			if (layers[i].outputs() != layers[i + 1].inputs())
 			{
-				throw new RuntimeException("In/out lengths between layers mismatch:" +
-						"layer " + i + " out (" + layers[i].outputs() + "), " +
-						"layer " + (i+1) + "in (" + layers[i+1].inputs() + ").");
+				throw new RuntimeException("In/out lengths between layers mismatch:"
+								+ "layer " + i + " out (" + layers[i].outputs() + "), "
+								+ "layer " + (i + 1) + "in (" + layers[i + 1].inputs() + ").");
 			}
 		}
 
@@ -293,7 +288,8 @@ public class Network
 		// offsets size check
 		if (offsets.length != layers.length)
 		{
-			throw new RuntimeException("Number of offsets arrays and number of layers mismatch.");
+			throw new RuntimeException(
+							"Number of offsets arrays and number of layers mismatch.");
 		}
 	}
 }

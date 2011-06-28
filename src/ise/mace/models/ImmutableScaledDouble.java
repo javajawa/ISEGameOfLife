@@ -24,5 +24,4 @@ public class ImmutableScaledDouble extends ScaledDouble
 	{
 		throw new UnsupportedOperationException();
 	}
-
 }

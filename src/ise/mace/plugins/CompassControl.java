@@ -1,73 +1,35 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ise.mace.plugins;
 
 import ise.mace.environment.Environment;
-import ise.mace.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.SortedSet;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.data.xy.XYSeries;
-import org.simpleframework.xml.Element;
 import presage.Plugin;
 import presage.Simulation;
-import presage.annotations.PluginConstructor;
 
 /**Control the functionality of the compass on real time
  *
  */
 public class CompassControl extends JPanel implements Plugin
 {
-
 	private static final long serialVersionUID = 1L;
-
 	private final static String title = "Compass Control";
 	private final static String label = "Compass Control";
-
 	private Simulation sim;
 	private Environment en;
-
 	private JPanel control = new JPanel();
-        private JPanel control2 = new JPanel();
-        public static boolean agent_button = true;
-        public static boolean group_button = true;
+	private JPanel control2 = new JPanel();
+	public static boolean agent_button = true;
+	public static boolean group_button = true;
 
-	/**
-	 * SimpleXML no-arg Constructor. Do not use this constructor, it is only for
-	 * the purpose of SimpleXML being able to create the object through inflection
-	 * @deprecated Serialisation constructor
-	 */
-	@Deprecated
 	public CompassControl()
 	{
 		// Nothing to see here. Move along, citizen.
 	}
 
-	/**
-	 * Creates a new instance of the CompassControl
-	 * @param outputpath Path to write the final image to
-	 * @param outputwidth Width of the outputted image
-	 * @param outputheight Height of the outputted image
-	 */
-	@PluginConstructor(
-	{
-		"outputpath", "outputwidth", "outputheight"
-	})
 	@Override
 	public void execute()
 	{
@@ -75,7 +37,6 @@ public class CompassControl extends JPanel implements Plugin
 
 	private void updateChart()
 	{
-
 	}
 
 	/**
@@ -114,80 +75,72 @@ public class CompassControl extends JPanel implements Plugin
 		setBackground(Color.GRAY);
 
 		final JButton ShowAgentButton = new JButton("Show agents");
-                final JButton HideAgentButton = new JButton("Hide agents");
-                final JButton ShowGroupButton = new JButton("Show Special agents");
-                final JButton HideGroupButton = new JButton("Hide Special agents");
-                ShowAgentButton.setEnabled(false);
-                HideAgentButton.setEnabled(true);
-                ShowGroupButton.setEnabled(false);
-                HideGroupButton.setEnabled(true);
+		final JButton HideAgentButton = new JButton("Hide agents");
+		final JButton ShowGroupButton = new JButton("Show Special agents");
+		final JButton HideGroupButton = new JButton("Hide Special agents");
+		ShowAgentButton.setEnabled(false);
+		HideAgentButton.setEnabled(true);
+		ShowGroupButton.setEnabled(false);
+		HideGroupButton.setEnabled(true);
 
 		ShowAgentButton.addActionListener(new ActionListener()
 		{
-
 			@Override
 			public void actionPerformed(ActionEvent ae)
 			{
-                                ShowAgentButton.setEnabled(false);
-                                HideAgentButton.setEnabled(true);
-                                agent_button = true;
+				ShowAgentButton.setEnabled(false);
+				HideAgentButton.setEnabled(true);
+				agent_button = true;
 			}
-
 		});
 
 		HideAgentButton.addActionListener(new ActionListener()
 		{
-
 			@Override
 			public void actionPerformed(ActionEvent ae)
 			{
 				ShowAgentButton.setEnabled(true);
-                                HideAgentButton.setEnabled(false);
-                                agent_button = false;
+				HideAgentButton.setEnabled(false);
+				agent_button = false;
 			}
-
 		});
 
 
 		ShowGroupButton.addActionListener(new ActionListener()
 		{
-
 			@Override
 			public void actionPerformed(ActionEvent ae)
 			{
-                                ShowGroupButton.setEnabled(false);
-                                HideGroupButton.setEnabled(true);
-                                group_button = true;
+				ShowGroupButton.setEnabled(false);
+				HideGroupButton.setEnabled(true);
+				group_button = true;
 			}
-
 		});
 
 		HideGroupButton.addActionListener(new ActionListener()
 		{
-
 			@Override
 			public void actionPerformed(ActionEvent ae)
 			{
 				ShowGroupButton.setEnabled(true);
-                                HideGroupButton.setEnabled(false);
-                                group_button = false;
+				HideGroupButton.setEnabled(false);
+				group_button = false;
 			}
-
 		});
 
 		//control.add(label);
-                control.setMaximumSize(control.getMinimumSize());
-                control2.setMaximumSize(control2.getMinimumSize());
+		control.setMaximumSize(control.getMinimumSize());
+		control2.setMaximumSize(control2.getMinimumSize());
 
 		control.add(ShowAgentButton);
-                control.add(HideAgentButton);
-                
-                control2.add(ShowGroupButton);
-                control2.add(HideGroupButton);
-                
-                this.setLayout(new BorderLayout());
-		add(control,BorderLayout.NORTH);
-                add(control2, BorderLayout.CENTER);
+		control.add(HideAgentButton);
+
+		control2.add(ShowGroupButton);
+		control2.add(HideGroupButton);
+
+		this.setLayout(new BorderLayout());
+		add(control, BorderLayout.NORTH);
+		add(control2, BorderLayout.CENTER);
 
 	}
 
@@ -214,6 +167,4 @@ public class CompassControl extends JPanel implements Plugin
 		this.remove(control);
 
 	}
-
 }
-

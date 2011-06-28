@@ -3,7 +3,6 @@ package ise.mace.environment;
 import ise.mace.participants.PublicAgentDataModel;
 import ise.mace.models.Food;
 import ise.mace.models.GroupDataInitialiser;
-import ise.mace.participants.AbstractAgent;
 import ise.mace.participants.AbstractGroupAgent;
 import ise.mace.participants.PublicGroupDataModel;
 import ise.mace.tokens.GroupRegistration;
@@ -29,7 +28,6 @@ import presage.environment.AEnvDataModel;
 public class EnvironmentDataModel extends AEnvDataModel
 {
 	private final static long serialVersionUID = 1L;
-
 	/**
 	 * A sorted list/map of all the state of all players in the game
 	 */
@@ -46,12 +44,12 @@ public class EnvironmentDataModel extends AEnvDataModel
 	@ElementMap
 	private HashMap<String, PublicGroupDataModel> agentGroups;
 	/**
-	 * 
+	 *
 	 */
-	@ElementList(type=Class.class)
+	@ElementList(type = Class.class, required = false)
 	private ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes;
 	/**
-	 * 
+	 *
 	 */
 	@Element
 	private TurnType turn;
@@ -72,22 +70,16 @@ public class EnvironmentDataModel extends AEnvDataModel
 		super();
 	}
 
-	public EnvironmentDataModel(String environmentName, HashMap<String, Food> availableFoodTypes)
+	public EnvironmentDataModel(String environmentName,
+					HashMap<String, Food> availableFoodTypes)
 	{
-		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
-		this.availableFoodTypes = availableFoodTypes;
-
-		this.agentGroups = new HashMap<String, PublicGroupDataModel>();
-		this.allowedGroupTypes = new ArrayList<Class<? extends AbstractGroupAgent>>();
-
-		this.turn = TurnType.firstTurn;
-		this.cycles = 0;
-		this.id = UUID.randomUUID().toString();
+		this(environmentName, availableFoodTypes, null, 0);
 	}
 
 	public EnvironmentDataModel(String environmentName,
 					HashMap<String, Food> availableFoodTypes,
-					ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes, double foodConsumedPerAdvice)
+					ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes,
+					double foodConsumedPerAdvice)
 	{
 		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
@@ -102,7 +94,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public Set<Food> availableFoods()
 	{
-		return Collections.unmodifiableSet(new HashSet<Food>(availableFoodTypes.values()));
+		return Collections.unmodifiableSet(new HashSet<Food>(
+						availableFoodTypes.values()));
 	}
 
 	public Food getFoodById(UUID id)
@@ -122,9 +115,9 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public boolean removeParticipant(String id)
 	{
-		if (agents.remove(id)==null)
+		if (agents.remove(id) == null)
 		{
-			return (agentGroups.remove(id)!=null);
+			return (agentGroups.remove(id) != null);
 		}
 		return true;
 	}
@@ -167,7 +160,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		if (next == t.length)
 		{
 			next = 0;
-			cycles ++;
+			cycles++;
 		}
 
 		turn = t[next];
@@ -178,24 +171,28 @@ public class EnvironmentDataModel extends AEnvDataModel
 		return cycles;
 	}
 
-
-	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> groupType, GroupDataInitialiser init)
+	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> groupType,
+					GroupDataInitialiser init)
 	{
 		if (allowedGroupTypes.contains(groupType))
 		{
 			try
 			{
-				Constructor<? extends AbstractGroupAgent> cons = groupType.getConstructor(GroupDataInitialiser.class);
+				Constructor<? extends AbstractGroupAgent> cons = groupType.getConstructor(
+								GroupDataInitialiser.class);
 				return cons.newInstance(init);
 			}
 			catch (Throwable ex)
 			{
-				throw new IllegalArgumentException("Unable to create group " + groupType.getSimpleName() + " - no public constructor with single GroupDataInitialiser argument", ex);
+				throw new IllegalArgumentException(
+								"Unable to create group " + groupType.getSimpleName() + " - no public constructor with single GroupDataInitialiser argument",
+								ex);
 			}
 		}
 		else
 		{
-			throw new IllegalArgumentException(groupType.getCanonicalName() + " is not in the list of permissible groups");
+			throw new IllegalArgumentException(
+							groupType.getCanonicalName() + " is not in the list of permissible groups");
 		}
 	}
 

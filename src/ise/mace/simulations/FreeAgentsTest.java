@@ -15,7 +15,6 @@ import ise.mace.plugins.PoliticalCompassPlugin;
  */
 public class FreeAgentsTest extends GenericSimulation
 {
-
 	public FreeAgentsTest()
 	{
 		super("Test of Grouping of Free Agents", 250, 0, 0);
@@ -26,7 +25,7 @@ public class FreeAgentsTest extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin(comment,false));
+		addPlugin(new DatabasePlugin(comment, false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new PoliticalCompassPlugin());
 	}
@@ -63,5 +62,4 @@ public class FreeAgentsTest extends GenericSimulation
 	{
 		return BasicFreeAgentGroup.class;
 	}
-
 }

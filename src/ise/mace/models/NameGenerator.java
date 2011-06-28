@@ -7,10 +7,8 @@ import java.util.Random;
  */
 public class NameGenerator
 {
-
 	private static class SortUtil
 	{
-
 		static void sort(String[] values)
 		{
 			int i;
@@ -111,7 +109,8 @@ public class NameGenerator
 		"Becky", "Bobbie", "Violet", "Kristina", "Toni", "Misty", "Mae", "Shelly",
 		"Daisy", "Ramona", "Sherri", "Erika", "Katrina", "Claire", "Chuck"
 	};
-	private static String[] lastNames = {
+	private static String[] lastNames =
+	{
 		"Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller",
 		"Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White",
 		"Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson",
@@ -204,17 +203,16 @@ public class NameGenerator
 		"Eaton", "Cline", "Navarro", "Harrell", "Lester", "Humphrey", "Norris",
 		"Parrish"
 	};
-
 	private static int foreNameIndex = 0;
 	private static int lastNameIndex = 0;
 	private static boolean hasRandomised = false;
 	private static Random rand = null;
-	
+
 	public synchronized static void setRandomiser(Random r)
 	{
 		rand = r;
 	}
-	
+
 	/**
 	 * Generates a (possibly non-unique) player name
 	 * @return
@@ -238,7 +236,7 @@ public class NameGenerator
 		else
 		{
 			lastNameIndex++;
-			if (lastNameIndex == lastNames.length) lastNameIndex = 0;			
+			if (lastNameIndex == lastNames.length) lastNameIndex = 0;
 		}
 
 		return fName + ' ' + lName;
@@ -248,5 +246,4 @@ public class NameGenerator
 	{
 		// Nothing to see here. Move along, citizen
 	}
-
 }

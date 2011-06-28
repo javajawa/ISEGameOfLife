@@ -15,7 +15,6 @@ import java.util.Map;
 /**
  *
  */
-
 public class DemoAgent extends AbstractAgent
 {
 	private static final long serialVersionUID = 1L;
@@ -142,9 +141,10 @@ public class DemoAgent extends AbstractAgent
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
-    @Override
-    protected Map<String, Double> updateTrustAfterLeadersHunt() {
-        return null;
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
+	@Override
+	protected Map<String, Double> updateTrustAfterLeadersHunt()
+	{
+		return null;
+		//throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

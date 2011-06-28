@@ -24,5 +24,4 @@ public final class TanhLayer extends Layer
 
 		this.setNeurons(neurons);
 	}
-
 }

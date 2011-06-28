@@ -5,7 +5,6 @@ package ise.mace.neuralnetworks;
  */
 public abstract class Neuron
 {
-
 	/**
 	 * The activation function you wish to define
 	 * for your Neuron subclass.
@@ -15,19 +14,16 @@ public abstract class Neuron
 	 * @return			a value calcuated from your function.
 	 */
 	abstract public double activationFunction(double sum, double offset);
-
 	/**
 	 * The number of input ports.
 	 */
 	private int inputs = 0;
-
 	/**
 	 * The weights of the inputs.
 	 * The ith element corresponds to the weight
 	 * of the ith input.
 	 */
 	private double weights[] = null;
-
 	/**
 	 * The offset value to shift the activation
 	 * function.
@@ -79,16 +75,16 @@ public abstract class Neuron
 	{
 		if (in.length != inputs)
 		{
-			throw new RuntimeException("Inputs and in array lengths mismatch: " +
-					"inputs (" + inputs + "), in array (" + in.length + ").");
+			throw new RuntimeException("Inputs and in array lengths mismatch: "
+							+ "inputs (" + inputs + "), in array (" + in.length + ").");
 		}
-		
+
 		double sum = 0;
 		for (int i = 0; i < in.length; i++)
 		{
-			sum += in[i]*weights[i];
+			sum += in[i] * weights[i];
 		}
-		
+
 		return sum;
 	}
 
@@ -124,8 +120,8 @@ public abstract class Neuron
 		}
 		if (inputs != weights.length)
 		{
-			throw new RuntimeException("Inputs and coefficients lengths mismatch: " +
-					"input (" + inputs + "), coefs (" + weights.length + ").");
+			throw new RuntimeException("Inputs and coefficients lengths mismatch: "
+							+ "input (" + inputs + "), coefs (" + weights.length + ").");
 		}
 	}
 
@@ -173,5 +169,4 @@ public abstract class Neuron
 	{
 		return inputs;
 	}
-
 }

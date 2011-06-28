@@ -17,6 +17,7 @@ public class ScaledDouble extends Number implements Comparable<Number>
 		d.alterValue((int)amount);
 		return d.doubleValue();
 	}
+
 	public ScaledDouble()
 	{
 		this(10);
@@ -35,19 +36,20 @@ public class ScaledDouble extends Number implements Comparable<Number>
 
 	public ScaledDouble(double initialValue, double scaleFactor)
 	{
-			this(initialValue, (int)(scaleFactor < 1 ? 1.0/scaleFactor : scaleFactor));
+		this(initialValue, (int)(scaleFactor < 1 ? 1.0 / scaleFactor : scaleFactor));
 	}
 
 	public ScaledDouble(double initialValue, int scaleFactor)
 	{
 		this(scaleFactor);
-		if (initialValue < 0 || initialValue > 1) throw new IllegalArgumentException("Value must be between 0 and 1");
+		if (initialValue < 0 || initialValue > 1)
+			throw new IllegalArgumentException("Value must be between 0 and 1");
 
 		int mul = 1;
 
 		if (initialValue > 0.5)
 		{
-			initialValue = 1-initialValue;
+			initialValue = 1 - initialValue;
 			mul = -1;
 		}
 		value = mul * (int)Math.round(scaleFactor * Math.log(2 * initialValue));
@@ -57,11 +59,11 @@ public class ScaledDouble extends Number implements Comparable<Number>
 	{
 		if (value > 0)
 		{
-			scaledValue = 1 - (Math.exp(-(double)value/scaleFactor) / 2);
+			scaledValue = 1 - (Math.exp(-(double)value / scaleFactor) / 2);
 		}
 		else
 		{
-			scaledValue = Math.exp((double)value/scaleFactor) / 2;
+			scaledValue = Math.exp((double)value / scaleFactor) / 2;
 		}
 	}
 
@@ -116,5 +118,4 @@ public class ScaledDouble extends Number implements Comparable<Number>
 		if (s == null) s = new ImmutableScaledDouble(this);
 		return s;
 	}
-
 }

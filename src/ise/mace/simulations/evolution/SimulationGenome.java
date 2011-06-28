@@ -11,9 +11,7 @@ import ise.mace.tokens.AgentType;
  */
 public class SimulationGenome extends Genome<SimulationGenome>
 {
-
 	private static final long serialVersionUID = 1L;
-
 	private static final double initialFood = 0;
 	private static final double consumption = 0;
 	private static final AgentType type = null;
@@ -93,5 +91,4 @@ public class SimulationGenome extends Genome<SimulationGenome>
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
 }

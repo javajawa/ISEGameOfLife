@@ -5,7 +5,6 @@ package ise.mace.inputs;
  */
 public class ApplicationResponse extends GenericInput
 {
-
 	private static final long serialVersionUID = 1L;
 	/**
 	 * Group name
@@ -48,5 +47,4 @@ public class ApplicationResponse extends GenericInput
 	{
 		return accepted;
 	}
-
 }

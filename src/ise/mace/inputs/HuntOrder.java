@@ -8,9 +8,7 @@ import ise.mace.models.HuntingTeam;
  */
 public class HuntOrder extends GenericInput
 {
-
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Team ordered to hunt food specified
 	 */
@@ -19,7 +17,7 @@ public class HuntOrder extends GenericInput
 	/**
 	 * Lots of lovely instantiations
 	 * @param time
-	 * @param team 
+	 * @param team
 	 */
 	public HuntOrder(long time, HuntingTeam team)
 	{
@@ -35,5 +33,4 @@ public class HuntOrder extends GenericInput
 	{
 		return team;
 	}
-
 }

@@ -17,10 +17,8 @@ import presage.abstractparticipant.APlayerDataModel;
 class AgentDataModel extends APlayerDataModel
 {
 	private static final long serialVersionUID = 1L;
-
 	@Element
 	private String name;
-
 	/**
 	 * Stores amount of food owned by agent
 	 */
@@ -37,35 +35,26 @@ class AgentDataModel extends APlayerDataModel
 	 */
 	@Element
 	private History<Double> foodConsumedPerTurnHistory;
-
 	/**
 	 * Field that holds the id of {@link #group}
 	 * Will be null if {@link #group} is null
 	 */
-	@Element(required=false)
+	@Element(required = false)
 	private String groupId;
-	
-	@ElementMap(keyType=String.class,valueType=History.class)
-	private HashMap<String,History<Double>> trust;
-
-	@ElementMap(keyType=String.class,valueType=History.class)
-	private HashMap<String,History<Food>> advice;
-
+	@ElementMap(keyType = String.class, valueType = History.class)
+	private HashMap<String, History<Double>> trust;
+	@ElementMap(keyType = String.class, valueType = History.class)
+	private HashMap<String, History<Food>> advice;
 	@Element
 	private History<Double> happinessHistory;
-	
 	@Element
 	private History<Double> loyaltyHistory;
-
 	@Element
 	private double economicBelief;
-
 	@Element
 	private double socialBelief;
-
-	@Element(required=false)
+	@Element(required = false)
 	private AgentType agentType;
-	
 	private History<Food> lastHunted;
 	private History<HuntingTeam> huntingTeam;
 
@@ -75,65 +64,70 @@ class AgentDataModel extends APlayerDataModel
 	 * @deprecated Due to serialisation conflicts
 	 */
 	@Deprecated
-	 AgentDataModel()
+	AgentDataModel()
 	{
 		super();
 	}
 
 	/**
-	 * Creates a new agent with a given amount of initial food 
+	 * Creates a new agent with a given amount of initial food
 	 * and the amount of food they consume per turn
-	 * @param myId 
-	 * @param roles 
+	 * @param myId
+	 * @param roles
 	 * @param playerClass
-	 * @param randomseed 
+	 * @param randomseed
 	 * @param foodInPossesion Initial amount of food
 	 * @param foodConsumption Food consumed per turn
 	 */
 	@SuppressWarnings("deprecation")
 	AgentDataModel(
-	    String myId, String roles,
-	    Class<? extends AbstractAgent> playerClass,
-	    long randomseed, double foodInPossesion, double foodConsumption)
+					String myId, String roles,
+					Class<? extends AbstractAgent> playerClass,
+					long randomseed, double foodInPossesion, double foodConsumption)
 	{
-		this(myId, roles, playerClass, randomseed, foodInPossesion, foodConsumption, null, 0, 0);
+		this(myId, roles, playerClass, randomseed, foodInPossesion, foodConsumption,
+						null, 0, 0);
 	}
+
 	@SuppressWarnings("deprecation")
 	AgentDataModel(
-	    String myId, String roles,
-	    Class<? extends AbstractAgent> playerClass,
-	    long randomseed, double foodInPossesion, double foodConsumption,
-	    AgentType type, double socialBelief, double economicBelief
-	  )
+					String myId, String roles,
+					Class<? extends AbstractAgent> playerClass,
+					long randomseed, double foodInPossesion, double foodConsumption,
+					AgentType type, double socialBelief, double economicBelief)
 	{
-		super(myId, roles, playerClass.getSimpleName() + (type == null ? "" : " [" + type + ']'), randomseed);
+		super(myId, roles,
+						playerClass.getSimpleName() + (type == null ? "" : " [" + type + ']'),
+						randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
-                this.name = NameGenerator.getName();
-                this.myId = this.name + this.myId;
+		this.name = NameGenerator.getName();
+		this.myId = this.name + this.myId;
 		this.agentType = type;
-                this.economicBelief = economicBelief;
-                this.socialBelief = socialBelief;
+		this.economicBelief = economicBelief;
+		this.socialBelief = socialBelief;
 		onInitialise();
 	}
 
-        //ADDED The0
-        @SuppressWarnings("deprecation")
+	//ADDED The0
+	@SuppressWarnings("deprecation")
 	AgentDataModel(
-	    String myId, String roles,
-	    Class<? extends AbstractAgent> playerClass,
-	    long randomseed, double foodInPossesion, double foodConsumption,
-	    AgentType type, double socialBelief, double economicBelief, String name
-	  )
+					String myId, String roles,
+					Class<? extends AbstractAgent> playerClass,
+					long randomseed, double foodInPossesion, double foodConsumption,
+					AgentType type, double socialBelief, double economicBelief,
+					String name)
 	{
-		super(myId, roles, playerClass.getSimpleName() + (type == null ? "" : " [" + type + ']'), randomseed);
+		super(myId, roles,
+						playerClass.getSimpleName() + (type == null ? "" : " [" + type + ']'),
+						randomseed);
 		this.foodInPossesion = foodInPossesion;
 		this.foodConsumption = foodConsumption;
-                this.name = name;
-                this.myId = name + this.myId;
+		this.name = name;
+		this.myId = name + this.myId;
 		this.agentType = type;
-                this.economicBelief = economicBelief;
-                this.socialBelief = socialBelief;
+		this.economicBelief = economicBelief;
+		this.socialBelief = socialBelief;
 		onInitialise();
 	}
 
@@ -153,6 +147,7 @@ class AgentDataModel extends APlayerDataModel
 	{
 		return foodConsumption;
 	}
+
 	/**
 	 * Returns the history of food consumed per turn
 	 * @return The history of food consumption per turn
@@ -161,6 +156,7 @@ class AgentDataModel extends APlayerDataModel
 	{
 		return foodConsumedPerTurnHistory.getUnmodifableHistory();
 	}
+
 	/**
 	 * Gets the amount food consumed so far this turn
 	 * @return The amount of food consumed so far this turn
@@ -169,6 +165,7 @@ class AgentDataModel extends APlayerDataModel
 	{
 		return foodConsumedPerTurnHistory.getValue();
 	}
+
 	/**
 	 * Updates the food consumed so far this turn
 	 * @param food The amount to be consumed
@@ -179,6 +176,7 @@ class AgentDataModel extends APlayerDataModel
 		food += foodConsumedPerTurnHistory.getValue();
 		foodConsumedPerTurnHistory.setValue(food);
 	}
+
 	/**
 	 * @param consumed reduces the foodInPossesion by a given amount
 	 */
@@ -194,7 +192,7 @@ class AgentDataModel extends APlayerDataModel
 	{
 		this.foodInPossesion += acquired;
 	}
-        
+
 	/**
 	 * Get a re-distribution safe copy of this object. The returned object is
 	 * backed by this one, so their is no need to keep calling this to receive
@@ -208,7 +206,7 @@ class AgentDataModel extends APlayerDataModel
 
 	/**
 	 * Returns the group ID of the agent
-	 * @return 
+	 * @return
 	 */
 	public String getGroupId()
 	{
@@ -217,7 +215,7 @@ class AgentDataModel extends APlayerDataModel
 
 	/**
 	 * assigns the agent to a specified group
-	 * @param gid 
+	 * @param gid
 	 */
 	public void setGroup(String gid)
 	{
@@ -260,14 +258,16 @@ class AgentDataModel extends APlayerDataModel
 	/**
 	 * @return which hunting pair this agent belongs to
 	 */
-	public HuntingTeam getHuntingTeam() {
+	public HuntingTeam getHuntingTeam()
+	{
 		return huntingTeam.getValue();
 	}
 
 	/**
 	 * @return which hunting pair this agent belongs to
 	 */
-	public void setHuntingTeam(HuntingTeam team) {
+	public void setHuntingTeam(HuntingTeam team)
+	{
 		huntingTeam.setValue(team);
 	}
 
@@ -305,7 +305,7 @@ class AgentDataModel extends APlayerDataModel
 	{
 		return loyaltyHistory.getUnmodifableHistory();
 	}
-	
+
 	public History<Double> getTrustHistory(String player)
 	{
 		if (trust.containsKey(player))
@@ -321,7 +321,7 @@ class AgentDataModel extends APlayerDataModel
 	Double getTrust(String player)
 	{
 		Double t = getTrustHistory(player).getValue();
-		if (t==null) return null;
+		if (t == null) return null;
 		return new Double(t);
 	}
 
@@ -343,7 +343,7 @@ class AgentDataModel extends APlayerDataModel
 	 * Past rounds where not advice was given will also return null
 	 * isEmpty will always be false, use size() to check for amount of history
 	 * @param player
-	 * @return 
+	 * @return
 	 */
 	History<Food> getAdviceHistory(String player)
 	{
@@ -373,7 +373,7 @@ class AgentDataModel extends APlayerDataModel
 	{
 		return economicBelief;
 	}
-	
+
 	public void setEconomicBelief(double economicBelief)
 	{
 		this.economicBelief = economicBelief;
@@ -409,11 +409,11 @@ class AgentDataModel extends APlayerDataModel
 		return socialBelief;
 	}
 
-        /**
-         * ADDED The0
-         * @param agentType
-         */
-        void setAgentType(AgentType type)
+	/**
+	 * ADDED The0
+	 * @param agentType
+	 */
+	void setAgentType(AgentType type)
 	{
 		this.agentType = type;
 	}
@@ -430,5 +430,4 @@ class AgentDataModel extends APlayerDataModel
 	{
 		this.socialBelief = socialBelief;
 	}
-
 }

@@ -194,7 +194,8 @@ public class DebugSwitchPlugin extends JPanel implements Plugin
 	}
 
 	private final JPanel loggers = new JPanel();
-	private final TreeMap<String, LoggerPanel> sortingTree = new TreeMap<String, LoggerPanel>(Collator.getInstance());	
+	private final TreeMap<String, LoggerPanel> sortingTree = new TreeMap<String, LoggerPanel>(
+					Collator.getInstance());
 	private final LogManager root = java.util.logging.LogManager.getLogManager();
 	private final JTextPane textArea = new JTextPane();
 	private final LogDelegate logDel = new LogDelegate();

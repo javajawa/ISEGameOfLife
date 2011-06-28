@@ -6,7 +6,6 @@ package ise.mace.genetics;
  */
 public interface Evolvable<EntityGenome extends Genome<EntityGenome>>
 {
-
 	public EntityGenome genome();
 
 	/**
@@ -19,5 +18,4 @@ public interface Evolvable<EntityGenome extends Genome<EntityGenome>>
 	public double fitness();
 
 	public void setFitness(double aFitness);
-
 }

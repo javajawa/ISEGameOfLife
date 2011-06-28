@@ -15,9 +15,10 @@ import presage.environment.messages.ENVRegisterRequest;
 public class GroupRegistration extends ENVRegisterRequest
 {
 	private static final long serialVersionUID = 1L;
-	
-	private final static ArrayList<String> groupRoles = new ArrayList<String>(Arrays.asList(new String[]{"group"}));
-	
+	private final static ArrayList<String> groupRoles = new ArrayList<String>(Arrays.asList(new String[]
+					{
+						"group"
+					}));
 	private PublicGroupDataModel dm;
 
 	public GroupRegistration(String id, PublicGroupDataModel dm)
@@ -30,5 +31,4 @@ public class GroupRegistration extends ENVRegisterRequest
 	{
 		return dm;
 	}
-
 }

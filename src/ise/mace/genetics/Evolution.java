@@ -7,11 +7,8 @@ import java.util.Comparator;
 /**
  * This class provides the framework for iterative evolution
  */
-public abstract class Evolution
-	<EntityGenome extends Genome<EntityGenome>,
-	 Entity extends Evolvable<EntityGenome>>
+public abstract class Evolution<EntityGenome extends Genome<EntityGenome>, Entity extends Evolvable<EntityGenome>>
 {
-
 	/**
 	 * A factory method for creating new entities
 	 * @param genome a genome compatible with the Entity instance
@@ -59,7 +56,8 @@ public abstract class Evolution
 	 * @param entityPool a list of entities
 	 * @return a list of entities after selection
 	 */
-	protected ArrayList<Entity> evaluateAndSelectFromPool(ArrayList<Entity> entityPool)
+	protected ArrayList<Entity> evaluateAndSelectFromPool(
+					ArrayList<Entity> entityPool)
 	{
 		for (Entity entity : entityPool)
 		{
@@ -91,13 +89,13 @@ public abstract class Evolution
 		// parameter checks
 		if (this.iterations <= 0)
 		{
-			throw new RuntimeException("Invalid iteration count: " +
-					this.iterations + ". It must be > 0");
+			throw new RuntimeException("Invalid iteration count: "
+							+ this.iterations + ". It must be > 0");
 		}
 		if (this.population <= 0)
 		{
-			throw new RuntimeException("Invalid population count: " +
-					this.population + ". It must be > 0");
+			throw new RuntimeException("Invalid population count: "
+							+ this.population + ". It must be > 0");
 		}
 
 		ArrayList<Entity> entityPool;
@@ -107,8 +105,8 @@ public abstract class Evolution
 
 		boolean bestFit = false;
 		for (currentIteration = 1;
-			 currentIteration <= this.iterations && !bestFit;
-			 currentIteration++)
+						currentIteration <= this.iterations && !bestFit;
+						currentIteration++)
 		{
 			entityPool = this.speciePoolWithGenePool(this.genePool());
 
@@ -135,7 +133,7 @@ public abstract class Evolution
 	private GenePool<EntityGenome> randomGenePool()
 	{
 		GenePool<EntityGenome> pool = new GenePool<EntityGenome>();
-		
+
 		do
 		{
 			EntityGenome genome = this.newGenome();
@@ -157,16 +155,14 @@ public abstract class Evolution
 		// sort entityPool entities
 		// with their fitness values in descending order
 
-		Collections.sort(entityPool, Collections.reverseOrder
-		(
-			new Comparator<Entity>()
-			{
-				public int compare(Entity entityA, Entity entityB)
-				{
-					return Double.compare(entityA.fitness(), entityB.fitness());
-				}
-			}
-		));
+		Collections.sort(entityPool, Collections.reverseOrder(
+						new Comparator<Entity>()
+						{
+							public int compare(Entity entityA, Entity entityB)
+							{
+								return Double.compare(entityA.fitness(), entityB.fitness());
+							}
+						}));
 	}
 
 	/**
@@ -175,7 +171,8 @@ public abstract class Evolution
 	 * @param genePool a gene pool
 	 * @return an Entity pool
 	 */
-	protected ArrayList<Entity> speciePoolWithGenePool(GenePool<EntityGenome> genePool)
+	protected ArrayList<Entity> speciePoolWithGenePool(
+					GenePool<EntityGenome> genePool)
 	{
 		ArrayList<Entity> entityPool = new ArrayList<Entity>();
 
@@ -193,7 +190,8 @@ public abstract class Evolution
 	 * @param entityPool an Entity pool
 	 * @return a gene pool
 	 */
-	protected GenePool<EntityGenome> genePoolWithSpeciePool(ArrayList<Entity> entityPool)
+	protected GenePool<EntityGenome> genePoolWithSpeciePool(
+					ArrayList<Entity> entityPool)
 	{
 		GenePool<EntityGenome> genePool = new GenePool<EntityGenome>();
 
@@ -204,58 +202,63 @@ public abstract class Evolution
 
 		return genePool;
 	}
-
 	// boilerplate code for setters & getters
 	// genePool
-    protected GenePool<EntityGenome> genePool = null;
-    public GenePool<EntityGenome> genePool()
-    {
-        if (null != genePool) return genePool;
+	protected GenePool<EntityGenome> genePool = null;
 
-        genePool = new GenePool<EntityGenome>();
-        return genePool;
-    }
+	public GenePool<EntityGenome> genePool()
+	{
+		if (null != genePool) return genePool;
+
+		genePool = new GenePool<EntityGenome>();
+		return genePool;
+	}
+
 	public void setGenePool(GenePool<EntityGenome> pool)
 	{
 		genePool = pool;
 	}
 	// current iteration count
 	private int currentIteration = -1;
+
 	public int currentIteration()
 	{
 		return this.currentIteration;
 	}
 	// iterations
 	private int iterations = -1;
+
 	public int iterations()
 	{
 		return this.iterations;
 	}
+
 	public void setIterations(int newIterations)
 	{
 		if (newIterations <= 0)
 		{
-			throw new RuntimeException("Invalid iteration count: " +
-					newIterations + ". It must be > 0");
+			throw new RuntimeException("Invalid iteration count: "
+							+ newIterations + ". It must be > 0");
 		}
 
 		this.iterations = newIterations;
 	}
 	// population
 	private int population = -1;
+
 	public int population()
 	{
 		return this.population;
 	}
+
 	public void setPopulation(int newPopulation)
 	{
 		if (newPopulation <= 0)
 		{
-			throw new RuntimeException("Invalid population count: " +
-					newPopulation + ". It must be > 0");
+			throw new RuntimeException("Invalid population count: "
+							+ newPopulation + ". It must be > 0");
 		}
 
 		this.population = newPopulation;
 	}
-
 }

@@ -14,9 +14,8 @@ import presage.util.ObjectCloner;
  */
 public class History<T extends Serializable> implements Serializable
 {
-
 	private static final long serialVersionUID = 1L;
-	@ElementList(type=Object.class)
+	@ElementList(type = Object.class)
 	private LinkedList<T> data;
 	@Element
 	private int maxSize;
@@ -33,7 +32,7 @@ public class History<T extends Serializable> implements Serializable
 
 	/**
 	 * Instantiates the History with a constrained size
-	 * @param maxsize 
+	 * @param maxsize
 	 */
 	public History(int maxsize)
 	{
@@ -44,7 +43,7 @@ public class History<T extends Serializable> implements Serializable
 	 * Instantiates the History with a fixed size and a certain number of
 	 * entires
 	 * @param data
-	 * @param maxsize 
+	 * @param maxsize
 	 */
 	History(LinkedList<T> data, int maxsize)
 	{
@@ -117,7 +116,7 @@ public class History<T extends Serializable> implements Serializable
 	{
 		newEntry(false);
 	}
-	
+
 	/**
 	 * Creates a new entry with a specific value
 	 * @param value The value to use
@@ -139,7 +138,7 @@ public class History<T extends Serializable> implements Serializable
 
 	/**
 	 * Sets the maximum size of this History
-	 * @param maxSize 
+	 * @param maxSize
 	 */
 	public void setMaxSize(int maxSize)
 	{
@@ -159,7 +158,7 @@ public class History<T extends Serializable> implements Serializable
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the size of the linked list History
 	 */
 	public int size()
@@ -168,7 +167,7 @@ public class History<T extends Serializable> implements Serializable
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the size of the linked list History
 	 */
 	public boolean isEmpty()
@@ -189,7 +188,6 @@ public class History<T extends Serializable> implements Serializable
 	@Override
 	public String toString()
 	{
-		return super.toString() +  " [" + size() + "] : " + data.toString();
+		return super.toString() + " [" + size() + "] : " + data.toString();
 	}
-
 }

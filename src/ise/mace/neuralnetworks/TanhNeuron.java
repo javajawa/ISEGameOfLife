@@ -40,7 +40,7 @@ public final class TanhNeuron extends Neuron
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 * @see ise.mace.neuralnetworks.Neuron#activationFunction(double, double)
 	 */
 	@Override
@@ -48,5 +48,4 @@ public final class TanhNeuron extends Neuron
 	{
 		return Math.tanh(sum + offset);
 	}
-
 }

@@ -39,7 +39,7 @@ public final class LinearNeuron extends Neuron
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 * @see ise.mace.neuralnetworks.Neuron#activationFunction(double, double)
 	 */
 	@Override
@@ -47,5 +47,4 @@ public final class LinearNeuron extends Neuron
 	{
 		return sum + offset;
 	}
-
 }

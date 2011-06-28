@@ -17,19 +17,17 @@ public class PublicEnvironmentConnection
 {
 	private static PublicEnvironmentConnection inst;
 	public final static Logger logger = Logger.getLogger("mace.PublicLogger");
-	
+
 	public static PublicEnvironmentConnection getInstance()
 	{
 		return inst;
 	}
-
 	private final EnvConnector ec;
-	
-	
+
 	/**
 	 * instantiates the instance of itself and the environment connector it
 	 * uses to access environmental information
-	 * @param ec 
+	 * @param ec
 	 */
 	@SuppressWarnings("LeakingThisInConstructor")
 	PublicEnvironmentConnection(EnvConnector ec)
@@ -37,7 +35,7 @@ public class PublicEnvironmentConnection
 		this.ec = ec;
 		inst = this;
 	}
-	
+
 	/**
 	 * Gets the group object associated with a particular id
 	 * @param id The id to search for
@@ -67,54 +65,55 @@ public class PublicEnvironmentConnection
 	{
 		return ec.availableFoods();
 	}
-	
+
 	/**
 	 * All available groups as specified in a list because of limitations with java
-	 * {@link Class#forName(java.lang.String, boolean, java.lang.ClassLoader)} 
+	 * {@link Class#forName(java.lang.String, boolean, java.lang.ClassLoader)}
 	 * @return list of all group classes available in this simulation
 	 */
 	public List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
 	{
 		return ec.getAllowedGroupTypes();
 	}
-	
+
 	/**
 	 * @return set of all current groups in the simulation
 	 */
-	public Set<String> availableGroups()
+	public Set<String> getGroups()
 	{
-		return ec.getAvailableGroups();
+		return ec.getGroups();
 	}
 
-        //ADDED The0
-        /**
-         * Function used to create a new agent-group
-         * @param average food amount of agents in group
-         * @param economic position
-         * @param social position
-         * @return the ID of the created agent
-         */
-        public String createAgent(double food,double economic, double social, String name)
-        {
-                return ec.createAgent(food, economic, social, name);
-        }
-
+	//ADDED The0
+	/**
+	 * Function used to create a new agent-group
+	 * @param average food amount of agents in group
+	 * @param economic position
+	 * @param social position
+	 * @return the ID of the created agent
+	 */
+	public String createAgent(double food, double economic, double social,
+					String name)
+	{
+		return ec.createGroupAgent(food, economic, social, name);
+	}
 
 	/**
-	 * Function used to create a new group. 
+	 * Function used to create a new group.
 	 * Group data initialiser is an object that contains all the information used
 	 * to create a new group.
 	 * @param type The class of group to create
 	 * @param init The initialisation parameters for the group
 	 * @return The ID of the created group
 	 */
-	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init)
+	public String createGroup(Class<? extends AbstractGroupAgent> type,
+					GroupDataInitialiser init)
 	{
 		return ec.createGroup(type, init);
 	}
 
 	/**
-	 * Function used to create a new group. 
+	 * Function used to create a new group.
 	 * Group data initialiser is an object that contains all the information used
 	 * to create a new group.
 	 * @param type The class of group to create
@@ -122,11 +121,11 @@ public class PublicEnvironmentConnection
 	 * @param invitees Any agents you wish to invite to the new group
 	 * @return The ID of the created group
 	 */
-	public String createGroup(Class<? extends AbstractGroupAgent> type, GroupDataInitialiser init, String... invitees)
+	public String createGroup(Class<? extends AbstractGroupAgent> type,
+					GroupDataInitialiser init, String... invitees)
 	{
 		return ec.createGroup(type, init, invitees);
 	}
-
 
 	/**
 	 * Determines whether a string represents the id of an active agent in this

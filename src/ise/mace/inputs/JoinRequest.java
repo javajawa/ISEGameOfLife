@@ -7,9 +7,7 @@ package ise.mace.inputs;
  */
 public class JoinRequest extends GenericInput
 {
-
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Candidate in question
 	 */
@@ -35,5 +33,4 @@ public class JoinRequest extends GenericInput
 	{
 		return agent;
 	}
-
 }

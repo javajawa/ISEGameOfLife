@@ -8,12 +8,12 @@ import ise.mace.actions.Vote.VoteType;
 public class Vote extends GenericInput
 {
 	private static final long serialVersionUID = 1L;
-
 	private Proposition proposition;
 	private String agent;
 	private VoteType vote;
 
-	public Vote(long timestamp, Proposition proposition, VoteType vote, String agent)
+	public Vote(long timestamp, Proposition proposition, VoteType vote,
+					String agent)
 	{
 		super(timestamp, "vote");
 		this.proposition = proposition;
@@ -43,5 +43,4 @@ public class Vote extends GenericInput
 	{
 		return agent;
 	}
-
 }

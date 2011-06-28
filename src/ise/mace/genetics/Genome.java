@@ -9,8 +9,8 @@ import java.io.Serializable;
  * behaviours from the data structure.
  * All methods must be overridden.
  */
-public abstract class Genome
-	<DerivedGenome extends Genome<DerivedGenome>> implements Serializable
+public abstract class Genome<DerivedGenome extends Genome<DerivedGenome>>
+				implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -33,5 +33,4 @@ public abstract class Genome
 	 * @return a new genome
 	 */
 	abstract public DerivedGenome crossOver(DerivedGenome genome);
-
 }

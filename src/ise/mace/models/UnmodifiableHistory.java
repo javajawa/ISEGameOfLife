@@ -19,31 +19,31 @@ public class UnmodifiableHistory<T extends Serializable> extends History<T>
 	@Override
 	public T setValue(T value)
 	{
-		throw new UnsupportedOperationException("The Histroy is not modifyable");
+		throw new UnsupportedOperationException("The History is not modifiable");
 	}
 
 	@Override
 	public void newEntry(boolean cloneOld)
 	{
-		throw new UnsupportedOperationException("The Histroy is not modifyable");
+		throw new UnsupportedOperationException("The History is not modifiable");
 	}
 
 	@Override
 	public void newEntry()
 	{
-		throw new UnsupportedOperationException("The Histroy is not modifyable");
+		throw new UnsupportedOperationException("The History is not modifiable");
 	}
 
 	@Override
 	public void newEntry(T value)
 	{
-		throw new UnsupportedOperationException("The Histroy is not modifyable");
+		throw new UnsupportedOperationException("The History is not modifiable");
 	}
 
 	@Override
 	public void setMaxSize(int maxSize)
 	{
-		throw new UnsupportedOperationException("The Histroy is not modifyable");
+		throw new UnsupportedOperationException("The History is not modifiable");
 	}
 
 	@Override
@@ -51,5 +51,4 @@ public class UnmodifiableHistory<T extends Serializable> extends History<T>
 	{
 		return this;
 	}
-
 }
