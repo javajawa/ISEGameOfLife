@@ -735,7 +735,6 @@ public class TestPoliticalAgent extends AbstractAgent
 		}
 
 		//get opponent's trust value from "this" agent
-                
 		double opponentTrust;
 		if ((opponentID != null) && (getDataModel().getTrust(opponentID) != null))
 		{
