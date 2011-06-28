@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
@@ -74,15 +72,15 @@ public class EnvironmentDataModel extends AEnvDataModel
 	}
 
 	public EnvironmentDataModel(String environmentName,
-					HashMap<String, Food> availableFoodTypes)
+															HashMap<String, Food> availableFoodTypes)
 	{
 		this(environmentName, availableFoodTypes, null, 0);
 	}
 
 	public EnvironmentDataModel(String environmentName,
-					HashMap<String, Food> availableFoodTypes,
-					ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes,
-					double foodConsumedPerAdvice)
+															HashMap<String, Food> availableFoodTypes,
+															ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes,
+															double foodConsumedPerAdvice)
 	{
 		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
@@ -175,21 +173,20 @@ public class EnvironmentDataModel extends AEnvDataModel
 	}
 
 	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> groupType,
-					GroupDataInitialiser init)
+																 GroupDataInitialiser init)
 	{
-		assert(init != null);
 		if (allowedGroupTypes.contains(groupType))
 		{
 			Constructor<? extends AbstractGroupAgent> cons;
 			try
 			{
-				 cons = groupType.getConstructor(GroupDataInitialiser.class);
+				cons = groupType.getConstructor(GroupDataInitialiser.class);
 			}
 			catch (Throwable ex)
 			{
-				throw new IllegalArgumentException("Unable to create group " +
-								groupType.getSimpleName() +
-								" - no public constructor with single GroupDataInitialiser argument",
+				throw new IllegalArgumentException("Unable to create group "
+								+ groupType.getSimpleName()
+								+ " - no public constructor with single GroupDataInitialiser argument",
 								ex);
 			}
 			try
@@ -207,8 +204,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 		}
 		else
 		{
-			throw new IllegalArgumentException(groupType.getCanonicalName() +
-							" is not in the list of permissible groups");
+			throw new IllegalArgumentException(groupType.getCanonicalName()
+							+ " is not in the list of permissible groups");
 		}
 	}
 
