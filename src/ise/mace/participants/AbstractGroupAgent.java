@@ -5,7 +5,7 @@ import ise.mace.actions.DistributeFood;
 import ise.mace.actions.GroupOrder;
 import ise.mace.actions.RespondToApplication;
 import ise.mace.actions.VoteResult;
-import ise.mace.environment.EnvConnector;
+import ise.mace.environment.EnvironmentConnection;
 import ise.mace.environment.PublicEnvironmentConnection;
 import ise.mace.inputs.HuntResult;
 import ise.mace.inputs.JoinRequest;
@@ -62,7 +62,7 @@ public abstract class AbstractGroupAgent implements Participant
 	 * with the environment
 	 */
 	private PublicEnvironmentConnection conn;
-	private EnvConnector ec;
+	private EnvironmentConnection ec;
 	private EnvironmentConnector tmp_ec;
 	private Map<String, Double> huntResult;
 	private Map<Proposition, Integer> voteResult;

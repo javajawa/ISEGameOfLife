@@ -22,7 +22,7 @@ import presage.EnvironmentConnector;
  * <p>Public level access is handled by the {@link PublicEnvironmentConnection}
  * </p>
  */
-public class EnvConnector extends EnvironmentConnector
+public class EnvironmentConnection extends EnvironmentConnector
 {
 	/**
 	 * The Environment that the connection wraps
@@ -33,7 +33,7 @@ public class EnvConnector extends EnvironmentConnector
 	 * Creates a new environment connection
 	 * @param e The environment on which the connection is backed
 	 */
-	EnvConnector(Environment e)
+	EnvironmentConnection(Environment e)
 	{
 		super(e);
 		this.e = e;

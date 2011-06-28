@@ -522,7 +522,7 @@ public class Environment extends AbstractEnvironment
 		UUID id = UUID.randomUUID();
 		authenticator.put(registrationObject.getParticipantID(), id);
 		return new RegistrationResponse(registrationObject.getParticipantID(), id,
-						new EnvConnector(this));
+						new EnvironmentConnection(this));
 	}
 
 	@Override

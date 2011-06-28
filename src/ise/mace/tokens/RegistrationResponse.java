@@ -1,6 +1,6 @@
 package ise.mace.tokens;
 
-import ise.mace.environment.EnvConnector;
+import ise.mace.environment.EnvironmentConnection;
 import java.util.UUID;
 import presage.environment.messages.ENVRegistrationResponse;
 
@@ -10,9 +10,9 @@ import presage.environment.messages.ENVRegistrationResponse;
 public class RegistrationResponse extends ENVRegistrationResponse
 {
 	private static final long serialVersionUID = 1L;
-	protected EnvConnector ec;
+	protected EnvironmentConnection ec;
 
-	public RegistrationResponse(String id, UUID authCode, EnvConnector ec)
+	public RegistrationResponse(String id, UUID authCode, EnvironmentConnection ec)
 	{
 		super(id, authCode);
 		this.ec = ec;
@@ -30,7 +30,7 @@ public class RegistrationResponse extends ENVRegistrationResponse
 		return super.getAuthCode();
 	}
 
-	public EnvConnector getEc()
+	public EnvironmentConnection getEc()
 	{
 		return ec;
 	}

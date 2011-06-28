@@ -7,7 +7,7 @@ import ise.mace.actions.Proposal;
 import ise.mace.actions.Proposal.ProposalType;
 import ise.mace.actions.Vote;
 import ise.mace.agents.PoliticalAgentGroup;
-import ise.mace.environment.EnvConnector;
+import ise.mace.environment.EnvironmentConnection;
 import ise.mace.environment.PublicEnvironmentConnection;
 import ise.mace.inputs.ApplicationResponse;
 import ise.mace.inputs.ConsumeFood;
@@ -268,7 +268,7 @@ abstract public class AbstractAgent implements Participant
 	 * with the environment
 	 */
 	private PublicEnvironmentConnection conn;
-	private EnvConnector ec;
+	private EnvironmentConnection ec;
 	private EnvironmentConnector tmp_ec;
 	private InputQueue msgQ = new InputQueue("inputs");
 	private ArrayList<InputHandler> handlers = new ArrayList<InputHandler>();
