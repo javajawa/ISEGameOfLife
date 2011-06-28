@@ -600,6 +600,9 @@ public class TestPoliticalAgent extends AbstractAgent
 				choice = opponentPreviousChoice;
 				break;
 
+			case NOSTRATEGY:
+				throw new UnsupportedOperationException("What should an agent with no strategy do?");
+
 			default:
 				throw new IllegalStateException("Agent type was not recognised");
 		}
