@@ -73,7 +73,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final ApplyToGroup app = (ApplyToGroup)action;
+			final ApplyToGroup app = (ApplyToGroup) action;
 			if (app.getGroup().equals(AbstractAgent.leaveGroup))
 			{
 				String old_group = dmodel.getAgentById(actorID).getGroupId();
@@ -170,7 +170,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final GroupOrder order = (GroupOrder)action;
+			final GroupOrder order = (GroupOrder) action;
 			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(),
 							order.getTeam()));
 			logger.log(Level.FINE, "Group {0} has created team {1} including {2}",
@@ -205,12 +205,12 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final Hunt act = (Hunt)action;
+			final Hunt act = (Hunt) action;
 			final Food food = dmodel.getFoodById(act.getFoodTypeId());
 
 			// This line gets the agents datamodel
 			// Just trust me on that one :P
-			final PublicAgentDataModel am = ((AbstractAgent)sim.getPlayer(actorID)).getDataModel();
+			final PublicAgentDataModel am = ((AbstractAgent) sim.getPlayer(actorID)).getDataModel();
 			if (am.getHuntingTeam() == null)
 			{
 				Input result;
@@ -268,7 +268,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			RespondToApplication application = (RespondToApplication)action;
+			RespondToApplication application = (RespondToApplication) action;
 
 			sim.getPlayer(application.getAgent()).enqueueInput(new ApplicationResponse(
 							sim.getTime(), actorID, application.wasAccepted()));
@@ -317,7 +317,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final DistributeFood result = (DistributeFood)action;
+			final DistributeFood result = (DistributeFood) action;
 			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID,
 							result.getAmountHunted(), result.getAmountRecieved(),
 							sim.getTime()));
@@ -353,7 +353,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final Proposal prop = (Proposal)action;
+			final Proposal prop = (Proposal) action;
 			final Proposition p = new Proposition(prop.getType(), actorID,
 							prop.getForGroup(), dmodel.time);
 
@@ -363,7 +363,10 @@ public class Environment extends AbstractEnvironment
 								nameOf(actorID),
 								prop.getType(), nameOf(prop.getForGroup())
 							});
-			if (dmodel.getGroupById(prop.getForGroup()) == null) return null;
+			if (dmodel.getGroupById(prop.getForGroup()) == null)
+			{
+				return null;
+			}
 			for (String member : dmodel.getGroupById(prop.getForGroup()).getMemberList())
 			{
 				sim.getPlayer(member).enqueueInput(p);
@@ -395,7 +398,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final Vote vote = (Vote)action;
+			final Vote vote = (Vote) action;
 			final ise.mace.inputs.Vote v = new ise.mace.inputs.Vote(vote, dmodel.time,
 							actorID);
 
@@ -434,7 +437,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final VoteResult vote = (VoteResult)action;
+			final VoteResult vote = (VoteResult) action;
 			final ise.mace.inputs.VoteResult v = new ise.mace.inputs.VoteResult(vote,
 							dmodel.time);
 
@@ -497,7 +500,6 @@ public class Environment extends AbstractEnvironment
 			return food;
 		}
 	}
-
 	/**
 	 * Reference to the data model, of the class which it will actually be.
 	 * Hides the {@link AEnvDataModel} in the {@link AbstractEnvironment}
@@ -553,8 +555,8 @@ public class Environment extends AbstractEnvironment
 		"queueactions", "randomseed", "dmodel"
 	})
 	public Environment(long randomseed,
-					EnvironmentDataModel dmodel,
-					Class<? extends AbstractFreeAgentGroup> freeAgentHandler)
+										 EnvironmentDataModel dmodel,
+										 Class<? extends AbstractFreeAgentGroup> freeAgentHandler)
 	{
 		super(true, randomseed);
 		this.dmodel = dmodel;
@@ -603,7 +605,7 @@ public class Environment extends AbstractEnvironment
 	{
 		if (registrationObject instanceof RegistrationRequest)
 		{
-			final RegistrationRequest obj = (RegistrationRequest)registrationObject;
+			final RegistrationRequest obj = (RegistrationRequest) registrationObject;
 			if (!dmodel.registerParticipant(obj))
 			{
 				return null;
@@ -611,7 +613,7 @@ public class Environment extends AbstractEnvironment
 		}
 		else if (registrationObject instanceof GroupRegistration)
 		{
-			final GroupRegistration obj = (GroupRegistration)registrationObject;
+			final GroupRegistration obj = (GroupRegistration) registrationObject;
 			if (!dmodel.registerGroup(obj))
 			{
 				return null;
@@ -854,7 +856,7 @@ public class Environment extends AbstractEnvironment
 	 * @see PoliticalAgentGroup
 	 */
 	String createGroupAgent(double food, double economic, double social,
-					String name)
+													String name)
 	{
 		AbstractAgent a = new PoliticalAgentGroup(food, 0, AgentType.R, economic,
 						social, name);
@@ -957,7 +959,10 @@ public class Environment extends AbstractEnvironment
 	 */
 	boolean isAgentId(String id)
 	{
-		if (id == null) return false;
+		if (id == null)
+		{
+			return false;
+		}
 		if (sim.isParticipantActive(id))
 		{
 			return (sim.getPlayer(id)) instanceof AbstractAgent;
@@ -976,7 +981,10 @@ public class Environment extends AbstractEnvironment
 	 */
 	boolean isGroupId(String gid)
 	{
-		if (gid == null) return false;
+		if (gid == null)
+		{
+			return false;
+		}
 		if (sim.isParticipantActive(gid))
 		{
 			if (sim.getPlayer(gid) instanceof AbstractGroupAgent)
@@ -1005,7 +1013,7 @@ public class Environment extends AbstractEnvironment
 	 */
 	Set<String> getGroups()
 	{
-		return dmodel.getAvailableGroups();
+		return dmodel.getGroups();
 	}
 
 	/**
@@ -1021,16 +1029,22 @@ public class Environment extends AbstractEnvironment
 	 * @see AbstractAgent#giveAdvice(java.lang.String, ise.mace.models.HuntingTeam)
 	 */
 	Food seekAdvice(String agent, UUID authToken, String fromAgent,
-					HuntingTeam agentsTeam)
+									HuntingTeam agentsTeam)
 	{
-		if (authenticator.get(agent) != authToken) throw new IllegalAccessError(
+		if (authenticator.get(agent) != authToken)
+		{
+			throw new IllegalAccessError(
 							"Incorrect access credentials");
-		AbstractAgent a = (AbstractAgent)sim.getPlayer(fromAgent);
-		AbstractAgent b = (AbstractAgent)sim.getPlayer(agent);
+		}
+		AbstractAgent a = (AbstractAgent) sim.getPlayer(fromAgent);
+		AbstractAgent b = (AbstractAgent) sim.getPlayer(agent);
 
 		String ga = a.getDataModel().getGroupId();
 		String gb = b.getDataModel().getGroupId();
-		if (ga == null ? gb != null : !ga.equals(gb)) return null;
+		if (ga == null ? gb != null : !ga.equals(gb))
+		{
+			return null;
+		}
 
 		return a.advise(agent, agentsTeam);
 	}
@@ -1065,6 +1079,7 @@ public class Environment extends AbstractEnvironment
 		}
 		return null;
 	}
+
 	/**
 	 * Returns the set of all {@link AbstractAgent agents} current alive
 	 * @return IDs of all current agents
@@ -1075,6 +1090,7 @@ public class Environment extends AbstractEnvironment
 	{
 		return dmodel.getAgents();
 	}
+
 	/**
 	 * Returns a list of all {@link AbstractAgent agents} that are not currently
 	 * part of a {@link AbstractGroupAgent group}
