@@ -207,7 +207,7 @@ class GroupDataModel extends APlayerDataModel
 			variance += (v - mu) * (v - mu);
 
 		double st_dev = 2 * Math.sqrt(variance / n);
-		return 1 - ScaledDouble.scale(st_dev, n, mu);
+		return 1 - ScaledDouble.scale(st_dev, 1, 0.35);
 	}
 
 	List<String> getPanel()

@@ -268,7 +268,14 @@ public class DatabasePlugin implements Plugin
 		//TreeSet<String> newGroups = new TreeSet<String>(ec.isAgentId(name));
 		//remove already tracked groups
 		newGroups.removeAll(trackedGroups.keySet());
-		for (String g : newGroups)
+                //get rid of special group
+                String SpecialID = "";
+                for(String group : newGroups)
+                   if(ec.getGroupById(group).getName().equals("Group #2"))
+                       SpecialID = group;
+                newGroups.remove(SpecialID);                
+		
+                for (String g : newGroups)
 		{
 			int groupid = ++groupIdGenerator;
 			if (!loans) wrap.groupAdd(g, groupid, round);
