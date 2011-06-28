@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ise.mace.agents;
 
 import static ise.mace.models.ScaledDouble.scale;
