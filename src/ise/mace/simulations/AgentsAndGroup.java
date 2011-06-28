@@ -17,7 +17,7 @@ public class AgentsAndGroup extends GenericSimulation
 {
 	public AgentsAndGroup()
 	{
-		super("Simle Groups Testing Simulaton", 200, 0, 0);
+		super("Simple Groups Testing Simulaton", 200, 0, 0);
 	}
 
 	@Override
