@@ -20,13 +20,13 @@ import java.util.Random;
  * <p>War Games Simulation</p>
  *
  * <ul>
- * <li>Cycles: 500</li>
- * <li>Agents: 80 {@link WarAgent}s
+ * <li>Cycles: 10000</li>
+ * <li>Agents: 40 {@link WarAgent}s
  *   <ul>
  *     <li>Strategy: {@link AgentType#AC Always Co-operate}</li>
  *     <li>Initial Food: 20</li>
  *     <li>Default Consumption: 2</li>
- *     <li>Beliefs: 20 * 4 Types
+ *     <li>Beliefs: 10 * 4 Types
  *       <ul>
  *         <li>Communist:  (0.1,0.1) to (0.2, 0.2)</li>
  *         <li>Fascist:    (0.9,0.1) to (1.0, 0.2)</li>
@@ -49,7 +49,7 @@ import java.util.Random;
  *   </ul>
  * </li>
  * <li>Database: None</li>
- * <li>Default seed: 0</li>
+ * <li>Default seed: 0.1</li>
  * </ul>
  */
 public class WarGames extends GenericSimulation
