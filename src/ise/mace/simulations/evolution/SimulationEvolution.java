@@ -1,10 +1,10 @@
-package ise.gameoflife.simulations.evolution;
+package ise.mace.simulations.evolution;
 
 import java.util.Random;
 
-import ise.gameoflife.genetics.Evolution;
-import ise.gameoflife.participants.PublicAgentDataModel;
-import ise.gameoflife.simulations.GeneticAgentSimulation;
+import ise.mace.genetics.Evolution;
+import ise.mace.participants.PublicAgentDataModel;
+import ise.mace.simulations.GeneticAgentSimulation;
 
 public class SimulationEvolution
 	extends Evolution<SimulationGenome, GeneticAgentSimulation>
