@@ -21,10 +21,44 @@ import ise.mace.tokens.AgentType;
 import java.util.Random;
 
 /**
+ * <p>Basic Politics Simulation</p>
+ *
+ * <ul>
+ * <li>Cycles: 500</li>
+ * <li>Agents: 80 {@link PoliticalAgent}s
+ *   <ul>
+ *     <li>20 of each Strategy in {@link AgentType}</li>
+ *     <li>Initial Food: 20</li>
+ *     <li>Default Consumption: 2</li>
+ *     <li>Beliefs: Randomised</li>
+ *   </ul>
+ * <li>Advice Consumption: 0.1</li>
+ * <li>Free Group: {@link BasicFreeAgentGroup}</li>
+ * <li>Groups:
+ *   <ul>
+ *     <li>{@link TestPoliticalGroup}</li>
+ *     <li>{@link SpecialGroup}</li>
+ *   </ul>
+ * </li>
+ * <li>Foods:
+ *   <ul>
+ *     <li>Rabbit: 2 from 1</li>
+ *     <li>Stag: 5 from 2</li>
+ *   </ul>
+ * </li>
+ * <li>Database: Primary Remote. +Politics</li>
+ * <li>Default seed: 0</li>
+ * </ul>
+ */
+/**
  *
  */
 public class Politics extends GenericSimulation
 {
+	/**
+	 * Creates a Politics simulation
+	 * @see Politics
+	 */
 	public Politics()
 	{
 		super("Basic Politics Testing Bed", 500, 0, 0.1);
