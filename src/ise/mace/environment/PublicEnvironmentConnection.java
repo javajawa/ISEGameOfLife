@@ -2,6 +2,7 @@ package ise.mace.environment;
 
 import ise.mace.models.Food;
 import ise.mace.models.GroupDataInitialiser;
+import ise.mace.participants.AbstractAgent;
 import ise.mace.participants.PublicAgentDataModel;
 import ise.mace.participants.AbstractGroupAgent;
 import ise.mace.participants.PublicGroupDataModel;
@@ -9,12 +10,32 @@ import ise.mace.tokens.TurnType;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import presage.Participant;
 
 /**
- * Used to access any information available to objects about the environment
+ * <p>Used to access any information available to objects about the {@link
+ * Environment}</p>
+ * <p>This singleton class wraps the {@link EnvConnector Environment Conneciton}
+ * for use in the public security level.</p>
+ * <p>The {@link #inst instance} is initialised by the Environment before {@link
+ * Participant#initialise(presage.EnvironmentConnector) initialise} is called,
+ * so that {@link AbsractAgent agents} and {@link AbstractGroupAgent groups} can
+ * always get the instance from the {@link AbstractAgent#getConn() abstract
+ * superclass} or {@link #getInstance() directly} form here.</p>
+ *
+ * <p>The singleton nature of this class means that no two environments and,
+ * therefore, two simulations, can operate in the same process, as the instance
+ * would only be able to reference one of them</p>
  */
 public class PublicEnvironmentConnection
 {
+	/**
+	 * <p>The static singleton instance, which can be publicly be retrieved via the
+	 * static {@link #getInstance() getInstance()} method.</p>
+	 *
+	 * <p>The instance is created by the {@link Environment} by passing an
+	 * instance of the framework security connector {@link to the {@link #PublicEnvironmentConnection(ise.mace.environment.EnvConnector)
+	 */
 	private static PublicEnvironmentConnection inst;
 	public final static Logger logger = Logger.getLogger("mace.PublicLogger");
 
