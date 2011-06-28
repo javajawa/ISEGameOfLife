@@ -11,10 +11,38 @@ import ise.mace.plugins.HunterListPlugin;
 import ise.mace.plugins.GroupPoliticalCompassPlugin;
 
 /**
+ * <p>Politics Simulation</p>
  *
+ * <ul>
+ * <li>Cycles: 200</li>
+ * <li>Agents: 10 {@link PoliticalAgent}s
+ *   <ul>
+ *     <li>Initial Food: 20</li>
+ *     <li>Default Consumption: 2</li>
+ *   </ul>
+ * <li>Advice Consumption: 0.0</li>
+ * <li>Free Group: Null</li>
+ * <li>Groups:
+ *   <ul>
+ *     <li>{@link TestGroup}</li>
+ *   </ul>
+ * </li>
+ * <li>Foods:
+ *   <ul>
+ *     <li>Rabbit: 1 from 1</li>
+ *     <li>Stag: 5 from 2</li>
+ *   </ul>
+ * </li>
+ * <li>Database: Local Databse/li>
+ * <li>Default seed: 0</li>
+ * </ul>
  */
 public class AgentsAndGroup extends GenericSimulation
 {
+	/**
+	 * Creates an AgentsAndGroup() simulation
+	 * @see AgentsAndGroup
+	 */
 	public AgentsAndGroup()
 	{
 		super("Simple Groups Testing Simulaton", 200, 0, 0);
@@ -54,7 +82,7 @@ public class AgentsAndGroup extends GenericSimulation
 	{
 		addPlugin(new DebugSwitchPlugin());
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
-		addPlugin(new DatabasePlugin("Simulation comment", false));
+		addPlugin(new DatabasePlugin(comment, false));
 		addPlugin(new HunterListPlugin());
 		addPlugin(new GroupPoliticalCompassPlugin());
 	}
