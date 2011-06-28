@@ -15,10 +15,44 @@ import ise.mace.tokens.AgentType;
 import java.util.Random;
 
 /**
+ * <p>Loans Simulation</p>
+ *
+ * <ul>
+ * <li>Cycles: 500</li>
+ * <li>Agents: 80 {@link PoliticalAgent}s
+ *   <ul>
+ *     <li>20 of each Strategy in {@link AgentType}</li>
+ *     <li>Initial Food: 20</li>
+ *     <li>Default Consumption: 2</li>
+ *     <li>Beliefs: Randomised</li>
+ *   </ul>
+ * <li>Advice Consumption: 0.1</li>
+ * <li>Free Group: {@link BasicFreeAgentGroup}</li>
+ * <li>Groups:
+ *   <ul>
+ *     <li>{@link LoansGroup}</li>
+ *     <li>{@link SpecialGroup}</li>
+ *   </ul>
+ * </li>
+ * <li>Foods:
+ *   <ul>
+ *     <li>Rabbit: 2 from 1</li>
+ *     <li>Stag: 5 from 2</li>
+ *   </ul>
+ * </li>
+ * <li>Database: Primary Remote. +Loans</li>
+ * <li>Default seed: 0</li>
+ * </ul>
+ */
+/**
  *
  */
 public class Loans extends GenericSimulation
 {
+	/**
+	 * Creates a Loans simulation
+	 * @see Loans
+	 */
 	public Loans()
 	{
 		super("Basic Loans Testing Bed", 500, 0, 0.1);
