@@ -867,18 +867,23 @@ public class Environment extends AbstractEnvironment
 	/**
 	 * Create a new {@link AbstractGroupAgent group} of a particular class,
 	 * initialise it, and invite some {@link AbstractAgent agents} to the group
-	 * @param groupType The class of group that you wish to create
+	 * @param type The class of group that you wish to create
 	 * @param init The initialiser instance to initialise the group with
 	 * @return The id of the new group, or null if the group could not be created
-	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser, java.lang.String[])
+	 * @throws IllegalArgumentException If the group class is not in the list of
+	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * throw an exception
+	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
+	 * be initialised with a {@link GroupDataInitialiser}
+	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser)
 	 * @see #getAllowedGroupTypes()
 	 * @see AbstractGroupAgent
 	 * @see GroupDataInitialiser
 	 */
-	String createGroup(Class<? extends AbstractGroupAgent> groupType,
-					GroupDataInitialiser init)
+	String createGroup(Class<? extends AbstractGroupAgent> type,
+										 GroupDataInitialiser init)
 	{
-		AbstractGroupAgent g = dmodel.createGroup(groupType, init);
+		AbstractGroupAgent g = dmodel.createGroup(type, init);
 		g.initialise(new EnvironmentConnector(this));
 		sim.addParticipant(g.getId(), g);
 		sim.activateParticipant(g.getId());
@@ -893,6 +898,8 @@ public class Environment extends AbstractEnvironment
 	 * @param invitees A list of the ids of all agents you want to invite
 	 * @return The id of the new group, or null if the group could not be created
 	 * @throws IllegalArgumentException If the group class is not in the list of
+	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * throw an exception
 	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
 	 * be initialised with a {@link GroupDataInitialiser}
 	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser)
@@ -901,7 +908,7 @@ public class Environment extends AbstractEnvironment
 	 * @see GroupDataInitialiser
 	 */
 	String createGroup(Class<? extends AbstractGroupAgent> type,
-					GroupDataInitialiser init, String... invitees)
+										 GroupDataInitialiser init, String... invitees)
 	{
 		String gid = createGroup(type, init);
 		if (gid != null)

@@ -161,7 +161,12 @@ public class PublicEnvironmentConnection
 	 * @param type The class of group that you wish to create
 	 * @param init The initialiser instance to initialise the group with
 	 * @return The id of the new group, or null if the group could not be created
-	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser, java.lang.String[])
+	 * @throws IllegalArgumentException If the group class is not in the list of
+	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * throw an exception
+	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
+	 * be initialised with a {@link GroupDataInitialiser}
+	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser)
 	 * @see #getAllowedGroupTypes()
 	 * @see AbstractGroupAgent
 	 * @see GroupDataInitialiser
@@ -180,6 +185,8 @@ public class PublicEnvironmentConnection
 	 * @param invitees A list of the ids of all agents you want to invite
 	 * @return The id of the new group, or null if the group could not be created
 	 * @throws IllegalArgumentException If the group class is not in the list of
+	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * throw an exception
 	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
 	 * be initialised with a {@link GroupDataInitialiser}
 	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser)
