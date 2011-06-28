@@ -542,10 +542,11 @@ public class Environment extends AbstractEnvironment
 	}
 
 	/**
-	 *
-	 * @param randomseed
-	 * @param dmodel
-	 * @param freeAgentHandler
+	 * Creates a new Environment with the specified parameters
+	 * @param randomseed Seed for random number generator
+	 * @param dmodel The data model for the environment
+	 * @param freeAgentHandler The handler class to use for ungrouped agents, see
+	 * {@link #freeAgentHandler}
 	 */
 	@EnvironmentConstructor(
 	{
@@ -560,6 +561,12 @@ public class Environment extends AbstractEnvironment
 		this.freeAgentHandler = freeAgentHandler;
 	}
 
+	/**
+	 * <p>Callback for when a {@link Participant} leaves the environment</p>
+	 * @param deregistrationObject De-register object
+	 * @return Whether the de-registration was successful. This will be false if
+	 * the participant was not registered with the Environment
+	 */
 	@Override
 	public boolean deregister(ENVDeRegisterRequest deregistrationObject)
 	{
@@ -581,6 +588,15 @@ public class Environment extends AbstractEnvironment
 		return succeeded;
 	}
 
+	/**
+	 * <p>Callback for when an agent registers with the environment</p>
+	 * @param registrationObject The registration object. {@link AbstractAgent
+	 * agents} should use the {@link RegistrationRequest} class, {@link
+	 * AbstractGroupAgent groups} should use the {@link GroupRegistration} class
+	 * @return The response to the registration request, or null if the
+	 * registration failed
+	 * @see #deregister(presage.environment.messages.ENVDeRegisterRequest)
+	 */
 	@Override
 	public ENVRegistrationResponse onRegister(
 					ENVRegisterRequest registrationObject)
@@ -607,12 +623,25 @@ public class Environment extends AbstractEnvironment
 						new EnvironmentConnection(this));
 	}
 
+	/**
+	 * Returns the {@link EnvironmentDataModel}
+	 * @return The {@link EnvironmentDataModel}
+	 */
 	@Override
 	public EnvDataModel getDataModel()
 	{
 		return dmodel;
 	}
 
+	/**
+	 * <p>Initialises this simulation</p>
+	 * <ul>
+	 * <li>Creates and adds the ActionHandlers</li>
+	 * <li>Creates the {@link PublicEnvironmentConnection}</li>
+	 * <li>Creates the {@link AbstractFreeAgentGroup Free Agent Group}</li>
+	 * </ul>
+	 * @param sim The simulation this environment is a part of
+	 */
 	@Override
 	@SuppressWarnings("ResultOfObjectAllocationIgnored")
 	protected void onInitialise(Simulation sim)
@@ -650,11 +679,24 @@ public class Environment extends AbstractEnvironment
 		authenticator.put(getId(), UUID.fromString(getId()));
 	}
 
+	/**
+	 * Unused abstract function
+	 */
 	@Override
 	protected void updatePerceptions()
 	{
 	}
 
+	/**
+	 * <p>Environment's primary execution function</p>
+	 * <ul>
+	 * <li>{@link #processTeamHunts() Processes Team Hunts}</li>
+	 * <li>On {@link TurnType#TeamSelect Team Select} turn, calls the {@link
+	 * AbstractFreeAgentGroup Free Agent Group} to put all {@link AbstractAgent
+	 * agents} (who are not in {@link AbstractGroupAgent groups}) int {@link
+	 * HuntingTeam teams}</li>
+	 * </ul>
+	 */
 	@Override
 	protected void updatePhysicalWorld()
 	{
@@ -696,6 +738,11 @@ public class Environment extends AbstractEnvironment
 		}
 	}
 
+	/**
+	 * Processes the {@link Hunt} actions of {@link AbstractAgent agents} that
+	 * were hunting as part of {@link HuntingTeam HuntingTeams} whose hunt records
+	 * were added to {@link #storedHuntResults}
+	 */
 	private void processTeamHunts()
 	{
 		for (HuntingTeam team : storedHuntResults.keySet())
@@ -750,32 +797,62 @@ public class Environment extends AbstractEnvironment
 		storedHuntResults.clear();
 	}
 
+	/**
+	 * Unused abstract function
+	 */
 	@Override
 	protected void updateNetwork()
 	{
 	}
 
+	/**
+	 * Updates the time in the model
+	 * @param cycle New cycle time
+	 */
 	@Override
 	public void setTime(long cycle)
 	{
 		this.dmodel.setTime(cycle);
 	}
 
+	/**
+	 * Gets the public Logger
+	 * @return A static logger instance
+	 */
 	Logger getMainLogger()
 	{
 		return logger;
 	}
 
+	/**
+	 * Returns what {@link TurnType turn} it is in the round
+	 * @return The current turn type
+	 * @see #getRoundsPassed()
+	 */
 	public TurnType getCurrentTurnType()
 	{
 		return dmodel.getTurnType();
 	}
 
+	/**
+	 * Gets the total number of rounds past
+	 * @return Total completed rounds
+	 * @see TurnType
+	 */
 	public int getRoundsPassed()
 	{
 		return dmodel.getCyclesPassed();
 	}
 
+	/**
+	 * Creates an agent that represents a group
+	 * @param food Amount of food
+	 * @param economic Economic location
+	 * @param social Social location
+	 * @param name Name
+	 * @return The id of the Group-Agent
+	 * @see PoliticalAgentGroup
+	 */
 	String createGroupAgent(double food, double economic, double social,
 					String name)
 	{
@@ -787,6 +864,17 @@ public class Environment extends AbstractEnvironment
 		return a.getId();
 	}
 
+	/**
+	 * Create a new {@link AbstractGroupAgent group} of a particular class,
+	 * initialise it, and invite some {@link AbstractAgent agents} to the group
+	 * @param groupType The class of group that you wish to create
+	 * @param init The initialiser instance to initialise the group with
+	 * @return The id of the new group, or null if the group could not be created
+	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser, java.lang.String[])
+	 * @see #getAllowedGroupTypes()
+	 * @see AbstractGroupAgent
+	 * @see GroupDataInitialiser
+	 */
 	String createGroup(Class<? extends AbstractGroupAgent> groupType,
 					GroupDataInitialiser init)
 	{
@@ -797,6 +885,21 @@ public class Environment extends AbstractEnvironment
 		return g.getId();
 	}
 
+	/**
+	 * Create a new {@link AbstractGroupAgent group} of a particular class,
+	 * initialise it, and invite some {@link AbstractAgent agents} to the group
+	 * @param type The class of group that you wish to create
+	 * @param init The initialiser instance to initialise the group with
+	 * @param invitees A list of the ids of all agents you want to invite
+	 * @return The id of the new group, or null if the group could not be created
+	 * @throws IllegalArgumentException If the group class is not in the list of
+	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
+	 * be initialised with a {@link GroupDataInitialiser}
+	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser)
+	 * @see #getAllowedGroupTypes()
+	 * @see AbstractGroupAgent
+	 * @see GroupDataInitialiser
+	 */
 	String createGroup(Class<? extends AbstractGroupAgent> type,
 					GroupDataInitialiser init, String... invitees)
 	{
@@ -811,11 +914,40 @@ public class Environment extends AbstractEnvironment
 		return gid;
 	}
 
+	/**
+	 * Returns the list of all classes of group that may be used in this
+	 * simulation.
+	 *
+	 * Each of these classes will extend {@link AbstractGroupAgent}.
+	 * The validity of this classes is not checked at simulation time - the
+	 * framework may not be able to initialise them with a {@link
+	 * GroupDataInitialiser}.
+	 *
+	 * The returned classes are also not guaranteed to be concrete
+	 * implementations.
+	 *
+	 * Groups of these classes can then be created with {@link
+	 * #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser)
+	 * createGroup()} with an appropriate initialiser.
+	 * @return List of all permitted Group classes
+	 * @see AbstractGroupAgent
+	 * @see GroupDataInitialiser
+	 * @see #createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser)
+	 * @see #getGroups()
+	 */
 	List<Class<? extends AbstractGroupAgent>> getAllowedGroupTypes()
 	{
 		return dmodel.getAllowedGroupTypes();
 	}
 
+	/**
+	 * Determines if the supplied UUID identifies an {@link AbstractAgent agnet}
+	 * @param id The UUID (or derivative id)
+	 * @return Whether this represents a group
+	 * @see #isGroupId(java.lang.String)
+	 * @see PublicAgentDataModel#getId()
+	 * @see PublicGroupDataModel#getId()
+	 */
 	boolean isAgentId(String id)
 	{
 		if (id == null) return false;
@@ -826,6 +958,15 @@ public class Environment extends AbstractEnvironment
 		return false;
 	}
 
+	/**
+	 * Determines if the supplied UUID identifies a {@link AbstractGroupAgent
+	 * group}
+	 * @param gid The UUID (or derivative id)
+	 * @return Whether this represents a group
+	 * @see #isAgentId(java.lang.String)
+	 * @see PublicAgentDataModel#getId()
+	 * @see PublicGroupDataModel#getId()
+	 */
 	boolean isGroupId(String gid)
 	{
 		if (gid == null) return false;
@@ -839,16 +980,39 @@ public class Environment extends AbstractEnvironment
 		return false;
 	}
 
+	/**
+	 * Returns the {@link Environment} Environment's id
+	 * @return The Environment's id
+	 * @see Environment#getId()
+	 */
 	public String getId()
 	{
 		return dmodel.getId();
 	}
 
+	/**
+	 * Returns the set of all {@link AbstractGroupAgent groups} current active
+	 * @return IDs of all current groups
+	 * @see #getGroupById(java.lang.String)
+	 * @see #getAgents()
+	 */
 	Set<String> getGroups()
 	{
 		return dmodel.getAvailableGroups();
 	}
 
+	/**
+	 * Get advice for a calling {@link AbstractAgent agent} from a remote agent
+	 * as the best option for hunting
+	 * @param agent The source agent
+	 * @param authToken The token used to verify the source agent's identification
+	 * @param fromAgent The agent that is to advise the source agent
+	 * @param agentsTeam The team that the source agent is a member of
+	 * @return The food that they are advised to hunt
+	 * @see AbstractAgent#advise(java.lang.String, ise.mace.models.HuntingTeam)
+	 * @see AbstractAgent#seekAvice(java.lang.String)
+	 * @see AbstractAgent#giveAdvice(java.lang.String, ise.mace.models.HuntingTeam)
+	 */
 	Food seekAdvice(String agent, UUID authToken, String fromAgent,
 					HuntingTeam agentsTeam)
 	{
@@ -864,11 +1028,24 @@ public class Environment extends AbstractEnvironment
 		return a.advise(agent, agentsTeam);
 	}
 
+	/**
+	 * Gets the amount of food consumes by asking someone for advice
+	 * @return Amount of food
+	 * @see AbstractAgent#seekAvice(java.lang.String)
+	 */
 	double getFoodConsumedPerAdvice()
 	{
 		return dmodel.getFoodConsumedPerAdvice();
 	}
 
+	/**
+	 * Returns the name of an {@link AbstractAgent agent} or {@link
+	 * AbstractGroupAgent group} based on a given id
+	 * @param id The id
+	 * @return The name matched with that id (or null if not located)
+	 * @see PublicAgentDataModel#getName()
+	 * @see PublicGroupDataModel#getName()
+	 */
 	String nameOf(String id)
 	{
 		if (this.isAgentId(id))
@@ -881,32 +1058,66 @@ public class Environment extends AbstractEnvironment
 		}
 		return null;
 	}
-
+	/**
+	 * Returns the set of all {@link AbstractAgent agents} current alive
+	 * @return IDs of all current agents
+	 * @see #getAgentById(java.lang.String)
+	 * @see #getGroups()
+	 */
 	Set<String> getAgents()
 	{
 		return dmodel.getAgents();
 	}
-
+	/**
+	 * Returns a list of all {@link AbstractAgent agents} that are not currently
+	 * part of a {@link AbstractGroupAgent group}
+	 * @return The IDs of all un-grouped agents
+	 * @see #getAgentById(java.lang.String) getAgentById
+	 */
 	List<String> getUngroupedAgents()
 	{
 		return dmodel.getUngroupedAgents();
 	}
 
+	/**
+	 * Gets the agent data object associated with a particular id, which is safe
+	 * for being passed to other agents without giving them too much information
+	 * @param id The id to search for
+	 * @return The agent object, or null if not found
+	 * @see #getAgents()
+	 */
 	PublicAgentDataModel getAgentById(String id)
 	{
 		return dmodel.getAgentById(id);
 	}
 
+	/**
+	 * Gets the group object associated with a particular id
+	 * @param id The id to search for
+	 * @return The group object, or null if not found
+	 * @see #getGroups()
+	 */
 	PublicGroupDataModel getGroupById(String id)
 	{
 		return dmodel.getGroupById(id);
 	}
 
+	/**
+	 * Gets the food object associated with a particular id
+	 * @param id The id to search for
+	 * @return The food object, or null if not found
+	 * @see #availableFoods()
+	 */
 	Food getFoodById(UUID id)
 	{
 		return dmodel.getFoodById(id);
 	}
 
+	/**
+	 * Finds what food types are available to hunt
+	 * @return set of available food.
+	 * @see #getFoodById(java.util.UUID)
+	 */
 	Set<Food> availableFoods()
 	{
 		return dmodel.availableFoods();
