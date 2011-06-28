@@ -22,7 +22,7 @@ import presage.annotations.PluginConstructor;
  * compass, using information from the simulation and its history.
  *
  */
-public class PoliticalCompassPlugin extends JPanel implements Plugin
+public class GroupPoliticalCompassPlugin extends JPanel implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static Logger logger = Logger.getLogger(
@@ -34,20 +34,20 @@ public class PoliticalCompassPlugin extends JPanel implements Plugin
 
 	/**
 	 */
-	public PoliticalCompassPlugin()
+	public GroupPoliticalCompassPlugin()
 	{
 		this.outputdirectory = null;
 	}
 
 	/**
-	 * Creates a new instance of the PoliticalCompassPlugin
+	 * Creates a new instance of the GroupPoliticalCompassPlugin
 	 * @param outputdirectory Path to write the final video to
 	 */
 	@PluginConstructor(
 	{
 		"outputdirectory"
 	})
-	public PoliticalCompassPlugin(String outputdirectory)
+	public GroupPoliticalCompassPlugin(String outputdirectory)
 	{
 		super();
 		this.outputdirectory = outputdirectory;

@@ -6,7 +6,7 @@ import ise.mace.participants.AbstractFreeAgentGroup;
 import ise.mace.plugins.DebugSwitchPlugin;
 import ise.mace.plugins.HunterListPlugin;
 import ise.mace.plugins.HuntersAlivePlugin;
-import ise.mace.plugins.PoliticalCompassPlugin;
+import ise.mace.plugins.GroupPoliticalCompassPlugin;
 import ise.mace.simulations.GenericSimulation;
 import ise.mace.tokens.AgentType;
 
@@ -52,7 +52,7 @@ public class HungryDoubleAD extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 300, 200));
 		//addPlugin(new DatabasePlugin("Simulation comment",false));
 		addPlugin(new HunterListPlugin());
-		addPlugin(new PoliticalCompassPlugin());
+		addPlugin(new GroupPoliticalCompassPlugin());
 	}
 
 	@Override

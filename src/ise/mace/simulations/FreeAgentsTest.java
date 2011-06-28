@@ -8,7 +8,7 @@ import ise.mace.plugins.HuntersAlivePlugin;
 import ise.mace.plugins.database.DatabasePlugin;
 import ise.mace.plugins.DebugSwitchPlugin;
 import ise.mace.plugins.HunterListPlugin;
-import ise.mace.plugins.PoliticalCompassPlugin;
+import ise.mace.plugins.GroupPoliticalCompassPlugin;
 
 /**
  *
@@ -27,7 +27,7 @@ public class FreeAgentsTest extends GenericSimulation
 		addPlugin(new HuntersAlivePlugin(getPath() + "/population.png", 1500, 1200));
 		addPlugin(new DatabasePlugin(comment, false));
 		addPlugin(new HunterListPlugin());
-		addPlugin(new PoliticalCompassPlugin());
+		addPlugin(new GroupPoliticalCompassPlugin());
 	}
 
 	@Override

@@ -14,8 +14,8 @@ import ise.mace.plugins.GroupGraphs;
 import ise.mace.plugins.GroupInfo;
 import ise.mace.plugins.HunterInfo;
 import ise.mace.plugins.HunterListPlugin;
-import ise.mace.plugins.PoliticalCompass2Plugin;
-import ise.mace.plugins.PoliticalCompassPlugin;
+import ise.mace.plugins.AgentPoliticalCompassPlugin;
+import ise.mace.plugins.GroupPoliticalCompassPlugin;
 import ise.mace.plugins.database.DatabasePlugin;
 import ise.mace.tokens.AgentType;
 import java.util.Random;
@@ -82,8 +82,8 @@ public class Politics extends GenericSimulation
 		addPlugin(
 						new DatabasePlugin(comment + ": Politics ONLY", true, false, false));
 		addPlugin(new HunterListPlugin());
-		addPlugin(new PoliticalCompassPlugin());
-		addPlugin(new PoliticalCompass2Plugin());
+		addPlugin(new GroupPoliticalCompassPlugin());
+		addPlugin(new AgentPoliticalCompassPlugin());
 		addPlugin(new CompassControl());
 		addPlugin(new HunterInfo());
 		addPlugin(new GroupAgentInfo());

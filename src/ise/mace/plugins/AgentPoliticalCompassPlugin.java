@@ -36,7 +36,7 @@ import presage.annotations.PluginConstructor;
  * compass, using information from the simulation and its history.
  *
  */
-public class PoliticalCompass2Plugin extends JPanel implements Plugin
+public class AgentPoliticalCompassPlugin extends JPanel implements Plugin
 {
 	private static final long serialVersionUID = 1L;
 	private final static String title = "Political Compass2";
@@ -59,7 +59,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin
 
 	/**constructors
 	 */
-	public PoliticalCompass2Plugin()
+	public AgentPoliticalCompassPlugin()
 	{
 		this.outputdirectory = null;
 	}
@@ -72,7 +72,7 @@ public class PoliticalCompass2Plugin extends JPanel implements Plugin
 	{
 		"outputdirectory"
 	})
-	public PoliticalCompass2Plugin(String outputdirectory)
+	public AgentPoliticalCompassPlugin(String outputdirectory)
 	{
 		super();
 		this.outputdirectory = outputdirectory;
