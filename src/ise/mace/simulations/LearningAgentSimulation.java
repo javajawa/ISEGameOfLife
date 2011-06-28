@@ -65,7 +65,7 @@ public class LearningAgentSimulation extends EvolvableEntity<SimulationGenome>
 
 		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups,
 						foodConsumedPerAdvice);
-		Environment e = new Environment(true, randomSeed, dm,
+		Environment e = new Environment(randomSeed, dm,
 						BasicFreeAgentGroup.class);
 
 		NameGenerator.setRandomiser(new Random(randomSeed));

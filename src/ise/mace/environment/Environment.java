@@ -458,15 +458,21 @@ public class Environment extends AbstractEnvironment
 		super();
 	}
 
+	/**
+	 *
+	 * @param randomseed
+	 * @param dmodel
+	 * @param freeAgentHandler
+	 */
 	@EnvironmentConstructor(
 	{
 		"queueactions", "randomseed", "dmodel"
 	})
-	public Environment(boolean queueactions, long randomseed,
+	public Environment(long randomseed,
 					EnvironmentDataModel dmodel,
 					Class<? extends AbstractFreeAgentGroup> freeAgentHandler)
 	{
-		super(queueactions, randomseed);
+		super(true, randomseed);
 		this.dmodel = dmodel;
 		this.freeAgentHandler = freeAgentHandler;
 	}

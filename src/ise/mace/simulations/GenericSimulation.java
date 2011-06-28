@@ -111,7 +111,7 @@ abstract public class GenericSimulation
 
 		EnvironmentDataModel dm = new EnvironmentDataModel(comment, foods, groups,
 						foodConsumedPerAdvice);
-		Environment e = new Environment(true, randomSeed, dm,
+		Environment e = new Environment(randomSeed, dm,
 						chooseFreeAgentHandler());
 
 		NameGenerator.setRandomiser(new Random(randomSeed));
