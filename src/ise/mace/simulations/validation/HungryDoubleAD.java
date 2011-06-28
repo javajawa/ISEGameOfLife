@@ -11,7 +11,7 @@ import ise.mace.simulations.GenericSimulation;
 import ise.mace.tokens.AgentType;
 
 /**
- * <p>The Hungry Defecting Double/p>
+ * <p>The Hungry Defecting Double</p>
  * <p><strong>Proposition:</strong> Two always defecting agents will die despite the fact
  *	that teamwork could get them stags and let them live.</p>
  *

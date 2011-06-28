@@ -11,7 +11,7 @@ import ise.mace.simulations.GenericSimulation;
 import ise.mace.tokens.AgentType;
 
 /**
- * <p>Stupid Sharing/p>
+ * <p>Stupid Sharing</p>
  * <p><strong>Proposition:</strong> If one agent needs more food than the other, agents still distribute
  * the food equally. This can lead to the scenario where two agents hunt together, with one living
  * happily, but the other gradually starving. When the other dies, the remaining agent can only

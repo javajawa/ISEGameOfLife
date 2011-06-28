@@ -11,7 +11,7 @@ import ise.mace.simulations.GenericSimulation;
 import ise.mace.tokens.AgentType;
 
 /**
- * <p>The Hungry Cooperating Double/p>
+ * <p>The Hungry Cooperating Double</p>
  * <p><strong>Proposition:</strong> Two co-operating agents will die in a finite amount
  *	of time if the stag’s value is < twice their daily food requirements.</p>
  *
