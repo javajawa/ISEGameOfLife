@@ -55,7 +55,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	@Element
 	private TurnType turn;
 	@Element
-	private int cycles;
+	private int rounds;
 	@Element
 	private String id;
 	@Element
@@ -89,7 +89,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		this.allowedGroupTypes = allowedGroupTypes;
 
 		this.turn = TurnType.firstTurn;
-		this.cycles = 0;
+		this.rounds = 0;
 		this.id = UUID.randomUUID().toString();
 	}
 
@@ -161,7 +161,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		if (next == t.length)
 		{
 			next = 0;
-			cycles++;
+			rounds++;
 		}
 
 		turn = t[next];
@@ -169,7 +169,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 
 	public int getCyclesPassed()
 	{
-		return cycles;
+		return rounds;
 	}
 
 	/**
