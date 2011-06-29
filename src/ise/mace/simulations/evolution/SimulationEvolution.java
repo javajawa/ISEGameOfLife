@@ -37,7 +37,14 @@ public class SimulationEvolution
 		{
 			// not getting entropy but guarantees unbiased simulations
 			entity.setRandomSeed(rand.nextLong());
-			entity.run();
+			try
+			{
+				entity.run();
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
 			for (PublicAgentDataModel dataModel : entity.agentDataModels())
 			{
 				if (null == dataModel)

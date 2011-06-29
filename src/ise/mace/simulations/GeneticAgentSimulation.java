@@ -47,8 +47,6 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 	private int iterations = 0;
 	private double foodConsumedPerAdvice = 0;
 	private long randomSeed = 0;
-	@SuppressWarnings("unused")
-	private Simulation simulation;
 
 	private final HashMap<String, Food> foods = new HashMap<String, Food>();
 	private final TreeMap<String, Participant> agents = new TreeMap<String, Participant>();
@@ -64,7 +62,7 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		this.setGenome(genome);
 	}
 
-	public void run()
+	public void run() throws InterruptedException
 	{
 		PresageConfig presageConfig = new PresageConfig();
 		presageConfig.setComment(comment);
@@ -87,8 +85,14 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 
 		Logger.getLogger("presage.Simulation").setLevel(Level.SEVERE);
 		Logger.getLogger("gameoflife.AbstractAgent").setLevel(Level.SEVERE);
-		this.simulation = new Simulation
+
+		Simulation simulation = new Simulation
 				(presageConfig, agents, environment, pluginManager, scriptManager);
+		synchronized(simulation)
+		{
+			simulation.play();
+			simulation.wait();
+		}
 	}
 
 	public ArrayList<PublicAgentDataModel> agentDataModels()
@@ -226,7 +230,7 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		pluginManager.addPlugin(p);
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws InterruptedException
 	{
 		SimulationGenome genome = new SimulationGenome(System.currentTimeMillis());
 		genome.randomize();
