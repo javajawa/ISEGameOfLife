@@ -58,7 +58,7 @@ public abstract class Evolution
 	 * evolution. This is useful for getting statistics after
 	 * current iteration of evolution.
 	 */
-	protected void willBeginNextIteration()
+	protected void willBeginNextIteration(double bestfit, double avgfit, ArrayList<Entity> entityPool)
 	{
 
 	}
@@ -142,7 +142,7 @@ public abstract class Evolution
 			Entity bestEntity = entityPool.get(0);
 			bestFit = achievedBestFit(bestEntity.fitness(), bestEntity);
 
-			this.willBeginNextIteration();
+			this.willBeginNextIteration(bestEntity.fitness(), avgFitness, entityPool);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package ise.gameoflife.simulations.evolution;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import ise.gameoflife.genetics.Evolution;
@@ -71,7 +72,7 @@ public class SimulationEvolution
 	}
 
 	@Override
-	protected void willBeginNextIteration()
+	protected void willBeginNextIteration(double bestfit, double avgfit, ArrayList<GeneticAgentSimulation> entityPool)
 	{
 		System.out.print(",\ta: " + this.avgFitness() + "\n");
 	}
