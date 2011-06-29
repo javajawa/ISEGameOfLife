@@ -1,5 +1,7 @@
 package ise.gameoflife.simulations.evolution;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -75,6 +77,17 @@ public class SimulationEvolution
 	protected void willBeginNextIteration(double bestfit, double avgfit, ArrayList<GeneticAgentSimulation> entityPool)
 	{
 		System.out.print(",\ta: " + this.avgFitness() + "\n");
+		try
+		{
+			FileOutputStream fileStream = new FileOutputStream("results/gann" + this.currentIteration() + ".txt");
+			ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
+			outputStream.writeObject(this.genePoolWithSpeciePool(entityPool));
+			outputStream.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args)
