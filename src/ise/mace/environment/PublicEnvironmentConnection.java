@@ -55,6 +55,9 @@ public class PublicEnvironmentConnection
 	{
 		return inst;
 	}
+	/**
+	 * The Environment which we are connecting to
+	 */
 	private final Environment e;
 
 	/**
@@ -66,7 +69,7 @@ public class PublicEnvironmentConnection
 	@SuppressWarnings("LeakingThisInConstructor") // Used to create singleton instance
 	PublicEnvironmentConnection(Environment e)
 	{
-		if (inst != null) throw new IllegalStateException("Instance already exists");
+		//if (inst != null) throw new IllegalStateException("Instance already exists");
 		this.e = e;
 		inst = this;
 	}
@@ -162,7 +165,7 @@ public class PublicEnvironmentConnection
 	 * @param init The initialiser instance to initialise the group with
 	 * @return The id of the new group, or null if the group could not be created
 	 * @throws IllegalArgumentException If the group class is not in the list of
-	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * @throws RuntimeException If the the reflection libraries or constructor
 	 * throw an exception
 	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
 	 * be initialised with a {@link GroupDataInitialiser}
@@ -185,7 +188,7 @@ public class PublicEnvironmentConnection
 	 * @param invitees A list of the ids of all agents you want to invite
 	 * @return The id of the new group, or null if the group could not be created
 	 * @throws IllegalArgumentException If the group class is not in the list of
-	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * @throws RuntimeException If the the reflection libraries or constructor
 	 * throw an exception
 	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
 	 * be initialised with a {@link GroupDataInitialiser}
