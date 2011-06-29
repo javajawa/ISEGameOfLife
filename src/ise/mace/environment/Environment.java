@@ -844,7 +844,7 @@ public class Environment extends AbstractEnvironment
 	 */
 	public int getRoundsPassed()
 	{
-		return dmodel.getCyclesPassed();
+		return dmodel.getRoundsPassed();
 	}
 
 	/**

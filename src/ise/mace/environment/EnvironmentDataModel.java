@@ -167,7 +167,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 		turn = t[next];
 	}
 
-	public int getCyclesPassed()
+	public int getRoundsPassed()
 	{
 		return rounds;
 	}
