@@ -124,7 +124,14 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		{
 			ordinal = 0;
 		}
-		return AgentType.values()[ordinal++];
+
+		AgentType type = AgentType.values()[ordinal++];
+
+		if (!type.equals(AgentType.NOSTRATEGY))
+		{
+			return type;
+		}
+		return nextAgentType();
 	}
 
 	protected void agents()
