@@ -1,6 +1,7 @@
 package ise.mace.plugins;
 
 import ise.mace.environment.Environment;
+import ise.mace.environment.PublicEnvironmentConnection;
 import ise.mace.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -87,7 +88,15 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	private double getNumHunters()
 	{
 		SortedSet<String> participantIdSet = sim.getactiveParticipantIdSet("hunter");
-		return participantIdSet.size();
+		PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
+                String SpecialID = "";
+                for(String group : ec.getGroups())
+                   if(ec.getGroupById(group).getName().equals("Group #2"))
+                       SpecialID = group;   
+                if(SpecialID.equals(""))
+                    return participantIdSet.size();
+                else
+                    return participantIdSet.size() - ec.getGroupById(SpecialID).size();
 	}
 
 	/**
