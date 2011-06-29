@@ -123,7 +123,7 @@ public class AgentPoliticalCompassPlugin extends JPanel implements Plugin
 	 */
 	private void updatePoliticalPlayers()
 	{
-		SortedSet<String> active_agent_ids = sim.getParticipantIdSet();
+		SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet();
 
 		// Add any new agents
 		for (String id : active_agent_ids)
