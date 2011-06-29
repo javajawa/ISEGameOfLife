@@ -1,5 +1,6 @@
 package ise.gameoflife.genetics;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,8 +9,9 @@ import java.util.Random;
  * Can reproduce new genomes from this pool
  * @author Xitong Gao
  */
-public class GenePool<EntityGenome extends Genome<EntityGenome>>
+public class GenePool<EntityGenome extends Genome<EntityGenome>> implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
 	protected ArrayList<EntityGenome> pool = null;
 
