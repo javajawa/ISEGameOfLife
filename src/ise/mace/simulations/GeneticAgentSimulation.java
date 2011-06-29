@@ -108,7 +108,7 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 		for (String id : geneticAgentIds)
 		{
 			if (null == id) continue;
-			dataModels.add((PublicAgentDataModel)envConn.getAgentById(id));
+			dataModels.add(envConn.getAgentById(id));
 		}
 
 		return dataModels;
