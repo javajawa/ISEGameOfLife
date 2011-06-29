@@ -37,11 +37,12 @@ import presage.Input;
 import presage.Participant;
 import presage.PlayerDataModel;
 import presage.environment.messages.ENVRegistrationResponse;
-// TODO: Make it clear that the contract calls for a public consturctor with one argument that takes in the datamodel.
 
 /**
  * Abstract Group agent describes form of a group. Implemented as an agent for
  * ease of compatibility with presage, since their functionalities overlap a lot
+ * TODO: Make it clear that the contract calls for a public consturctor with
+ * one argument that takes in the datamodel.
  */
 public abstract class AbstractGroupAgent implements Participant
 {
@@ -66,7 +67,6 @@ public abstract class AbstractGroupAgent implements Participant
 	private EnvironmentConnector tmp_ec;
 	private Map<String, Double> huntResult;
 	private Map<Proposition, Integer> voteResult;
-	//TODO: Change that to a hash map
 	private static Map<String, Double> previousAmountHunted = new HashMap<String, Double>();
 
 	/**
@@ -327,7 +327,6 @@ public abstract class AbstractGroupAgent implements Participant
 									p.getType(), voteResult.get(p)
 								});
 			}
-			// TODO: Store each proposition and result in history?
 			props.put(p.getProposer(), p);
 		}
 
