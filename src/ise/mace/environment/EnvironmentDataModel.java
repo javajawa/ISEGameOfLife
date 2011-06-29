@@ -72,12 +72,6 @@ public class EnvironmentDataModel extends AEnvDataModel
 	}
 
 	public EnvironmentDataModel(String environmentName,
-					HashMap<String, Food> availableFoodTypes)
-	{
-		this(environmentName, availableFoodTypes, null, 0);
-	}
-
-	public EnvironmentDataModel(String environmentName,
 					HashMap<String, Food> availableFoodTypes,
 					ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes,
 					double foodConsumedPerAdvice)
