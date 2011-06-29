@@ -73,7 +73,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final ApplyToGroup app = (ApplyToGroup) action;
+			final ApplyToGroup app = (ApplyToGroup)action;
 			if (app.getGroup().equals(AbstractAgent.leaveGroup))
 			{
 				String old_group = dmodel.getAgentById(actorID).getGroupId();
@@ -170,7 +170,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final GroupOrder order = (GroupOrder) action;
+			final GroupOrder order = (GroupOrder)action;
 			sim.getPlayer(order.getAgent()).enqueueInput(new HuntOrder(sim.getTime(),
 							order.getTeam()));
 			logger.log(Level.FINE, "Group {0} has created team {1} including {2}",
@@ -205,12 +205,12 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final Hunt act = (Hunt) action;
+			final Hunt act = (Hunt)action;
 			final Food food = dmodel.getFoodById(act.getFoodTypeId());
 
 			// This line gets the agents datamodel
 			// Just trust me on that one :P
-			final PublicAgentDataModel am = ((AbstractAgent) sim.getPlayer(actorID)).getDataModel();
+			final PublicAgentDataModel am = ((AbstractAgent)sim.getPlayer(actorID)).getDataModel();
 			if (am.getHuntingTeam() == null)
 			{
 				Input result;
@@ -268,7 +268,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			RespondToApplication application = (RespondToApplication) action;
+			RespondToApplication application = (RespondToApplication)action;
 
 			sim.getPlayer(application.getAgent()).enqueueInput(new ApplicationResponse(
 							sim.getTime(), actorID, application.wasAccepted()));
@@ -317,7 +317,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final DistributeFood result = (DistributeFood) action;
+			final DistributeFood result = (DistributeFood)action;
 			sim.getPlayer(result.getAgent()).enqueueInput(new HuntResult(actorID,
 							result.getAmountHunted(), result.getAmountRecieved(),
 							sim.getTime()));
@@ -353,7 +353,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final Proposal prop = (Proposal) action;
+			final Proposal prop = (Proposal)action;
 			final Proposition p = new Proposition(prop.getType(), actorID,
 							prop.getForGroup(), dmodel.time);
 
@@ -398,7 +398,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final Vote vote = (Vote) action;
+			final Vote vote = (Vote)action;
 			final ise.mace.inputs.Vote v = new ise.mace.inputs.Vote(vote, dmodel.time,
 							actorID);
 
@@ -437,7 +437,7 @@ public class Environment extends AbstractEnvironment
 		@Override
 		public Input handle(Action action, String actorID)
 		{
-			final VoteResult vote = (VoteResult) action;
+			final VoteResult vote = (VoteResult)action;
 			final ise.mace.inputs.VoteResult v = new ise.mace.inputs.VoteResult(vote,
 							dmodel.time);
 
@@ -500,6 +500,7 @@ public class Environment extends AbstractEnvironment
 			return food;
 		}
 	}
+
 	/**
 	 * Reference to the data model, of the class which it will actually be.
 	 * Hides the {@link AEnvDataModel} in the {@link AbstractEnvironment}
@@ -555,8 +556,8 @@ public class Environment extends AbstractEnvironment
 		"queueactions", "randomseed", "dmodel"
 	})
 	public Environment(long randomseed,
-										 EnvironmentDataModel dmodel,
-										 Class<? extends AbstractFreeAgentGroup> freeAgentHandler)
+					EnvironmentDataModel dmodel,
+					Class<? extends AbstractFreeAgentGroup> freeAgentHandler)
 	{
 		super(true, randomseed);
 		this.dmodel = dmodel;
@@ -605,7 +606,7 @@ public class Environment extends AbstractEnvironment
 	{
 		if (registrationObject instanceof RegistrationRequest)
 		{
-			final RegistrationRequest obj = (RegistrationRequest) registrationObject;
+			final RegistrationRequest obj = (RegistrationRequest)registrationObject;
 			if (!dmodel.registerParticipant(obj))
 			{
 				return null;
@@ -613,7 +614,7 @@ public class Environment extends AbstractEnvironment
 		}
 		else if (registrationObject instanceof GroupRegistration)
 		{
-			final GroupRegistration obj = (GroupRegistration) registrationObject;
+			final GroupRegistration obj = (GroupRegistration)registrationObject;
 			if (!dmodel.registerGroup(obj))
 			{
 				return null;
@@ -856,7 +857,7 @@ public class Environment extends AbstractEnvironment
 	 * @see PoliticalAgentGroup
 	 */
 	String createGroupAgent(double food, double economic, double social,
-													String name)
+					String name)
 	{
 		AbstractAgent a = new PoliticalAgentGroup(food, 0, AgentType.R, economic,
 						social, name);
@@ -873,7 +874,7 @@ public class Environment extends AbstractEnvironment
 	 * @param init The initialiser instance to initialise the group with
 	 * @return The id of the new group, or null if the group could not be created
 	 * @throws IllegalArgumentException If the group class is not in the list of
-	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * @throws RuntimeException If the the reflection libraries or constructor
 	 * throw an exception
 	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
 	 * be initialised with a {@link GroupDataInitialiser}
@@ -883,7 +884,7 @@ public class Environment extends AbstractEnvironment
 	 * @see GroupDataInitialiser
 	 */
 	String createGroup(Class<? extends AbstractGroupAgent> type,
-										 GroupDataInitialiser init)
+					GroupDataInitialiser init)
 	{
 		AbstractGroupAgent g = dmodel.createGroup(type, init);
 		g.initialise(new EnvironmentConnector(this));
@@ -900,7 +901,7 @@ public class Environment extends AbstractEnvironment
 	 * @param invitees A list of the ids of all agents you want to invite
 	 * @return The id of the new group, or null if the group could not be created
 	 * @throws IllegalArgumentException If the group class is not in the list of
-	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * @throws RuntimeException If the the reflection libraries or constructor
 	 * throw an exception
 	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
 	 * be initialised with a {@link GroupDataInitialiser}
@@ -910,7 +911,7 @@ public class Environment extends AbstractEnvironment
 	 * @see GroupDataInitialiser
 	 */
 	String createGroup(Class<? extends AbstractGroupAgent> type,
-										 GroupDataInitialiser init, String... invitees)
+					GroupDataInitialiser init, String... invitees)
 	{
 		String gid = createGroup(type, init);
 		if (gid != null)
@@ -1029,15 +1030,15 @@ public class Environment extends AbstractEnvironment
 	 * @see AbstractAgent#giveAdvice(java.lang.String, ise.mace.models.HuntingTeam)
 	 */
 	Food seekAdvice(String agent, UUID authToken, String fromAgent,
-									HuntingTeam agentsTeam)
+					HuntingTeam agentsTeam)
 	{
 		if (authenticator.get(agent) != authToken)
 		{
 			throw new IllegalAccessError(
 							"Incorrect access credentials");
 		}
-		AbstractAgent a = (AbstractAgent) sim.getPlayer(fromAgent);
-		AbstractAgent b = (AbstractAgent) sim.getPlayer(agent);
+		AbstractAgent a = (AbstractAgent)sim.getPlayer(fromAgent);
+		AbstractAgent b = (AbstractAgent)sim.getPlayer(agent);
 
 		String ga = a.getDataModel().getGroupId();
 		String gb = b.getDataModel().getGroupId();
