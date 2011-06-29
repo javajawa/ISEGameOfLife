@@ -1,5 +1,6 @@
 package ise.mace.genetics;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -7,8 +8,9 @@ import java.util.Random;
  * A gene pool is a collection of genomes
  * Can reproduce new genomes from this pool
  */
-public class GenePool<EntityGenome extends Genome<EntityGenome>>
+public class GenePool<EntityGenome extends Genome<EntityGenome>> implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
 	protected ArrayList<EntityGenome> pool = null;
 

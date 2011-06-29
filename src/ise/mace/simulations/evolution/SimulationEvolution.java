@@ -1,5 +1,8 @@
 package ise.mace.simulations.evolution;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Random;
 
 import ise.mace.genetics.Evolution;
@@ -9,7 +12,7 @@ import ise.mace.simulations.GeneticAgentSimulation;
 public class SimulationEvolution
 	extends Evolution<SimulationGenome, GeneticAgentSimulation>
 {
-	private final int runs = 5;
+	private final int runs = 20;
 
 	private final float elitistProportion = 0.50f;
 	private long randSeed = System.currentTimeMillis();
@@ -66,7 +69,7 @@ public class SimulationEvolution
 	{
 		if (rank <= 1)
 		{
-			System.out.print("\ti: " + this.currentIteration() +
+			System.out.print("i: " + this.currentIteration() +
 					",\tf: " + entity.fitness());
 		}
 
@@ -78,9 +81,20 @@ public class SimulationEvolution
 	}
 
 	@Override
-	protected void willBeginNextIteration()
+	protected void willBeginNextIteration(double bestfit, double avgfit, ArrayList<GeneticAgentSimulation> entityPool)
 	{
 		System.out.print(",\ta: " + this.avgFitness() + "\n");
+		try
+		{
+			FileOutputStream fileStream = new FileOutputStream("results/gann" + this.currentIteration() + ".txt");
+			ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
+			outputStream.writeObject(this.genePoolWithSpeciePool(entityPool));
+			outputStream.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args)
