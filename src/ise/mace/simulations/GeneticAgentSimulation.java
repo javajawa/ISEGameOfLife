@@ -13,6 +13,7 @@ import ise.mace.simulations.evolution.SimulationGenome;
 import ise.mace.groups.freeagentgroups.BasicFreeAgentGroup;
 import ise.mace.agents.GeneticAgent;
 import ise.mace.agents.TestPoliticalAgent;
+import ise.mace.groups.SpecialGroup;
 import ise.mace.groups.TestPoliticalGroup;
 import ise.mace.tokens.AgentType;
 
@@ -152,6 +153,7 @@ public class GeneticAgentSimulation extends EvolvableEntity<SimulationGenome>
 	protected void groups()
 	{
 		this.addGroup(TestPoliticalGroup.class);
+		this.addGroup(SpecialGroup.class);
 	}
 
 	protected void events(){}
