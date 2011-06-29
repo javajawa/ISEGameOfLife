@@ -1,6 +1,7 @@
 package ise.gameoflife.plugins;
 
 import ise.gameoflife.environment.Environment;
+import ise.gameoflife.environment.PublicEnvironmentConnection;
 import ise.gameoflife.tokens.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -90,7 +91,16 @@ public final class HuntersAlivePlugin extends JPanel implements Plugin
 	private double getNumHunters()
 	{
 		SortedSet<String> participantIdSet = sim.getactiveParticipantIdSet("hunter");
-		return participantIdSet.size();
+                PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
+
+                String SpecialID = "";
+                for(String group : ec.availableGroups())
+                   if(ec.getGroupById(group).getName().equals("Group #2"))
+                       SpecialID = group;   
+                if(SpecialID.equals(""))
+                    return participantIdSet.size();
+                else
+                    return participantIdSet.size() - ec.getGroupById(SpecialID).size();
 	}
 
 	/**
