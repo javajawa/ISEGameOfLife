@@ -72,15 +72,15 @@ public class EnvironmentDataModel extends AEnvDataModel
 	}
 
 	public EnvironmentDataModel(String environmentName,
-															HashMap<String, Food> availableFoodTypes)
+					HashMap<String, Food> availableFoodTypes)
 	{
 		this(environmentName, availableFoodTypes, null, 0);
 	}
 
 	public EnvironmentDataModel(String environmentName,
-															HashMap<String, Food> availableFoodTypes,
-															ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes,
-															double foodConsumedPerAdvice)
+					HashMap<String, Food> availableFoodTypes,
+					ArrayList<Class<? extends AbstractGroupAgent>> allowedGroupTypes,
+					double foodConsumedPerAdvice)
 	{
 		super(environmentName, "ISE Game of Life Enviroment Data Model", 0);
 		this.availableFoodTypes = availableFoodTypes;
@@ -179,7 +179,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 * @param init The initialiser instance to initialise the group with
 	 * @return The id of the new group, or null if the group could not be created
 	 * @throws IllegalArgumentException If the group class is not in the list of
-	 * @throws RuntimeException If the the reflection libraries or constructor 
+	 * @throws RuntimeException If the the reflection libraries or constructor
 	 * throw an exception
 	 * {@link #getAllowedGroupTypes() permissible gorup classes}, or if it can not
 	 * be initialised with a {@link GroupDataInitialiser}
@@ -189,7 +189,7 @@ public class EnvironmentDataModel extends AEnvDataModel
 	 * @see GroupDataInitialiser
 	 */
 	AbstractGroupAgent createGroup(Class<? extends AbstractGroupAgent> type,
-																 GroupDataInitialiser init)
+					GroupDataInitialiser init)
 	{
 		if (allowedGroupTypes.contains(type))
 		{
@@ -200,7 +200,8 @@ public class EnvironmentDataModel extends AEnvDataModel
 			}
 			catch (Throwable ex)
 			{
-				throw new IllegalArgumentException("Unable to create group "
+				throw new IllegalArgumentException(
+								"Unable to create group "
 								+ type.getSimpleName()
 								+ " - no public constructor with single GroupDataInitialiser argument",
 								ex);
