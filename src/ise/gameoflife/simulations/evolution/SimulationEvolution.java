@@ -10,7 +10,7 @@ import ise.gameoflife.simulations.GeneticAgentSimulation;
 public class SimulationEvolution
 	extends Evolution<SimulationGenome, GeneticAgentSimulation>
 {
-	private final int runs = 5;
+	private final int runs = 20;
 
 	private final float elitistProportion = 0.50f;
 	private long randSeed = System.currentTimeMillis();
@@ -60,7 +60,7 @@ public class SimulationEvolution
 	{
 		if (rank <= 1)
 		{
-			System.out.print("\ti: " + this.currentIteration() +
+			System.out.print("i: " + this.currentIteration() +
 					",\tf: " + entity.fitness());
 		}
 

@@ -18,13 +18,13 @@ public class NetworkGenome extends Genome<NetworkGenome>
 	/**
 	 * Rate of mutating one parameter.
 	 */
-	private double mutateRate = 0.10f;
+	private static final double mutateRate = 0.05f;
 
 	/**
 	 * Rate of crossing over with another genome
 	 * on one parameter.
 	 */
-	private double crossOverRate = 0.20f;
+	private static final double crossOverRate = 0.20f;
 
 	/**
 	 * The weights parameters.

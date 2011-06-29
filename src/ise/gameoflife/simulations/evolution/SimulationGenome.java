@@ -15,13 +15,13 @@ public class SimulationGenome extends Genome<SimulationGenome>
 
 	private static final long serialVersionUID = 1L;
 
-	private static final double mutateRate = 0.05f;
+	private static final double mutateRate = 0.01f;
 	private static final double crossOverRate = 0.30f;
 
 	private static final double initialFood = 20;
 	private static final double consumption = 2;
 	private static final String comment = "Genetic Agent";
-	private static final int iterations = 400;
+	private static final int iterations = 100;
 	private static final int population = 8;
 	private static final double foodConsumedPerAdvice = 0.1;
 
