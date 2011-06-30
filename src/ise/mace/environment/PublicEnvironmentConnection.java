@@ -15,8 +15,8 @@ import presage.Participant;
 /**
  * <p>Used to access any information available to objects about the {@link
  * Environment}</p>
- * <p>This singleton class wraps the {@link EnvConnector Environment Conneciton}
- * for use in the public security level.</p>
+ * <p>This singleton class wraps the {@link EnvironmentConnection Environment 
+ * Conneciton} for use in the public security level.</p>
  * <p>The {@link #inst instance} is initialised by the Environment before {@link
  * Participant#initialise(presage.EnvironmentConnector) initialise} is called,
  * so that {@link AbsractAgent agents} and {@link AbstractGroupAgent groups} can

@@ -141,7 +141,7 @@ public class PublicGroupDataModel implements PlayerDataModel, Serializable
 	/**
 	 * Gets the proposals made this turn, and the results
 	 * The value will be null except on the {@link TurnType#Voting Voting} turn
-	 * @return
+	 * @return The Proposals that happened this turn, and the results
 	 */
 	public Map<Proposition, Integer> getTurnsProposals()
 	{

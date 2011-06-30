@@ -16,7 +16,6 @@ interface InputHandler
 	/**
 	 * Handles the input
 	 * @param input
-	 * @return
 	 */
 	public void handle(Input input);
 }

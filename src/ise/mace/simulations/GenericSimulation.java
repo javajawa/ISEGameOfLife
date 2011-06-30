@@ -131,7 +131,7 @@ abstract public class GenericSimulation
 
 	/**
 	 * Place to put calls to {@link
-	 * #addFood(comment, randomSeed, huntersRequired) addFood}
+	 * #addFood(java.lang.String, double, int) addFood}
 	 */
 	abstract protected void foods();
 

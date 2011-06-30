@@ -1,5 +1,6 @@
 package ise.mace.simulations;
 
+import ise.mace.agents.PoliticalAgent;
 import ise.mace.agents.TestAgent;
 import ise.mace.agents.TestGroupableAgent;
 import ise.mace.groups.TestGroup;

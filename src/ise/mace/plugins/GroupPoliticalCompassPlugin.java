@@ -130,7 +130,9 @@ public class GroupPoliticalCompassPlugin extends JPanel implements Plugin
 	/**
 	 * Draws a circle representing an agent's political views
 	 * @param g Graphics objects
-	 * @param p_player SimplifiedPoliticalPlayer object to draw
+	 * @param social Social Position
+	 * @param economic Economic position
+	 * @param size size of agent circle to draw 
 	 */
 	private void drawAgent(Graphics g, double social, double economic, int size,
 					String name)

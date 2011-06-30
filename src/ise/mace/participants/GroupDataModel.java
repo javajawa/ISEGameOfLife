@@ -51,7 +51,7 @@ class GroupDataModel extends APlayerDataModel
 	/**
 	 * Create a new instance of the GroupDataModel, automatically generating a new
 	 * UUID
-	 * @param randomseed The random number seed to use with this class
+	 * @param init The initialiser
 	 * @return The new GroupDataModel
 	 */
 	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")

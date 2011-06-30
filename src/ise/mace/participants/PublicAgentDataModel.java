@@ -227,7 +227,7 @@ public final class PublicAgentDataModel implements PlayerDataModel, Serializable
 
 	/**
 	 * Sets the agents type
-	 * @param enum type to assign to agent
+	 * @param type Type to assign to agent
 	 */
 	public void setAgentType(AgentType type)
 	{

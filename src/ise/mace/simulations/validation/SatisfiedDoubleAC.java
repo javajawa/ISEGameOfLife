@@ -17,7 +17,7 @@ import ise.mace.tokens.AgentType;
  *
  * <ul>
  * <li>Cycles: 500</li>
- * <li>Agents: 2 {@link TestAgent}
+ * <li>Agents: 2 {@link TestPoliticalAgent}
  *   <ul>
  *     <li>Initial Food: 20</li>
  *     <li>Default Consumption: 2</li>

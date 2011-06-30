@@ -60,7 +60,7 @@ public class AgentPoliticalCompassPlugin extends JPanel implements Plugin
 
 	/**
 	 * Creates a new instance of the PoliticalCompassPlugin
-	 * @param outputpath Path to write the final video to
+	 * @param outputdirectory Path to write the final video to
 	 */
 	@PluginConstructor(
 	{
