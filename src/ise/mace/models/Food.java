@@ -1,5 +1,6 @@
 package ise.mace.models;
 
+import ise.mace.actions.Hunt;
 import ise.mace.environment.Environment;
 import ise.mace.participants.AbstractAgent;
 import ise.mace.tokens.TurnType;

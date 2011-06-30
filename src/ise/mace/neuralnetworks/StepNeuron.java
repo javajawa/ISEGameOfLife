@@ -32,7 +32,7 @@ public final class StepNeuron extends Neuron
 	 * Creates an instance of StepNeuron with
 	 * the specified weights and offset.
 	 * @param weights the weights of this neuron.
-	 * @param offsets the offset of this neuron.
+	 * @param offset the offset of this neuron.
 	 */
 	public StepNeuron(double[] weights, double offset)
 	{

@@ -2,8 +2,10 @@ package ise.mace.tokens;
 
 import ise.mace.actions.Hunt;
 import ise.mace.actions.Proposal;
+import ise.mace.environment.Environment;
 import ise.mace.environment.EnvironmentDataModel;
 import ise.mace.inputs.VoteResult;
+import ise.mace.models.Food;
 import ise.mace.models.HuntingTeam;
 import ise.mace.participants.AbstractAgent;
 import ise.mace.participants.AbstractFreeAgentGroup;

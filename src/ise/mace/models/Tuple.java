@@ -130,7 +130,7 @@ public class Tuple<K, V> implements Map.Entry<K, V>, Serializable
 	/**
 	 * Determines if the key of this tuple equals the supplied value
 	 * @param cKey Value to check against
-	 * @return
+	 * @return if the key is equal to this objects key
 	 */
 	public boolean keyequals(K cKey)
 	{
