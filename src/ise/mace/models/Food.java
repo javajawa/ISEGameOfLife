@@ -1,14 +1,28 @@
 package ise.mace.models;
 
+import ise.mace.environment.Environment;
+import ise.mace.participants.AbstractAgent;
+import ise.mace.tokens.TurnType;
 import java.io.Serializable;
 import java.util.UUID;
 import org.simpleframework.xml.Element;
 
 /**
- *
+ * <p>Model for defining that types of foods that {@link AbstractAgent agents}
+ * can {@link Hunt hunt}.</p>
+ * <p>Each type of food is defined by the amount of nutrition it provides, and
+ * the number of agents that have to tyr and hunt it in order to be successful.
+ * The nutrition value is then divided equally amount between all the hunters
+ * in the {@link HuntingTeam team} who hunted this food
+ * @see AbstractAgent#chooseFood()
+ * @see Environment#availableFoods()
+ * @see TurnType#GoHunt
  */
 public final class Food implements Serializable
 {
+	/**
+	 * Serialisation UID
+	 */
 	private static final long serialVersionUID = 1L;
 	/**
 	 * The ID for the food item
