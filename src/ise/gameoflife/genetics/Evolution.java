@@ -116,14 +116,14 @@ public abstract class Evolution
 
 		// construct gene pool with random genomes
 		this.setGenePool(this.randomGenePool());
-		ArrayList<Entity> entityPool = this.speciePoolWithGenePool(this.genePool());
+		ArrayList<Entity> entityPool = this.entityPoolWithGenePool(this.genePool());
 
 		boolean bestFit = false;
 		for (currentIteration = 1;
 			 currentIteration <= this.iterations && !bestFit;
 			 currentIteration++)
 		{
-			GenePool<EntityGenome> genePool = genePoolWithSpeciePool(entityPool);
+			GenePool<EntityGenome> genePool = genePoolWithEntityPool(entityPool);
 
 			do
 			{
@@ -133,7 +133,7 @@ public abstract class Evolution
 			while (genePool.size() < this.population);
 
 			this.setGenePool(genePool);
-			entityPool = this.speciePoolWithGenePool(this.genePool());
+			entityPool = this.entityPoolWithGenePool(this.genePool());
 
 			// evaluate and select
 			entityPool = evaluateAndSelectFromPool(entityPool);
@@ -189,7 +189,7 @@ public abstract class Evolution
 	 * @param genePool a gene pool
 	 * @return an Entity pool
 	 */
-	protected ArrayList<Entity> speciePoolWithGenePool(GenePool<EntityGenome> genePool)
+	protected ArrayList<Entity> entityPoolWithGenePool(GenePool<EntityGenome> genePool)
 	{
 		ArrayList<Entity> entityPool = new ArrayList<Entity>();
 
@@ -207,7 +207,7 @@ public abstract class Evolution
 	 * @param entityPool an Entity pool
 	 * @return a gene pool
 	 */
-	protected GenePool<EntityGenome> genePoolWithSpeciePool(ArrayList<Entity> entityPool)
+	protected GenePool<EntityGenome> genePoolWithEntityPool(ArrayList<Entity> entityPool)
 	{
 		GenePool<EntityGenome> genePool = new GenePool<EntityGenome>();
 

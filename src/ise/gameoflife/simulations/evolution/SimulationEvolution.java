@@ -81,7 +81,7 @@ public class SimulationEvolution
 		{
 			FileOutputStream fileStream = new FileOutputStream("results/gann" + this.currentIteration() + ".txt");
 			ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
-			outputStream.writeObject(this.genePoolWithSpeciePool(entityPool));
+			outputStream.writeObject(this.genePoolWithEntityPool(entityPool));
 			outputStream.close();
 		}
 		catch (Exception e)
