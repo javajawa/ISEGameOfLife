@@ -10,7 +10,7 @@ import ise.mace.tokens.AgentType;
 import java.util.Random;
 
 /**
- * <p>CLIPolitics Simulation/p>
+ * <p>CLIPolitics Simulation</p>
  *
  * <ul>
  * <li>Cycles: 5000</li>
