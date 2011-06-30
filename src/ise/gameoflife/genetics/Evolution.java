@@ -57,8 +57,23 @@ public abstract class Evolution
 	 * This method is invoked before the next iteration of
 	 * evolution. This is useful for getting statistics after
 	 * current iteration of evolution.
+	 * @param bestfit the best fitness value current pool has
+	 * @param avgfit the average fitness of the current pool
+	 * @param entityPool the pool after selection
 	 */
 	protected void willBeginNextIteration(double bestfit, double avgfit, ArrayList<Entity> entityPool)
+	{
+
+	}
+
+	/**
+	 * This method is invoked before the selection process.
+	 * This is useful for getting statistics from the
+	 * current iteration of evolution.
+	 * @param bestfit the best fitness value current pool has
+	 * @param entityPool the pool before selection
+	 */
+	protected void willBeginSelection(double bestfit, ArrayList<Entity> entityPool)
 	{
 
 	}
@@ -78,6 +93,8 @@ public abstract class Evolution
 		}
 
 		this.sortByFitness(entityPool);
+
+		this.willBeginSelection(entityPool.get(0).fitness(), entityPool);
 
 		ArrayList<Entity> newSpeciePool = new ArrayList<Entity>();
 
