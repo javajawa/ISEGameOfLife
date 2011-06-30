@@ -410,8 +410,16 @@ public class LoansInfoPolitics extends JPanel implements Plugin {
        data.add("------------------------------------------------");
        data.add("Group Name | Current reserve \t| Amount given \t| Amount borrowed \t| Average Happiness \t| Greediness" );
        SortedSet<String> active_agent_ids = sim.getactiveParticipantIdSet("group");
+       PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();       
+
+       //get rid of special group
+       String SpecialID = "";
+       for(String group : active_agent_ids)
+            if(ec.getGroupById(group).getName().equals("Group #2"))
+               SpecialID = group;
+       active_agent_ids.remove(SpecialID);
+       
        Iterator<String> iter = active_agent_ids.iterator();
-       PublicEnvironmentConnection ec = PublicEnvironmentConnection.getInstance();
        while(iter.hasNext())
        {
             String groupID = iter.next();
