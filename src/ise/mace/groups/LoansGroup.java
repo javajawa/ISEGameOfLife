@@ -1,8 +1,8 @@
 package ise.mace.groups;
 
+import ise.mace.environment.Environment;
 import ise.mace.inputs.LeaveNotification.Reasons;
 import ise.mace.models.GroupDataInitialiser;
-import ise.mace.models.History;
 import ise.mace.models.HuntingTeam;
 import ise.mace.models.Tuple;
 import ise.mace.participants.AbstractGroupAgent;
@@ -23,32 +23,131 @@ import ise.mace.tokens.InteractionResult;
 import java.util.Set;
 
 /**
- *
+ * Group designed for use with loans
  */
 public class LoansGroup extends AbstractGroupAgent
 {
+	/**
+	 * Serialisation ID
+	 */
 	private static final long serialVersionUID = 1L;
-	//The fee a group must pay to play the game
+	/**
+	 * The fee a group must pay to play the game
+	 */
 	private static final double priceToPlay = 100;
-	//This constant defines the maximum score a group can attain during this simulation
+	/**
+	 * This constant defines the maximum score a group can attain during this simulation
+	 */
 	private static final double achievementThreshold = 1000;//the goal that any group is trying to achieve (it can be thought as the group's progression to a new age)
-	//The greediness level of this group
+	/**
+	 * The greediness level of this group
+	 */
 	private final double greediness;
-	//This structure stores the ids of the groups that are currently in need and the amount they request
+	/**
+	 * This structure stores the ids of the groups that are currently in need and the amount they request
+	 */
 	private static Map<String, Double> inNeed = new HashMap<String, Double>();
-	//Stores all the requests that have been accepted
+	/**
+	 * Stores all the requests that have been accepted
+	 */
 	private static Map<String, HashMap<String, Tuple<Double, Double>>> loanRequestsAccepted = new HashMap<String, HashMap<String, Tuple<Double, Double>>>();
-	//The elements of this structure is a signal to a group that someone has repaid for the loan
+	/**
+	 * The elements of this structure is a signal to a group that someone has repaid for the loan
+	 */
 	private static Map<String, List<Tuple<String, Double>>> loanRepayments = new HashMap<String, List<Tuple<String, Double>>>();
-	//The following structures store the loans given and taken by this group along with the information for that loan
-	private Map<String, List<Tuple<Double, Double>>> loansGiven = new HashMap<String, List<Tuple<Double, Double>>>();
-	private Map<String, List<Tuple<Double, Double>>> loansTaken = new HashMap<String, List<Tuple<Double, Double>>>();
-	private Map<String, List<Tuple<Double, Double>>> loansTakenHist = new HashMap<String, List<Tuple<Double, Double>>>();
-	//This structures provide public access to some information about this group
-	private static Map<String, Map<String, List<Tuple<Double, Double>>>> publicLoansGiven = new HashMap<String, Map<String, List<Tuple<Double, Double>>>>();
-	private static Map<String, Map<String, List<Tuple<Double, Double>>>> publicLoansTaken = new HashMap<String, Map<String, List<Tuple<Double, Double>>>>();
+	/**
+	 * The following structures store the loans given and taken by this group 
+	 * along with the information for that loan
+	 */
+	private Map<String, List<Tuple<Double, Double>>> loansGiven 
+					= new HashMap<String, List<Tuple<Double, Double>>>();
+	/**
+	 * The following structures store the loans given and taken by this group 
+	 * along with the information for that loan
+	 */
+	private Map<String, List<Tuple<Double, Double>>> loansTaken 
+					= new HashMap<String, List<Tuple<Double, Double>>>();
+	/**
+	 * The following structures store the loans given and taken by this group 
+	 * along with the information for that loan
+	 */
+	private Map<String, List<Tuple<Double, Double>>> loansTakenHist 
+					= new HashMap<String, List<Tuple<Double, Double>>>();
+	/**
+	 * This structures provide public access to some information about this group
+	 */
+	private static Map<String, Map<String, List<Tuple<Double, Double>>>> publicLoansGiven 
+					= new HashMap<String, Map<String, List<Tuple<Double, Double>>>>();
+	/**
+	 * This structures provide public access to some information about this group
+	 */
+	private static Map<String, Map<String, List<Tuple<Double, Double>>>> publicLoansTaken 
+					= new HashMap<String, Map<String, List<Tuple<Double, Double>>>>();
+	/**
+	 * This structures provide public access to some information about this group
+	 */
 	private static Map<String, Double> publicGreediness = new HashMap<String, Double>();
 
+	/**
+	 * Pseudo-Random string comparator
+	 */
+	private Comparator<String> c = new Comparator<String>()
+	{
+		private Random r = new Random(0);
+
+		@Override
+		public int compare(String o1, String o2)
+		{
+			return (r.nextBoolean() ? -1 : 1);
+		}
+	};
+
+	/**
+	 * Comparator for preference
+	 */
+	private Comparator< Tuple<AgentType, Double>> preferencesComparator = new Comparator< Tuple<AgentType, Double>>()
+	{
+		@Override
+		public int compare(Tuple<AgentType, Double> o1, Tuple<AgentType, Double> o2)
+		{
+			Double v1 = o1.getValue();
+			Double v2 = o2.getValue();
+			return (v1 > v2 ? -1 : 1);
+		}
+	};
+
+	/**
+	 * Compares tuples with double values
+	 */
+	private Comparator< Tuple<String, Double>> d = new Comparator< Tuple<String, Double>>()
+	{
+		@Override
+		public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
+		{
+			Double v1 = o1.getValue();
+			Double v2 = o2.getValue();
+			return (v1 > v2 ? -1 : 1);
+		}
+	};
+
+	/**
+	 * Compares keys of doubles 
+	 */
+	private Comparator< Tuple<Double, ?>> loansComparator = new Comparator< Tuple<Double, ?>>()
+	{
+		@Override
+		public int compare(Tuple<Double, ?> o1, Tuple<Double, ?> o2)
+		{
+			Double v1 = o1.getKey();
+			Double v2 = o2.getKey();
+			return (v1 > v2 ? -1 : 1);
+		}
+	};
+
+	/**
+	 * Serialisation constructor
+	 * @deprecated Serialisation only
+	 */
 	@Deprecated
 	public LoansGroup()
 	{
@@ -56,6 +155,11 @@ public class LoansGroup extends AbstractGroupAgent
 		this.greediness = 0; // Placeholder - Derivied at runtime
 	}
 
+	/**
+	 * Creates the group
+	 * @param dm model initialiser
+	 * @see Environment#createGroup(java.lang.Class, ise.mace.models.GroupDataInitialiser) 
+	 */
 	public LoansGroup(GroupDataInitialiser dm)
 	{
 		super(dm);
@@ -74,16 +178,6 @@ public class LoansGroup extends AbstractGroupAgent
 		//To keep it simple always accept agents no matter what
 		return true;
 	}
-	private Comparator<String> c = new Comparator<String>()
-	{
-		private Random r = new Random(0);
-
-		@Override
-		public int compare(String o1, String o2)
-		{
-			return (r.nextBoolean() ? -1 : 1);
-		}
-	};
 
 	@Override
 	public List<HuntingTeam> selectTeams()
@@ -244,22 +338,11 @@ public class LoansGroup extends AbstractGroupAgent
 
 		return preferencesRatioList;
 	}
-	private Comparator< Tuple<AgentType, Double>> preferencesComparator = new Comparator< Tuple<AgentType, Double>>()
-	{
-		@Override
-		public int compare(Tuple<AgentType, Double> o1, Tuple<AgentType, Double> o2)
-		{
-			Double v1 = o1.getValue();
-			Double v2 = o2.getValue();
-			return (v1 > v2 ? -1 : 1);
-		}
-	};
 
 	/**
 	 * This method updates the panel for this group. The panel is the set of leaders in this group
 	 * The size of the panel depends on the social position of the group. If it is at the very top
 	 * it has a single leader (dictator). If it is at the bottom then every member belongs to the panel (anarchism).
-	 * @param none
 	 * @return The new panel members.
 	 */
 	private List<String> updatePanel()
@@ -335,31 +418,10 @@ public class LoansGroup extends AbstractGroupAgent
 
 		return newPanel;
 	}
-	private Comparator< Tuple<String, Double>> d = new Comparator< Tuple<String, Double>>()
-	{
-		@Override
-		public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2)
-		{
-			Double v1 = o1.getValue();
-			Double v2 = o2.getValue();
-			return (v1 > v2 ? -1 : 1);
-		}
-	};
-	private Comparator< Tuple<Double, Double>> loansComparator = new Comparator< Tuple<Double, Double>>()
-	{
-		@Override
-		public int compare(Tuple<Double, Double> o1, Tuple<Double, Double> o2)
-		{
-			Double v1 = o1.getKey();
-			Double v2 = o2.getKey();
-			return (v1 > v2 ? -1 : 1);
-		}
-	};
 
 	/**
 	 * This method allows a group to spend money for either playing the game or for public service.
 	 * The group can also repay some of its loans in this function
-	 * @param none
 	 * @return The new strategy (if they don't have money to play the sit out) and the new reserve after payments.
 	 */
 	@Override
@@ -464,7 +526,7 @@ public class LoansGroup extends AbstractGroupAgent
 	 * This method checks if the economic status of the group is good or bad.
 	 * It is good if they have money to last at least another round and their reserve increases
 	 * If the group is in trouble a loan is requested based on its needs.
-	 * @param The current reserve
+	 * @param mostRecentReserve The current reserve
 	 * @return Is the group in need?
 	 */
 	private boolean theMoneyIsOK(double mostRecentReserve)
@@ -510,7 +572,7 @@ public class LoansGroup extends AbstractGroupAgent
 
 	/**
 	 * This method computes the average happiness for this group for a specific turn
-	 * @param The number of turns ago
+	 * @param turnsAgo The number of turns ago
 	 * @return The average happiness of the group at that time
 	 */
 	private double getAverageHappiness(int turnsAgo)
@@ -558,7 +620,7 @@ public class LoansGroup extends AbstractGroupAgent
 	 * it in the reserved food pool. The rest is distributed to the members.
 	 * Before deciding the tax rate we must update the reserve if the group has received a payment from one of its
 	 * debtors.
-	 * @param The shared food for this round
+	 * @param sharedFood The shared food for this round
 	 * @return The new updated shared food and reserve
 	 */
 	@Override
@@ -613,7 +675,6 @@ public class LoansGroup extends AbstractGroupAgent
 	 * This method allows this group to interact with other groups. If it is in need, it can check
 	 * if any of its loan request has been accepted. If the group is not in trouble it can check if there
 	 * is any group which needs help. If it has enough money it can give them money (food).
-	 * @param none
 	 * @return The interaction result and the new updated reserve (if they gave any loans)
 	 */
 	@Override
