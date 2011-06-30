@@ -9,8 +9,17 @@ import java.util.LinkedList;
  */
 public final class UnmodifiableHistory<T extends Serializable> extends History<T>
 {
+	/**
+	 * Serial UID
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates the unmodifiable history, backed on a reference to the internal
+	 * linked list of a {@link History}.
+	 * @param d The backing list
+	 * @param size The max size, to allow the call to super.
+	 */
 	UnmodifiableHistory(LinkedList<T> d, int size)
 	{
 		super(d, size);
