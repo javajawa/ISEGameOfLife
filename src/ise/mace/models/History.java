@@ -14,12 +14,24 @@ import presage.util.ObjectCloner;
  */
 public class History<T extends Serializable> implements Serializable
 {
+	/**
+	 * Serial UID
+	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * The data in the history
+	 */
 	@ElementList(type = Object.class)
 	private LinkedList<T> data;
+	/**
+	 * The maximum number of elements to be put in {@link #data}
+	 */
 	@Element
 	private int maxSize;
-	private UnmodifiableHistory<T> u;
+	/**
+	 * Reference to a unmodifiable instance, if one has been created.
+	 */
+	private transient UnmodifiableHistory<T> u;
 
 	/**
 	 * Here is where History is written
@@ -32,7 +44,7 @@ public class History<T extends Serializable> implements Serializable
 
 	/**
 	 * Instantiates the History with a constrained size
-	 * @param maxsize
+	 * @param maxsize The maximum length of the history
 	 */
 	public History(int maxsize)
 	{
@@ -41,8 +53,8 @@ public class History<T extends Serializable> implements Serializable
 
 	/**
 	 * Instantiates the History with a fixed size and a certain number of
-	 * entires
-	 * @param data
+	 * entries
+	 * @param data The
 	 * @param maxsize
 	 */
 	History(LinkedList<T> data, int maxsize)
@@ -72,7 +84,7 @@ public class History<T extends Serializable> implements Serializable
 
 	/**
 	 * Sets the current history value
-	 * @param value
+	 * @param value The new value in the current timeslot
 	 * @return the old history value
 	 */
 	public T setValue(T value)
@@ -83,7 +95,8 @@ public class History<T extends Serializable> implements Serializable
 	/**
 	 * Adds new entry into History, using either the current value, or null to
 	 * populate it
-	 * @param cloneOld Use (a deep copy of) the previous value
+	 * @param cloneOld Use (a deep copy of) the previous value. Deep clone is made
+	 * using Presage's ObjectCloner, which requires the object to be serialisable
 	 */
 	@SuppressWarnings("unchecked")
 	public void newEntry(boolean cloneOld)
@@ -110,7 +123,8 @@ public class History<T extends Serializable> implements Serializable
 	}
 
 	/**
-	 * Creates a new entry, initialised as null
+	 * <p>Creates a new entry, initialised as null</p>
+	 * <p>Convenience method for {@link #newEntry(boolean) newEntry(false)}
 	 */
 	public void newEntry()
 	{
@@ -128,7 +142,7 @@ public class History<T extends Serializable> implements Serializable
 	}
 
 	/**
-	 * How big is the History?
+	 * Returns the number of elements that the history may contain
 	 * @return the max size of the history
 	 */
 	public int getMaxSize()
@@ -158,7 +172,7 @@ public class History<T extends Serializable> implements Serializable
 	}
 
 	/**
-	 *
+	 * Returns the current number of elements in the history
 	 * @return the size of the linked list History
 	 */
 	public int size()
@@ -167,8 +181,8 @@ public class History<T extends Serializable> implements Serializable
 	}
 
 	/**
-	 *
-	 * @return the size of the linked list History
+	 * Determines if the history is empty
+	 * @return If there are no elements in the history
 	 */
 	public boolean isEmpty()
 	{
