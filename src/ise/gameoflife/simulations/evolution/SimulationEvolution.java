@@ -1,6 +1,10 @@
 package ise.gameoflife.simulations.evolution;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,7 +16,7 @@ import ise.gameoflife.simulations.GeneticAgentSimulation;
 public class SimulationEvolution
 	extends Evolution<SimulationGenome, GeneticAgentSimulation>
 {
-	private final int runs = 20;
+	private final int runs = 1;
 
 	private final float elitistProportion = 0.50f;
 	private long randSeed = System.currentTimeMillis();
@@ -77,12 +81,27 @@ public class SimulationEvolution
 	protected void willBeginNextIteration(double bestfit, double avgfit, ArrayList<GeneticAgentSimulation> entityPool)
 	{
 		System.out.print(",\ta: " + this.avgFitness() + "\n");
+	}
+
+	@Override
+	protected void willBeginSelection(double bestfit, ArrayList<GeneticAgentSimulation> entityPool)
+	{
 		try
 		{
-			FileOutputStream fileStream = new FileOutputStream("results/gann" + this.currentIteration() + ".txt");
+			FileOutputStream fileStream = new FileOutputStream("gann" + this.currentIteration() + ".ser");
 			ObjectOutputStream outputStream = new ObjectOutputStream(fileStream);
-			outputStream.writeObject(this.genePoolWithEntityPool(entityPool));
+			ArrayList<SimulationGenome> genomes = new ArrayList<SimulationGenome>();
+			ArrayList<Double> fitnessVals = new ArrayList<Double>();
+			for (GeneticAgentSimulation entity : entityPool)
+			{
+				genomes.add(entity.genome());
+				fitnessVals.add(entity.fitness());
+			}
+			outputStream.writeObject(genomes);
+			outputStream.writeObject(fitnessVals);
 			outputStream.close();
+
+			printDeviation(this.currentIteration());
 		}
 		catch (Exception e)
 		{
@@ -90,11 +109,87 @@ public class SimulationEvolution
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public void printDeviation(int iteration) throws IOException, ClassNotFoundException
+	{
+		FileInputStream fileStream = new FileInputStream("gann" + iteration + ".ser");
+		ObjectInputStream inputStream = new ObjectInputStream(fileStream);
+		ArrayList<SimulationGenome> genomes = (ArrayList<SimulationGenome>)inputStream.readObject();
+
+		double fWeights[][][] = genomes.get(0).chooseFoodGenome().weights();
+		int layers = fWeights.length;
+		double sum[][][] = fWeights.clone();
+		// clear sum
+		for (int i = 0; i < layers - 1; i++)
+		{
+			int neurons = fWeights[i].length;
+			for (int j = 0; j < neurons; j++)
+			{
+				int wvals = fWeights[i][j].length;
+				for (int k = 0; k < wvals; k++)
+				{
+					sum[i][j][k] = 0;
+				}
+			}
+		}
+		// sum
+		for (SimulationGenome genome : genomes)
+		{
+			double weights[][][] = genome.chooseFoodGenome().weights();
+			for (int i = 0; i < layers - 1; i++)
+			{
+				int neurons = weights[i].length;
+				for (int j = 0; j < neurons; j++)
+				{
+					int wvals = weights[i][j].length;
+					for (int k = 0; k < wvals; k++)
+					{
+						sum[i][j][k] += weights[i][j][k];
+					}
+				}
+			}
+		}
+		// average
+		double avg[][][] = sum.clone();
+		for (int i = 0; i < layers - 1; i++)
+		{
+			int neurons = fWeights[i].length;
+			for (int j = 0; j < neurons; j++)
+			{
+				int wvals = fWeights[i][j].length;
+				for (int k = 0; k < wvals; k++)
+				{
+					avg[i][j][k] = avg[i][j][k] / genomes.size();
+				}
+			}
+		}
+		// deviation
+		double gDev[] = new double[genomes.size()];
+		for (int cg = 0; cg < genomes.size(); cg++)
+		{
+			SimulationGenome genome = genomes.get(cg);
+			double weights[][][] = genome.chooseFoodGenome().weights();
+			for (int i = 0; i < layers - 1; i++)
+			{
+				int neurons = weights[i].length;
+				for (int j = 0; j < neurons; j++)
+				{
+					int wvals = weights[i][j].length;
+					for (int k = 0; k < wvals; k++)
+					{
+						gDev[cg] += (Math.pow(avg[i][j][k] - weights[i][j][k],2))/genomes.size();
+					}
+				}
+			}
+			System.out.println(gDev[cg]);
+		}
+	}
+
 	public static void main(String[] args)
 	{
 		SimulationEvolution evolution = new SimulationEvolution();
 		evolution.setIterations(1000);
-		evolution.setPopulation(20);
+		evolution.setPopulation(100);
 		evolution.evolve();
 	}
 
