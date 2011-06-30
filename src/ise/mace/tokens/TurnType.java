@@ -1,6 +1,15 @@
 package ise.mace.tokens;
+
+import ise.mace.actions.Hunt;
+import ise.mace.actions.Proposal;
 import ise.mace.environment.EnvironmentDataModel;
+import ise.mace.inputs.VoteResult;
+import ise.mace.models.HuntingTeam;
+import ise.mace.participants.AbstractAgent;
+import ise.mace.participants.AbstractFreeAgentGroup;
+import ise.mace.participants.AbstractGroupAgent;
 import presage.Presage;
+
 /**
  * <p>Enumoratored Class that determines the stage of the games</p>
  * <p>Each cycle that {@link Presage} simulates, which is equivalent to each
@@ -17,27 +26,31 @@ import presage.Presage;
 public enum TurnType
 {
 	/**
-	 * Environment specifies which groups it has accepted agents into
+	 * {@link AbstractAgent Agents} choose which {@link AbstractGroupAgent Group}
+	 * they wish to join. They may also choose to leave groups by joining the
+	 * {@link AbstractFreeAgentGroup Free Agents Group}
 	 */
 	GroupSelect,
 	/**
-	 * Group splits agents into hunting teams
+	 * {@link AbstractGroupAgent Groups} split {@link AbstractAgent Agents} into
+	 * {@link HuntingTeam hunting teams}
 	 */
 	TeamSelect,
 	/**
-	 * Agent specifies which food it wishes to obtain
+	 * {@link AbstractAgent Agents} specify which {@link Food} it wishes to
+	 * attempt to {@link Hunt} with its {@link HuntingTeam}
 	 */
 	GoHunt,
 	/**
-	 * Environment states what the result of each hunt has been
+	 * {@link Environment} determines what the result of each {@link Hunt} was
 	 */
 	HuntResults,
 	/**
-	 * Agents make proposals to their group
+	 * Agents make {@link Proposal}s to their group
 	 */
 	MakeProposals,
 	/**
-	 * Votes data is returned from the previous round, and data is updated
+	 * {@link VoteResult Votes data} is returned from the previous round, and data is updated
 	 */
 	Voting;
 	/**
