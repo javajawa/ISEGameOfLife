@@ -550,7 +550,7 @@ public class PoliticalGroup extends AbstractGroupAgent
 					if (totalAmountPaid != 0)
 					{
 						Tuple<String, Double> paymentReceipt = new Tuple<String, Double>();
-						paymentReceipt.add(this.getId(), totalAmountPaid);
+						paymentReceipt.set(this.getId(), totalAmountPaid);
 						if (!loanRepayments.containsKey(creditorID))
 						{
 							List<Tuple<String, Double>> existingPayments = new ArrayList<Tuple<String, Double>>();
@@ -718,7 +718,7 @@ public class PoliticalGroup extends AbstractGroupAgent
 		sharedFood = sharedFood - sharedFood * tax;
 
 		Tuple<Double, Double> newSharedAndReserve = new Tuple<Double, Double>();
-		newSharedAndReserve.add(sharedFood, currentFoodReserve);
+		newSharedAndReserve.set(sharedFood, currentFoodReserve);
 
 		return newSharedAndReserve;
 	}
@@ -746,7 +746,7 @@ public class PoliticalGroup extends AbstractGroupAgent
 							this.getId())))
 			{
 				inNeed.remove(this.getId());
-				interactionResult.add(InteractionResult.NothingHappened, 0.0);
+				interactionResult.set(InteractionResult.NothingHappened, 0.0);
 			}
 			else if (loanRequestsAccepted.containsKey(this.getId()))
 			{
@@ -788,13 +788,13 @@ public class PoliticalGroup extends AbstractGroupAgent
 
 				loanRequestsAccepted.remove(this.getId());
 				inNeed.remove(this.getId());
-				interactionResult.add(InteractionResult.LoanTaken,
+				interactionResult.set(InteractionResult.LoanTaken,
 								loanRecord.get(giverID.iterator().next()).getKey());
 			}
 			else
 			{
 				//Else if no one has given you money do nothing
-				interactionResult.add(InteractionResult.NothingHappened, 0.0);
+				interactionResult.set(InteractionResult.NothingHappened, 0.0);
 			}
 			return interactionResult;
 		}
@@ -819,7 +819,7 @@ public class PoliticalGroup extends AbstractGroupAgent
 					{
 						//Create a tuple containing the amount granted and the interest
 						Tuple<Double, Double> loanInfo = new Tuple<Double, Double>();
-						loanInfo.add(amountNeeded, interestRate);
+						loanInfo.set(amountNeeded, interestRate);
 
 						//Then store the loan info along with the requester ID in your records
 						if (!loansGiven.containsKey(groupID))
@@ -841,13 +841,13 @@ public class PoliticalGroup extends AbstractGroupAgent
 						HashMap<String, Tuple<Double, Double>> loanRecord = new HashMap<String, Tuple<Double, Double>>();
 						loanRecord.put(this.getId(), loanInfo);
 						loanRequestsAccepted.put(groupID, loanRecord);
-						interactionResult.add(InteractionResult.LoanGiven, amountNeeded);
+						interactionResult.set(InteractionResult.LoanGiven, amountNeeded);
 						return interactionResult;
 					}
 				}
 			}
 		}
-		interactionResult.add(InteractionResult.NothingHappened, 0.0);
+		interactionResult.set(InteractionResult.NothingHappened, 0.0);
 		return interactionResult;
 	}
 

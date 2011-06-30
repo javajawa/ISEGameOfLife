@@ -1253,7 +1253,7 @@ public class TestPoliticalAgent extends AbstractAgent
 //            {
 //                for (String agent: opponentPreviousTeam.getMembers())
 //                {
-//                    if (!agent.equals(opponentID)&&!agent.equals(this.getId()))
+//                    if (!agent.keyequals(opponentID)&&!agent.keyequals(this.getId()))
 //                    {
 //                        previousAdvisor = agent;
 //                        return suggestedFood = seekAvice(agent);
@@ -1266,7 +1266,7 @@ public class TestPoliticalAgent extends AbstractAgent
 		for (String member : getConn().getGroupById(this.getDataModel().getGroupId()).getMemberList())
 		{
 			Tuple<String, Double> memberTrust = new Tuple<String, Double>();
-			memberTrust.add(member,
+			memberTrust.set(member,
 							((getDataModel().getTrust(member) != null) ? getDataModel().getTrust(
 							member) : 0));
 			trustValues.add(memberTrust);

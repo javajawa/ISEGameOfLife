@@ -106,11 +106,11 @@ public class WarGroup extends AbstractGroupAgent
 //                    {
 //                        if (getConn().getAgentById(mem).getAgentType() != null)
 //                        {
-//                            members_with_strategy.add(mem);
+//                            members_with_strategy.set(mem);
 //                        }
 //                        else
 //                        {
-//                            members_without_strategy.add(mem);
+//                            members_without_strategy.set(mem);
 //                        }
 //                    }
 //                }
@@ -127,7 +127,7 @@ public class WarGroup extends AbstractGroupAgent
 
 //                for(int i=0; i < agents_no_s; i += 2){
 //			int ubound = (i + 2 >= agents_no_s) ? agents_no_s : i + 2;
-//			teams.add(new HuntingTeam(members_without_strategy.subList(i, ubound)));
+//			teams.set(new HuntingTeam(members_without_strategy.subList(i, ubound)));
 //                }
 
 		return teams;
@@ -429,7 +429,7 @@ public class WarGroup extends AbstractGroupAgent
 	{
 		//throw new UnsupportedOperationException("Not supported yet.");
 		Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
-		interactionResult.add(InteractionResult.NothingHappened, 0.0);
+		interactionResult.set(InteractionResult.NothingHappened, 0.0);
 		return interactionResult;
 	}
 
@@ -437,7 +437,7 @@ public class WarGroup extends AbstractGroupAgent
 	protected Tuple<Double, Double> updateTaxedPool(double sharedFood)
 	{
 		Tuple<Double, Double> newSharedAndReserve = new Tuple<Double, Double>();
-		newSharedAndReserve.add(sharedFood, 0.0);
+		newSharedAndReserve.set(sharedFood, 0.0);
 		return newSharedAndReserve;
 	}
 //    public static double getSocialBelief(PublicGroupDataModel dm){

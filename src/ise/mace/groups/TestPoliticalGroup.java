@@ -401,7 +401,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent
 	protected Tuple<Double, Double> updateTaxedPool(double sharedFood)
 	{
 		Tuple<Double, Double> newSharedAndReserve = new Tuple<Double, Double>();
-		newSharedAndReserve.add(sharedFood, 0.0);
+		newSharedAndReserve.set(sharedFood, 0.0);
 		return newSharedAndReserve;
 	}
 
@@ -416,7 +416,7 @@ public class TestPoliticalGroup extends AbstractGroupAgent
 	protected Tuple<InteractionResult, Double> interactWithOtherGroups()
 	{
 		Tuple<InteractionResult, Double> interactionResult = new Tuple<InteractionResult, Double>();
-		interactionResult.add(InteractionResult.NothingHappened, 0.0);
+		interactionResult.set(InteractionResult.NothingHappened, 0.0);
 		return interactionResult;
 	}
 }
