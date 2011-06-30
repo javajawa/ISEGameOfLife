@@ -7,27 +7,27 @@ import java.util.Random;
  */
 public final class NameGenerator
 {
-	private static class SortUtil
+	/**
+	 * Random sorting utility function
+	 * @param values The array to randomising
+	 */
+	private static void sort(String[] values)
 	{
-		static void sort(String[] values)
+		int i;
+		String temp;
+		for (i = 0; i < values.length; i++)
 		{
-			int i;
-			String temp;
-			for (i = 0; i < values.length; i++)
-			{
-				int r = (rand.nextInt() & 0x7FFFFFFF) % values.length;
-				temp = values[i];
-				values[i] = values[r];
-				values[r] = temp;
-			}
-		}
-
-		private SortUtil()
-		{
-			// Nothing to see here. Move along, citizen.
+			int r = (rand.nextInt() & 0x7FFFFFFF) % values.length;
+			temp = values[i];
+			values[i] = values[r];
+			values[r] = temp;
 		}
 	}
 
+
+	/**
+	 * 600 Most common fore name in the United States of America
+	 */
 	private static String[] foreNames =
 	{
 		"James", "John", "Robert", "Michael", "William", "David", "Richard",
@@ -109,6 +109,9 @@ public final class NameGenerator
 		"Becky", "Bobbie", "Violet", "Kristina", "Toni", "Misty", "Mae", "Shelly",
 		"Daisy", "Ramona", "Sherri", "Erika", "Katrina", "Claire", "Chuck"
 	};
+	/**
+	 * 600 Most common surnames in the United States of America
+	 */
 	private static String[] lastNames =
 	{
 		"Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller",
@@ -203,11 +206,27 @@ public final class NameGenerator
 		"Eaton", "Cline", "Navarro", "Harrell", "Lester", "Humphrey", "Norris",
 		"Parrish"
 	};
+	/**
+	 * index of the last forename used
+	 */
 	private static int foreNameIndex = 0;
+	/**
+	 * index of the last last name used
+	 */
 	private static int lastNameIndex = 0;
+	/**
+	 * Whether the arrays have been shuffled
+	 */
 	private static boolean hasRandomised = false;
+	/**
+	 * Random number generator for use with {@link #sort(java.lang.String[]) sort}
+	 */
 	private static Random rand = null;
 
+	/**
+	 * Set's the randomiser
+	 * @param r The new randomiser
+	 */
 	public synchronized static void setRandomiser(Random r)
 	{
 		rand = r;
@@ -215,14 +234,14 @@ public final class NameGenerator
 
 	/**
 	 * Generates a (possibly non-unique) player name
-	 * @return
+	 * @return New player name
 	 */
 	public synchronized static String getName()
 	{
 		if (!hasRandomised)
 		{
-			SortUtil.sort(foreNames);
-			SortUtil.sort(lastNames);
+			sort(foreNames);
+			sort(lastNames);
 			hasRandomised = true;
 		}
 		String fName = foreNames[foreNameIndex];
@@ -238,10 +257,12 @@ public final class NameGenerator
 			lastNameIndex++;
 			if (lastNameIndex == lastNames.length) lastNameIndex = 0;
 		}
-
 		return fName + ' ' + lName;
 	}
 
+	/**
+	 * Utility class - can not be constructed
+	 */
 	private NameGenerator()
 	{
 		// Nothing to see here. Move along, citizen
